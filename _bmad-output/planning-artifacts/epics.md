@@ -650,9 +650,8 @@ So that the app passes App Store certification.
 **When** preparing the App Store submission,
 **Then** all purchases (Hint 5-pack, Undo 3-pack, No Ads + Unlimited Undo) and ad placements are declared in App Store Connect (IAP/ads declarations) (FR-20).
 **And** no forced or interstitial ads appear during gameplay in any lane — ads are always player-initiated rewards between games (FR-19).
-**And** the privacy policy URL covers ad and IAP data use and is live before review (FR-37, blocking).
-**And** GDPR consent mode (UMP) and the ATT prompt are configured for ad attribution (FR-36).
 **And** nothing in the monetization path can alter spawn, merge, or score rules in either lane (P3, counter-metric).
+**And** privacy compliance is out of scope here — the GDPR consent mode / ATT prompt (FR-36) and the public privacy policy URL (FR-37, blocking) are owned solely by Epic 10 (Stories 10.4 and 10.5); this story depends on them being configured and verified before submission.
 
 <!-- End story repeat -->
 

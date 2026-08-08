@@ -65,7 +65,7 @@ For the player it delivers a sessionable, installable, offline-capable puzzle wi
 - **IAP** — In-App Purchase. MVP: Hint 5-pack (US$0.99/R$4.90), Undo 3-pack (US$0.99/R$4.90), and No Ads + Unlimited Undo (one-time, US$2.99/R$14.90). Pricing set for MVP; launch-offer discounts are a later lever.
 - **Leaderboard** — Scoreboard scoped per lane (Clean vs. Assisted). No cross-lane mixing.
 - **Game over** — Grid full and no adjacent mergeable pair (any row/column: adjacent `1|2` or equal `≥3`).
-- **Game Feel Suite** — Layered feedback on merges (haptics, visual punch, screen shake, bullet time). **Full suite is v2; see Non-Goals.**
+- **Game Feel Suite** — Layered feedback on merges (haptics, visual punch, screen shake, bullet time). **The full core suite ships in MVP (GDD D-011 supersedes this PRD's earlier v2 deferral); only suite *depth* (larger shake, celebration moments) and the full sound suite remain v2.**
 - **Tier** — A tile value threshold (48, 96, 192, ...) that opens new Adaptive Spawn options and (v2) celebration moments.
 - **Next piece preview** — HUD element showing the next spawn value (or ambiguous range) before each move; informational only, never changes the spawn.
 
@@ -140,12 +140,12 @@ For the player it delivers a sessionable, installable, offline-capable puzzle wi
 
 ### 4.7 Accessibility (Product Standard)
 
-**Description:** Accessibility is a product standard, not a cost. Tap targets ≥44×44pt on all touchable elements; screen-reader state announcements (tile + position, game over, score); a Reduced Motion mode that softens Game Feel Suite effects (v2 suite); WCAG AA contrast; merges communicated by shape beyond color (color blindness); dark, light, and color-blind themes — all free. `[NON-GOAL for MVP: paid cosmetic themes]`
+**Description:** Accessibility is a product standard, not a cost. Tap targets ≥44×44pt on all touchable elements; screen-reader state announcements (tile + position, game over, score); a Reduced Motion mode that softens Game Feel Suite effects (MVP core suite); WCAG AA contrast; merges communicated by shape beyond color (color blindness); dark, light, and color-blind themes — all free. `[NON-GOAL for MVP: paid cosmetic themes]`
 
 **Functional Requirements:**
 - **FR-28** — All touchable elements have tap targets ≥44×44pt.
 - **FR-29** — Screen readers (VoiceOver/TalkBack) announce tile value and position, score changes, and game-over state.
-- **FR-30** — A Reduced Motion setting disables/smooths screen shake and bullet-time effects (v2 suite) while **keeping haptics and sound** — iOS accessibility requirement.
+- **FR-30** — A Reduced Motion setting disables/smooths screen shake and bullet-time effects (MVP core suite) while **keeping haptics and sound** — iOS accessibility requirement.
 - **FR-31** — Tile value is communicated by shape/text in addition to color; contrast meets WCAG AA in all themes.
 - **FR-32** — Light, dark, and color-blind themes are available and free.
 
@@ -188,7 +188,7 @@ For the player it delivers a sessionable, installable, offline-capable puzzle wi
 - **No 2048-style rules** — no `2+2=4`, no equal merge of 1+1 or 2+2.
 - **No backend, accounts, or multiplayer** — the game remains fully client-side and offline-capable.
 - **No "Unearth" mechanic in MVP** — `[v2 — out of MVP]`, author to reconsider later.
-- **No full Game Feel Suite (scaled haptics, screen shake, bullet time) in MVP** — `[v2 — out of MVP]`; MVP ships standard animations and haptics.
+- **No Game Feel Suite *depth* in MVP** — the full **core** suite (scaled haptics, visual punch, directional screen shake, bullet time) **ships in MVP** (GDD D-011 supersedes this PRD's earlier deferral); only v2-depth stays out — larger shake amplitudes and celebration moments beyond the quiet bullet-time peak. `[AMENDED 2026-08-08 — GDD D-011]`
 - **No full sound suite in MVP** — `[v2 — out of MVP]`; MVP ships **minimal sound effects** (merge/spawn/game-over feedback). The full Warm/Organic identity suite is v2 and is a hypothesis to validate with external players (author plays sound-off, so his taste is a weak signal only).
 - **No celebration moments in MVP** — no new-record celebration, no tier-milestone celebration (crossing 48/96/192), no reward pacing. `[v2 — out of MVP]`; the "new best" is shown as a number, not as a celebratory event. `[NOTE FOR PM]` — emotionally load-bearing for the Achiever persona; revisit if timeline permits.
 - **No Daily Puzzle in MVP** — `[v2 — out of MVP]`.
@@ -212,10 +212,11 @@ For the player it delivers a sessionable, installable, offline-capable puzzle wi
 - Store readiness: icon + screenshots (Mineral Quente), metadata, age rating, IAP/ads declarations, privacy policy URL, name clearance.
 - Minimal sound effects (merge / spawn / game-over feedback) in the RN app. `[ASSUMPTION: "minimal" = short non-musical feedback SFX; scope confirmed with author]`
 - Next Piece Preview: exact value 60% / ambiguous range 40%, shown in both lanes, informational only.
+- Core Feel Suite (MVP, per GDD D-011): scaled haptics (`3` light / `6` medium / `12+` heavy), visual punch (overshoot-and-snap, flash + particles), directional screen shake (2/5ms capped 8ms), and bullet time (~200ms on the session's biggest merge) — all Reduced Motion aware (gated while keeping haptics and sound). `[AMENDED 2026-08-08 — GDD D-011]`
 
 ### 6.2 Out of Scope for MVP
 
-- Full Game Feel Suite F–I (scaled haptics, visual punch, screen shake, bullet time) — `[v2]`.
+- Game Feel Suite *depth* (larger shake amplitudes, celebration moments beyond the quiet bullet-time peak) — `[v2]`.
 - Full sound suite — `[v2]`; audio validated externally in playtest.
 - Tile personality (named tiers: Basalto, Cobre, Esmeralda) — `[v2]`.
 - Daily Puzzle (fixed seed, own scoreboard) — `[v2]`.

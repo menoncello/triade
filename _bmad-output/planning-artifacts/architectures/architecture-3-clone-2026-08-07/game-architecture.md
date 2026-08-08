@@ -11,7 +11,7 @@ platform: 'iOS'
 
 # Source Documents
 gdd: '_bmad-output/planning-artifacts/gdds/gdd-3-clone-2026-08-07/gdd.md'
-epics: '_bmad-output/planning-artifacts/gdds/gdd-3-clone-2026-08-07/epics.md'
+epics: '_bmad-output/planning-artifacts/epics.md'
 brief: 'null'
 ---
 
