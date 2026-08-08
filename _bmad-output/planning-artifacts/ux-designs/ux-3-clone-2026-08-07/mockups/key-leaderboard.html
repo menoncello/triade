@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tríade — key-leaderboard</title>
+<style>
+/*
+ * key-leaderboard.html — Leaderboard surface in the main menu (Lane Select exploration zone), portrait (390×844).
+ * Spine refs:
+ *  EXPERIENCE.md → IA (Leaderboard row: per-lane top-10 local, Melhores + Recentes)
+ *  EXPERIENCE.md → Component Patterns: Leaderboard tab (Melhores/Recentes) · Leaderboard row (rank, score, date+time)
+ *  EXPERIENCE.md → State Patterns: Empty leaderboard ("Sem registros ainda" / "No scores yet")
+ *  EXPERIENCE.md → Key Flows: Théo step 7 (timestamped Clean-lane top-10; no assisted score beside it — P3)
+ *  DESIGN.md → Components: Leaderboard tab (activeFill accent, activeText ink-dark, inactiveText muted, ≥44pt) · Leaderboard row (hairline dividers)
+ *  DESIGN.md → Layout & Spacing (menus center a single column, max ~420pt wide)
+ *  Decisions: D-014 (two tabs Melhores + Recentes), D-005 (local, top 10, timestamps)
+ */
+:root{
+  --surface:#23262D; --raised:#2B2F38; --board:#1A1D23; --cell:#262A31;
+  --text:#F2EEE3; --muted:#A39C8F; --border:#3A3F49; --accent:#E8A33D;
+  --ink-dark:#1C1206; --ink-light:#F6F0E1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0B0C10;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.page{display:flex;flex-direction:column;align-items:center;gap:28px;padding:48px 16px;min-height:100vh}
+.annot{display:flex;gap:12px;align-items:baseline;width:100%;max-width:844px;color:#A39C8F;font-size:12px;letter-spacing:.02em}
+.annot b{color:#F2EEE3;font-weight:700}
+.device{width:390px;height:844px;background:#0C0E11;border-radius:56px;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06)}
+.screen{position:relative;width:100%;height:100%;background:var(--surface);border-radius:48px;overflow:hidden}
+.notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0C0E11;border-radius:0 0 16px 16px;z-index:60}
+.home{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:120px;height:4px;border-radius:2px;background:rgba(242,238,227,.45);z-index:60}
+.content{position:relative;display:flex;flex-direction:column;gap:20px;height:100%;padding:58px 16px 16px;overflow-y:auto}
+.title{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.lane-tag{font-size:13px;font-weight:500;color:var(--muted);margin-top:2px}
+/* segmented tabs — Melhores / Recentes, ≥44pt hit area (a11y floor) */
+.tabs{display:flex;background:var(--raised);border:1px solid var(--border);border-radius:12px;padding:4px;gap:4px}
+.tab{flex:1;min-height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:var(--muted);background:none;border:none}
+.tab.active{background:var(--accent);color:var(--ink-dark)}
+/* leaderboard list */
+.list{background:var(--raised);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.lrow{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 16px;background:var(--raised);border-bottom:1px solid var(--border)}
+.lrow:last-child{border-bottom:none}
+.rank{width:32px;flex-shrink:0;font-size:15px;font-weight:500;color:var(--muted)}
+.score{flex:1;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:17px;font-weight:700;color:var(--text)}
+.ts{font-size:13px;font-weight:500;color:var(--muted)}
+/* empty state — "Sem registros ainda", no funnel pressure */
+.empty{background:var(--raised);border:1px solid var(--border);border-radius:12px;padding:36px 16px;text-align:center}
+.empty h3{font-size:17px;font-weight:500;color:var(--text)}
+.empty p{font-size:13px;font-weight:500;color:var(--muted);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="annot"><b>key-leaderboard.html</b> · Leaderboard · main menu · Melhores tab active (Clean lane) · empty-state variant below (Recentes)</div>
+  <div class="device">
+    <div class="screen">
+      <div class="notch"></div>
+      <div class="home"></div>
+      <div class="content">
+        <div>
+          <div class="title">Leaderboard</div>
+          <div class="lane-tag">Pista Pura</div>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" role="tab" aria-selected="true">Melhores</button>
+          <button class="tab" role="tab" aria-selected="false">Recentes</button>
+        </div>
+        <div class="list">
+          <div class="lrow"><span class="rank">1</span><span class="score">48.210</span><span class="ts">2026-08-06 21:14</span></div>
+          <div class="lrow"><span class="rank">2</span><span class="score">32.640</span><span class="ts">2026-08-04 18:02</span></div>
+          <div class="lrow"><span class="rank">3</span><span class="score">27.905</span><span class="ts">2026-07-31 09:47</span></div>
+          <div class="lrow"><span class="rank">4</span><span class="score">21.118</span><span class="ts">2026-07-28 22:31</span></div>
+          <div class="lrow"><span class="rank">5</span><span class="score">19.872</span><span class="ts">2026-07-24 14:55</span></div>
+          <div class="lrow"><span class="rank">6</span><span class="score">12.406</span><span class="ts">2026-07-19 11:20</span></div>
+        </div>
+        <div class="empty">
+          <h3>Sem registros ainda</h3>
+          <p>No scores yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

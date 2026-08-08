@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<!--
+  UX Design Validation Report — skeleton template.
+
+  This file is a starter the synthesis pass fills in directly. There is no
+  substitution engine. The LLM:
+    1. Reads {doc_workspace}/review-rubric.md and every review-{slug}.md from
+       additional reviewers.
+    2. Copies this skeleton.
+    3. Replaces the placeholder content (everything between TEMPLATE markers)
+       with the consolidated review, preserving the structure and CSS.
+    4. Writes the result to {doc_workspace}/validation-report.html.
+    5. Writes a markdown twin to {doc_workspace}/validation-report.md.
+
+  Visual rules the LLM must preserve:
+    - The container width, the color tokens, the typography.
+    - One dimension = one collapsible <section class="dimension">.
+    - Verdict pill uses the verdict-* class matching its judgment.
+    - Severity badge uses the badge-sev-* class matching its level.
+    - Each extra reviewer (accessibility, adversarial, etc.) gets its own
+      collapsible section below the rubric dimensions.
+    - The footer always shows the artifact paths and timestamp.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UX Design Validation: Tríade (3-clone)</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+
+  .reviewer-source {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="report-header">
+      <div class="title">
+        <h1>Tríade (3-clone) — UX Design Validation Report</h1>
+        <div class="subtitle">_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/DESIGN.md</div>
+      </div>
+    </header>
+
+    <div class="synthesis">
+      <p>The pair is contract-ready at draft level: every UJ/E/S requirement surface resolves to a flow or a section, all referenced tokens are defined with hexes, state coverage is complete, and inheritance from GDD/PRD/decision-log/architecture is disciplined and mostly verbatim. Two medium issues should be fixed before downstream consumption: (1) the DESIGN.md contrast guarantee prose does not match its own hexes — the <code>24</code> cobre tile sits at 4.44:1, below the claimed "≥ 4.5:1 on every tile", and the doc misidentifies the borderline pair; (2) the component vocabulary is asymmetric across the two spines — several components exist behavioral-only (Pause button, Lane card, Leaderboard tab, Settings row, Reward prompt) or visual-only (Prompt/banner), and <code>Game-over stat row</code> is missing from the DESIGN frontmatter component map. No critical or high findings; no bloat; shape fits canonical order in both files. <strong>Both medium issues are now resolved in the current spines (see §2 and §3 below).</strong></p>
+      <p>After the review run, the parent resolved every critical/high/medium finding in the spines — recorded as decisions <strong>D-015</strong> (landscape layout), <strong>D-016</strong> (pause placement), <strong>D-017</strong> (RN input mechanism + safe-area) and <strong>D-018</strong> (VoiceOver contract, label provenance, announcements, Reduced Motion set), plus spine edits for the rubric mediums and the flow/state/component lows. The two extra reviewers (Accessibility, HUD &amp; Input) shifted nothing materially after resolution: all six high and all remaining medium findings close out in the current spines. Only low items are carried forward by design — the playtest-calibration flags (feel magnitudes, D-013 celebration), the E9-derived light/color-blind theme deltas, the preview window-selection rule, and the audio identity hypothesis — plus the mockup-attachment flag.</p>
+    </div>
+
+    <div class="dimension-summary">
+      <div class="dim-card">
+        <div class="dim-name">Flow coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Token completeness</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Component coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">State coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Visual reference coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Bloat &amp; overspecification</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Inheritance discipline</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Shape fit</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+    </div>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>1. Flow coverage</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Checked: EXPERIENCE.md Key Flows against UJ-1..UJ-5 (PRD §2.4), E5 tutorial (S5.1-5.4), E6 failure suite (S6.1-6.4), E8 feel (S8.1-8.6), E9 a11y (S9.1-9.4), and S-stories from <code>epics.md</code>. Four named journeys (Lia, Théo, Dora, Ana), each with a named protagonist, numbered steps, a climax beat, and failure/integrity paths where applicable. The required journey surface is fully covered: Lia = first session/tutorial/tone; Théo = Clean integrity + new-record; Dora = veteran skip + landscape + noop swipe; Ana = rewarded-ad continue with ad-fail branch. Post-resolution the flow set grew: a fifth journey (Beatriz, VoiceOver user) demonstrates a11y, and Ana's flow now opens with the mid-game rewarded-ad undo — all four lows below are resolved in the current spines.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Mid-game rewarded-ad undo has no Key Flow</h3>
+              <span class="finding-location">EXPERIENCE.md:195-205 (Key Flows — Ana)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the undo (the other half of UJ-3 / S4.1 — the most frequent monetization touchpoint) had no Key Flow; Ana dramatized only death-continue. <strong>Resolution: Resolved in current spines — Ana's flow now opens with the undo beat: a discrete reward prompt at the moment of need, ad plays between games, the board rewinds exactly (true rewind, ADR-06), and the free undo of the game is consumed.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> add a short beat to Ana or a step to Théo's Clean run contrasting the Iniciante undo, or explicitly note it lives in the Reward prompt pattern only — done as an Ana step.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">E9 accessibility has no demonstrative flow</h3>
+              <span class="finding-location">EXPERIENCE.md:96-106 (Accessibility Floor)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: accessibility is section-covered but no flow demonstrates it (no reduced-motion or screen-reader user). <strong>Resolution: Resolved in current spines — a dedicated journey (Beatriz, VoiceOver user, Clean lane) was added with a three-finger-swipe climax and a system-gesture failure branch.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> optional — fold a reduced-motion toggling beat into a flow; instead a full VoiceOver journey was added.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">S8.6 sound never appears in a flow</h3>
+              <span class="finding-location">EXPERIENCE.md:134 (Game Feel &amp; Juice); Théo flow</span>
+            </header>
+            <div class="finding-note">The reviewer's record: MVP SFX coupled with haptics is specced but never appears in a flow; the merge climax in Théo is all-visual. <strong>Resolution: Resolved in current spines — Théo's climax now includes the low cálido "thock" alongside overshoot-and-snap, particle splash, heavy haptic, directional shake, and the ~200ms bullet-time flash.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one word of audio ("soft thock") in the climax step — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">S6.4 "elegant fall" realized only as soft fade</h3>
+              <span class="finding-location">EXPERIENCE.md:80 (Game-over state)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the flourish was only realized as the soft fade; the death treatment was otherwise unspecified beyond "no forced wait". <strong>Resolution: Resolved in current spines — Game Feel &amp; Juice now names the death treatment (S6.4): the soft fade over the frozen board, stats drifting in quietly, no abrupt cutoff, no forced wait; the death receives the same care as the big merge (D-010).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> name the death treatment in Game Feel &amp; Juice or game-over state row — done in Game Feel &amp; Juice.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>2. Token completeness</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Checked every token in DESIGN.md frontmatter (25 <code>colors</code>, 7 <code>typography</code>, 5 <code>rounded</code>, 9 <code>spacing</code>, 8 <code>components</code>) and every <code>{...}</code> reference in both files (40+ references). Every referenced token is defined; every color token has a hex; <code>{spacing.safe-margin}</code>, <code>{typography.display}</code>, <code>{colors.accent}</code>, <code>{colors.muted}</code> referenced from EXPERIENCE.md all resolve to DESIGN.md. Contrast targets are stated for the load-bearing combos: tile ink per tier, text on surface, muted on surface, accent on surface (DESIGN.md:175). No undefined tokens, no missing hexes. Post-resolution the Contrast paragraph restates honestly against the hexes (both findings below resolved).</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Contrast prose does not match its own hexes</h3>
+              <span class="finding-location">DESIGN.md:175 (Colors — Contrast)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: recomputing from the table, <code>24</code> cobre + tile-ink-light = <strong>4.44:1</strong> — below the claimed "numeral holds ≥ 4.5:1 on every tile". The doc called "12 copper and 384 deep emerald" the borderline pairs (actual: 12 = 5.05, 384 = 4.65); the real weakest pair is <strong>24 cobre (4.44)</strong> and <strong>384 deep emerald (4.65)</strong>. "text on surface ≈ 14.6:1" is actually 13.06:1. The design remains usable (32pt/800 numerals clear the 3:1 large-text bar), but the stated guarantee was false and a consumer computing from the hexes would find the contradiction. <strong>Resolution: Resolved in current spines — the DESIGN.md Contrast paragraph now restates honestly: <code>384</code> deep emerald (≈ 4.7:1) named the weakest pair, <code>24</code> cobre (≈ 4.9:1) next, both clearing the 4.5:1 body-text bar, with the 3:1 large-text AA exemption for 32pt display numerals cited and the 13pt/9pt numeral legibility re-check flagged for E1/E8.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> rebalance <code>24</code> cobre or restate honestly (list the true weak pairs, cite the large-text 3:1 exemption for display numerals and the 4.5:1 requirement for 4+ digit numerals at 13pt) — restated honestly.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">No standalone contrast figure for accent on surface-raised</h3>
+              <span class="finding-location">DESIGN.md:175 (Colors — Contrast)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: accent is used on raised surfaces (Jogar button fill, preview ink, toggle on-fill) with no figure given; it computes to 6.22:1 and passes. <strong>Resolution: Resolved in current spines — "accent on surface-raised ≈ 6.2:1 (Jogar fill, preview ink, toggle on-state)" is now stated in the Contrast paragraph, alongside muted-on-surface-raised ≈ 4.9:1 and dark-ink-on-accent ≈ 8.6:1.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one line in the Contrast paragraph — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>3. Component coverage</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Every component name was extracted from both spines and cross-checked. All EXPERIENCE Component Patterns rows carry real behavioral rules (EXPERIENCE.md:60-71) and all DESIGN component bullets carry real visual specs (DESIGN.md:220-232) — no one-word entries. But the vocabulary was asymmetric: five components existed behavioral-only, one visual-only, and one component was missing from the frontmatter token map. <strong>Post-resolution the asymmetry is closed: every named component now holds a DESIGN visual row, an EXPERIENCE behavioral row, and a frontmatter token (see the medium finding below).</strong></p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Behavioral-only and visual-only components; missing frontmatter token</h3>
+              <span class="finding-location">EXPERIENCE.md Component Patterns; DESIGN.md Components</span>
+            </header>
+            <div class="finding-note">The reviewer's record: <strong>Pause button</strong> had no DESIGN row and no frontmatter token (visual spec inferable only from the generic Button); <strong>Reward prompt</strong> — monetization-critical — was mentioned only as a Panel/Card use, no dedicated visual row; <strong>Lane card</strong>, <strong>Leaderboard tab</strong> and <strong>Settings row</strong> were behavioral-only; <strong>Prompt/banner</strong> was the inverse (visual-only); and <strong>Game-over stat row</strong> was missing from the frontmatter map. <strong>Resolution: Resolved in current spines — DESIGN.md Components now carries dedicated visual rows for Pause button, Reward prompt, Lane card, and Leaderboard tab; EXPERIENCE Component Patterns gained the Prompt/banner row; and <code>components.game-over-stat-row</code> (plus <code>pause-button</code>, <code>lane-card</code>, <code>leaderboard-tab</code>, <code>settings-row</code>, <code>reward-prompt</code>, <code>prompt-banner</code>, <code>settings-toggle</code>) are all frontmatter tokens.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> add DESIGN rows (or explicit "visual = composed of X" notes) for Pause button, Reward prompt, Lane card, and Leaderboard tab — done as dedicated rows.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Prompt/banner is the inverse gap</h3>
+              <span class="finding-location">DESIGN.md:230 (Components); EXPERIENCE Component Patterns</span>
+            </header>
+            <div class="finding-note">The reviewer's record: Prompt/banner had a DESIGN row + frontmatter token but no Component Patterns row (behavior lived only in HUD prose). <strong>Resolution: Resolved in current spines — Prompt/banner now has a Component Patterns row: contextual, dismissible, appears only when relevant, never in Clean (P1, D-007).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one row in Component Patterns — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Game-over stat row missing from the frontmatter component map</h3>
+              <span class="finding-location">DESIGN.md frontmatter <code>components</code></span>
+            </header>
+            <div class="finding-note">The reviewer's record: prose rows exist in both files but no <code>components.game-over-stat-row</code> frontmatter token. <strong>Resolution: Resolved in current spines — the token now exists in the DESIGN frontmatter (fill transparent, labelColor muted, valueColor text, recordColor accent, paddingV 2).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> add the token so the component map is complete — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>4. State coverage</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Walked every IA surface (Tone, Menu/Lane Select, Game HUD, Tutorial, Pause, Game-over, Leaderboard, Settings, Reward prompt). The State Patterns table (EXPERIENCE.md:73-87) covers Playing, Noop swipe, Paused, Game over, New record, Empty leaderboard, Lane-switch warning, Settings-change-mid-match (impossible by construction), Death-continue consumed, Tutorial active, Ceiling-tier crossing. The rubric's example states all resolve: noop swipe ✓, empty leaderboard ✓, reward-prompt ad-fail ✓ (Ana failure branch EXPERIENCE.md:205 + Reward prompt row), offline and permission-denied correctly N/A (fully offline, no accounts — the game's own boundaries). Focus/selected state is covered via the menu-item accent bar (DESIGN.md:226, D-008). Post-resolution the State Patterns table gained rows for the tone screen and the reward ad-fail/cancel state (both lows resolved).</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Tone screen has no State Patterns row</h3>
+              <span class="finding-location">EXPERIENCE.md:27, 162 (IA table; Lia flow)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: first-launch cold-load, returning skip, and tap-to-skip states lived only in the IA table and Lia's flow. <strong>Resolution: Resolved in current spines — a "First launch | Tone screen" row now exists in State Patterns (tone plays ~2s, tap to skip, no other tap target; auto-advance pauses while a screen-reader announcement is in flight / while VoiceOver is active; returning launches skip entirely).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one row — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Ad-fail / ad-cancelled has no State Patterns row</h3>
+              <span class="finding-location">EXPERIENCE.md:205 (Ana failure branch); Reward prompt</span>
+            </header>
+            <div class="finding-note">The reviewer's record: only the flow failure branch + component row covered it. <strong>Resolution: Resolved in current spines — a "Reward ad fail / cancel" row now exists in State Patterns: revert to the primary CTA, nothing lost, no blocking error state (Ana failure branch).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> a one-line row ("Reward ad fail/cancel → revert to primary, nothing lost") to make the contract explicit for E4 story-dev — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>5. Visual reference coverage</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Inventory of the workspace dir: no <code>mockups/</code>, no <code>wireframes/</code>; <code>imports/</code> and <code>.working/</code> exist but are empty (fresh run — no orphans). Neither spine references any mockup/wireframe path (searched: no dangling links). Absence of composition references is acceptable at draft; the spines correctly declare themselves the contract ("Both spines win over any mock", EXPERIENCE.md:19). The composition-reference flag remains open and is carried forward.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">No composition references defined yet</h3>
+              <span class="finding-location">DESIGN.md / EXPERIENCE.md (whole pair)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the example spines point to <code>mockups/*.html</code>, and this pair defines none. <strong>Resolution: Carried forward — flagged for a later UX iteration to attach mockups for the three surfaces with visual gaps (lane select, game-over overlay, reward prompt).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> none required at draft; attach mockups in a later UX iteration.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>6. Bloat &amp; overspecification</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>No source restatement without purpose; no decorative narrative untied to a decision. The long Brand &amp; Style paragraph (DESIGN.md:132) is earned (ramp identity, peak scarcity, anti-Threes guardrail). The 13-tier table restates GDD data because it is the canonical token table. Every <code>[NOTE FOR UX]</code> block is actionable for architecture/story-dev. Experience sections (Voice and Tone, Game Feel &amp; Juice, Inspiration &amp; Anti-patterns, Responsive &amp; Platform) each tie every bullet to P/D/S/FR citations. Pixel specs do not duplicate tokens (values are quoted alongside tokens, which is helpful, not redundant). No section is downstream-unread. No findings.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>7. Inheritance discipline</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p><code>sources</code> frontmatter resolves in both files (7 sources each, all present). UJ/FR/S/D/P references are verbatim and traceable: UJ-5 (EXPERIENCE.md:93), S6.1 (EXPERIENCE.md:23), S8.1-8.6 (EXPERIENCE.md:130-135), S9.1-9.4 (EXPERIENCE.md:100-104), FR-15/18/19/22/30/41-44 (EXPERIENCE.md:35, 65, 69, 94, 103, 200), GDD D-009 (13-tier mapping) and GDD D-011 (feel-suite scope) both verified in the GDD decision log; N3 resolves to architecture §N3; ADR-03 and ADR-06 resolve to <code>game-architecture.md</code>. EXPERIENCE token refs (<code>{colors.*}</code>, <code>{typography.display}</code>, <code>{spacing.safe-margin}</code>) resolve to DESIGN.md by name. Post-resolution the component-name mismatch is closed by a shared <code>{components.*}</code> token vocabulary, the menu-item size rows agree, and D-003 is marked amended (all three findings resolved).</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Component names are not identical across the two spines</h3>
+              <span class="finding-location">EXPERIENCE.md Component Patterns; DESIGN.md Components</span>
+            </header>
+            <div class="finding-note">The reviewer's record: "Jogar button" (EXPERIENCE.md:63) vs "Button" (DESIGN.md:224); "Lane card", "Leaderboard tab", "Settings row", "Reward prompt", "Pause button" existed in EXPERIENCE with no matching DESIGN component name; "Prompt/banner" existed in DESIGN with no matching EXPERIENCE row; EXPERIENCE never used <code>{components.*}</code> tokens, so the behavioral↔visual pairing was by prose name only. <strong>Resolution: Resolved in current spines — both spines now share the same <code>{components.*}</code> token vocabulary and Component Patterns references the tokens on every row, so the behavioral↔visual pairing is by token name, not prose. (Cross-referenced to §3; counted once.)</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> adopt one shared component vocabulary (name + token) in both files and reference <code>{components.*}</code> in Component Patterns — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Numeric mismatch on the same component</h3>
+              <span class="finding-location">EXPERIENCE.md:62 vs DESIGN.md:88 (Menu item)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: Menu item was "44pt+ tall" in EXPERIENCE but DESIGN <code>menu-item</code> minHeight is 48px — both defensible (44 floor vs 48 default) but disagreeing on the same row. <strong>Resolution: Resolved in current spines — Component Patterns now states 48pt min height, matching the DESIGN token.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> align Component Patterns to 48pt or cite the 44pt floor — aligned to 48pt.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">D-003 superseded but never marked amended</h3>
+              <span class="finding-location">.decision-log.md (D-003)</span>
+            </header>
+            <div class="finding-note">The reviewer's record: D-003 (pause includes Settings) is superseded by D-011/D-012 but was never marked amended; the spines correctly follow D-011/D-012 (pure pause). <strong>Resolution: Resolved — D-003 is now marked "AMENDED by D-012" with Status: Amended in the decision log, so a later consumer cannot read stale D-003.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> mark D-003 amended in the decision log — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>8. Shape fit</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>DESIGN.md follows canonical order exactly: Brand &amp; Style → Colors → Typography → Layout &amp; Spacing → Elevation &amp; Depth → Shapes → Components → Do's and Don'ts (no missing, no reorder). EXPERIENCE.md contains every required default (Foundation, Information Architecture, Voice and Tone, Component Patterns, State Patterns, Interaction Primitives, Accessibility Floor, Key Flows) plus all earned-invented sections (HUD &amp; Diegetic UI, Input Schemes, Game Feel &amp; Juice, Inspiration &amp; Anti-patterns, Responsive &amp; Platform). Only cosmetic ordering difference vs. the example: Accessibility Floor sits before HUD/Input Schemes — non-issue. No findings.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="reviewer-section">
+      <details>
+        <summary>
+          <h2>Accessibility review</h2>
+          <span class="reviewer-source">review-accessibility.md</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>The pair establishes a genuinely strong, honest accessibility floor: contrast prose recomputes true against the hexes, the 44×44pt floor is enforced at component level, Reduced Motion is stated consistently with the GDD/architecture (in the behavioral spine), the fixed-numeral/dynamic-type split is defensible and flagged in both files, and the three free themes + shape/text-beyond-color are locked. The load-bearing weakness was <strong>S9.2</strong>: one sentence whose central claim — "No labels invented in UI," labels from the per-tile trace — is not literally implementable, and it left the <em>entire VoiceOver model</em> to be invented by E9 story-dev. <strong>Post-resolution: the Screen Reader Contract (D-018) resolves all three highs, the Reduced Motion set is enumerated in both spines, the tone-screen auto-advance is exempted-and-paused, and the leaderboard tab carries a 44pt floor — every finding below is resolved in the current spines.</strong></p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">The screen-reader input model is unspecified</h3>
+              <span class="finding-location">EXPERIENCE.md:94-95, 104, 123</span>
+            </header>
+            <div class="finding-note">The reviewer's record: iOS VoiceOver intercepts single-finger swipes for navigation, so the primary swipe move gesture has no defined path for a VoiceOver user; the spine never says whether E9 builds 3-finger-swipe moves, a rotor action, "direct manipulation" passthrough, or gesture alternates, and Skia tiles (not RN views) need labels exposed via a bridge. <strong>Resolution: Resolved in current spines (D-018) — a Screen Reader Contract now specifies: move = three-finger swipe (VoiceOver reserves single-finger for navigation), read the board = tap a tile (value + position); per-tile <code>accessibilityElement</code>s are exposed from Skia to <code>UIAccessibility</code> via a bridge so the label always matches the board.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> add a "Screen Reader Contract" subsection naming the interaction scheme and the Skia-to-<code>UIAccessibility</code> label exposure — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">"No labels invented in UI" is not implementable as written</h3>
+              <span class="finding-location">EXPERIENCE.md:104</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the per-tile trace (<code>{ value, to:[r,c], from:[[r,c]...], spawned }</code>) covers only tiles that moved/merged/spawned in a move; read literally, the rule forbids authored labels for the resting 16-tile board, score, game-over, preview, and all chrome (Resume/Restart/Quit, theme names, leaderboard rank/score/date, banners), which are un-derivable and must be i18n strings. <strong>Resolution: Resolved in current spines (D-018) — the rule is re-scoped: board labels are engine-derived (board grid + per-move events, never ad-hoc UI strings); chrome labels are i18n-authored from the catalog.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> re-scope the sentence — "board labels are engine-derived (board grid + per-move events); chrome labels are i18n-authored — never ad-hoc strings in UI" — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">No announcement content contract</h3>
+              <span class="finding-location">EXPERIENCE.md:104, 80, 83, 65, 70, 69</span>
+            </header>
+            <div class="finding-note">The reviewer's record: merges, noop swipes, score noise, game-over copy, new-record, preview, and Iniciante banners were all undefined; a screen-reader user on a rejected move got zero feedback ("silent control flow" is a11y-invisible); per-swipe score announcements would be unreadable. <strong>Resolution: Resolved in current spines (D-018) — an Announcement contract table now maps event → what VoiceOver says → source, covering move-resolved, merge ("Merged: 3 plus 3 equals 6"), noop (silent), score (announced on merge only, throttled), spawn, game-over, new-record, preview card, banner, and reward prompt.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> a small announcement table (event → what VoiceOver says → source) in the Accessibility Floor — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Reduced Motion's gated set is incomplete vs the architecture</h3>
+              <span class="finding-location">EXPERIENCE.md:106, 139; DESIGN.md:241, 262</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the spines gated only "shake and bullet time", omitting flash/particles and overshoot-and-snap, and DESIGN.md never mentioned Reduced Motion at all; a consumer reading only the spines would keep flash/particles, the overshoot scale animation, and the game-over soft fade under Reduced Motion, contradicting the architecture's reduced preset. <strong>Resolution: Resolved in current spines (D-018) — the gated set is enumerated in both spines: shake, bullet time, flash/particles, overshoot-and-snap scale, the <code>1536+</code> glow, and the game-over soft fade — cut or smoothed while haptics and sound stay; DESIGN.md Elevation &amp; Depth now cross-references the Reduced Motion preset.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> enumerate the full gated set in both spines and add a Reduced Motion cross-reference to DESIGN Elevation &amp; Depth / Feel layer — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">The tone screen's ~2s auto-advance can race the screen reader</h3>
+              <span class="finding-location">EXPERIENCE.md:27, 78, 166, 109</span>
+            </header>
+            <div class="finding-note">The reviewer's record: a ~2s timed auto-advance over a surface with content is a timing-race for VoiceOver users (the "controle sobre o caos" line can be cut off mid-announcement) and is the single timed surface in an otherwise timer-free game ("No time pressure anywhere"). <strong>Resolution: Resolved in current spines — the State Patterns and Accessibility Floor rows state that the auto-advance pauses while a screen-reader announcement is in flight (or while VoiceOver is active) so the reader is never raced, and the tone screen is explicitly declared exempt as non-informational (a title beat, not content).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> state that the auto-advance pauses while an announcement is in flight (or while VoiceOver is active), or explicitly declare the tone screen non-informational and justify the exemption — both done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">The leaderboard tab is the one interactive component with no size floor</h3>
+              <span class="finding-location">DESIGN.md:105-109; EXPERIENCE.md:67</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the 44pt floor is otherwise airtight (button/menu-item/pause-button/lane-card/leaderboard-row/settings-row all 48pt), but "compact" tabs risk sub-44pt tap areas, <code>activeFill: accent</code> had no stated text token (muted text on accent measures 1.26:1 — a failure if that's the pairing), and the banner-dismiss target and tone-screen skip sizes were unstated. <strong>Resolution: Resolved in current spines — <code>leaderboard-tab</code> now carries minHeight 44px with <code>activeText: {colors.tile-ink-dark}</code> (dark ink on accent ≈ 8.6:1); the DESIGN Components row states the ≥44×44 hit area; the Accessibility Floor includes the banner dismiss target and tone-screen skip in the 44pt floor.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> give <code>leaderboard-tab</code> an explicit ≥44×44 hit area and an active-tab text token (dark ink on accent), and state the banner-dismiss target — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Contrast prose is honest but misidentifies the weakest pair</h3>
+              <span class="finding-location">DESIGN.md:207</span>
+            </header>
+            <div class="finding-note">The reviewer's record: all recomputed claims were accurate (text on surface 13.06, muted 5.56, accent on surface 7.02, accent on surface-raised 6.22; unclaimed combos all pass — muted on surface-raised 4.92, accent record value on board 7.83, Jogar dark-ink on accent 8.55), but the doc's "weakest pair is 24" was backwards — the actual weakest is <code>384</code> deep emerald at 4.65:1 with <code>24</code> cobre at 4.91:1. <strong>Resolution: Resolved in current spines — DESIGN.md Contrast now names <code>384</code> deep emerald (≈ 4.7:1) the weakest pair and <code>24</code> cobre (≈ 4.9:1) next; both clear the 4.5:1 bar.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one-line correction naming 384 (4.65) as the weakest, 24 (4.91) next — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Fixed tile numerals deserve one explicit guard</h3>
+              <span class="finding-location">DESIGN.md:213, 223; EXPERIENCE.md:108, 156</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the fixed-numeral decision is defensible and stated consistently in both spines, but 6+ digit numerals at 9pt render outside React/<code>UIFontMetrics</code>, so Dynamic Type can never enlarge them — the spine never stated a minimum legible size or that they must stay readable at max Dynamic Type, and the preview-card ink size was untyped. <strong>Resolution: Resolved in current spines — DESIGN.md Typography now states the fixed tile numerals (32/13/9pt) are a deliberate, flagged exception to Dynamic Type that must remain legible at the largest accessibility text setting and the smallest landscape tile size (min ~44pt, E1/E8), or the tile re-runs the ink-contrast check; the preview-card ink now has a <code>valueSize</code> 20pt token.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one line — "fixed tile numerals are a deliberate, flagged exception to Dynamic Type; they must remain legible at the largest accessibility text setting" — and give the preview ink a size token — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="reviewer-section">
+      <details>
+        <summary>
+          <h2>HUD &amp; Input review</h2>
+          <span class="reviewer-source">review-hud-input.md</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>The spine pair is a strong contract for HUD <em>information hierarchy</em> (score always, preview always, best small, Clean bare — D-007 is airtight), for diegetic/non-diegetic separation, and for the E8 feel/performance split (declarative trace board + imperative worklets, Reduced Motion as sanctioned fallback). It was <strong>not</strong> yet an unambiguous contract for geometry and input: the landscape HUD (D-006) and the pause button (D-012) were described at the level of "thin edge layer / smaller numerals / chrome in the HUD edge" with no coordinates, and the input spec carried web-PWA vocabulary ("pointer capture") with no mapping to RN's responder/gesture system and no edge-case contract. <strong>Post-resolution: D-015 fixes the landscape geometry, D-016 fixes pause placement, D-017 pins the RN gesture mechanism and edge cases — every finding below is resolved in the current spines.</strong></p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">Landscape HUD layout is underspecified for build</h3>
+              <span class="finding-location">D-006 (.decision-log.md:51-54); DESIGN.md:223, 231, 263; EXPERIENCE.md:117, 154</span>
+            </header>
+            <div class="finding-note">The reviewer's record: "Thin edge layer with smaller numerals" specified <em>that</em> things shrink, not <em>where they go</em> — no edge choice, no element order, no preview position, no concrete reduced numeral size (no <code>typography</code> token existed), so E1 would invent all of it for S1.4/S1.6. <strong>Resolution: Resolved in current spines (D-015) — a thin top edge band is specified: score + best left, preview right, pause opposite the preview (top-right); <code>{typography.score-landscape}</code> (22pt) and <code>{typography.caption-landscape}</code> (11pt) tokens added; board maximized with a min ~44pt tile width; every element inside the 16pt safe margin clear of the notch and home indicator.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> add a Landscape layout block to DESIGN.md with edge choice, element order + offsets, preview card position, pause position, and new tokens (<code>typography.score-landscape</code>, <code>typography.caption-landscape</code>), each with a 16pt safe-margin note — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">Pause button placement is unspecified in both orientations</h3>
+              <span class="finding-location">DESIGN.md:257; EXPERIENCE.md:37, 72</span>
+            </header>
+            <div class="finding-note">The reviewer's record: in portrait, score is center-top and the preview is bottom-corner, so "HUD edge" left a real choice (top-left vs top-right) — one of which may sit inside the board's swipe-capture zone once the board is maximized under the band; in landscape, the edge layer must hold score/best/preview <em>and</em> pause with no stated arrangement or collision-avoidance against the preview card. Pause is a hard accessibility/escape exit; E1 must not be free to place it. <strong>Resolution: Resolved in current spines (D-016) — pause is fixed top-right in both orientations (opposite the preview in landscape), always outside the board swipe rect, ≥44×44, inside safe margins; the landscape layout block has an explicit pause slot.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> fix the corner (e.g., portrait top-right; landscape same side as the preview or opposite), state "outside the board swipe rect, ≥44×44, inside safe margins," and give the landscape layout block an explicit pause slot — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">Input contract uses web-PWA vocabulary with no RN mechanism</h3>
+              <span class="finding-location">EXPERIENCE.md:94, 123, 127; architecture:177; version matrix:138-160</span>
+            </header>
+            <div class="finding-note">The reviewer's record: RN 0.86 has no Pointer Events pointer-capture; the mechanism is either the responder system or RNGH <code>Gesture.Pan()</code> with <code>activeOffsetX/Y</code>, and the spine didn't choose or specify behavior for system interruption/<code>pointercancel</code>, release off the board mid-gesture, and a second concurrent finger. "No multi-touch requirements" is an implementation requirement in disguise: first-finger-wins, ignore touches 2..N, and no second <code>move()</code> while a swipe or its animation is in flight all went unsaid. <strong>Resolution: Resolved in current spines (D-017) — the gesture mechanism is pinned to RNGH <code>Gesture.Pan()</code> in the Interaction Primitives, and the Input Edge-Cases contract now specifies: cancel/system interruption → no move, no spawn, no turn; release off-board → resolved as captured; concurrent second finger → ignored (first finger wins); swipe during in-flight animation → queued/rejected (never a mid-animation mutation).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> pin the gesture mechanism (recommend RNGH Pan + its cancel/end semantics) and add a short Input Edge-Cases contract — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Safe-area mechanism is unspecified</h3>
+              <span class="finding-location">EXPERIENCE.md:155; DESIGN.md:227; architecture:138-160</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the spine says "respect iOS safe areas" without naming <code>react-native-safe-area-context</code> (RN core <code>SafeAreaView</code> is deprecated and unreliable for landscape/asymmetric insets), and the portrait preview card in the bottom corner sits unconstrained near the home-indicator / swipe-from-bottom gesture zone. <strong>Resolution: Resolved in current spines (D-017) — <code>react-native-safe-area-context</code> is pinned (bundled with Expo SDK 57) and <code>{spacing.safe-margin}</code> is stated as applied on top of per-edge insets in both orientations, including the preview card and pause button (EXPERIENCE.md Foundation + Responsive &amp; Platform).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> pin <code>react-native-safe-area-context</code> and state that <code>{spacing.safe-margin}</code> is applied <em>on top of</em> per-edge insets in both orientations — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Fixed tile-numeral rule vs shrinking landscape tiles is unverified</h3>
+              <span class="finding-location">DESIGN.md:215-223 vs DESIGN.md:231 / D-006; S1.6</span>
+            </header>
+            <div class="finding-note">The reviewer's record: there is no direct contradiction (landscape-<em>HUD</em> numerals shrink; <em>tile</em> numerals stay fixed), but the fixed sizes were chosen against the portrait tile size, and landscape tiles shrink with no min-tile-size or 9pt/13pt legibility check specified — the 9pt 6-digit tier (1536/3072+) is the risk point, and the S1.1/device benchmark measures frame budget, not legibility. <strong>Resolution: Resolved in current spines — a min ~44pt landscape tile width is now stated before the layout re-runs the numeral/ink legibility check (DESIGN.md Typography + Layout &amp; Spacing).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> state a min landscape tile size for the board-layout math, and add a one-line rule that the 13pt/9pt numerals are only used at tile widths that fit them (or that landscape re-runs the ink-contrast check) — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">HUD "best" is not stated as lane-scoped</h3>
+              <span class="finding-location">EXPERIENCE.md:115; DESIGN.md:274; D-007</span>
+            </header>
+            <div class="finding-note">The reviewer's record: HUD information hierarchy is complete and Clean-board bareness is confirmed — no load-bearing gap; the one nit is that "best" is not stated as lane-scoped, and a merged/global best would leak score integrity (P3). <strong>Resolution: Resolved in current spines — the HUD "best" is the active lane's best, never a merged/global figure (EXPERIENCE.md HUD &amp; Diegetic UI, per P3).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one line — "best" on the HUD is the active lane's best — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">The preview card carries a mild conceptual blur</h3>
+              <span class="finding-location">EXPERIENCE.md:113, 144; DESIGN.md:263, 241</span>
+            </header>
+            <div class="finding-note">The reviewer's record: the diegetic/non-diegetic boundary is mostly clean and the rendering spec is concrete, but nothing explicitly excluded the preview card from the imperative feel layer — E8 could attach flash/particles to it, contradicting "feel effects never persist as UI" and the card's chrome role. <strong>Resolution: Resolved in current spines — DESIGN.md Elevation &amp; Depth now states feel effects fire on the board only; the preview card and score are chrome and never animate with feel effects.</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one line in the feel section — feel-layer effects fire on the board only; the preview card is chrome and never animates with feel effects — done.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Pause-during-animation freeze semantics are unstated</h3>
+              <span class="finding-location">EXPERIENCE.md:81; architecture:268-273</span>
+            </header>
+            <div class="finding-note">The reviewer's record: whether a pause tap mid-swipe waits for the Reanimated spring to settle or cancels it is unspecified — a real but small E1/E8 ambiguity that affects the frozen-board snapshot under the scrim. <strong>Resolution: Resolved in current spines — pause lets the in-flight swipe settle, then freezes; the board under the scrim is the post-animation snapshot (EXPERIENCE.md State Patterns, Paused).</strong></div>
+            <div class="finding-fix"><strong>Fix:</strong> one line — pause lets the in-flight animation complete, then freezes; the engine state under the scrim is the post-animation snapshot — done.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <div class="mechanical">
+      <h3>Mechanical notes</h3>
+      <ul>
+        <li><strong>Frontmatter:</strong> both files <code>status: draft</code>, <code>updated: 2026-08-07</code>, identical 7-source lists; all resolve. DESIGN has <code>name</code>/<code>description</code>; EXPERIENCE has <code>title</code>. <code>components.game-over-stat-row</code> was missing from the DESIGN map and is now added (resolved, §3).</li>
+        <li><strong>Cross-file refs:</strong> DESIGN and EXPERIENCE correctly point at each other (DESIGN.md:134, 222; EXPERIENCE.md:19, 58). No broken <code>{...}</code> refs in either direction.</li>
+        <li><strong>Naming:</strong> the "Jogar button" vs "Button" / behavioral-only / visual-only vocabulary gaps were resolved by the shared <code>{components.*}</code> token vocabulary referenced in Component Patterns (§3/§7).</li>
+        <li><strong>Contrast claims:</strong> prose previously disagreed with the computed hex values (text-on-surface, borderline-pair identification); the DESIGN.md Contrast paragraph now restates honestly against the hexes (§2, a11y low).</li>
+        <li><strong>Counted once:</strong> the component-vocabulary finding is filed under §3 and cross-referenced in §7; severities are not double-counted.</li>
+        <li><strong>Resolution sweep:</strong> every critical/high/medium finding across all three reviewers is resolved in the current spines (D-015..D-018 + spine edits). Only low items remain open and are carried forward (playtest calibration, E9 theme deltas, preview window-selection rule, audio hypothesis, mockup attachment).</li>
+      </ul>
+    </div>
+
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: _bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/review-rubric.md</span>
+        <span>Generated: 2026-08-07</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

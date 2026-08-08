@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tríade — key-game-portrait</title>
+<style>
+/*
+ * key-game-portrait.html — Game screen, portrait (390×844), mid-game, Playing state.
+ * Spine refs:
+ *  EXPERIENCE.md → Component Patterns: Tile · Preview card · Pause button
+ *  EXPERIENCE.md → State Patterns: Playing
+ *  EXPERIENCE.md → HUD & Diegetic UI (Portrait HUD) · Responsive & Platform (Portrait)
+ *  EXPERIENCE.md → Key Flows: Théo step 3 (Clean board bareness), Dora step 3
+ *  DESIGN.md → Layout & Spacing (Portrait) · Elevation & Depth (board diegetic, layer 1) · Shapes (chamfer) · Components: Tile · Preview card · Pause button
+ *  DESIGN.md → Do's and Don'ts: Clean-lane board keeps score + best + preview only (D-007)
+ *  Decisions: D-007 (portrait HUD), D-016 (pause top-right), D-017 (board swipe rect, RNGH Pan)
+ */
+:root{
+  --surface:#23262D; --raised:#2B2F38; --board:#1A1D23; --cell:#262A31;
+  --text:#F2EEE3; --muted:#A39C8F; --border:#3A3F49; --accent:#E8A33D;
+  --ink-dark:#1C1206; --ink-light:#F6F0E1; --glow:#FFEDC4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0B0C10;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.page{display:flex;flex-direction:column;align-items:center;gap:28px;padding:48px 16px;min-height:100vh}
+.annot{display:flex;gap:12px;align-items:baseline;width:100%;max-width:844px;color:#A39C8F;font-size:12px;letter-spacing:.02em}
+.annot b{color:#F2EEE3;font-weight:700}
+.device{width:390px;height:844px;background:#0C0E11;border-radius:56px;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06)}
+.screen{position:relative;width:100%;height:100%;background:var(--surface);border-radius:48px;overflow:hidden}
+.notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0C0E11;border-radius:0 0 16px 16px;z-index:60}
+.home{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:120px;height:4px;border-radius:2px;background:rgba(242,238,227,.45);z-index:60}
+.content{position:relative;display:flex;flex-direction:column;height:100%;padding:58px 16px 16px}
+/* HUD band — score center-top, best below small, pause top-right (D-007, D-016) */
+.hud{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.spacer{width:48px}
+.score-wrap{flex:1;text-align:center}
+.score{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:34px;font-weight:700;color:var(--text);letter-spacing:.5px}
+.best{margin-top:2px;font-size:13px;font-weight:500;color:var(--muted)}
+.pause{width:48px;height:48px;background:var(--raised);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:18px;display:flex;align-items:center;justify-content:center}
+/* board — recessed well, sockets as pits, tiles rest proud */
+.board-area{flex:1;display:flex;align-items:center;justify-content:center}
+.board{position:relative;width:358px;height:358px;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:8px;padding:8px;background:var(--board);border-radius:12px;box-shadow:0 18px 36px rgba(0,0,0,.5),inset 0 2px 6px rgba(0,0,0,.45)}
+.cell{background:var(--cell);border-radius:6px;box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+/* tiles — chamfered lapidary (10px radius + top-light bevel + dark bottom bevel + grain) */
+.tile{position:relative;display:flex;align-items:center;justify-content:center;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;color:var(--ink-dark);border-radius:10px;user-select:none;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 32%,rgba(255,255,255,0) 46%),
+    linear-gradient(315deg,rgba(0,0,0,.22),rgba(0,0,0,.04) 42%,rgba(0,0,0,0) 52%),
+    repeating-linear-gradient(45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    var(--fill);
+  box-shadow:0 3px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.22);
+}
+.ink-light{color:var(--ink-light)}
+.num-xl{font-size:32px;font-weight:800}
+.num-m{font-size:13px;font-weight:700}
+.num-s{font-size:9px;font-weight:700}
+.t1{--fill:#EFE3C2} .t2{--fill:#C9963B} .t3{--fill:#E4A53B} .t6{--fill:#E08532}
+.t12{--fill:#C96E2E} .t24{--fill:#A2521F} .t48{--fill:#6E5A45} .t96{--fill:#4E5560}
+.t192{--fill:#28A074} .t384{--fill:#157A5C} .t768{--fill:#0E3B2E}
+.t1536{--fill:#FFD9A0} .t3072{--fill:#FFF3DC}
+.glow{box-shadow:0 0 26px 9px rgba(255,237,196,.5),0 3px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+.glow::after{content:"";position:absolute;inset:-6px;border-radius:14px;z-index:-1;background:radial-gradient(closest-side,rgba(255,237,196,.5),rgba(255,237,196,0) 72%)}
+/* preview card — "card in hand", bottom corner near the swipe finger */
+.preview{position:absolute;right:16px;bottom:16px;width:76px;height:76px;background:var(--raised);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.preview .value{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:20px;font-weight:700;color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="annot"><b>key-game-portrait.html</b> · Game screen · portrait · mid-game, playing · Clean-lane HUD: score, best, preview, pause (D-007)</div>
+  <div class="device">
+    <div class="screen">
+      <div class="notch"></div>
+      <div class="home"></div>
+      <div class="content">
+        <div class="hud">
+          <div class="spacer"></div>
+          <div class="score-wrap">
+            <div class="score">3.240</div>
+            <div class="best">Recorde 3.240</div>
+          </div>
+          <div class="pause" aria-label="Pausar">⏸</div>
+        </div>
+        <div class="board-area">
+          <div class="board">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="tile t24 ink-light num-xl" style="grid-area:1/1">24</div>
+            <div class="tile t2 ink-dark num-xl" style="grid-area:1/2">2</div>
+            <div class="tile t1 ink-dark num-xl" style="grid-area:1/3">1</div>
+            <div class="tile t192 ink-dark num-xl" style="grid-area:2/2">192</div>
+            <div class="tile t3 ink-dark num-xl" style="grid-area:2/3">3</div>
+            <div class="tile t12 ink-dark num-xl" style="grid-area:2/4">12</div>
+            <div class="tile t6 ink-dark num-xl" style="grid-area:3/1">6</div>
+            <div class="tile t24 ink-light num-xl" style="grid-area:3/3">24</div>
+            <div class="tile t96 ink-light num-xl" style="grid-area:3/4">96</div>
+            <div class="tile t48 ink-light num-xl" style="grid-area:4/1">48</div>
+            <div class="tile t384 ink-light num-xl" style="grid-area:4/2">384</div>
+            <div class="tile t12 ink-dark num-xl" style="grid-area:4/3">12</div>
+            <div class="tile t1536 ink-dark num-m glow" style="grid-area:4/4">1536</div>
+          </div>
+        </div>
+        <div class="preview"><span class="value">3/6</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tríade — key-tone-tutorial</title>
+<style>
+/*
+ * key-tone-tutorial.html — Two load-bearing surfaces in one file:
+ *   (a) Tone screen (first launch identity, D-009) and (b) Tutorial move 1 (Lia flow, E5/S5.1).
+ * Spine refs:
+ *  Tone screen →
+ *    EXPERIENCE.md → IA (Tone screen row) · State Patterns: First launch · Voice and Tone ("controle sobre o caos")
+ *    DESIGN.md → Colors: glow-incandescent {colors.glow-incandescent} · Shapes ({rounded.full} reserved for the tone-screen light's core glow only) · Components: Tile (1536 incandescent)
+ *    Decisions: D-009 (dark slate, one large incandescent tile, copy, tap to skip, no other text)
+ *  Tutorial →
+ *    EXPERIENCE.md → IA (Tutorial row) · State Patterns: Tutorial active · Interaction Primitives (tap skip) · Voice and Tone (plain, calm)
+ *    EXPERIENCE.md → Key Flows: Lia step 3 (1+2 rule first, coach on the touching pair), Dora step 2 (skip, FR-22)
+ *    DESIGN.md → Components: Tile · Do's and Don'ts: 1 and 2 readable at a glance
+ *    Decisions: E5/S5.1 3 guided moves, 1+2 rule first
+ */
+:root{
+  --surface:#23262D; --raised:#2B2F38; --board:#1A1D23; --cell:#262A31;
+  --text:#F2EEE3; --muted:#A39C8F; --border:#3A3F49; --accent:#E8A33D;
+  --ink-dark:#1C1206; --ink-light:#F6F0E1; --glow:#FFEDC4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0B0C10;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.page{display:flex;flex-direction:column;align-items:center;gap:32px;padding:48px 16px;min-height:100vh}
+.annot{display:flex;gap:12px;align-items:baseline;width:100%;max-width:844px;color:#A39C8F;font-size:12px;letter-spacing:.02em}
+.annot b{color:#F2EEE3;font-weight:700}
+.cols{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.device{background:#0C0E11;border-radius:56px;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06)}
+.device.p{width:390px;height:844px}
+.screen{position:relative;width:100%;height:100%;background:var(--surface);border-radius:48px;overflow:hidden}
+.notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0C0E11;border-radius:0 0 16px 16px;z-index:70}
+.home{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:120px;height:4px;border-radius:2px;background:rgba(242,238,227,.45);z-index:70}
+
+/* (a) TONE screen — dark slate, one large incandescent tile lighting up, single copy line */
+.tone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;height:100%}
+.tone-tile{position:relative;width:140px;height:140px;display:flex;align-items:center;justify-content:center;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;color:var(--ink-dark);border-radius:14px;user-select:none;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.06) 32%,rgba(255,255,255,0) 46%),
+    linear-gradient(315deg,rgba(0,0,0,.22),rgba(0,0,0,.04) 42%,rgba(0,0,0,0) 52%),
+    repeating-linear-gradient(45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    #FFD9A0;
+  box-shadow:0 0 60px 18px rgba(255,237,196,.55),0 4px 12px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.45);
+}
+.tone-tile::after{content:"";position:absolute;inset:-18px;border-radius:24px;z-index:-1;background:radial-gradient(closest-side,rgba(255,237,196,.6),rgba(255,237,196,0) 72%)}
+.tone-tile .num{font-size:20px;font-weight:700}
+.tone-line{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:.02em}
+
+/* (b) TUTORIAL — move 1: coach on the touching 1|2 pair, one instruction line, small muted skip */
+.tut{position:relative;display:flex;flex-direction:column;height:100%;padding:58px 16px 16px}
+.tut-top{display:flex;justify-content:flex-end;margin-bottom:8px}
+.skip{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;font-size:15px;font-weight:500;color:var(--muted)}
+.tut-copy{text-align:center;margin:12px 0 20px}
+.tut-title{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:17px;font-weight:500;color:var(--text)}
+.tut-sub{margin-top:2px;font-size:13px;font-weight:500;color:var(--muted)}
+.tut-board{flex:1;display:flex;align-items:center;justify-content:center}
+.board{position:relative;width:358px;height:358px;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:8px;padding:8px;background:var(--board);border-radius:12px;box-shadow:0 18px 36px rgba(0,0,0,.5),inset 0 2px 6px rgba(0,0,0,.45)}
+.cell{background:var(--cell);border-radius:6px;box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+.tile{position:relative;display:flex;align-items:center;justify-content:center;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;color:var(--ink-dark);border-radius:10px;user-select:none;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 32%,rgba(255,255,255,0) 46%),
+    linear-gradient(315deg,rgba(0,0,0,.22),rgba(0,0,0,.04) 42%,rgba(0,0,0,0) 52%),
+    repeating-linear-gradient(45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.02) 0 1px,rgba(0,0,0,0) 1px 3px),
+    var(--fill);
+  box-shadow:0 3px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.22);
+}
+.ink-light{color:var(--ink-light)}
+.num-xl{font-size:32px;font-weight:800}
+.t1{--fill:#EFE3C2} .t2{--fill:#C9963B}
+/* coach frame around the touching 1|2 pair */
+.coach{grid-area:2/2/3/4;z-index:5;border-radius:12px;pointer-events:none;box-shadow:0 0 0 2px var(--accent),0 0 20px rgba(232,163,61,.4)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="annot"><b>key-tone-tutorial.html</b> · Tone screen (first launch, D-009) + Tutorial move 1 · 1|2 rule first, plain calm voice</div>
+  <div class="cols">
+
+    <!-- (a) Tone screen -->
+    <div class="device p">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="home"></div>
+        <div class="tone">
+          <div class="tone-tile"><span class="num">1536</span></div>
+          <div class="tone-line">controle sobre o caos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (b) Tutorial — move 1 -->
+    <div class="device p">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="home"></div>
+        <div class="tut">
+          <div class="tut-top">
+            <button class="skip">Skip</button>
+          </div>
+          <div class="tut-copy">
+            <div class="tut-title">estes se fundem</div>
+            <div class="tut-sub">these merge</div>
+          </div>
+          <div class="tut-board">
+            <div class="board">
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="coach"></div>
+              <div class="tile t1 ink-dark num-xl" style="grid-area:2/2">1</div>
+              <div class="tile t2 ink-dark num-xl" style="grid-area:2/3">2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
