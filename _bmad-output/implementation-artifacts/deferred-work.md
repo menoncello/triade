@@ -23,3 +23,14 @@
 - **mergeValue ignores its second operand outside the canMerge guard** (`triade/src/engine/core/rules.ts:7-8`) — result depends only on `a`; `mergeValue(null, 2)` returns 3. Pre-existing (`js/game.js` identical); only ever called under `canMerge`.
 - **spawnTile mutates its input board and returns the same reference** (`triade/src/engine/core/spawn.ts:17-28`) — writes the spawn value into the caller's array. Pre-existing (`js/game.js` identical); `move()` only passes a freshly built board.
 
+
+## Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10)
+
+- `matchScore.applyMove` has no guard on `result.score` — a NaN poisons both score and best; `moved:false` with score>0 would inflate. Engine contract guarantees finite ≥0 scores and noop scores 0; defensive guard only.
+- Parity `spawnTile` only cross-checks the non-full-board path; the spawn-nothing branch (full board) is covered by the absolute unit test `game.test.ts:198`, not parity.
+- 13 parity move scenarios assert only TS===web, never an absolute outcome — inherent shared-bug blind spot. Mitigated by absolute-assertion unit suite (`game.test.ts`); header comment documents the limitation.
+
+## Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10, re-review)
+
+- `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
+- Parity suite has no multi-move / full-game seeded differential — sequence-level divergences (spawn-position loops, repeated-move score accumulation) are invisible. Deferred; unit suite + parity matrix cover the I/O matrix.

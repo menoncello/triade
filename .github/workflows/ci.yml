@@ -30,6 +30,10 @@ jobs:
       - name: Run engine tests + deterministic benchmark gate (node --test)
         run: node --test
 
+      - name: Coverage report (informational — never gates)
+        run: node --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**'
+        continue-on-error: true
+
   web-pwa-engine-test:
     runs-on: ubuntu-latest
     steps:

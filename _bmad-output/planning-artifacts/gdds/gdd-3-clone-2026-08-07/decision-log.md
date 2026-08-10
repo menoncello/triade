@@ -84,3 +84,9 @@
 - **Date:** 2026-08-07
 - **Decision:** Decision log audited (D-001→D-015 all captured in `gdd.md`/`epics.md`). Discipline validation passed (blocker fixed); input reconciliation done (PRD, brainstorming, spec) with all deltas either applied or logged. Open items triaged: **D1 retention numeric target** and **preview window-selection rule** remain `[ASSUMPTION] TBD` — both are tuning targets, **not phase-blockers**; deferred to UX/playtest. Narrative handoff: N/A (puzzle genre carries no narrative flag). External handoffs: none configured. **GDD v1.0 considered ready.**
 - **Status:** Closed
+
+## D-017 — Story 1.2 scope: best-score state in-memory only
+- **Date:** 2026-08-10
+- **Decision:** Story 1.2 delivers best-score tracking **in-memory only** (`src/game/matchScore.ts`, pure orchestration state). App-storage persistence (AsyncStorage/MMKV decision from the spike benchmark) ships in **Story 1.4** (FR-4 / Epic 1 AC). This is an intentional refinement of the epic AC ("best score persists" → in-memory now, persisted in 1.4), not a dropped requirement.
+- **Rationale:** Keeps Story 1.2 (engine parity proof + score state) free of a storage dependency; persistence is bundled with the offline/persistence story where storage infrastructure lands.
+- **Status:** Closed

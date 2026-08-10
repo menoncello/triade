@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-10T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "1.2",
+    "label": "Port completo do engine de regras para TypeScript"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (6/6 ACs FULL), P1 coverage is 100% (AC-6 FULL), and overall coverage is 100% (7/7 ACs). 55/55 triade tests green (31 unit + 8 parity + 7 matchScore + 2 purity + 4 smoke + 1 suite-parity + 2 benchmark) and the frozen web suite passes 26/26 unchanged. Deterministic RNG everywhere (mulberry32, no Math.random). The differential parity suite proves the TS engine is behaviorally identical to js/game.js, including the exact trace contract. No gaps, no blockers.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-2.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}
