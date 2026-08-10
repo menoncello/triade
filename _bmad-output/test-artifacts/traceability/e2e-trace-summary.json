@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-08-09T00:00:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "d3a215870a933b51504552fc3e44b0c5a47d96b5",
+  "target": {
+    "type": "story",
+    "id": "1.1",
+    "label": "Technical spike (engine TS + board Skia + benchmark CI)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-1-technical-spike-engine-ts-board-skia-benchmark-ci.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.1",
+      "_bmad-output/test-artifacts/atdd-checklist-1-1-technical-spike-engine-ts-board-skia-benchmark-ci.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 4,
+      "total": 5,
+      "pct": 80
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 2,
+        "covered": 2,
+        "pct": 100
+      },
+      "P1": {
+        "total": 3,
+        "covered": 2,
+        "pct": 67
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "api": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 39,
+        "criteria_covered": 5
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 39,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 1,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Run pending device gates T1.4 (dev-build boot) and T5.2 (frame-rate baseline) on physical iOS and record the baseline",
+      "requirements": [
+        "AC-4"
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "FAIL",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "67%",
+    "p1_status": "NOT_MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "80%",
+    "overall_status": "MET"
+  }
+}

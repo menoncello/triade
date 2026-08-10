@@ -1,0 +1,497 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-09T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "1.1",
+    "label": "Technical spike (engine TS + board Skia + benchmark CI)"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-1-technical-spike-engine-ts-board-skia-benchmark-ci.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.1",
+      "_bmad-output/test-artifacts/atdd-checklist-1-1-technical-spike-engine-ts-board-skia-benchmark-ci.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "title": "Port js/game.js to TS in src/engine/core; 26 existing unit tests pass unchanged (node --test)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-001",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 7,
+          "title": "newGame returns exactly 9 starting tiles",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-002",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 22,
+          "title": "weightedValue 40/40/20 distribution",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-003",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 30,
+          "title": "HAPPY_PATH merge 1+2",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-004",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 42,
+          "title": "MERGE_1_2 both orders",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-005",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 50,
+          "title": "NO_1_1_MERGE",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-006",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 58,
+          "title": "NO_2_2_MERGE",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-007",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 66,
+          "title": "EQUAL_GE3 one merge",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-008",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 74,
+          "title": "NEW_TILE_NOT_REMERGED",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-009",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 82,
+          "title": "EQUAL_GE3 cascade blocked",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-010",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 89,
+          "title": "ONE_CELL left",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-011",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 97,
+          "title": "ONE_CELL left advance one",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-012",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 105,
+          "title": "ONE_CELL right no merge",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-013",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 113,
+          "title": "ONE_CELL right wall merge",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-014",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 121,
+          "title": "NOOP_SWIPE no spawn",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-015",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 134,
+          "title": "move right mirrors left",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-016",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 142,
+          "title": "move up mirrors left",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-017",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 157,
+          "title": "move down mirrors up",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-018",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 173,
+          "title": "move down one-cell",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-019",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 184,
+          "title": "trace down merge sources",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-020",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "title": "spawnTile full board",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-021",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 211,
+          "title": "pickIndex clamps rng",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-022",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 218,
+          "title": "spawn exactly once uniform",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-023",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 232,
+          "title": "GAME_OVER full board",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-024",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 245,
+          "title": "GAME_OVER false empty cell",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-025",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 255,
+          "title": "GAME_OVER false 1-2 row",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-026",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 265,
+          "title": "GAME_OVER false 1-2 column",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-027",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 275,
+          "title": "GAME_OVER false equal >=3",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-028",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 285,
+          "title": "higher merges score by value",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-029",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 293,
+          "title": "trace merged sources spawn flag",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-030",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 309,
+          "title": "trace wall merge",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-UNIT-031",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 319,
+          "title": "trace noop no spawned entry",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-SMOKE-001",
+          "file": "triade/__tests__/engine/engine.smoke.test.ts",
+          "line": 18,
+          "title": "SMOKE game launches",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-SMOKE-002",
+          "file": "triade/__tests__/engine/engine.smoke.test.ts",
+          "line": 32,
+          "title": "SMOKE 500 moves never crash",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-SMOKE-003",
+          "file": "triade/__tests__/engine/engine.smoke.test.ts",
+          "line": 56,
+          "title": "SMOKE game over full board",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-SMOKE-004",
+          "file": "triade/__tests__/engine/engine.smoke.test.ts",
+          "line": 66,
+          "title": "SMOKE empty board playable",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "Engine is pure TS with no RN/React/Skia imports (ADR-01 boundary)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-PURITY-001",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 31,
+          "title": "ADR-01 no RN/React/Skia/Expo imports",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-PURITY-002",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 47,
+          "title": "ADR-01 self-contained relative imports",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "title": "CI benchmark ships in same PR: engine < 2ms, frame worst < 8ms, deterministic",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-BENCH-001",
+          "file": "triade/benchmarks/engine.bench.test.ts",
+          "line": 52,
+          "title": "benchmark engine cost per turn < 0.1ms",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "1.1-BENCH-002",
+          "file": "triade/benchmarks/engine.bench.test.ts",
+          "line": 76,
+          "title": "benchmark frame-logic worst < 0.2ms",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "title": "One Skia board renders on physical iOS device with real frame rate recorded (p99 < 16.7ms baseline)",
+      "priority": "P1",
+      "coverage": "PARTIAL",
+      "tests": [
+        {
+          "id": "1.1-SMOKE-001",
+          "file": "triade/__tests__/engine/engine.smoke.test.ts",
+          "line": 18,
+          "title": "SMOKE game launches (engine-side backing)",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "title": "Spike result recorded in architecture document (FR-5)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": []
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 4,
+    "partially_covered": 1,
+    "uncovered": 0,
+    "overall_coverage_percentage": 80,
+    "priority_breakdown": {
+      "P0": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 3,
+        "covered": 2,
+        "percentage": 67
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [
+      {
+        "id": "AC-4",
+        "title": "Device frame-rate baseline (T5.2) not yet recorded",
+        "priority": "P1",
+        "coverage": "PARTIAL"
+      }
+    ],
+    "low_gaps": [],
+    "partial_coverage_items": [
+      {
+        "id": "AC-4",
+        "title": "Device frame-rate baseline (T5.2) not yet recorded",
+        "priority": "P1",
+        "coverage": "PARTIAL"
+      }
+    ],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 39,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "api": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 39,
+          "criteria_covered": 5
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Run pending device gates T1.4 (dev-build boot) and T5.2 (frame-rate baseline) on physical iOS and record the baseline",
+      "requirements": [
+        "AC-4"
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ]
+}
