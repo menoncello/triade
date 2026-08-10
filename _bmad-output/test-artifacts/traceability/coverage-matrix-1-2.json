@@ -1,0 +1,1224 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-10T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "1.2",
+    "label": "Port completo do engine de regras para TypeScript"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-2-port-completo-do-engine-de-regras-para-typescript.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.2",
+      "_bmad-output/implementation-artifacts/1-1-technical-spike-engine-ts-board-skia-benchmark-ci.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "title": "Fresh board opens with exactly 9 starting tiles in the TS engine, verified identical to js/game.js",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-001",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 7,
+          "title": "newGame returns a board with exactly 9 starting tiles",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-001",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 68,
+          "title": "PARITY: newGame spawns identical 9-tile boards",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "Merges follow predicate (a===1 && b===2) || (b===1 && a===2) || (a>=3 && a===b), value a <= 2 ? 3 : a*2; 1+1 and 2+2 never merge",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-003",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 30,
+          "title": "HAPPY_PATH: [1,2,_,_] swipe left -> [3,_,_,_] + spawn, score +3",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-004",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 42,
+          "title": "MERGE_1_2: [2,1,_,_] swipe left -> [3,_,_,_] regardless of order",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-005",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 50,
+          "title": "NO_1_1_MERGE: [1,1,_,_] swipe left -> [1,1,_,_], no merge, no spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-006",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 58,
+          "title": "NO_2_2_MERGE: [2,2,_,_] swipe left -> [2,2,_,_], no merge, no spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-007",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 66,
+          "title": "EQUAL_GE3: [3,3,3,3] swipe left -> [6,3,3,_], one merge, score +6",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-003",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 89,
+          "title": "PARITY: canMerge/mergeValue identical across the predicate matrix",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "title": "Each tile moves at most one cell per swipe and merge-once locks freshly merged tiles ([3,3,3,3] -> [6,3,3,_], [1,2,3,_] -> [3,3,_,_])",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-008",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 74,
+          "title": "NEW_TILE_NOT_REMERGED: [1,2,3,_] swipe left -> [3,3,_,_] (new 3 does not merge with trailing 3)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-009",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 82,
+          "title": "EQUAL_GE3 cascades are blocked: [3,3,6,_] -> [6,6,_,_] not [12,...]",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-010",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 89,
+          "title": "ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-011",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 97,
+          "title": "ONE_CELL: [_,3,_,3] swipe left -> [3,_,3,_] (both advance one cell)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-012",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 105,
+          "title": "ONE_CELL right: [3,3,3,_] swipe right -> [_,3,3,3] (no merge, space at wall)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-013",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 113,
+          "title": "ONE_CELL right: [2,1,2,1] swipe right -> [_,2,1,3] (2 merges into wall 1, others shift)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-015",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 134,
+          "title": "move to the right mirrors the left rules",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-016",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 142,
+          "title": "move up mirrors the left rules on columns",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-017",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 157,
+          "title": "move down mirrors the up rules on columns: [2,1,3,6] col swipe down -> [1,3,3,6]",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-018",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 173,
+          "title": "move down keeps one-cell semantics: [3,_,_,3] col swipe down -> [_,3,_,3], no merge",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-004",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 110,
+          "title": "PARITY: move scenarios produce identical { board, score, moved, trace }",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "title": "Spawn happens only after an effective move (boardsEqual noop spawns nothing, scores nothing, consumes no turn); weights 40/40/20 for 1/2/3",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-002",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 22,
+          "title": "weightedValue respects 40/40/20 distribution",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-014",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 121,
+          "title": "NOOP_SWIPE: full grid with no merges, swipe left changes nothing",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-020",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "title": "spawnTile on a full board spawns nothing",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-021",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 211,
+          "title": "pickIndex clamps out-of-range rng rolls",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-022",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 218,
+          "title": "spawn happens exactly once, in a uniformly random empty cell, after an effective move",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-002",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 83,
+          "title": "PARITY: weightedValue 40/40/20 boundaries identical",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-005",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 176,
+          "title": "PARITY: spawn happens exactly once after an effective move with identical rng consumption",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-007",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 232,
+          "title": "PARITY: spawnTile identical on a seeded board",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "title": "move() returns { board, score, moved, trace } preserving the exact per-tile trace contract, and isGameOver reuses the same merge predicate",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-019",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 184,
+          "title": "trace: down merge records both sources in column order",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-023",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 232,
+          "title": "GAME_OVER: full grid with no adjacent mergeable pair reports game over",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-024",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 245,
+          "title": "GAME_OVER is false when any empty cell exists",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-025",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 255,
+          "title": "GAME_OVER is false when 1 is adjacent to 2 in a row",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-026",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 265,
+          "title": "GAME_OVER is false when 1 is adjacent to 2 in a column",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-027",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 275,
+          "title": "GAME_OVER is false when two equal tiles >= 3 are adjacent",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-029",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 293,
+          "title": "trace: merged tile records both sources, spawn is flagged spawned",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-030",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 309,
+          "title": "trace: wall merge recorded, trailing tile advances",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-031",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 319,
+          "title": "trace: noop move produces no spawned entry",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-006",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 187,
+          "title": "PARITY: isGameOver identical across terminal boards",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-008",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 239,
+          "title": "PARITY: trace contract EXACT — merge sources, advance, spawn flag, noop has no spawn",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-6",
+      "title": "Score increments by the merged tile's value, and the app tracks best score (in-memory; app-storage persistence ships in story 1.4)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.1-UNIT-003",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 30,
+          "title": "HAPPY_PATH: [1,2,_,_] swipe left -> [3,_,_,_] + spawn, score +3",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-028",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 285,
+          "title": "higher merges: equal tiles >= 3 merge and score by value",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-001",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 11,
+          "title": "initialScore seeds score 0 with the stored best",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-002",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 16,
+          "title": "applyMove accumulates score across moves",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-003",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 24,
+          "title": "best tracks the max score seen",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-004",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 34,
+          "title": "noop move (score 0) adds nothing",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-005",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 44,
+          "title": "isNewRecord flags the record transition against the stored best",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-006",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 50,
+          "title": "applyMove keeps only the best across a session that passes the old record",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-SCORE-007",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 58,
+          "title": "game-over wiring stays out of matchScore (only result.score is consumed)",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-7",
+      "title": "The 26 existing unit tests pass against the ported engine (node --test), covering the full I/O matrix (FR-1, FR-2)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "1.2-SUITE-PARITY-001",
+          "file": "triade/__tests__/engine/engine.suite-parity.test.ts",
+          "line": 22,
+          "title": "WEB_TS_PARITY: every web test name exists in the TS ported suite",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-001",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 68,
+          "title": "PARITY: newGame spawns identical 9-tile boards",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-002",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 83,
+          "title": "PARITY: weightedValue 40/40/20 boundaries identical",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-003",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 89,
+          "title": "PARITY: canMerge/mergeValue identical across the predicate matrix",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-004",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 110,
+          "title": "PARITY: move scenarios produce identical { board, score, moved, trace }",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-005",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 176,
+          "title": "PARITY: spawn happens exactly once after an effective move with identical rng consumption",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-006",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 187,
+          "title": "PARITY: isGameOver identical across terminal boards",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-007",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 232,
+          "title": "PARITY: spawnTile identical on a seeded board",
+          "level": "Unit"
+        },
+        {
+          "id": "1.2-PARITY-008",
+          "file": "triade/__tests__/engine/engine.parity.test.ts",
+          "line": 239,
+          "title": "PARITY: trace contract EXACT — merge sources, advance, spawn flag, noop has no spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-001",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 7,
+          "title": "newGame returns a board with exactly 9 starting tiles",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-002",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 22,
+          "title": "weightedValue respects 40/40/20 distribution",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-003",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 30,
+          "title": "HAPPY_PATH: [1,2,_,_] swipe left -> [3,_,_,_] + spawn, score +3",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-004",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 42,
+          "title": "MERGE_1_2: [2,1,_,_] swipe left -> [3,_,_,_] regardless of order",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-005",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 50,
+          "title": "NO_1_1_MERGE: [1,1,_,_] swipe left -> [1,1,_,_], no merge, no spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-006",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 58,
+          "title": "NO_2_2_MERGE: [2,2,_,_] swipe left -> [2,2,_,_], no merge, no spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-007",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 66,
+          "title": "EQUAL_GE3: [3,3,3,3] swipe left -> [6,3,3,_], one merge, score +6",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-008",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 74,
+          "title": "NEW_TILE_NOT_REMERGED: [1,2,3,_] swipe left -> [3,3,_,_] (new 3 does not merge with trailing 3)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-009",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 82,
+          "title": "EQUAL_GE3 cascades are blocked: [3,3,6,_] -> [6,6,_,_] not [12,...]",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-010",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 89,
+          "title": "ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-011",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 97,
+          "title": "ONE_CELL: [_,3,_,3] swipe left -> [3,_,3,_] (both advance one cell)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-012",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 105,
+          "title": "ONE_CELL right: [3,3,3,_] swipe right -> [_,3,3,3] (no merge, space at wall)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-013",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 113,
+          "title": "ONE_CELL right: [2,1,2,1] swipe right -> [_,2,1,3] (2 merges into wall 1, others shift)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-014",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 121,
+          "title": "NOOP_SWIPE: full grid with no merges, swipe left changes nothing",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-015",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 134,
+          "title": "move to the right mirrors the left rules",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-016",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 142,
+          "title": "move up mirrors the left rules on columns",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-017",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 157,
+          "title": "move down mirrors the up rules on columns: [2,1,3,6] col swipe down -> [1,3,3,6]",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-018",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 173,
+          "title": "move down keeps one-cell semantics: [3,_,_,3] col swipe down -> [_,3,_,3], no merge",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-019",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 184,
+          "title": "trace: down merge records both sources in column order",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-020",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "title": "spawnTile on a full board spawns nothing",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-021",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 211,
+          "title": "pickIndex clamps out-of-range rng rolls",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-022",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 218,
+          "title": "spawn happens exactly once, in a uniformly random empty cell, after an effective move",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-023",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 232,
+          "title": "GAME_OVER: full grid with no adjacent mergeable pair reports game over",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-024",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 245,
+          "title": "GAME_OVER is false when any empty cell exists",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-025",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 255,
+          "title": "GAME_OVER is false when 1 is adjacent to 2 in a row",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-026",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 265,
+          "title": "GAME_OVER is false when 1 is adjacent to 2 in a column",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-027",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 275,
+          "title": "GAME_OVER is false when two equal tiles >= 3 are adjacent",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-028",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 285,
+          "title": "higher merges: equal tiles >= 3 merge and score by value",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-029",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 293,
+          "title": "trace: merged tile records both sources, spawn is flagged spawned",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-030",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 309,
+          "title": "trace: wall merge recorded, trailing tile advances",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-UNIT-031",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 319,
+          "title": "trace: noop move produces no spawned entry",
+          "level": "Unit"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 7,
+    "fully_covered": 7,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 7,
+      "cases": 55,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "api": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 55,
+          "criteria_covered": 7
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "1.1-UNIT-001",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 7,
+        "title": "newGame returns a board with exactly 9 starting tiles",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-002",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 22,
+        "title": "weightedValue respects 40/40/20 distribution",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-003",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 30,
+        "title": "HAPPY_PATH: [1,2,_,_] swipe left -> [3,_,_,_] + spawn, score +3",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-004",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 42,
+        "title": "MERGE_1_2: [2,1,_,_] swipe left -> [3,_,_,_] regardless of order",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-005",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 50,
+        "title": "NO_1_1_MERGE: [1,1,_,_] swipe left -> [1,1,_,_], no merge, no spawn",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-006",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 58,
+        "title": "NO_2_2_MERGE: [2,2,_,_] swipe left -> [2,2,_,_], no merge, no spawn",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-007",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 66,
+        "title": "EQUAL_GE3: [3,3,3,3] swipe left -> [6,3,3,_], one merge, score +6",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-008",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 74,
+        "title": "NEW_TILE_NOT_REMERGED: [1,2,3,_] swipe left -> [3,3,_,_] (new 3 does not merge with trailing 3)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-009",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 82,
+        "title": "EQUAL_GE3 cascades are blocked: [3,3,6,_] -> [6,6,_,_] not [12,...]",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-010",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 89,
+        "title": "ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-011",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 97,
+        "title": "ONE_CELL: [_,3,_,3] swipe left -> [3,_,3,_] (both advance one cell)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-012",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 105,
+        "title": "ONE_CELL right: [3,3,3,_] swipe right -> [_,3,3,3] (no merge, space at wall)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-013",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 113,
+        "title": "ONE_CELL right: [2,1,2,1] swipe right -> [_,2,1,3] (2 merges into wall 1, others shift)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-014",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 121,
+        "title": "NOOP_SWIPE: full grid with no merges, swipe left changes nothing",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-015",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 134,
+        "title": "move to the right mirrors the left rules",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-016",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 142,
+        "title": "move up mirrors the left rules on columns",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-017",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 157,
+        "title": "move down mirrors the up rules on columns: [2,1,3,6] col swipe down -> [1,3,3,6]",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-018",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 173,
+        "title": "move down keeps one-cell semantics: [3,_,_,3] col swipe down -> [_,3,_,3], no merge",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-019",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 184,
+        "title": "trace: down merge records both sources in column order",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-020",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 198,
+        "title": "spawnTile on a full board spawns nothing",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-021",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 211,
+        "title": "pickIndex clamps out-of-range rng rolls",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-022",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 218,
+        "title": "spawn happens exactly once, in a uniformly random empty cell, after an effective move",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-023",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 232,
+        "title": "GAME_OVER: full grid with no adjacent mergeable pair reports game over",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-024",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 245,
+        "title": "GAME_OVER is false when any empty cell exists",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-025",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 255,
+        "title": "GAME_OVER is false when 1 is adjacent to 2 in a row",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-026",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 265,
+        "title": "GAME_OVER is false when 1 is adjacent to 2 in a column",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-027",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 275,
+        "title": "GAME_OVER is false when two equal tiles >= 3 are adjacent",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-028",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 285,
+        "title": "higher merges: equal tiles >= 3 merge and score by value",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-029",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 293,
+        "title": "trace: merged tile records both sources, spawn is flagged spawned",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-030",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 309,
+        "title": "trace: wall merge recorded, trailing tile advances",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-UNIT-031",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 319,
+        "title": "trace: noop move produces no spawned entry",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-001",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 68,
+        "title": "PARITY: newGame spawns identical 9-tile boards",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-002",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 83,
+        "title": "PARITY: weightedValue 40/40/20 boundaries identical",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-003",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 89,
+        "title": "PARITY: canMerge/mergeValue identical across the predicate matrix",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-004",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 110,
+        "title": "PARITY: move scenarios produce identical { board, score, moved, trace }",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-005",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 176,
+        "title": "PARITY: spawn happens exactly once after an effective move with identical rng consumption",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-006",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 187,
+        "title": "PARITY: isGameOver identical across terminal boards",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-007",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 232,
+        "title": "PARITY: spawnTile identical on a seeded board",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-PARITY-008",
+        "file": "triade/__tests__/engine/engine.parity.test.ts",
+        "line": 239,
+        "title": "PARITY: trace contract EXACT — merge sources, advance, spawn flag, noop has no spawn",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-001",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 11,
+        "title": "initialScore seeds score 0 with the stored best",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-002",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 16,
+        "title": "applyMove accumulates score across moves",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-003",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 24,
+        "title": "best tracks the max score seen",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-004",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 34,
+        "title": "noop move (score 0) adds nothing",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-005",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 44,
+        "title": "isNewRecord flags the record transition against the stored best",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-006",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 50,
+        "title": "applyMove keeps only the best across a session that passes the old record",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SCORE-007",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 58,
+        "title": "game-over wiring stays out of matchScore (only result.score is consumed)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-PURITY-001",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 64,
+        "title": "ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-PURITY-002",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 81,
+        "title": "ADR-01: src/engine + src/game imports are self-contained (relative paths only)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-SMOKE-001",
+        "file": "triade/__tests__/engine/engine.smoke.test.ts",
+        "line": 18,
+        "title": "SMOKE: game launches — newGame returns a playable 4x4 board",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-SMOKE-002",
+        "file": "triade/__tests__/engine/engine.smoke.test.ts",
+        "line": 32,
+        "title": "SMOKE: core loop executes — 500 deterministic moves never crash and score never decreases",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-SMOKE-003",
+        "file": "triade/__tests__/engine/engine.smoke.test.ts",
+        "line": 62,
+        "title": "SMOKE: game over detected on a full immovable board",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-SMOKE-004",
+        "file": "triade/__tests__/engine/engine.smoke.test.ts",
+        "line": 72,
+        "title": "SMOKE: empty board is never game over",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.2-SUITE-PARITY-001",
+        "file": "triade/__tests__/engine/engine.suite-parity.test.ts",
+        "line": 22,
+        "title": "WEB_TS_PARITY: every web test name exists in the TS ported suite",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-BENCH-001",
+        "file": "triade/benchmarks/engine.bench.test.ts",
+        "line": 52,
+        "title": "benchmark: engine cost per turn < 0.1ms (spawn + merge-once + game-over detection)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "1.1-BENCH-002",
+        "file": "triade/benchmarks/engine.bench.test.ts",
+        "line": 76,
+        "title": "benchmark: frame-logic tail p99 < 0.2ms (merge-heavy slides across all directions)",
+        "level": "unit",
+        "status": "active"
+      }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ]
+}

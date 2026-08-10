@@ -1,10 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import { readdir, readFile } from 'node:fs/promises';
-import { join, dirname, relative } from 'node:path';
+import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ENGINE_ROOT = fileURLToPath(new URL('../../src/engine/', import.meta.url));
+const PURITY_ROOTS = [
+  fileURLToPath(new URL('../../src/engine/', import.meta.url)),
+  fileURLToPath(new URL('../../src/game/', import.meta.url))
+];
 
 const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native'];
 
@@ -27,6 +30,16 @@ async function collectTsFiles(dir: string): Promise<string[]> {
   return files;
 }
 
+async function collectAllSourceFiles(): Promise<Array<{ root: string; file: string }>> {
+  const files: Array<{ root: string; file: string }> = [];
+  for (const root of PURITY_ROOTS) {
+    const rootFiles = await collectTsFiles(root);
+    assert.ok(rootFiles.length > 0, `no TypeScript source files under ${root} — ADR-01 scope silently void`);
+    for (const file of rootFiles) files.push({ root, file });
+  }
+  return files;
+}
+
 function stripComments(source: string): string {
   return source
     .replace(/\/\*[\s\S]*?\*\//g, '')
@@ -44,13 +57,13 @@ function extractSpecifiers(source: string): string[] {
   return specifiers;
 }
 
-test('ADR-01: src/engine imports nothing from RN/React/Skia/Expo', async () => {
-  const files = await collectTsFiles(ENGINE_ROOT);
-  assert.ok(files.length > 0, 'engine source files discovered');
+test('ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo', async () => {
+  const files = await collectAllSourceFiles();
+  assert.ok(files.length > 0, 'engine/game source files discovered');
 
-  for (const file of files) {
+  for (const { root, file } of files) {
     const source = await readFile(file, 'utf8');
-    const rel = relative(ENGINE_ROOT, file);
+    const rel = relative(root, file);
     for (const spec of extractSpecifiers(source)) {
       const forbidden = isForbidden(spec);
       assert.ok(
@@ -61,11 +74,11 @@ test('ADR-01: src/engine imports nothing from RN/React/Skia/Expo', async () => {
   }
 });
 
-test('ADR-01: src/engine imports are self-contained (relative paths only)', async () => {
-  const files = await collectTsFiles(ENGINE_ROOT);
-  for (const file of files) {
+test('ADR-01: src/engine + src/game imports are self-contained (relative paths only)', async () => {
+  const files = await collectAllSourceFiles();
+  for (const { root, file } of files) {
     const source = await readFile(file, 'utf8');
-    const rel = relative(ENGINE_ROOT, file);
+    const rel = relative(root, file);
     for (const spec of extractSpecifiers(source)) {
       const relativeImport = spec.startsWith('./') || spec.startsWith('../');
       assert.ok(
