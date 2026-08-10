@@ -1,0 +1,7 @@
+export { GRID_SIZE } from './types.ts';
+export type { Board, Cell, Direction, MoveResult, Rng, SpawnResult, TraceEntry } from './types.ts';
+export { canMerge, mergeValue } from './rules.ts';
+export { emptyBoard, boardsEqual } from './board.ts';
+export { movementLines, shiftLine, boardFromLines } from './line.ts';
+export { pickIndex, weightedValue, spawnTile } from './spawn.ts';
+export { newGame, move, isGameOver } from './game.ts';

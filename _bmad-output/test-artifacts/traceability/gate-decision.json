@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-09T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "1.1",
+    "label": "Technical spike (engine TS + board Skia + benchmark CI)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "FAIL",
+  "rationale": "Re-run after closing AC-2 (ADR-01 boundary test added). P0 coverage is 100%, overall coverage is 80% (MET), but P1 coverage is 67% (minimum: 80%) — the sole remaining gap is AC-4 (physical-device frame-rate baseline T5.2 pending, requires iOS device + CocoaPods).",
+  "p0_status": "MET",
+  "p1_status": "NOT_MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

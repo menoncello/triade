@@ -203,6 +203,81 @@ Deliverable: the benchmark ships **in the same PR as the S1.1 spike**, not as
 a follow-up. Initial numeric budgets are hypotheses to be tuned by spike
 evidence (accepted as starting hypotheses 2026-08-07).
 
+### S1.1 Spike Results (2026-08-08)
+
+**Result: PASS — the RN + Skia migration is de-risked. Engine ports cleanly,
+one Skia board renders from the engine snapshot, and the deterministic CI
+benchmark gate ships in the same PR. Full UI rewrite greenlit on this basis
+(FR-5 satisfied).**
+
+**Engine port (ADR-01 verified):** `js/game.js` (233 lines, UMD dual-env)
+ported to `triade/src/engine/core/` as pure TypeScript — `canMerge`,
+`mergeValue`, `shiftLine` (front-to-back, merge-once, one-cell),
+`movementLines`, `boardFromLines` + trace, `boardsEqual`, `spawnTile`,
+`newGame`, `move` (effective-move-only spawn), `isGameOver`. `move()` returns
+`{ board, score, moved, trace }` with the exact per-tile trace contract; `rng`
+remains injectable (default `Math.random`). The 26 web unit tests pass
+**unchanged** against the TS engine via `node --test` (Node 26 native type
+stripping, no build step). The engine module tree imports nothing from
+RN/React/Skia/Expo — ADR-01 is enforced physically by the directory layout.
+Web PWA (`js/game.js` + `test/game.test.js`) remains frozen and green (65/65
+tests across both suites when run from the repo root — 26 web + 39 triade).
+
+**Deterministic CI benchmark (Level 1, ships in this PR):**
+- Engine cost per turn (spawn + merge-once + game-over detection, 10k effective
+  turns, mulberry32 fixed seed): measured median **~0.001 ms** (budget gate
+  **< 0.1 ms**, ~100x headroom).
+- Frame-logic worst case (slide merging 4 locked pairs simultaneously):
+  measured p99 **~0.001 ms** (budget gate **< 0.2 ms**, ~100x headroom).
+- Deterministic on Node (fixed seed, median/p99 of samples, no wall-clock flake);
+  budgets assert-fail the PR via `node --test`. Gate wired into
+  `.github/workflows/ci.yml` (Node 26, `npm ci`, `tsc --noEmit`, `node --test`).
+
+**Dev-build viability:** Expo SDK 57 `blank-typescript` scaffolded at
+`triade/`; spike-scoped deps only (`@shopify/react-native-skia`,
+`react-native-reanimated`, `react-native-worklets`). `expo prebuild` generated
+the native iOS/Android projects; `expo export --platform ios` bundles the full
+app including the Skia board (1208 modules) — Metro/Skia import chain verified
+without a device. One static 4×4 Skia board renders from a deterministic engine
+snapshot in `triade/src/render/GameBoard.tsx`; a Reanimated
+`useFrameCallback` hook (`useFrameRateBaseline`) records the on-device
+baseline (fps, p99) — the AC 4 device job remains a physical-device gate to be
+run by the developer on the bench.
+
+**Storage decision (S1.4 dependency):** NOT measured in this spike. The
+optional AsyncStorage vs MMKV micro-benchmark (T4.5) is deferred — installing
+the storage stack is out of spike scope (T1.2). S1.4 will run it.
+
+**Pinned Version Matrix correction (spike evidence):** `npx expo install`
+resolves SDK-57 lockstep versions that differ from the matrix's earlier
+hypotheses — `@shopify/react-native-skia` **2.6.2** (not 2.11.0),
+`react-native-reanimated` **4.5.1** (not 4.3.x), `react-native-worklets`
+**0.10.1** (not 0.8.x). These are the versions pinned for the RN app and
+must be the source of truth going forward.
+
+**Open device gates (story 1-1, status: review):**
+- T1.4 — dev-build boot on a physical iOS device (Metro + Xcode via Expo
+  prebuild; requires connected device + CocoaPods).
+- T5.2 — on-device frame-rate baseline (fps + p99) via the shipped
+  `useFrameRateBaseline` hook in `triade/src/render/`. This is the baseline for
+  the device-level p99 < 16.7 ms job (S1.1 Level 2).
+- T4.5 — AsyncStorage vs MMKV micro-benchmark deferred to S1.4 (storage deps
+  excluded from the spike install scope by T1.2).
+
+**Simulator validation (2026-08-10, iOS Simulator — iPhone 17 Pro, Xcode 26.6):**
+- T1.4 partial — the Expo SDK 57 dev build boots and the static 4×4 Skia board
+  renders in the **iOS Simulator** (native runtime; no Apple Developer account
+  needed). Metro/Skia/Reanimated import chain verified end-to-end on an iOS
+  runtime. A Worklets bug surfaced during recording — `setStats` called from the
+  UI thread worklet (Remote Function error) — fixed by wrapping the state update
+  in `runOnJS` (`useFrameRateBaseline.ts`).
+- T5.2 informative — `useFrameRateBaseline` recorded **60 fps · p99 16.67ms ·
+  120 frames** (simulator). This is a smoke/informative reading only: the
+  simulator renders on the Mac GPU, so the numbers do not reflect device
+  performance. The **physical-device p99 < 16.7 ms baseline remains open** (AC-4
+  strict evidence still requires an iPhone + Apple Developer account for code
+  signing).
+
 ### Remaining Architectural Decisions
 
 The following decisions were identified here in Step 3 and **resolved in
