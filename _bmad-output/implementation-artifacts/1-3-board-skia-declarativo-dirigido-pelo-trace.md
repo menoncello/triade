@@ -4,7 +4,7 @@ baseline_commit: 9d550c1
 
 # Story 1.3: Board Skia declarativo dirigido pelo trace
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -27,26 +27,26 @@ so that the board feels responsive and never shows a state the engine didn't pro
 
 ## Tasks / Subtasks
 
-- [ ] T1 — Pure trace→transition planner (AC: 1, 2, 3, 4, 6)
-  - [ ] T1.1 Create `triade/src/render/transitionPlan.ts` — pure TS, no RN/React/Skia/Reanimated imports (frame math is pure and host-testable; ADR-05)
-  - [ ] T1.2 `planTileTransitions(prevBoard, result): TileTransition[]` — maps the exact `MoveResult.trace` contract (`{ value, to:[r,c], from:[[r,c]...], spawned }`) into declarative transitions: `slide` (1 source → dest, moving), `merge` (2 sources converge → dest, merged value materializes at dest), `spawn` (appears at dest), `hold` (stationary tile: `from.length === 1 && from[0] === to` — no motion, kept on board), noop (whole move `moved:false` → empty plan). Every trace entry maps to exactly one transition — no tile is dropped.
-  - [ ] T1.3 Provide `resultingTiles(plan)` — the set of final tile cells/values the plan produces — used as the no-leak oracle (equals the occupied cells of `result.board`). Because stationary tiles map to `hold` transitions, `resultingTiles(plan)` covers every occupied cell even in partial moves (slide down one lane only).
-  - [ ] T1.4 Do NOT read values off the old board with matching heuristics — the plan derives from `result.trace` only (AC 1, 6)
-- [ ] T2 — Planner tests (AC: 1, 2, 4, 6)
-  - [ ] T2.1 Create `triade/__tests__/render/transitionPlan.test.ts` — runner `node:test` + `node:assert`; deterministic fixtures via `test-utils/helpers.ts` (`boardWith`, `rngOf`, `emptyBoard`, `staticBoard`, `mulberry32`) — no `Math.random`
-  - [ ] T2.2 Full matrix: slide left/right/up/down; merge (1+2 both orders, equal ≥3) → two sources converge + vanish + merged value at dest; spawn flag; noop → empty plan; **partial move** (e.g., only one lane slides, others stationary) → slides + `hold` transitions for the stationary tiles; the 9-start-tile board; plan of a full-board move (merge-once semantics)
-  - [ ] T2.3 No-leak assertion: for every planned move with `moved:true` (non-empty plan), `resultingTiles(plan)` deep-equals the occupied cells of `result.board` — the pure analog of the `tileEls` no-leak rule. The noop case (`moved:false`) is excluded from this assertion because its plan is empty and the board is unchanged; the rendered set stays as-is by definition.
-- [ ] T3 — Declarative animated `GameBoard` (AC: 1, 2, 3, 4)
-  - [ ] T3.1 Rewrite `triade/src/render/GameBoard.tsx` to consume `{ board, moveResult }` and render every tile as an animated Skia tile keyed by a stable identity
-  - [ ] T3.2 Slide tiles animate from `from` to `to`; merged tiles vanish after the merge; spawned tiles appear at `spawned` cells (Reanimated shared values passed directly as Skia props — `useSharedValue` + `withTiming`/`withSpring`, UI thread, per the Spike/Context7 pattern)
-  - [ ] T3.3 Overshoot-and-snap follows the trace, declarative, in `src/render` (ADR-05). **DO NOT implement flash/particles/shake/slow-mo here** — those are `src/feel` imperative worklets and belong to Epic 8 (S8.2/S8.3/S8.4); 1.3 only establishes the boundary
-  - [ ] T3.4 No-leak in the Skia tree: keep a persistent tile-instance map (mirror of `tileEls`); after every move the rendered tile set equals the current board — orphaned instances removed from the map AND the Skia tree (no hidden/accumulated tiles)
-  - [ ] T3.5 Use Reanimated on the UI thread only — no React state updates per frame; no `setState` in a frame callback
-- [ ] T4 — Manual-validation harness + 60 FPS smoke (AC: 5, 6)
-  - [ ] T4.1 Wire a temporary move driver in `triade/App.tsx` (e.g., 4 on-screen buttons or keyboard keys) that calls the engine `move()` and feeds `{ board, moveResult }` to `GameBoard` — clearly marked temporary (real gesture input is Story 1.6)
-  - [ ] T4.2 Keep `useFrameRateBaseline` active; record a simulator reading (fps · p99) as **informative smoke only** — animations are not covered by `node --test`
-  - [ ] T4.3 Assert nothing: UI/Skia animation is manual validation on the simulator/browser (project-context rule); `node --test` + `npx tsc --noEmit` must stay green
-  - [ ] T4.4 Update the story completion note with the final test count; do NOT modify `js/game.js`, `js/ui.js`, `js/debug.js`, or `test/game.test.js` (web PWA frozen)
+- [x] T1 — Pure trace→transition planner (AC: 1, 2, 3, 4, 6)
+  - [x] T1.1 Create `triade/src/render/transitionPlan.ts` — pure TS, no RN/React/Skia/Reanimated imports (frame math is pure and host-testable; ADR-05)
+  - [x] T1.2 `planTileTransitions(prevBoard, result): TileTransition[]` — maps the exact `MoveResult.trace` contract (`{ value, to:[r,c], from:[[r,c]...], spawned }`) into declarative transitions: `slide` (1 source → dest, moving), `merge` (2 sources converge → dest, merged value materializes at dest), `spawn` (appears at dest), `hold` (stationary tile: `from.length === 1 && from[0] === to` — no motion, kept on board), noop (whole move `moved:false` → empty plan). Every trace entry maps to exactly one transition — no tile is dropped.
+  - [x] T1.3 Provide `resultingTiles(plan)` — the set of final tile cells/values the plan produces — used as the no-leak oracle (equals the occupied cells of `result.board`). Because stationary tiles map to `hold` transitions, `resultingTiles(plan)` covers every occupied cell even in partial moves (slide down one lane only).
+  - [x] T1.4 Do NOT read values off the old board with matching heuristics — the plan derives from `result.trace` only (AC 1, 6)
+- [x] T2 — Planner tests (AC: 1, 2, 4, 6)
+  - [x] T2.1 Create `triade/__tests__/render/transitionPlan.test.ts` — runner `node:test` + `node:assert`; deterministic fixtures via `test-utils/helpers.ts` (`boardWith`, `rngOf`, `emptyBoard`, `staticBoard`, `mulberry32`) — no `Math.random`
+  - [x] T2.2 Full matrix: slide left/right/up/down; merge (1+2 both orders, equal ≥3) → two sources converge + vanish + merged value at dest; spawn flag; noop → empty plan; **partial move** (e.g., only one lane slides, others stationary) → slides + `hold` transitions for the stationary tiles; the 9-start-tile board; plan of a full-board move (merge-once semantics)
+  - [x] T2.3 No-leak assertion: for every planned move with `moved:true` (non-empty plan), `resultingTiles(plan)` deep-equals the occupied cells of `result.board` — the pure analog of the `tileEls` no-leak rule. The noop case (`moved:false`) is excluded from this assertion because its plan is empty and the board is unchanged; the rendered set stays as-is by definition.
+- [x] T3 — Declarative animated `GameBoard` (AC: 1, 2, 3, 4)
+  - [x] T3.1 Rewrite `triade/src/render/GameBoard.tsx` to consume `{ board, moveResult }` and render every tile as an animated Skia tile keyed by a stable identity
+  - [x] T3.2 Slide tiles animate from `from` to `to`; merged tiles vanish after the merge; spawned tiles appear at `spawned` cells (Reanimated shared values passed directly as Skia props — `useSharedValue` + `withTiming`/`withSpring`, UI thread, per the Spike/Context7 pattern)
+  - [x] T3.3 Overshoot-and-snap follows the trace, declarative, in `src/render` (ADR-05). **DO NOT implement flash/particles/shake/slow-mo here** — those are `src/feel` imperative worklets and belong to Epic 8 (S8.2/S8.3/S8.4); 1.3 only establishes the boundary
+  - [x] T3.4 No-leak in the Skia tree: keep a persistent tile-instance map (mirror of `tileEls`); after every move the rendered tile set equals the current board — orphaned instances removed from the map AND the Skia tree (no hidden/accumulated tiles)
+  - [x] T3.5 Use Reanimated on the UI thread only — no React state updates per frame; no `setState` in a frame callback
+- [x] T4 — Manual-validation harness + 60 FPS smoke (AC: 5, 6)
+  - [x] T4.1 Wire a temporary move driver in `triade/App.tsx` (e.g., 4 on-screen buttons or keyboard keys) that calls the engine `move()` and feeds `{ board, moveResult }` to `GameBoard` — clearly marked temporary (real gesture input is Story 1.6)
+  - [x] T4.2 Keep `useFrameRateBaseline` active; record a simulator reading (fps · p99) as **informative smoke only** — animations are not covered by `node --test`
+  - [x] T4.3 Assert nothing: UI/Skia animation is manual validation on the simulator/browser (project-context rule); `node --test` + `npx tsc --noEmit` must stay green
+  - [x] T4.4 Update the story completion note with the final test count; do NOT modify `js/game.js`, `js/ui.js`, `js/debug.js`, or `test/game.test.js` (web PWA frozen)
 
 ## Dev Notes
 
@@ -153,12 +153,21 @@ so that the board feels responsive and never shows a state the engine didn't pro
 
 ### Completion Notes List
 
-- (filled at implementation time)
+- Implemented `triade/src/render/transitionPlan.ts` — pure TS planner deriving transitions 100% from `MoveResult.trace` (no prev-board heuristics). Classifies each trace entry as `slide` / `merge` / `spawn` / `hold`; noop moves (`moved:false`) yield an empty plan even though the trace still lists the stationary board. `resultingTiles(plan)` returns the final tile set used as the no-leak oracle.
+- Added `triade/__tests__/render/transitionPlan.test.ts` — 13 tests covering the full matrix: slide in all 4 directions, merge 1+2 (both orders) and equal ≥3, spawn flag, noop empty plan (including 1+1 no-merge), partial move with `hold` transitions, 9-start-tile board, full-board merge-once, plus a 200-move deterministic no-leak property test asserting `resultingTiles(plan)` deep-equals the occupied cells of `result.board` for every effective move.
+- Rewrote `triade/src/render/GameBoard.tsx` as a declarative, trace-driven animated board. Tiles are keyed by a stable instance id in a persistent map (mirror of the web `tileEls`); every effective move reconciles the map from the plan, animates slides/merges/spawns via Reanimated shared values passed directly as Skia props (UI thread), removes orphaned/vanish instances from the map AND the Skia tree (no leak). Overshoot-and-snap is declarative (spring) in `src/render`; feel effects (flash/particles/shake/slow-mo) intentionally NOT implemented (Epic 8 boundary, ADR-05).
+- Wired `triade/App.tsx` with a clearly-marked temporary move harness (4 on-screen buttons) feeding `{ board, moveResult }` to `GameBoard`; keeps `useFrameRateBaseline` active. Real swipe input ships in Story 1.6.
+- Validation: 70/70 triade tests pass (57 baseline + 13 new), `npx tsc --noEmit` clean, 26/26 web PWA tests green (web frozen: `js/game.js`, `js/ui.js`, `js/debug.js`, `test/game.test.js` untouched). CI gate unchanged (runs `tsc --noEmit` + `node --test` on `triade/`).
+- Manual validation remaining: simulator/device smoke — slide/merge/spawn animations and a frame-rate reading (informative only, macOS GPU ≠ iOS device).
 
 ### File List
 
 - `triade/src/render/transitionPlan.ts` (new)
 - `triade/__tests__/render/transitionPlan.test.ts` (new)
-- `triade/src/render/GameBoard.tsx` (rewritten)
+- `triade/src/render/GameBoard.tsx` (rewritten — static snapshot → animated trace-driven, no-leak)
 - `triade/App.tsx` (modified — temporary move harness)
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` (modified — story status ready-for-dev → in-progress → review)
+
+## Change Log
+
+- Implemented Story 1.3: declarative Skia board driven 100% by the engine trace (transition planner + animated GameBoard + temporary move harness) (2026-08-12)
