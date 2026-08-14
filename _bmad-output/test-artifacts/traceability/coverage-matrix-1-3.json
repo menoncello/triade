@@ -1,0 +1,542 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-13T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "1.3",
+    "label": "Board Skia declarativo dirigido pelo trace"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-3-board-skia-declarativo-dirigido-pelo-trace.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.3",
+      "_bmad-output/automation-summary-1-3.md",
+      "triade/src/render/transitionPlan.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "Board renders 100% from the trace with no heuristic matching in the UI (no prev-board value heuristics).",
+      "tests": [
+        {
+          "id": "1.3-PLAN-011",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 142,
+          "title": "planTileTransitions: the plan derives from result.trace only, never from prevBoard values (AC-1/AC-6)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-001",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 38,
+          "title": "planTileTransitions: slide left maps the moving tile from source to dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-005",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 82,
+          "title": "planTileTransitions: merge 1+2 converges two sources to dest with merged value",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PURITY-001",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 81,
+          "title": "ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PURITY-002",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 94,
+          "title": "ADR-01: src/render/transitionPlan.ts uses relative imports only (self-contained frame math)",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "priority": "P1",
+      "coverage": "FULL",
+      "title": "Slide tiles animate from->to; merged tiles vanish after the merge; spawned tiles appear at spawned cells.",
+      "tests": [
+        {
+          "id": "1.3-PLAN-001",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 38,
+          "title": "planTileTransitions: slide left maps the moving tile from source to dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-002",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 49,
+          "title": "planTileTransitions: slide right maps the moving tile from source to dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-003",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 60,
+          "title": "planTileTransitions: slide up maps the moving tile from source to dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-004",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 71,
+          "title": "planTileTransitions: slide down maps the moving tile from source to dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-005",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 82,
+          "title": "planTileTransitions: merge 1+2 converges two sources to dest with merged value",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-006",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 93,
+          "title": "planTileTransitions: merge 2+1 (reversed order) converges the same two sources",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-007",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 104,
+          "title": "planTileTransitions: merge equal >=3 doubles the value at dest",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-012",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 165,
+          "title": "planTileTransitions: full-board merge-once produces merges, slides, and one spawn",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-SMOKE-003",
+          "file": "triade/__tests__/render/render.smoke.test.ts",
+          "line": 66,
+          "title": "SMOKE: a full-game session exercises every transition type at least once",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "priority": "P1",
+      "coverage": "FULL",
+      "title": "Overshoot-and-snap follows the trace, declarative in src/render; flash/particles/shake/slow-mo are imperative worklets in src/feel (hybrid boundary ADR-05).",
+      "tests": [
+        {
+          "id": "1.3-PURITY-001",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 81,
+          "title": "ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PURITY-002",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 94,
+          "title": "ADR-01: src/render/transitionPlan.ts uses relative imports only (self-contained frame math)",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "No DOM/DOM-equivalent leak: every tile rendered from the trace maps to an Skia object; orphaned elements are removed (tileEls no-leak rule).",
+      "tests": [
+        {
+          "id": "1.3-PLAN-013",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 179,
+          "title": "planTileTransitions: 9-start-tile board plan covers every occupied cell (no-leak oracle)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PLAN-014",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 188,
+          "title": "planTileTransitions: resultingTiles is the no-leak oracle across random deterministic moves",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-SMOKE-001",
+          "file": "triade/__tests__/render/render.smoke.test.ts",
+          "line": 27,
+          "title": "SMOKE: fresh game board plans every starting tile as a hold transition (no leak on first render)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-SMOKE-002",
+          "file": "triade/__tests__/render/render.smoke.test.ts",
+          "line": 36,
+          "title": "SMOKE: render critical path \u2014 500 deterministic moves never leak and never produce an empty plan on a move",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-SMOKE-004",
+          "file": "triade/__tests__/render/render.smoke.test.ts",
+          "line": 83,
+          "title": "SMOKE: full immovable board plans empty (no animation on a dead board)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-SMOKE-005",
+          "file": "triade/__tests__/render/render.smoke.test.ts",
+          "line": 95,
+          "title": "SMOKE: empty board plans empty and never animates",
+          "level": "Unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "priority": "P1",
+      "coverage": "PARTIAL",
+      "title": "60 FPS sustained during a 10-minute play session on target iOS devices (NFR-1).",
+      "tests": [
+        {
+          "id": "1.3-BENCH-001",
+          "file": "triade/benchmarks/render.bench.test.ts",
+          "line": 52,
+          "title": "benchmark: transition-plan cost per move < 0.05ms median / 0.1ms p99 (frame budget headroom)",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "simulator_smoke": "2026-08-13",
+        "device": "iPhone 17 Pro (simulator, iOS 26.5)",
+        "window_frames": 118,
+        "runs": [
+          {
+            "fps": 60.0,
+            "p99Ms": 16.67,
+            "frames": 118
+          },
+          {
+            "fps": 60.0,
+            "p99Ms": 16.67,
+            "frames": 118
+          },
+          {
+            "fps": 60.0,
+            "p99Ms": 16.67,
+            "frames": 118
+          }
+        ],
+        "median": {
+          "fps": 60.0,
+          "p99Ms": 16.67,
+          "frames": 118
+        },
+        "note": "Informative only (macOS GPU, not target iOS hardware). Physical device DEFERRED per runbook 1-1.",
+        "automated_proxy": "1.3-BENCH-001"
+      }
+    },
+    {
+      "id": "AC-6",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "UI never duplicates rules: no merge/spawn/game-over logic outside src/engine (FR-3, NFR-4).",
+      "tests": [
+        {
+          "id": "1.3-PLAN-011",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 142,
+          "title": "planTileTransitions: the plan derives from result.trace only, never from prevBoard values (AC-1/AC-6)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.1-PURITY-001",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 64,
+          "title": "ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo",
+          "level": "Unit"
+        },
+        {
+          "id": "1.3-PURITY-001",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 81,
+          "title": "ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)",
+          "level": "Unit"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 5,
+    "partially_covered": 1,
+    "uncovered": 0,
+    "overall_coverage_percentage": 83,
+    "priority_breakdown": {
+      "P0": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 3,
+        "covered": 2,
+        "percentage": 67
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [
+      {
+        "id": "AC-5",
+        "priority": "P1",
+        "coverage": "PARTIAL",
+        "title": "60 FPS sustained during a 10-minute play session on target iOS devices (NFR-1).",
+        "tests": [
+          {
+            "id": "1.3-BENCH-001",
+            "file": "triade/benchmarks/render.bench.test.ts",
+            "line": 52,
+            "title": "benchmark: transition-plan cost per move < 0.05ms median / 0.1ms p99 (frame budget headroom)",
+            "level": "Unit"
+          }
+        ]
+      }
+    ],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 20,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "api": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 20,
+          "criteria_covered": 26
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "1.3-PLAN-011",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 142,
+        "title": "planTileTransitions: the plan derives from result.trace only, never from prevBoard values (AC-1/AC-6)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-001",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 38,
+        "title": "planTileTransitions: slide left maps the moving tile from source to dest",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-005",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 82,
+        "title": "planTileTransitions: merge 1+2 converges two sources to dest with merged value",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PURITY-001",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 81,
+        "title": "ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PURITY-002",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 94,
+        "title": "ADR-01: src/render/transitionPlan.ts uses relative imports only (self-contained frame math)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-002",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 49,
+        "title": "planTileTransitions: slide right maps the moving tile from source to dest",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-003",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 60,
+        "title": "planTileTransitions: slide up maps the moving tile from source to dest",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-004",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 71,
+        "title": "planTileTransitions: slide down maps the moving tile from source to dest",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-006",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 93,
+        "title": "planTileTransitions: merge 2+1 (reversed order) converges the same two sources",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-007",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 104,
+        "title": "planTileTransitions: merge equal >=3 doubles the value at dest",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-012",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 165,
+        "title": "planTileTransitions: full-board merge-once produces merges, slides, and one spawn",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-SMOKE-003",
+        "file": "triade/__tests__/render/render.smoke.test.ts",
+        "line": 66,
+        "title": "SMOKE: a full-game session exercises every transition type at least once",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-013",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 179,
+        "title": "planTileTransitions: 9-start-tile board plan covers every occupied cell (no-leak oracle)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-PLAN-014",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 188,
+        "title": "planTileTransitions: resultingTiles is the no-leak oracle across random deterministic moves",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-SMOKE-001",
+        "file": "triade/__tests__/render/render.smoke.test.ts",
+        "line": 27,
+        "title": "SMOKE: fresh game board plans every starting tile as a hold transition (no leak on first render)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-SMOKE-002",
+        "file": "triade/__tests__/render/render.smoke.test.ts",
+        "line": 36,
+        "title": "SMOKE: render critical path \u2014 500 deterministic moves never leak and never produce an empty plan on a move",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-SMOKE-004",
+        "file": "triade/__tests__/render/render.smoke.test.ts",
+        "line": 83,
+        "title": "SMOKE: full immovable board plans empty (no animation on a dead board)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-SMOKE-005",
+        "file": "triade/__tests__/render/render.smoke.test.ts",
+        "line": 95,
+        "title": "SMOKE: empty board plans empty and never animates",
+        "level": "Unit"
+      },
+      {
+        "id": "1.3-BENCH-001",
+        "file": "triade/benchmarks/render.bench.test.ts",
+        "line": 52,
+        "title": "benchmark: transition-plan cost per move < 0.05ms median / 0.1ms p99 (frame budget headroom)",
+        "level": "Unit"
+      },
+      {
+        "id": "1.1-PURITY-001",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 64,
+        "title": "ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo",
+        "level": "Unit"
+      }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Physical-device NFR-1 gate is DEFERRED (runbook 1-1: needs iPhone + Apple Developer account). Simulator smoke recorded 2026-08-13: 60.0 fps / p99 16.67ms / 118 frames (3 runs median, animated board). Record the device baseline per runbook 1-1 to move AC-5 to FULL.",
+      "requirements": [
+        "AC-5"
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality.",
+      "requirements": []
+    }
+  ]
+}
