@@ -4,7 +4,7 @@ baseline_commit: 9d550c1
 
 # Story 1.3: Board Skia declarativo dirigido pelo trace
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -154,11 +154,12 @@ so that the board feels responsive and never shows a state the engine didn't pro
 ### Completion Notes List
 
 - Implemented `triade/src/render/transitionPlan.ts` — pure TS planner deriving transitions 100% from `MoveResult.trace` (no prev-board heuristics). Classifies each trace entry as `slide` / `merge` / `spawn` / `hold`; noop moves (`moved:false`) yield an empty plan even though the trace still lists the stationary board. `resultingTiles(plan)` returns the final tile set used as the no-leak oracle.
-- Added `triade/__tests__/render/transitionPlan.test.ts` — 13 tests covering the full matrix: slide in all 4 directions, merge 1+2 (both orders) and equal ≥3, spawn flag, noop empty plan (including 1+1 no-merge), partial move with `hold` transitions, 9-start-tile board, full-board merge-once, plus a 200-move deterministic no-leak property test asserting `resultingTiles(plan)` deep-equals the occupied cells of `result.board` for every effective move.
+- Added `triade/__tests__/render/transitionPlan.test.ts` — 14 tests covering the full matrix: slide in all 4 directions, merge 1+2 (both orders) and equal ≥3, spawn flag, noop empty plan (including 1+1 and 2+2 no-merge), spawn at the last empty cell [3,3], partial move with `hold` transitions, 9-start-tile board, full-board merge-once, plus a 200-move deterministic no-leak property test asserting `resultingTiles(plan)` deep-equals the occupied cells of `result.board` for every effective move.
 - Rewrote `triade/src/render/GameBoard.tsx` as a declarative, trace-driven animated board. Tiles are keyed by a stable instance id in a persistent map (mirror of the web `tileEls`); every effective move reconciles the map from the plan, animates slides/merges/spawns via Reanimated shared values passed directly as Skia props (UI thread), removes orphaned/vanish instances from the map AND the Skia tree (no leak). Overshoot-and-snap is declarative (spring) in `src/render`; feel effects (flash/particles/shake/slow-mo) intentionally NOT implemented (Epic 8 boundary, ADR-05).
 - Wired `triade/App.tsx` with a clearly-marked temporary move harness (4 on-screen buttons) feeding `{ board, moveResult }` to `GameBoard`; keeps `useFrameRateBaseline` active. Real swipe input ships in Story 1.6.
 - Validation: 70/70 triade tests pass (57 baseline + 13 new), `npx tsc --noEmit` clean, 26/26 web PWA tests green (web frozen: `js/game.js`, `js/ui.js`, `js/debug.js`, `test/game.test.js` untouched). CI gate unchanged (runs `tsc --noEmit` + `node --test` on `triade/`).
 - Manual validation remaining: simulator/device smoke — slide/merge/spawn animations and a frame-rate reading (informative only, macOS GPU ≠ iOS device).
+- Post-dev test-automate pass (2026-08-13): added render-layer smoke suite (`render.smoke.test.ts`, 5 tests), planner frame-budget benchmark (`render.bench.test.ts`, 1 test), and extended ADR-01 purity scope to `src/render/transitionPlan.ts` (2 tests). Suite now 81/81 triade green — see `_bmad-output/automation-summary-1-3.md`.
 
 ### File List
 
@@ -166,8 +167,38 @@ so that the board feels responsive and never shows a state the engine didn't pro
 - `triade/__tests__/render/transitionPlan.test.ts` (new)
 - `triade/src/render/GameBoard.tsx` (rewritten — static snapshot → animated trace-driven, no-leak)
 - `triade/App.tsx` (modified — temporary move harness)
+- `triade/__tests__/render/render.smoke.test.ts` (new — test-automate pass)
+- `triade/benchmarks/render.bench.test.ts` (new — test-automate pass)
+- `triade/__tests__/engine/engine.purity.test.ts` (modified — ADR-01 scope extended to `src/render/transitionPlan.ts`)
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` (modified — story status ready-for-dev → in-progress → review)
 
 ## Change Log
 
 - Implemented Story 1.3: declarative Skia board driven 100% by the engine trace (transition planner + animated GameBoard + temporary move harness) (2026-08-12)
+- Test-automate pass: render smoke suite + planner benchmark + ADR-01 purity scope extension (79/79 triade green) (2026-08-13)
+- Re-review (2026-08-13): fixed merged-tile delay wiring, in-flight vanish carry-forward, benchmark noop dilution, added 2+2 no-merge + [3,3] spawn coverage (81/81 triade green) (2026-08-13)
+
+### Review Findings
+
+- [x] [Review][Patch] Noop move (`moved:false`) wipes every tile — `applyPlan([])` returns `next = []` → `setTiles([])`; the effect runs unconditionally because App always sets a fresh `moveResult`. Board blanks instead of preserving (violates Dev Notes "noop must not animate", AC-1/AC-2) [triade/src/render/GameBoard.tsx:135-169, 171-179]
+- [x] [Review][Patch] Merge sources never vanish → permanent ghost tiles — the vanish effect has `[]` deps and gates on `kind` at mount; when a tile's kind flips `rest`/`appear` → `vanish` on the same instance, the effect never re-runs, so no fade and `onVanish` never fires. Ghosts (source color/value) overlay the merged tile → wrong value displayed; the vanish path is effectively dead code (violates AC-2, AC-4 no-leak) [triade/src/render/GameBoard.tsx:65-88, 141-149]
+- [x] [Review][Patch] Merge animation timing is decoupled — the merged `appear` tile materializes at frame 0 (~120ms) while its sources are still converging on an underdamped spring (~350-500ms settle); vanish is hard-timed `withDelay(SLIDE_MS=160)` instead of spring-completion (violates AC-2 "vanish after the merge", the ~160ms render constraint, and AC-3 overshoot-and-snap) [triade/src/render/GameBoard.tsx:62-88, 146]
+- [x] [Review][Patch] Impure `setTiles` updater — `nextId()` mutates `idRef` inside the updater (render-phase side effect); StrictMode/dev double-invocation skips ids and the effect body is non-idempotent [triade/src/render/GameBoard.tsx:117, 132-169]
+- [x] [Review][Patch] Benchmark p99 gate flake risk — wall-clock timing of a sub-microsecond function; p99 (`idx=9900/10000`) can trip under CI GC pressure despite 250x headroom [triade/benchmarks/render.bench.test.ts:52-81]
+- [x] [Review][Patch] Story completion note test count stale — says 78/78, actual `node --test` is 79/79 (contradicts test-review-report.md:240) (violates T4.4) [_bmad-output/implementation-artifacts/1-3-board-skia-declarativo-dirigido-pelo-trace.md:168]
+- [x] [Review][Defer] AC-4 no-leak automated coverage stops at the planner (`resultingTiles` oracle); GameBoard reconcile/remove is manual-only — project rule: Skia animation is manual validation; leak itself fixed by patch #2
+- [x] [Review][Defer] `moveResult === null` after a previous non-null leaves tile state stale — unreachable today (App never resets); latent for future new-game/reset path [triade/src/render/GameBoard.tsx:171-175]
+- [x] [Review][Defer] Temp harness `doMove` stale board closure drops rapid same-frame moves — temporary code replaced by real input in story 1.6 [triade/App.tsx:20-27]
+- [x] [Review][Defer] `classify` dereferences `entry.from[0]` unguarded — engine contract guarantees non-empty `from` for non-spawn entries; defensive hardening only [triade/src/render/transitionPlan.ts:21-26]
+- [x] [Review][Defer] Purity scan blind spots — `PURITY_FILES` is a hand-maintained explicit list (a new pure file in `src/render` silently escapes the ADR-01/05 scan until edited); `FORBIDDEN_PREFIXES` misses a hypothetical bare `reanimated`/`skia` import. Current files are covered; maintenance hardening only [triade/__tests__/engine/engine.purity.test.ts:12-16]
+
+### Review Findings (2026-08-13, re-review — final state incl. test-automate pass)
+
+- [x] [Review][Patch] Merged-tile `delay: SLIDE_MS` is dead code — `applyPlan` stamps it on the merged appear tile but the render loop never forwards a `delay` prop to `AnimatedTile` (defaults to 0), so the merged value fades in at frame 0 instead of at slide completion (violates AC-2 "vanish after the merge / merged value materializes at dest"; the prior patch #3 added the field but not the wiring) [triade/src/render/GameBoard.tsx:154, 201-212]
+- [x] [Review][Patch] A second move within the vanish window (~260ms) aborts merge-source fade-outs — the two vanish copies are keyed at the merge cell in `byCell` but shadowed by the appear tile, so they are dropped from `next` mid-fade and unmount abruptly instead of completing slide+fade (violates AC-2, AC-4 no-leak smoothness) [triade/src/render/GameBoard.tsx:149-154]
+- [x] [Review][Patch] Benchmark tail diluted by no-op moves and per-sample batch means — `moved:false` boards (empty plan, near-zero cost) pollute the p99 distribution and BATCH=50 means flatten worst-case single-plan costs, weakening the regression gate [triade/benchmarks/render.bench.test.ts:54-84]
+- [x] [Review][Patch] Coverage gaps: 2+2 no-merge (only 1+1 tested) and spawn-at-last-empty-cell `[3,3]` (all tests use `rngOf(0,0)` → always `[0,0]`) never exercised — engine behavior correct today, but no regression guard [triade/__tests__/render/transitionPlan.test.ts]
+- [x] [Review][Patch] Completion note says `transitionPlan.test.ts` has "13 tests" but the file contains 14 (violates T4.4 doc accuracy; headline 79/79 is correct) [story completion note]
+- [x] [Review][Defer] AC-5 (60 FPS / 10-min session) has no completed rendering evidence — only the planner micro-benchmark exists; the simulator/device frame-rate reading is still "Manual validation remaining" (T4.2 allows this; aligns with deferred-work on-device baseline for 1-1) [triade/benchmarks/render.bench.test.ts]
+- [x] [Review][Defer] `doMove` stale-closure double-tap loses a move and double-consumes the RNG (rapid presses before commit) — already deferred (temp harness, story 1.6) [triade/App.tsx:20-27]
+- [x] [Review][Defer] No game-over/restart path; a future reset bypassing `applyPlan` leaves `tiles` stale — already deferred (`moveResult===null` branch, unreachable today) [triade/src/render/GameBoard.tsx:176-184]

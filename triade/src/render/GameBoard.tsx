@@ -18,6 +18,7 @@ interface TileDescriptor {
   from: [number, number];
   to: [number, number];
   kind: TileKind;
+  delay?: number;
 }
 
 function cellKey(r: number, c: number): string {
@@ -49,10 +50,11 @@ interface AnimatedTileProps {
   to: [number, number];
   kind: TileKind;
   cell: number;
+  delay?: number;
   onVanish: (id: string) => void;
 }
 
-function AnimatedTile({ id, value, from, to, kind, cell, onVanish }: AnimatedTileProps) {
+function AnimatedTile({ id, value, from, to, kind, cell, delay = 0, onVanish }: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
   const toPos = pixel(to, cell);
   const x = useSharedValue(fromPos.x);
@@ -67,25 +69,25 @@ function AnimatedTile({ id, value, from, to, kind, cell, onVanish }: AnimatedTil
       x.value = withSpring(toPos.x, spring);
       y.value = withSpring(toPos.y, spring);
     }
-  }, [toPos.x, toPos.y]);
+  }, [toPos.x, toPos.y, kind]);
 
   useEffect(() => {
     if (kind === 'appear') {
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, spring);
+      opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
+      scale.value = withDelay(delay, withSpring(1, spring));
     }
-  }, []);
+  }, [delay, kind]);
 
   useEffect(() => {
     if (kind === 'vanish') {
       opacity.value = withDelay(
-        SLIDE_MS,
+        delay + SLIDE_MS,
         withTiming(0, { duration: 100 }, (finished) => {
           if (finished) runOnJS(onVanish)(id);
         })
       );
     }
-  }, []);
+  }, [delay, kind, onVanish, id]);
 
   const translate = useDerivedValue(() => [{ translateX: x.value }, { translateY: y.value }]);
   const scaleTransform = useDerivedValue(() => [{ scale: scale.value }]);
@@ -134,19 +136,25 @@ export function GameBoard({ board, moveResult, width }: GameBoardProps) {
 
   const applyPlan = useCallback(
     (plan: TileTransition[]) => {
+      if (plan.length === 0) return;
+      const idPool = plan.map(() => nextId());
       setTiles((prev) => {
         const byCell = new Map<string, TileDescriptor>();
         for (const t of prev) byCell.set(cellKey(t.to[0], t.to[1]), t);
         const next: TileDescriptor[] = [];
-        for (const tr of plan) {
+        for (const t of prev) {
+          if (t.kind === 'vanish') next.push(t);
+        }
+        for (let i = 0; i < plan.length; i++) {
+          const tr = plan[i];
           if (tr.type === 'spawn') {
-            next.push({ id: nextId(), value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
+            next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
           } else if (tr.type === 'merge') {
             const a = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
             const b = byCell.get(cellKey(tr.from[1][0], tr.from[1][1]));
             if (a) next.push({ ...a, from: a.to, to: tr.to, kind: 'vanish' });
             if (b) next.push({ ...b, from: b.to, to: tr.to, kind: 'vanish' });
-            next.push({ id: nextId(), value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
+            next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS });
           } else {
             const src = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
             if (src) {
@@ -158,7 +166,7 @@ export function GameBoard({ board, moveResult, width }: GameBoardProps) {
                 kind: tr.type === 'slide' ? 'move' : 'rest'
               });
             } else {
-              next.push({ id: nextId(), value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
+              next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
             }
           }
         }
@@ -202,6 +210,7 @@ export function GameBoard({ board, moveResult, width }: GameBoardProps) {
           to={t.to}
           kind={t.kind}
           cell={cell}
+          delay={t.delay}
           onVanish={onVanish}
         />
       ))}

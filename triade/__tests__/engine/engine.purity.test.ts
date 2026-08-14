@@ -9,6 +9,10 @@ const PURITY_ROOTS = [
   fileURLToPath(new URL('../../src/game/', import.meta.url))
 ];
 
+// Story 1.3 ADR-05: transitionPlan.ts is pure TS in src/render — the frame math
+// must stay host-testable and import nothing from RN/React/Skia/Reanimated.
+const PURITY_FILES = [fileURLToPath(new URL('../../src/render/transitionPlan.ts', import.meta.url))];
+
 const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native'];
 
 function isForbidden(specifier: string): string | undefined {
@@ -69,6 +73,32 @@ test('ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo', asy
       assert.ok(
         !forbidden,
         `${rel}: imports '${spec}' from forbidden RN/React/Skia/Expo module '${forbidden}' (ADR-01 violation)`
+      );
+    }
+  }
+});
+
+test('ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)', async () => {
+  for (const file of PURITY_FILES) {
+    const source = await readFile(file, 'utf8');
+    for (const spec of extractSpecifiers(source)) {
+      const forbidden = isForbidden(spec);
+      assert.ok(
+        !forbidden,
+        `${file}: imports '${spec}' from forbidden RN/React/Skia/Expo module '${forbidden}' (ADR-05 violation)`
+      );
+    }
+  }
+});
+
+test('ADR-01: src/render/transitionPlan.ts uses relative imports only (self-contained frame math)', async () => {
+  for (const file of PURITY_FILES) {
+    const source = await readFile(file, 'utf8');
+    for (const spec of extractSpecifiers(source)) {
+      const relativeImport = spec.startsWith('./') || spec.startsWith('../');
+      assert.ok(
+        relativeImport,
+        `${file}: non-relative import '${spec}' breaks the pure-TS self-contained boundary (ADR-01)`
       );
     }
   }

@@ -139,6 +139,46 @@ test('planTileTransitions: no 1+1 merge is a noop with an empty plan', () => {
   assert.deepStrictEqual(planTileTransitions(board, result), []);
 });
 
+test('planTileTransitions: no 2+2 merge is a noop with an empty plan', () => {
+  const board = boardOf([2, 2, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
+  const result = game.move(board, 'left', rngOf(0, 0));
+  assert.strictEqual(result.moved, false);
+  assert.deepStrictEqual(planTileTransitions(board, result), []);
+});
+
+test('planTileTransitions: spawn lands on the last empty cell [3,3]', () => {
+  const board = boardOf([3, 6, 12, 24], [3, 6, 12, 24], [3, 6, 12, 24], [3, 6, null, 12]);
+  const result = game.move(board, 'left', rngOf(0, 0));
+  assert.strictEqual(result.moved, true);
+  const plan = planTileTransitions(board, result);
+  const spawn = plan.find((t) => t.type === 'spawn');
+  assert.ok(spawn, 'effective move must spawn');
+  assert.deepStrictEqual(spawn.to, [3, 3], 'spawn must land on the sole empty cell [3,3]');
+});
+
+test('planTileTransitions: the plan derives from result.trace only, never from prevBoard values (AC-1/AC-6)', () => {
+  const cases: Array<{ board: ReturnType<typeof boardOf>; dir: (typeof DIRECTIONS)[number] }> = [
+    { board: boardOf([1, 2, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]), dir: 'left' },
+    { board: boardOf([2, null, null, null], [null, 3, null, null], [null, null, null, null], [null, null, null, null]), dir: 'left' },
+    { board: boardOf([2, 3, 6, 12], [3, 6, 12, 24], [3, 6, 12, 24], [3, 6, 12, 24]), dir: 'left' }
+  ];
+  const unrelatedBoards = [
+    boardOf([24, 12, 6, 3], [3, 6, 12, 24], [12, 3, 24, 6], [6, 24, 3, 12]),
+    emptyBoard()
+  ];
+  for (const { board, dir } of cases) {
+    const result = game.move(board, dir, rngOf(0, 0));
+    const expected = planTileTransitions(board, result);
+    for (const wrong of unrelatedBoards) {
+      assert.deepStrictEqual(
+        planTileTransitions(wrong, result),
+        expected,
+        `plan must be identical regardless of prevBoard values (dir=${dir})`
+      );
+    }
+  }
+});
+
 test('planTileTransitions: full-board merge-once produces merges, slides, and one spawn', () => {
   const board = boardOf([3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3]);
   const result = game.move(board, 'left', rngOf(0, 0));
