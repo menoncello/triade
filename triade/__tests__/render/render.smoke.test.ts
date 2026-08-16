@@ -1,28 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
-import { SIZE, emptyBoard, boardWith, mulberry32 } from '../../test-utils/helpers.ts';
-import { planTileTransitions, resultingTiles, type TileTransition } from '../../src/render/transitionPlan.ts';
+import { emptyBoard, boardWith, mulberry32, assertNoLeak } from '../../test-utils/helpers.ts';
+import { planTileTransitions } from '../../src/render/transitionPlan.ts';
 
 const DIRECTIONS = ['left', 'right', 'up', 'down'] as const;
 const TRANSITION_TYPES = ['slide', 'merge', 'spawn', 'hold'] as const;
-
-function occupiedCells(board: Array<Array<number | null>>): Array<[number, number]> {
-  const out: Array<[number, number]> = [];
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      if (board[r][c] !== null) out.push([r, c]);
-    }
-  }
-  return out.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-}
-
-function assertNoLeak(plan: TileTransition[], resultBoard: Array<Array<number | null>>) {
-  const plannedCells = resultingTiles(plan)
-    .map((t) => t.cell)
-    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-  assert.deepStrictEqual(plannedCells, occupiedCells(resultBoard), 'planned tiles equal occupied cells of result.board');
-}
 
 test('SMOKE: fresh game board plans every starting tile as a hold transition (no leak on first render)', () => {
   const board = game.newGame(mulberry32(20260808));

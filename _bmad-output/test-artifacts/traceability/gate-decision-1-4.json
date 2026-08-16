@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-15T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "1.4",
+    "label": "Offline capability, instalável e persistência"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "Physical-device offline validation recorded 2026-08-15 (iPhone 14 Pro, iOS 26.6, Release build): airplane mode on with Wi-Fi off, instant launch (NFR-3), full play session with no network and no crash, best + settings restored after a full process kill/reload offline (2 runs). Evidence in game-architecture.md#Data Persistence. AC-1 FULL; P0 100%, P1 100%, overall 100%. All gate criteria MET.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-4.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

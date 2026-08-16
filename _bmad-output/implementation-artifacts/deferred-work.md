@@ -46,3 +46,7 @@
 
 - `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
 - Parity suite has no multi-move / full-game seeded differential — sequence-level divergences (spawn-position loops, repeated-move score accumulation) are invisible. Deferred; unit suite + parity matrix cover the I/O matrix.
+
+## Deferred from: code review of 1-4-offline-capability-instalavel-e-persistencia (2026-08-15)
+
+- **`useState(() => newGame(rngRef.current))` mutates the RNG ref inside a state initializer** (`triade/App.tsx:23`) — StrictMode double-invokes initializers, consuming the seeded `mulberry32` stream twice and making the board a non-deterministic function of the seed. Pre-existing harness (real input lands in story 1.6); `registerRootComponent` doesn't enable StrictMode today.

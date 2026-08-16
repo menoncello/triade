@@ -1,8 +1,30 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Canvas, Group, RoundedRect } from '@shopify/react-native-skia';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Platform } from 'react-native';
+import { Canvas, Group, RoundedRect, Text, matchFont } from '@shopify/react-native-skia';
+import type { SkFont } from '@shopify/react-native-skia';
 import { useDerivedValue, useSharedValue, withDelay, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import type { Board, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
+
+const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
+
+function tileTextColor(value: number): string {
+  return value <= 12 ? '#3a2f1d' : '#fff8e8';
+}
+
+function tileFontSize(cell: number, value: number): number {
+  const digits = String(value).length;
+  return Math.min(cell * 0.44, (cell * 1.7) / digits);
+}
+
+function centerX(font: SkFont, value: number, cell: number): number {
+  return (cell - font.measureText(String(value)).width) / 2;
+}
+
+function centerY(font: SkFont, cell: number): number {
+  const m = font.getMetrics();
+  return cell / 2 - (m.ascent + m.descent) / 2;
+}
 
 const GRID = 4;
 const BOARD_PADDING = 8;
@@ -92,6 +114,11 @@ function AnimatedTile({ id, value, from, to, kind, cell, delay = 0, onVanish }: 
   const translate = useDerivedValue(() => [{ translateX: x.value }, { translateY: y.value }]);
   const scaleTransform = useDerivedValue(() => [{ scale: scale.value }]);
 
+  const font = useMemo(() => {
+    const size = tileFontSize(cell, value);
+    return matchFont({ fontFamily: TILE_FONT_FAMILY, fontSize: size, fontWeight: 'bold' });
+  }, [cell, value]);
+
   return (
     <Group transform={translate}>
       <Group transform={scaleTransform} origin={{ x: cell / 2, y: cell / 2 }}>
@@ -104,6 +131,16 @@ function AnimatedTile({ id, value, from, to, kind, cell, delay = 0, onVanish }: 
           color={cellColor(value)}
           opacity={opacity}
         />
+        {font ? (
+          <Text
+            x={centerX(font, value, cell)}
+            y={centerY(font, cell)}
+            text={String(value)}
+            font={font}
+            color={tileTextColor(value)}
+            opacity={opacity}
+          />
+        ) : null}
       </Group>
     </Group>
   );
@@ -116,7 +153,7 @@ export interface GameBoardProps {
 }
 
 export function GameBoard({ board, moveResult, width }: GameBoardProps) {
-  const cell = (width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID;
+  const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
