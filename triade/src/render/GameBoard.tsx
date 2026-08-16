@@ -116,7 +116,7 @@ export interface GameBoardProps {
 }
 
 export function GameBoard({ board, moveResult, width }: GameBoardProps) {
-  const cell = (width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID;
+  const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);

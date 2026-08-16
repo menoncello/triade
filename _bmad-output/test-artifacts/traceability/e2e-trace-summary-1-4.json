@@ -1,0 +1,132 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-08-15T00:00:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "9fa92164afe31ae358b045c2f1f93d54fdd7205b",
+  "target": {
+    "type": "story",
+    "id": "1.4",
+    "label": "Offline capability, instalável e persistência"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-4-offline-capability-instalavel-e-persistencia.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.4",
+      "_bmad-output/test-artifacts/atdd-checklist-1-4-offline-capability-instalavel-e-persistencia.md",
+      "triade/src/services/storage/schema.ts",
+      "triade/src/services/storage/settingsStore.ts",
+      "triade/src/services/storage/entitlements.ts",
+      "triade/src/services/assets/assetManifest.ts",
+      "triade/src/game/matchScore.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 5,
+      "total": 5,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 3,
+        "covered": 3,
+        "pct": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "P2": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "api": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 30,
+        "criteria_covered": 5
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 7,
+    "cases": 30,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality.",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-4.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  },
+  "rationale": "Physical-device offline validation recorded 2026-08-15 (iPhone 14 Pro, iOS 26.6, Release build): airplane mode on with Wi-Fi off, instant launch (NFR-3), full play session with no network and no crash, best + settings restored after a full process kill/reload offline (2 runs). Evidence in game-architecture.md#Data Persistence. AC-1 FULL; P0 100%, P1 100%, overall 100%. All gate criteria MET."
+}

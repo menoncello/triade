@@ -146,12 +146,15 @@ Single source of truth for dependency versions (update only via spike/CI evidenc
 | @shopify/react-native-skia | 2.11.0 | MIT, active |
 | react-native-reanimated | 4.3.x | Peer for Skia 2.11 |
 | react-native-worklets | 0.8.x | Peer for Skia 2.11 |
+| react-native-mmkv | ^4.3.2 | Storage (S1.4 decision: MMKV over AsyncStorage) |
+| expo-secure-store | ~57.0.1 | Entitlements mirror (S1.4) |
+| expo-asset | ~57.0.11 | Asset preload (S1.4) |
 | expo-haptics | (SDK 57) | Scaled feel |
 | react-native-purchases | 10.7.0 | RevenueCat IAP |
 | react-native-google-mobile-ads | 16.4.0 | AdMob rewarded + UMP |
 | @react-native-firebase/app + crashlytics + analytics | 26.1.0 | Telemetry |
 | expo-audio | 57.0.3 | Minimal SFX |
-| expo-secure-store | (SDK 57) | Entitlements mirror |
+| expo-secure-store | ~57.0.1 | Entitlements mirror |
 | i18next + react-i18next | 26.3.6 | i18n (v1) |
 | expo-localization | (SDK 57) | Device locale |
 | expo-tracking-transparency | 57.0.1 | ATT prompt |
@@ -248,6 +251,25 @@ run by the developer on the bench.
 optional AsyncStorage vs MMKV micro-benchmark (T4.5) is deferred — installing
 the storage stack is out of spike scope (T1.2). S1.4 will run it.
 
+**Storage decision (S1.4 resolved, 2026-08-14):** AsyncStorage vs MMKV
+micro-benchmark (T4.5) completed. Native differential measured on the iOS
+Simulator (iPhone 17 Pro, Xcode 26.6) via a temporary in-app harness over 10
+keys / 2000 reads:
+- **AsyncStorage (`@react-native-async-storage/async-storage` 2.2.0):**
+  write `setItem` median 0.2813 ms (p99 0.2957 ms); read `getItem` median
+  0.0270 ms (p99 0.0450 ms).
+- **MMKV (`react-native-mmkv` 4.3.2):** write `set` median 0.0019 ms
+  (p99 0.0048 ms); read `getString` median 0.0008 ms (p99 0.0010 ms);
+  `getAllKeys` (10 keys) 0.0099 ms.
+- **Decision: MMKV.** Read ~34x faster, write ~148x faster (median) on the
+  native startup/read path, which the S1.1 spike designated as the decisive
+  measurement (the Node JS-layer cost is the CI gate). MMKV reads are
+  synchronous (no async bridge), matching the settings/best-score hot read at
+  session start. The CI-gated JS payload layer (pure `schema.ts`
+  serialize→load round-trip) measured < 0.1 ms median under `node --test`.
+  Pinned: `react-native-mmkv` ^4.3.2 (promoted to `dependencies`;
+  AsyncStorage removed).
+
 **Pinned Version Matrix correction (spike evidence):** `npx expo install`
 resolves SDK-57 lockstep versions that differ from the matrix's earlier
 hypotheses — `@shopify/react-native-skia` **2.6.2** (not 2.11.0),
@@ -261,8 +283,8 @@ must be the source of truth going forward.
 - T5.2 — on-device frame-rate baseline (fps + p99) via the shipped
   `useFrameRateBaseline` hook in `triade/src/render/`. This is the baseline for
   the device-level p99 < 16.7 ms job (S1.1 Level 2).
-- T4.5 — AsyncStorage vs MMKV micro-benchmark deferred to S1.4 (storage deps
-  excluded from the spike install scope by T1.2).
+- T4.5 — AsyncStorage vs MMKV micro-benchmark **resolved 2026-08-14 in S1.4**
+  → **MMKV** (see "Storage decision (S1.4 resolved)" note above).
 
 **Simulator validation (2026-08-10, iOS Simulator — iPhone 17 Pro, Xcode 26.6):**
 - T1.4 partial — the Expo SDK 57 dev build boots and the static 4×4 Skia board
@@ -350,12 +372,23 @@ merge. A tiny sequencer may stagger spawn/feel effects; no fixed tick.
 ### Data Persistence
 
 - **Settings / best score / lane memory** → AsyncStorage or MMKV — **decided by
-  the S1.1 spike benchmark** (startup/read cost), not by preference.
+  the S1.1 spike benchmark** (startup/read cost), not by preference. **Resolved
+  in S1.4: MMKV** (see "Storage decision (S1.4 resolved)" above).
 - **Entitlements** (IAP: no-ads, packs) → `expo-secure-store`. **Precedence:**
   the SecureStore mirror is **authoritative offline**; RevenueCat reconciles
   when the network returns and **never downgrades** a held entitlement.
 - **Per-match budgets** (free undo, continue, hint counts) → memory only;
   die with the match.
+
+**Device offline validation (S1.4, 2026-08-15):** dev build (Release,
+`npx expo run:ios --device --configuration Release`) booted on **iPhone 14 Pro,
+iOS 26.6**. Airplane mode on (Wi-Fi off): app launched instantly (no loading
+screen, NFR-3), full play session with no network, no crash. Best score + a
+settings write survived a full process kill/reload while still offline (2 runs;
+MMKV on-device store restored the persisted best, NFR-2 / FR-4 / AC-2). AC-1
+(NFR-2/NFR-3) closed on hardware; SecureStore entitlement mirror verified on
+simulator previously. Native runtime = manual validation per project rules —
+evidence recorded here, not in CI.
 
 ### Navigation & Flow
 
