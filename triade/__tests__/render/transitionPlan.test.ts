@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
-import { SIZE, emptyBoard, rngOf, staticBoard, boardWith, mulberry32 } from '../../test-utils/helpers.ts';
-import { planTileTransitions, resultingTiles, type TileTransition } from '../../src/render/transitionPlan.ts';
+import { SIZE, emptyBoard, rngOf, boardWith, mulberry32, assertNoLeak } from '../../test-utils/helpers.ts';
+import { planTileTransitions } from '../../src/render/transitionPlan.ts';
 
 const DIRECTIONS = ['left', 'right', 'up', 'down'] as const;
 
@@ -14,25 +14,6 @@ function boardOf(...rows: Array<Array<number | null>>) {
     }
   }
   return b;
-}
-
-function occupiedCells(board: Array<Array<number | null>>): Array<{ cell: [number, number]; value: number }> {
-  const out: Array<{ cell: [number, number]; value: number }> = [];
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      if (board[r][c] !== null) out.push({ cell: [r, c], value: board[r][c] as number });
-    }
-  }
-  return out.sort(byCell);
-}
-
-function byCell(a: { cell: [number, number] }, b: { cell: [number, number] }): number {
-  return a.cell[0] - b.cell[0] || a.cell[1] - b.cell[1];
-}
-
-function assertNoLeak(plan: TileTransition[], resultBoard: Array<Array<number | null>>) {
-  const tiles = resultingTiles(plan).map((t) => ({ cell: t.cell, value: t.value })).sort(byCell);
-  assert.deepStrictEqual(tiles, occupiedCells(resultBoard), 'resultingTiles(plan) equals occupied cells of result.board');
 }
 
 test('planTileTransitions: slide left maps the moving tile from source to dest', () => {

@@ -9,11 +9,17 @@ const PURITY_ROOTS = [
   fileURLToPath(new URL('../../src/game/', import.meta.url))
 ];
 
-// Story 1.3 ADR-05: transitionPlan.ts is pure TS in src/render — the frame math
-// must stay host-testable and import nothing from RN/React/Skia/Reanimated.
-const PURITY_FILES = [fileURLToPath(new URL('../../src/render/transitionPlan.ts', import.meta.url))];
+// ADR-05: the frame math in src/render must stay pure TS (host-testable,
+// relative imports only). The render layer also holds runtime-bound modules
+// (React/Skia/Reanimated hooks/components) that legitimately import RN. Instead
+// of hand-maintaining a purity allowlist, we auto-scan every file under
+// src/render and exempt only the documented runtime-bound files below — a NEW
+// pure module is scanned automatically, and any new RN-bound module fails until
+// it is consciously added to the exemption set.
+const RENDER_ROOT = fileURLToPath(new URL('../../src/render/', import.meta.url));
+const RENDER_RUNTIME_BOUND = new Set(['GameBoard.tsx', 'useFrameRateBaseline.ts']);
 
-const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native'];
+const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native', 'reanimated', 'skia'];
 
 function isForbidden(specifier: string): string | undefined {
   const lower = specifier.toLowerCase();
@@ -78,29 +84,49 @@ test('ADR-01: src/engine + src/game import nothing from RN/React/Skia/Expo', asy
   }
 });
 
-test('ADR-01: src/render/transitionPlan.ts is pure TS (no RN/React/Skia/Expo imports)', async () => {
-  for (const file of PURITY_FILES) {
+async function renderPureModules(): Promise<string[]> {
+  const all = await collectTsFiles(RENDER_ROOT);
+  assert.ok(all.length > 0, 'no TypeScript source files under src/render — ADR-05 scope silently void');
+  const pure = all.filter((f) => !RENDER_RUNTIME_BOUND.has(relative(RENDER_ROOT, f)));
+  assert.ok(pure.length > 0, 'no pure modules under src/render — is the runtime-bound exemption too broad?');
+  return pure;
+}
+
+test('ADR-01: src/render pure modules import nothing from RN/React/Skia/Expo (runtime-bound files exempt)', async () => {
+  for (const file of await renderPureModules()) {
     const source = await readFile(file, 'utf8');
+    const rel = relative(RENDER_ROOT, file);
     for (const spec of extractSpecifiers(source)) {
       const forbidden = isForbidden(spec);
       assert.ok(
         !forbidden,
-        `${file}: imports '${spec}' from forbidden RN/React/Skia/Expo module '${forbidden}' (ADR-05 violation)`
+        `${rel}: imports '${spec}' from forbidden RN/React/Skia/Expo module '${forbidden}' (ADR-05 violation)`
       );
     }
   }
 });
 
-test('ADR-01: src/render/transitionPlan.ts uses relative imports only (self-contained frame math)', async () => {
-  for (const file of PURITY_FILES) {
+test('ADR-01: src/render pure modules use relative imports only (self-contained frame math)', async () => {
+  for (const file of await renderPureModules()) {
     const source = await readFile(file, 'utf8');
+    const rel = relative(RENDER_ROOT, file);
     for (const spec of extractSpecifiers(source)) {
       const relativeImport = spec.startsWith('./') || spec.startsWith('../');
       assert.ok(
         relativeImport,
-        `${file}: non-relative import '${spec}' breaks the pure-TS self-contained boundary (ADR-01)`
+        `${rel}: non-relative import '${spec}' breaks the pure-TS self-contained boundary (ADR-01)`
       );
     }
+  }
+});
+
+test('ADR-01: src/render runtime-bound exemption set is current (no stale entries)', async () => {
+  const all = new Set((await collectTsFiles(RENDER_ROOT)).map((f) => relative(RENDER_ROOT, f)));
+  for (const name of RENDER_RUNTIME_BOUND) {
+    assert.ok(
+      all.has(name),
+      `exemption '${name}' no longer exists under src/render — remove it from RENDER_RUNTIME_BOUND`
+    );
   }
 });
 
