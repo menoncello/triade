@@ -147,6 +147,7 @@ Single source of truth for dependency versions (update only via spike/CI evidenc
 | react-native-reanimated | 4.3.x | Peer for Skia 2.11 |
 | react-native-worklets | 0.8.x | Peer for Skia 2.11 |
 | react-native-mmkv | ^4.3.2 | Storage (S1.4 decision: MMKV over AsyncStorage) |
+| react-native-safe-area-context | ~5.7.0 | Safe-area insets (S1.5; `npx expo install`, SDK 57 lockstep) |
 | expo-secure-store | ~57.0.1 | Entitlements mirror (S1.4) |
 | expo-asset | ~57.0.11 | Asset preload (S1.4) |
 | expo-haptics | (SDK 57) | Scaled feel |

@@ -64,4 +64,46 @@ export function assertNoLeak(plan: TileTransition[], resultBoard: Board, message
   );
 }
 
+export function stripComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+}
+
+export function extractSpecifiers(source: string): string[] {
+  const cleaned = stripComments(source);
+  const specifiers: string[] = [];
+  const quoteClass = '["\'`]';
+  const notQuote = '[^"\'\`]';
+  const staticRe = new RegExp(
+    '(?:import|export)\\s+(?:[\\w*{},\\s]+from\\s+)?' + quoteClass + '(' + notQuote + '+)' + quoteClass,
+    'g'
+  );
+  const dynamicRe = new RegExp('import\\s*\\(\\s*' + quoteClass + '(' + notQuote + '+)' + quoteClass + '\\s*\\)', 'g');
+  const requireRe = new RegExp('require\\s*\\(\\s*' + quoteClass + '(' + notQuote + '+)' + quoteClass + '\\s*\\)', 'g');
+  let m: RegExpExecArray | null;
+  while ((m = staticRe.exec(cleaned)) !== null) specifiers.push(m[1]);
+  while ((m = dynamicRe.exec(cleaned)) !== null) specifiers.push(m[1]);
+  while ((m = requireRe.exec(cleaned)) !== null) specifiers.push(m[1]);
+  return specifiers;
+}
+
+export function extractNamedImports(source: string): Array<{ specifier: string; names: string[] }> {
+  const cleaned = stripComments(source);
+  const results: Array<{ specifier: string; names: string[] }> = [];
+  const re = /import\s+(?:type\s+)?(?:\{[^}]*\}|[^;]+?)\s+from\s+["'`]([^"'`]+)["'`]/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(cleaned)) !== null) {
+    const brace = /\{([^}]*)\}/.exec(m[0]);
+    const names = brace
+      ? brace[1]
+          .split(',')
+          .map((n) => n.trim().split(/\s+as\s+/)[0].trim())
+          .filter((n) => n.length > 0)
+      : [];
+    results.push({ specifier: m[1], names });
+  }
+  return results;
+}
+
 export { mulberry32 } from '../src/utils/mulberry32.ts';

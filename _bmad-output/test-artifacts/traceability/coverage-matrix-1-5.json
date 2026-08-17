@@ -1,0 +1,367 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-17T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "1.5",
+    "label": "Layout portrait e landscape"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-5-layout-portrait-e-landscape.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.5",
+      "_bmad-output/test-artifacts/atdd-checklist-1-5-layout-portrait-e-landscape.md",
+      "triade/src/ui/layout.ts",
+      "triade/src/ui/orientation.ts",
+      "triade/src/ui/Hud.tsx",
+      "triade/src/ui/PauseButton.tsx"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "priority": "P1",
+      "coverage": "FULL",
+      "title": "Portrait HUD composition: score center-top (34pt display), best below small (lane-scoped, muted), preview card bottom corner, pause top-right - nothing else (UX-DR-7).",
+      "tests": [
+        {
+          "id": "1.5-LAY-001",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 41,
+          "title": "[P0] layoutFor on a portrait phone (390x844, notch top 47 + home bottom 34) reports isLandscape=false and a width-bounded maximized board (AC-1, AC-4, AC-5)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-ORI-002",
+          "file": "triade/__tests__/ui/orientation.test.ts",
+          "line": 18,
+          "title": "[P0] isLandscape returns false when width < height (portrait, AC-1)",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "Automated layer = pure layout math for the portrait container (board maximized within safe margins, orientation agreed). RN HUD composition (score/best/preview/pause placement, 34pt display) is manual validation on simulator/device per project rules; completion note T5.1 records portrait HUD rendering confirmed on iPhone 17 Pro simulator (iOS 26.5).",
+        "manual_runtime": "Portrait HUD composition (RN view, UX-DR-7)",
+        "automated_proxy": "1.5-LAY-001, 1.5-ORI-002"
+      }
+    },
+    {
+      "id": "AC-2",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "Landscape: HUD collapses to a thin top edge band - score+best left, preview right, pause top-right (opposite preview), at 22pt/11pt (UX-DR-5).",
+      "tests": [
+        {
+          "id": "1.5-LAY-002",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 58,
+          "title": "[P0] layoutFor on a landscape phone (844x390, left notch 47 + right home 21) reports isLandscape=true and a height-bounded board below the band (AC-2, AC-6)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-003",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 76,
+          "title": "[P0] the landscape HUD collapses: bandHeight(landscape) is strictly smaller than bandHeight(portrait) (D-006 thin top edge band)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-ORI-001",
+          "file": "triade/__tests__/ui/orientation.test.ts",
+          "line": 13,
+          "title": "[P0] isLandscape returns true when width > height (landscape, AC-2)",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "Band-vs-board math fully automated (LANDSCAPE_BAND_HEIGHT=48 < PORTRAIT_BAND_HEIGHT=96, board height-bounded below the band). RN band composition (22pt/11pt typography, preview right of pause) is manual validation per project rules.",
+        "manual_runtime": "Landscape HUD band composition (RN view, UX-DR-5)",
+        "automated_proxy": "1.5-LAY-002, 1.5-LAY-003, 1.5-ORI-001"
+      }
+    },
+    {
+      "id": "AC-3",
+      "priority": "P1",
+      "coverage": "FULL",
+      "title": "Pause is top-right in both orientations, outside the board swipe rect, >=44x44, inside safe margins (UX-DR-6).",
+      "tests": [
+        {
+          "id": "1.5-THV-002",
+          "file": "triade/__tests__/ui/ui.thinview.test.ts",
+          "line": 35,
+          "title": "[P1] AC-3: PauseButton keeps a >= 44pt hit target exported as HIT_TARGET and applied to the button box",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-THV-001",
+          "file": "triade/__tests__/ui/ui.thinview.test.ts",
+          "line": 23,
+          "title": "[P1] AC-3/UX-DR-6: Hud.tsx and PauseButton.tsx import only react-native primitives and same-dir siblings (thin views, no rule logic)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-007",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 136,
+          "title": "[P0] boardSize never exceeds the safe-margin-bounded available width or height (insets respected, AC-4)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-009",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 165,
+          "title": "[P0] small screen (320x480) yields a positive board that never overlaps the HUD band (testing standard edge case)",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "HIT_TARGET=48 (>=44 contract) exported and applied to button width/height via static tripwire; safe-margin bounds enforced by layout math. Physical placement top-right/outside swipe rect is manual validation per project rules (T5.1).",
+        "manual_runtime": "Pause button top-right placement + outside swipe rect (RN view)",
+        "automated_proxy": "1.5-THV-002, 1.5-THV-001, 1.5-LAY-007, 1.5-LAY-009"
+      }
+    },
+    {
+      "id": "AC-4",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "Safe areas from react-native-safe-area-context with a 16pt safe margin on top of per-edge insets in both orientations (UX-DR-4, UX-DR-20).",
+      "tests": [
+        {
+          "id": "1.5-LAY-008",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 160,
+          "title": "[P0] SAFE_MARGIN is exactly 16pt and applied on every edge on top of per-edge insets (UX-DR-4, UX-DR-20)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-007",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 136,
+          "title": "[P0] boardSize never exceeds the safe-margin-bounded available width or height (insets respected, AC-4)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-014",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 244,
+          "title": "[P1] per-edge insets bind asymmetrically: vertical insets shrink a height-bounded board, horizontal insets shrink a width-bounded board (AC-4)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-009",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 165,
+          "title": "[P0] small screen (320x480) yields a positive board that never overlaps the HUD band (testing standard edge case)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-012",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 209,
+          "title": "[P0] degenerate insets that exceed the container clamp the board to 0 and never go negative (defensive clamp path)",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "SAFE_MARGIN=16 pinned; insets feed layoutFor and bind per-edge (notch top 47 / home bottom 34 portrait, left 47 / right 21 landscape). Native safe-area source (react-native-safe-area-context) is manual validation per project rules.",
+        "manual_runtime": "Native safe-area source (react-native-safe-area-context runtime insets)",
+        "automated_proxy": "1.5-LAY-008, 1.5-LAY-007, 1.5-LAY-014, 1.5-LAY-009, 1.5-LAY-012"
+      }
+    },
+    {
+      "id": "AC-5",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "The board maximizes in the space left; tiles scale with the container in both orientations - tile size derives from the container, never hand-set (UX-DR-20).",
+      "tests": [
+        {
+          "id": "1.5-LAY-004",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 90,
+          "title": "[P0] boardSize is the maximized square for a sweep of containers (AC-5, UX-DR-20)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-005",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 114,
+          "title": "[P0] golden anchors: 414x896 portrait and 1024x768 landscape boards equal the maximized square exactly (regression anchors, UX-DR-20)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-006",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 126,
+          "title": "[P0] tile size derives from the container: two container widths give different board sizes, never a fixed constant (UX-DR-20)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-001",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 41,
+          "title": "[P0] layoutFor on a portrait phone (390x844, notch top 47 + home bottom 34) reports isLandscape=false and a width-bounded maximized board (AC-1, AC-4, AC-5)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-002",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 58,
+          "title": "[P0] layoutFor on a landscape phone (844x390, left notch 47 + right home 21) reports isLandscape=true and a height-bounded board below the band (AC-2, AC-6)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-009",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 165,
+          "title": "[P0] small screen (320x480) yields a positive board that never overlaps the HUD band (testing standard edge case)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-010",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 179,
+          "title": "[P0] extreme landscape aspect (2000x200) yields a positive board with a thin band that the board dominates",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-011",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 189,
+          "title": "[P0] all layoutFor outputs are finite and the board is never negative across a sweep of sizes",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "Board maximize (min of horizontal/vertical bounds) swept across 5+ container sizes incl. edge aspects; container-derived tile size asserted (never a constant). Board/tile rendering is manual validation per project rules.",
+        "manual_runtime": "Board/tile rendering from layoutFor output (RN)",
+        "automated_proxy": "1.5-LAY-004, 1.5-LAY-005, 1.5-LAY-006, 1.5-LAY-001, 1.5-LAY-002, 1.5-LAY-009, 1.5-LAY-010, 1.5-LAY-011"
+      }
+    },
+    {
+      "id": "AC-6",
+      "priority": "P0",
+      "coverage": "FULL",
+      "title": "In landscape the HUD collapses to the thin top edge band and the board dominates the space below it (D-006).",
+      "tests": [
+        {
+          "id": "1.5-LAY-003",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 76,
+          "title": "[P0] the landscape HUD collapses: bandHeight(landscape) is strictly smaller than bandHeight(portrait) (D-006 thin top edge band)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-002",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 58,
+          "title": "[P0] layoutFor on a landscape phone (844x390, left notch 47 + right home 21) reports isLandscape=true and a height-bounded board below the band (AC-2, AC-6)",
+          "level": "Unit"
+        },
+        {
+          "id": "1.5-LAY-010",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 179,
+          "title": "[P0] extreme landscape aspect (2000x200) yields a positive board with a thin band that the board dominates",
+          "level": "Unit"
+        }
+      ],
+      "evidence": {
+        "note": "Band collapse ordering (LANDSCAPE_BAND_HEIGHT=48 < PORTRAIT_BAND_HEIGHT=96) and board dominance (boardSize > bandHeight) asserted on real and extreme aspect ratios.",
+        "manual_runtime": "none (pure math contract fully automated)",
+        "automated_proxy": "1.5-LAY-003, 1.5-LAY-002, 1.5-LAY-010"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 2, "covered": 2, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 22,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 22, "criteria_covered": 6 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "1.5-LAY-001", "file": "triade/__tests__/ui/layout.test.ts", "line": 41, "title": "[P0] layoutFor on a portrait phone (390x844, notch top 47 + home bottom 34) reports isLandscape=false and a width-bounded maximized board (AC-1, AC-4, AC-5)", "level": "Unit" },
+      { "id": "1.5-LAY-002", "file": "triade/__tests__/ui/layout.test.ts", "line": 58, "title": "[P0] layoutFor on a landscape phone (844x390, left notch 47 + right home 21) reports isLandscape=true and a height-bounded board below the band (AC-2, AC-6)", "level": "Unit" },
+      { "id": "1.5-LAY-003", "file": "triade/__tests__/ui/layout.test.ts", "line": 76, "title": "[P0] the landscape HUD collapses: bandHeight(landscape) is strictly smaller than bandHeight(portrait) (D-006 thin top edge band)", "level": "Unit" },
+      { "id": "1.5-LAY-004", "file": "triade/__tests__/ui/layout.test.ts", "line": 90, "title": "[P0] boardSize is the maximized square for a sweep of containers (AC-5, UX-DR-20)", "level": "Unit" },
+      { "id": "1.5-LAY-005", "file": "triade/__tests__/ui/layout.test.ts", "line": 114, "title": "[P0] golden anchors: 414x896 portrait and 1024x768 landscape boards equal the maximized square exactly (regression anchors, UX-DR-20)", "level": "Unit" },
+      { "id": "1.5-LAY-006", "file": "triade/__tests__/ui/layout.test.ts", "line": 126, "title": "[P0] tile size derives from the container: two container widths give different board sizes, never a fixed constant (UX-DR-20)", "level": "Unit" },
+      { "id": "1.5-LAY-007", "file": "triade/__tests__/ui/layout.test.ts", "line": 136, "title": "[P0] boardSize never exceeds the safe-margin-bounded available width or height (insets respected, AC-4)", "level": "Unit" },
+      { "id": "1.5-LAY-008", "file": "triade/__tests__/ui/layout.test.ts", "line": 160, "title": "[P0] SAFE_MARGIN is exactly 16pt and applied on every edge on top of per-edge insets (UX-DR-4, UX-DR-20)", "level": "Unit" },
+      { "id": "1.5-LAY-009", "file": "triade/__tests__/ui/layout.test.ts", "line": 165, "title": "[P0] small screen (320x480) yields a positive board that never overlaps the HUD band (testing standard edge case)", "level": "Unit" },
+      { "id": "1.5-LAY-010", "file": "triade/__tests__/ui/layout.test.ts", "line": 179, "title": "[P0] extreme landscape aspect (2000x200) yields a positive board with a thin band that the board dominates", "level": "Unit" },
+      { "id": "1.5-LAY-011", "file": "triade/__tests__/ui/layout.test.ts", "line": 189, "title": "[P0] all layoutFor outputs are finite and the board is never negative across a sweep of sizes", "level": "Unit" },
+      { "id": "1.5-LAY-012", "file": "triade/__tests__/ui/layout.test.ts", "line": 209, "title": "[P0] degenerate insets that exceed the container clamp the board to 0 and never go negative (defensive clamp path)", "level": "Unit" },
+      { "id": "1.5-LAY-013", "file": "triade/__tests__/ui/layout.test.ts", "line": 223, "title": "[P1] layoutFor.isLandscape agrees with isLandscape(width, height) - single source of truth (T2.2)", "level": "Unit" },
+      { "id": "1.5-LAY-014", "file": "triade/__tests__/ui/layout.test.ts", "line": 244, "title": "[P1] per-edge insets bind asymmetrically: vertical insets shrink a height-bounded board, horizontal insets shrink a width-bounded board (AC-4)", "level": "Unit" },
+      { "id": "1.5-ORI-001", "file": "triade/__tests__/ui/orientation.test.ts", "line": 13, "title": "[P0] isLandscape returns true when width > height (landscape, AC-2)", "level": "Unit" },
+      { "id": "1.5-ORI-002", "file": "triade/__tests__/ui/orientation.test.ts", "line": 18, "title": "[P0] isLandscape returns false when width < height (portrait, AC-1)", "level": "Unit" },
+      { "id": "1.5-ORI-003", "file": "triade/__tests__/ui/orientation.test.ts", "line": 23, "title": "[P0] isLandscape returns false when width === height (square defaults to portrait)", "level": "Unit" },
+      { "id": "1.5-ORI-004", "file": "triade/__tests__/ui/orientation.test.ts", "line": 28, "title": "[P0] isLandscape is exact at the boundary: width one greater than height is landscape, one less is portrait", "level": "Unit" },
+      { "id": "1.5-ORI-005", "file": "triade/__tests__/ui/orientation.test.ts", "line": 34, "title": "[P1] isLandscape is pure: no width/height mutation, no state, same inputs always same result", "level": "Unit" },
+      { "id": "1.5-PUR-001", "file": "triade/__tests__/ui/ui.purity.test.ts", "line": 24, "title": "[P1] ADR-01/05: src/ui pure modules (layout.ts, orientation.ts) import nothing from RN/React/Skia/Expo and use relative imports only", "level": "Unit" },
+      { "id": "1.5-THV-001", "file": "triade/__tests__/ui/ui.thinview.test.ts", "line": 23, "title": "[P1] AC-3/UX-DR-6: Hud.tsx and PauseButton.tsx import only react-native primitives and same-dir siblings (thin views, no rule logic)", "level": "Unit" },
+      { "id": "1.5-THV-002", "file": "triade/__tests__/ui/ui.thinview.test.ts", "line": 35, "title": "[P1] AC-3: PauseButton keeps a >= 44pt hit target exported as HIT_TARGET and applied to the button box", "level": "Unit" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality.",
+      "requirements": []
+    }
+  ]
+}

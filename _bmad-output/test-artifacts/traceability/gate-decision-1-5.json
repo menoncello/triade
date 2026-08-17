@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-17T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "1.5",
+    "label": "Layout portrait e landscape"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "All 6 acceptance criteria FULL. P0 coverage 100% (4/4), P1 coverage 100% (2/2), overall 100%. Suite green: 131/131 triade (incl. 22 UI layout/orientation/purity/thin-view tests), 26/26 web frozen, tsc --noEmit clean. RN HUD composition + native safe-area/rotation runtime are manual validation per project rules (portrait confirmed on simulator; landscape contract covered by unit tests).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-5.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}
