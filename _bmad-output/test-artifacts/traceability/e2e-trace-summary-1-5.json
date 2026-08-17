@@ -1,0 +1,101 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-08-17T00:00:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "fb6f8ddfa70ea1eee9a63c4b4b5d2cbb63458dd6",
+  "target": {
+    "type": "story",
+    "id": "1.5",
+    "label": "Layout portrait e landscape"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-5-layout-portrait-e-landscape.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.5",
+      "_bmad-output/test-artifacts/atdd-checklist-1-5-layout-portrait-e-landscape.md",
+      "triade/src/ui/layout.ts",
+      "triade/src/ui/orientation.ts",
+      "triade/src/ui/Hud.tsx",
+      "triade/src/ui/PauseButton.tsx"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "pct": 100 },
+      "P1": { "total": 2, "covered": 2, "pct": 100 },
+      "P2": { "total": 0, "covered": 0, "pct": 100 },
+      "P3": { "total": 0, "covered": 0, "pct": 100 }
+    },
+    "by_level": {
+      "e2e": { "tests": 0, "criteria_covered": 0 },
+      "api": { "tests": 0, "criteria_covered": 0 },
+      "component": { "tests": 0, "criteria_covered": 0 },
+      "unit": { "tests": 22, "criteria_covered": 6 },
+      "other": { "tests": 0, "criteria_covered": 0 }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 22,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "not_applicable",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality.",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-5.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  },
+  "rationale": "P0 coverage is 100% (4/4 ACs FULL), P1 coverage is 100% (2/2 FULL, target 90%), and overall coverage is 100% (6/6 ACs FULL). Every automatable criterion is FULL and green: 131/131 triade tests (incl. the 22 UI layout/orientation/purity/thin-view tests) + 26/26 frozen web suite, tsc --noEmit clean, all deterministic (pure functions, literal fixtures, no Math.random). RN HUD composition and native safe-area/rotation runtime remain manual validation per project rules (T5.1: portrait HUD confirmed on iPhone 17 Pro simulator; landscape visual pass documented as manual-validation remaining, landscape contract fully covered by the 12+ layout unit tests)."
+}

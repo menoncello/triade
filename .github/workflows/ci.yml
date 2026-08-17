@@ -31,7 +31,7 @@ jobs:
         run: node --test
 
       - name: Coverage report (informational — never gates)
-        run: node --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**'
+        run: node --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**' --test-coverage-include='src/ui/**'
         continue-on-error: true
 
   web-pwa-engine-test:

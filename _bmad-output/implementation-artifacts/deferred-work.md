@@ -1,5 +1,23 @@
 # Deferred Work
 
+## Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)
+
+- Preview placeholder (76×76) overlaps the centered "TEMP move harness" hint text on devices with `insets.bottom === 0` (visual only — card is `pointerEvents="none"`) (`triade/src/ui/Hud.tsx:53`, `triade/App.tsx:131`). Temp harness is replaced by real swipe input in story 1.6.
+
+- `stripComments` corrupts string/regex literals containing `//` or `/*` — the purity/thin-view tripwire can false-pass or false-fail on future edits that embed such literals (`triade/test-utils/helpers.ts:67-71`). Test-tooling robustness; current files are clean.
+- `boardSize` clamps to 0 on degenerate/tiny windows (the old 40pt floor was removed; the 360 cap removal is intended per UX-DR-20 container-driven maximize) (`triade/src/ui/layout.ts:31`). Acceptable per spec; board simply doesn't render on absurd sizes.
+- NaN/Infinity inputs propagate NaN through `layoutFor` despite the "all finite" test sweeping only finite sizes (`triade/__tests__/ui/layout.test.ts:189`). Runtime inputs from `useWindowDimensions` are always finite.
+- Rotation race: `useSafeAreaInsets` lags `useWindowDimensions` by a frame → board can flash to 0; `SafeAreaProvider` mounts without `initialMetrics`; ScrollView offset persists across rotation (`triade/App.tsx:28-30,103`). Native polish, manual-validation domain.
+- Status bar legibility / band-under-status-bar on non-notch landscape (light UI + `StatusBar style="auto"`). Manual validation domain.
+- Preview placeholder Views aren't a11y-hidden (`accessible={false}`), and the raw score lacks a thousands separator vs the mockup's "3.240" (`triade/src/ui/Hud.tsx:26,48`). Out of scope — preview data is Epic 7, a11y is Epic 9.
+- Temp move harness + ScrollView not `__DEV__`-gated — ships to production until story 1.6 replaces the input path. Documented temp state.
+- Band height formula duplicated between `App.tsx` (`bandTop`) and `Hud.tsx` (`topPad + bandHeight`) — drift risk on future margin changes (`triade/App.tsx:31`).
+- Story doc T2 note says "12 layout tests"; final suite is 14 (clamp-path + golden-anchor tests added in the 2026-08-17 review fixes). Doc-only.
+
+## Deferred from: story 1-5-layout-portrait-e-landscape (2026-08-16)
+
+- **Landscape rotation visual pass on the simulator** — `expo run:ios` built and booted the app on the iOS 26.5 simulator (iPhone 17 Pro); portrait HUD rendered with no runtime errors. The rotation gesture (Cmd+arrow) is a GUI action that cannot be automated in an unattended run (TCC blocks assistive access). The landscape contract itself is fully covered by the 12 layout unit tests (band collapse, board dominance, insets, extreme aspect) and the native mask includes landscape (Info.plist verified post-prebuild); the visual rotation reading remains **manual validation remaining** (informative per project rules). Trigger to close: rotate the simulator and confirm the thin 22pt/11pt top edge band + board dominance by eye.
+
 ## Deferred from: code review (2026-08-06)
 
 - `user-scalable=no` + `maximum-scale=1.0` block pinch-zoom — accessibility tradeoff for a swipe game; revisit for a11y pass.
