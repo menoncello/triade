@@ -148,6 +148,7 @@ Single source of truth for dependency versions (update only via spike/CI evidenc
 | react-native-worklets | 0.8.x | Peer for Skia 2.11 |
 | react-native-mmkv | ^4.3.2 | Storage (S1.4 decision: MMKV over AsyncStorage) |
 | react-native-safe-area-context | ~5.7.0 | Safe-area insets (S1.5; `npx expo install`, SDK 57 lockstep) |
+| react-native-gesture-handler | ~2.32.0 | Swipe input (S1.6; `npx expo install`, SDK 57 lockstep, v2 API) |
 | expo-secure-store | ~57.0.1 | Entitlements mirror (S1.4) |
 | expo-asset | ~57.0.11 | Asset preload (S1.4) |
 | expo-haptics | (SDK 57) | Scaled feel |
@@ -178,7 +179,7 @@ npx expo install @shopify/react-native-skia react-native-reanimated react-native
 | Component | Solution | Notes |
 |---|---|---|
 | Rendering | Skia via CanvasKit (Ganesh; Graphite experimental) | GPU 2D; 60 FPS target |
-| Input | RN touch/gesture system | Swipe ~20px threshold; pointer capture |
+| Input | RN touch/gesture system | Swipe ~10px threshold; pointer capture |
 | Build | Expo prebuild + Xcode + Metro | Native iOS build via CNG |
 | JS Runtime | Hermes + Reanimated 4 (worklets) | 60 FPS animation on UI thread |
 | UI Tree | React declarative components | Views never duplicate engine rules |

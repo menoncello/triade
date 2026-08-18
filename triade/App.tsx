@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
@@ -12,15 +13,16 @@ import { loadBest, saveBest } from './src/services/storage/settingsStore.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
 import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
+import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
 import { Hud } from './src/ui/Hud';
-
-const DIRECTIONS: Direction[] = ['left', 'right', 'up', 'down'];
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <AppContent />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <AppContent />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -31,6 +33,7 @@ function AppContent() {
   const bandTop = insets.top + SAFE_MARGIN + bandHeight;
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
+  const busyRef = useRef(false);
   const sessionStartBestRef = useRef(0);
   const hydrationOkRef = useRef(true);
   const [ready, setReady] = useState(false);
@@ -78,8 +81,44 @@ function AppContent() {
       setBoard(result.board);
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
+      if (result.moved) {
+        // T3.4 in-flight gate: an effective move animates; block further swipes
+        // until the input gate re-opens (~30% of the animation, via GameBoard's
+        // onMoveSettled timer). A noop (moved:false) produces an empty
+        // transitionPlan — no animation runs, onMoveSettled never fires, so the
+        // gate must only engage on real moves (noop deadlock guard).
+        busyRef.current = true;
+      }
     },
     [board]
+  );
+
+  // Stable gesture (created once) reads the latest doMove through a ref so a
+  // move dispatched during an in-flight animation never uses a stale board
+  // closure (the deferred "rapid same-frame moves" debt, replaced here by the
+  // gesture + in-flight gate).
+  // Updated during render (not a passive effect) so the gesture can never read a
+  // stale board closure if the gate timer fires before the effect would flush.
+  const doMoveRef = useRef(doMove);
+  doMoveRef.current = doMove;
+
+  const onMoveSettled = useCallback(() => {
+    busyRef.current = false;
+  }, []);
+
+  const panGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetX([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
+        .activeOffsetY([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
+        .runOnJS(true)
+        .onEnd((event, success) => {
+          if (busyRef.current) return;
+          if (!success) return;
+          const dir = resolveSwipeDirection({ dx: event.translationX, dy: event.translationY });
+          if (dir) doMoveRef.current(dir);
+        }),
+    []
   );
 
   if (!ready) {
@@ -100,14 +139,11 @@ function AppContent() {
         insets={insets}
         bandHeight={bandHeight}
       />
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}
-        contentInsetAdjustmentBehavior="never"
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={styles.boardWrap}>
-          <GameBoard board={board} moveResult={moveResult} width={boardSize} />
+          <GestureDetector gesture={panGesture}>
+            <GameBoard board={board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
+          </GestureDetector>
         </View>
         <Text style={styles.stats}>
           {stats
@@ -117,42 +153,22 @@ function AppContent() {
         <Text style={styles.stats}>
           score: {match.score} · live best: {match.best} · persisted best: {persistedBest}
         </Text>
-        <View style={styles.controls}>
-          <View style={styles.controlRow}>
-            <DirButton label="⇧" onPress={() => doMove('up')} />
-          </View>
-          <View style={styles.controlRow}>
-            <DirButton label="⇦" onPress={() => doMove('left')} />
-            <DirButton label="⇨" onPress={() => doMove('right')} />
-          </View>
-          <View style={styles.controlRow}>
-            <DirButton label="⇩" onPress={() => doMove('down')} />
-          </View>
-        </View>
-        <Text style={styles.hint}>TEMP move harness — real swipe input ships in story 1.6</Text>
-      </ScrollView>
+      </View>
       <StatusBar style="auto" />
     </View>
   );
 }
 
-function DirButton({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonLabel}>{label}</Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  scroll: {
+  content: {
     flex: 1,
-  },
-  scrollContent: {
     alignItems: 'center',
   },
   boardWrap: {
@@ -162,29 +178,5 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 14,
     fontVariant: ['tabular-nums'],
-  },
-  controls: {
-    marginTop: 16,
-  },
-  controlRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  button: {
-    width: 56,
-    height: 56,
-    borderRadius: 8,
-    backgroundColor: '#eee',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 4,
-  },
-  buttonLabel: {
-    fontSize: 24,
-  },
-  hint: {
-    marginTop: 16,
-    fontSize: 11,
-    color: '#999',
   },
 });
