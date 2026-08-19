@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-18T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "1.6",
+    "label": "Input por swipe RNGH + edge-cases contract"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "All 6 acceptance criteria FULL. P0 coverage 100% (5/5), P1 coverage 100% (1/1), overall 100%. Suite green: 144/144 triade (incl. 10 swipe direction tests + 1 gesture-threshold wiring guard), web PWA 26/26 frozen, tsc --noEmit clean. The pure swipe-direction contract (SWIPE_THRESHOLD=10, dominant-axis tie-break, threshold boundary) is fully automated; RNGH Pan wiring, cancel/interruption, off-board release, second-finger, in-flight gate and pause reachability are manual validation per project rule (simulator/device).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-1-6.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

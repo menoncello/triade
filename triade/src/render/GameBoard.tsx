@@ -30,7 +30,20 @@ const GRID = 4;
 const BOARD_PADDING = 8;
 const CELL_GAP = 8;
 const CELL_RADIUS = 10;
+
+// T3.4 early-input release: the input gate opens at ~30% of the max fixed-duration
+// animation path so the next swipe is accepted while the previous move is still
+// animating (GameBoard re-plans; tiles retarget forward to their committed
+// targets). Product decision 2026-08-18 — matches the responsive feel of the
+// web PWA, which accepts rapid swipes mid-animation.
+const EARLY_INPUT_FRACTION = 0.3;
 const SLIDE_MS = 160;
+const TILE_FADE_MS = 120; // longest fixed animation tail: appear fade-in duration
+// Longest fixed-duration path: a merge's appear tile (SLIDE_MS delay + fade) —
+// 280ms; vanish tiles are SLIDE_MS + 100ms. Spring tails (slide/scale) have no
+// fixed duration and are excluded.
+const MAX_MOVE_ANIM_MS = SLIDE_MS + TILE_FADE_MS;
+const EARLY_INPUT_MS = Math.round(MAX_MOVE_ANIM_MS * EARLY_INPUT_FRACTION);
 
 type TileKind = 'rest' | 'move' | 'appear' | 'vanish';
 
@@ -76,7 +89,16 @@ interface AnimatedTileProps {
   onVanish: (id: string) => void;
 }
 
-function AnimatedTile({ id, value, from, to, kind, cell, delay = 0, onVanish }: AnimatedTileProps) {
+function AnimatedTile({
+  id,
+  value,
+  from,
+  to,
+  kind,
+  cell,
+  delay = 0,
+  onVanish
+}: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
   const toPos = pixel(to, cell);
   const x = useSharedValue(fromPos.x);
@@ -90,6 +112,15 @@ function AnimatedTile({ id, value, from, to, kind, cell, delay = 0, onVanish }: 
     if (kind === 'move' || kind === 'vanish') {
       x.value = withSpring(toPos.x, spring);
       y.value = withSpring(toPos.y, spring);
+      // Retarget snap: a tile promoted from 'appear' to 'move' (early-input
+      // re-plan, T3.4) may still hold a pending withDelay fade-in/scale-up.
+      // Assigning the settled values cancels those pending animations so the
+      // tile slides fully visible instead of sliding invisibly then fading in
+      // mid-motion.
+      if (kind === 'move') {
+        opacity.value = 1;
+        scale.value = 1;
+      }
     }
   }, [toPos.x, toPos.y, kind]);
 
@@ -150,15 +181,16 @@ export interface GameBoardProps {
   board: Board;
   moveResult: MoveResult | null;
   width: number;
+  onMoveSettled?: () => void;
 }
 
-export function GameBoard({ board, moveResult, width }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, onMoveSettled }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
 
-  const [tiles, setTiles] = useState<TileDescriptor[]>(() => {
+  const [tiles, setTilesState] = useState<TileDescriptor[]>(() => {
     const initial: TileDescriptor[] = [];
     for (let r = 0; r < GRID; r++) {
       for (let c = 0; c < GRID; c++) {
@@ -170,45 +202,63 @@ export function GameBoard({ board, moveResult, width }: GameBoardProps) {
     }
     return initial;
   });
+  const tilesRef = useRef(tiles);
+
+  // T3.4 early-input release: onMoveSettled opens the App input gate ~30% into
+  // the animation (EARLY_INPUT_MS), not after every tile finishes settling, so
+  // rapid swipes are accepted while the previous move is still animating.
+  const onMoveSettledRef = useRef(onMoveSettled);
+  useEffect(() => {
+    onMoveSettledRef.current = onMoveSettled;
+  });
+  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    };
+  }, []);
 
   const applyPlan = useCallback(
     (plan: TileTransition[]) => {
       if (plan.length === 0) return;
       const idPool = plan.map(() => nextId());
-      setTiles((prev) => {
-        const byCell = new Map<string, TileDescriptor>();
-        for (const t of prev) byCell.set(cellKey(t.to[0], t.to[1]), t);
-        const next: TileDescriptor[] = [];
-        for (const t of prev) {
-          if (t.kind === 'vanish') next.push(t);
-        }
-        for (let i = 0; i < plan.length; i++) {
-          const tr = plan[i];
-          if (tr.type === 'spawn') {
-            next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
-          } else if (tr.type === 'merge') {
-            const a = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
-            const b = byCell.get(cellKey(tr.from[1][0], tr.from[1][1]));
-            if (a) next.push({ ...a, from: a.to, to: tr.to, kind: 'vanish' });
-            if (b) next.push({ ...b, from: b.to, to: tr.to, kind: 'vanish' });
-            next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS });
+      const prev = tilesRef.current;
+      const byCell = new Map<string, TileDescriptor>();
+      for (const t of prev) byCell.set(cellKey(t.to[0], t.to[1]), t);
+      const next: TileDescriptor[] = [];
+      for (const t of prev) {
+        if (t.kind === 'vanish') next.push(t);
+      }
+      for (let i = 0; i < plan.length; i++) {
+        const tr = plan[i];
+        if (tr.type === 'spawn') {
+          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
+        } else if (tr.type === 'merge') {
+          const a = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
+          const b = byCell.get(cellKey(tr.from[1][0], tr.from[1][1]));
+          // Retarget: a source tile that was itself an in-flight 'appear' (early
+          // input) carries a stale fade-in `delay` — dropping it here keeps the
+          // vanish on its own SLIDE_MS schedule instead of lingering extra ms.
+          if (a) next.push({ ...a, from: a.to, to: tr.to, kind: 'vanish', delay: 0 });
+          if (b) next.push({ ...b, from: b.to, to: tr.to, kind: 'vanish', delay: 0 });
+          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS });
+        } else {
+          const src = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
+          if (src) {
+            next.push({
+              ...src,
+              value: tr.value,
+              from: src.to,
+              to: tr.to,
+              kind: tr.type === 'slide' ? 'move' : 'rest'
+            });
           } else {
-            const src = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
-            if (src) {
-              next.push({
-                ...src,
-                value: tr.value,
-                from: src.to,
-                to: tr.to,
-                kind: tr.type === 'slide' ? 'move' : 'rest'
-              });
-            } else {
-              next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
-            }
+            next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear' });
           }
         }
-        return next;
-      });
+      }
+      tilesRef.current = next;
+      setTilesState(next);
     },
     [nextId]
   );
@@ -221,10 +271,23 @@ export function GameBoard({ board, moveResult, width }: GameBoardProps) {
     const plan = planTileTransitions(prevBoardRef.current, moveResult);
     applyPlan(plan);
     prevBoardRef.current = board;
+    // Re-arm the input-release timer for this move: a noop (empty plan)
+    // animates nothing, so it must not touch the gate. An effective move opens
+    // the gate after ~30% of the animation; a new swipe then re-plans and tiles
+    // retarget forward to their committed targets.
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    if (plan.length > 0) {
+      settleTimerRef.current = setTimeout(() => {
+        settleTimerRef.current = null;
+        onMoveSettledRef.current?.();
+      }, EARLY_INPUT_MS);
+    }
   }, [moveResult, board, applyPlan]);
 
   const onVanish = useCallback((id: string) => {
-    setTiles((prev) => prev.filter((t) => t.id !== id));
+    const next = tilesRef.current.filter((t) => t.id !== id);
+    tilesRef.current = next;
+    setTilesState(next);
   }, []);
 
   const renderOrder = (kind: TileKind): number => {

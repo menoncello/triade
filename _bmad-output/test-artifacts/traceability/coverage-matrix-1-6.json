@@ -1,0 +1,168 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-18T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "1.6",
+    "label": "Input por swipe RNGH + edge-cases contract"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-6-input-por-swipe-rngh-edge-cases-contract.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 1.6",
+      "_bmad-output/test-artifacts/atdd-checklist-1-6-input-por-swipe-rngh-edge-cases-contract.md",
+      "triade/src/ui/swipe.ts",
+      "triade/App.tsx",
+      "triade/src/render/GameBoard.tsx"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "title": "Swipe resolves via RNGH Gesture.Pan() with ~10px activation threshold; direction maps to engine move() (UX-DR-3)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "1.6-SWP-001", "title": "SWIPE_THRESHOLD is exported and equals 10 (~10px activation threshold, UX-DR-3)", "file": "triade/__tests__/ui/swipe.test.ts", "line": 14, "level": "unit", "status": "active", "priority": "P0" },
+        { "id": "1.6-SWP-002", "title": "threshold boundary is exact: magnitude 9 returns null, magnitude 10 returns a direction", "file": "triade/__tests__/ui/swipe.test.ts", "line": 18, "level": "unit", "status": "active", "priority": "P0" },
+        { "id": "1.6-SWP-003", "title": "all four directions resolve from the dominant-axis sign", "file": "triade/__tests__/ui/swipe.test.ts", "line": 25, "level": "unit", "status": "active", "priority": "P0" },
+        { "id": "1.6-SWP-004", "title": "horizontal dominant axis wins on diagonals", "file": "triade/__tests__/ui/swipe.test.ts", "line": 32, "level": "unit", "status": "active", "priority": "P0" },
+        { "id": "1.6-SWP-005", "title": "vertical dominant axis wins on diagonals", "file": "triade/__tests__/ui/swipe.test.ts", "line": 37, "level": "unit", "status": "active", "priority": "P0" },
+        { "id": "1.6-GES-001", "title": "App.tsx gesture activation references SWIPE_THRESHOLD (no bare ~10px literal)", "file": "triade/__tests__/ui/ui.gesture.test.ts", "line": 16, "level": "unit", "status": "active", "priority": "P1" }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "Cancelled gesture / system interruption causes no move, no spawn, no turn consumed — board stays as it was",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": []
+    },
+    {
+      "id": "AC-3",
+      "title": "Releasing off the board mid-gesture resolves the swipe as captured (the gesture owns the move)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": []
+    },
+    {
+      "id": "AC-4",
+      "title": "Concurrent second finger is ignored (first finger wins); no second move() while a swipe or its animation is in flight",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": []
+    },
+    {
+      "id": "AC-5",
+      "title": "Swipe during an in-flight animation is queued/rejected per the engine moved:false contract — never a mid-animation board mutation",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": []
+    },
+    {
+      "id": "AC-6",
+      "title": "Pause button always reachable during a match (top-right), letting the in-flight swipe settle before freezing (UX-DR-11)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": []
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 5, "covered": 5, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "live_evidence": {
+    "present": false,
+    "results_file": "",
+    "freshness": "not_present",
+    "recorded_source_sha": "",
+    "current_source_sha": "e0f5786",
+    "producer": "",
+    "counted": 0,
+    "stale": 0,
+    "unverifiable": 0,
+    "failed": 0,
+    "contradicted": 0,
+    "blocked": 0,
+    "skipped": 0,
+    "unmatched": 0,
+    "invalid": 0,
+    "requirements_live_only": 0
+  },
+  "live_records": [],
+  "test_inventory": {
+    "summary": {
+      "files": 2,
+      "cases": 11,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 11, "criteria_covered": 6 },
+        "live": { "tests": 0, "criteria_covered": 0 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "1.6-SWP-001", "file": "triade/__tests__/ui/swipe.test.ts", "line": 14, "title": "SWIPE_THRESHOLD is exported and equals 10", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-002", "file": "triade/__tests__/ui/swipe.test.ts", "line": 18, "title": "threshold boundary is exact: 9 -> null, 10 -> direction", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-003", "file": "triade/__tests__/ui/swipe.test.ts", "line": 25, "title": "all four directions resolve from the dominant-axis sign", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-004", "file": "triade/__tests__/ui/swipe.test.ts", "line": 32, "title": "horizontal dominant axis wins on diagonals", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-005", "file": "triade/__tests__/ui/swipe.test.ts", "line": 37, "title": "vertical dominant axis wins on diagonals", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-006", "file": "triade/__tests__/ui/swipe.test.ts", "line": 42, "title": "an exact dominant-axis tie returns null (silent noop)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-007", "file": "triade/__tests__/ui/swipe.test.ts", "line": 49, "title": "a dominant-axis magnitude below the threshold returns null even on a diagonal", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-008", "file": "triade/__tests__/ui/swipe.test.ts", "line": 54, "title": "a zero-magnitude swipe returns null (no-op)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-009", "file": "triade/__tests__/ui/swipe.test.ts", "line": 58, "title": "a custom threshold parameter is honored and overrides the default", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-SWP-010", "file": "triade/__tests__/ui/swipe.test.ts", "line": 63, "title": "resolveSwipeDirection is pure: same input always yields the same result", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "1.6-GES-001", "file": "triade/__tests__/ui/ui.gesture.test.ts", "line": 16, "title": "App.tsx gesture activation references SWIPE_THRESHOLD (no bare literal)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    { "priority": "LOW", "action": "Run /bmad-testarch-test-review to assess test quality", "requirements": [] }
+  ]
+}
