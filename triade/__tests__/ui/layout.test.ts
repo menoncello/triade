@@ -292,3 +292,24 @@ test('[P1] per-edge insets bind asymmetrically: vertical insets shrink a height-
     'vertical insets must shrink a height-bounded board'
   );
 });
+
+test('[P0] min-tile floor (AC-1, UX-DR-18): a landscape container that can fit the floor keeps boardSize >= BOARD_SIZE_FLOOR so tiles stay >=44pt', async () => {
+  const { layoutFor, BOARD_SIZE_FLOOR } = (await import(LAYOUT_SPEC)) as {
+    layoutFor: (input: { width: number; height: number; insets: Insets }) => LayoutResult;
+    BOARD_SIZE_FLOOR: number;
+  };
+  assert.strictEqual(BOARD_SIZE_FLOOR, 216, 'BOARD_SIZE_FLOOR must be 44*4 + 8*2 + 8*3 = 216 (MIN_TILE_WIDTH=44)');
+  const layout = layoutFor({ width: 844, height: 390, insets: ZERO_INSETS });
+  assert.ok(layout.boardSize >= BOARD_SIZE_FLOOR, 'typical landscape phone must keep tiles >= 44pt (board >= floor)');
+});
+
+test('[P1] min-tile floor edge (AC-1): a container too small to fit the floor yields a valid, positive, finite board (numeral legibility fallback takes over)', async () => {
+  const { layoutFor, BOARD_SIZE_FLOOR } = (await import(LAYOUT_SPEC)) as {
+    layoutFor: (input: { width: number; height: number; insets: Insets }) => LayoutResult;
+    BOARD_SIZE_FLOOR: number;
+  };
+  const layout = layoutFor({ width: 400, height: 250, insets: ZERO_INSETS });
+  assert.ok(Number.isFinite(layout.boardSize), 'small container board must be finite');
+  assert.ok(layout.boardSize > 0, 'small container board must stay positive (no clamp-to-0)');
+  assert.ok(layout.boardSize < BOARD_SIZE_FLOOR, 'container below the floor may shrink tiles below 44pt (fallback path)');
+});

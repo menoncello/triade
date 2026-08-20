@@ -16,7 +16,7 @@
 
 ## Deferred from: story 1-5-layout-portrait-e-landscape (2026-08-16)
 
-- **Landscape rotation visual pass on the simulator** — `expo run:ios` built and booted the app on the iOS 26.5 simulator (iPhone 17 Pro); portrait HUD rendered with no runtime errors. The rotation gesture (Cmd+arrow) is a GUI action that cannot be automated in an unattended run (TCC blocks assistive access). The landscape contract itself is fully covered by the 12 layout unit tests (band collapse, board dominance, insets, extreme aspect) and the native mask includes landscape (Info.plist verified post-prebuild); the visual rotation reading remains **manual validation remaining** (informative per project rules). Trigger to close: rotate the simulator and confirm the thin 22pt/11pt top edge band + board dominance by eye.
+- ~~**Landscape rotation visual pass on the simulator** — `expo run:ios` built and booted the app on the iOS 26.5 simulator (iPhone 17 Pro); portrait HUD rendered with no runtime errors. The rotation gesture (Cmd+arrow) is a GUI action that cannot be automated in an unattended run (TCC blocks assistive access). The landscape contract itself is fully covered by the 12 layout unit tests (band collapse, board dominance, insets, extreme aspect) and the native mask includes landscape (Info.plist verified post-prebuild); the visual rotation reading remains **manual validation remaining** (informative per project rules). Trigger to close: rotate the simulator and confirm the thin 22pt/11pt top edge band + board dominance by eye.~~ **CLOSED (2026-08-19):** visual pass confirmed on simulator — thin 22pt/11pt top edge band renders correctly in landscape, board dominates, pause reachable.
 
 ## Deferred from: code review (2026-08-06)
 

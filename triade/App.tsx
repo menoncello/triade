@@ -140,7 +140,7 @@ function AppContent() {
         bandHeight={bandHeight}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
-        <View style={styles.boardWrap}>
+        <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
           <GestureDetector gesture={panGesture}>
             <GameBoard board={board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
           </GestureDetector>
@@ -170,9 +170,13 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   boardWrap: {
-    marginTop: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   stats: {
     marginTop: 12,
