@@ -50,7 +50,7 @@ development_status:
   1-5-layout-portrait-e-landscape: done
   1-6-input-por-swipe-rngh-edge-cases-contract: done
   1-7-legibilidade-dos-numerais-em-landscape: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   epic-2: backlog
   2-1-deteccao-de-teto-de-spawn-spawn-ceiling: backlog
