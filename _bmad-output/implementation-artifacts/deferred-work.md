@@ -76,3 +76,11 @@
 ## Deferred from: code review of 1-4-offline-capability-instalavel-e-persistencia (2026-08-15)
 
 - ~~**`useState(() => newGame(rngRef.current))` mutates the RNG ref inside a state initializer** (`triade/App.tsx:23`) — StrictMode double-invokes initializers, consuming the seeded `mulberry32` stream twice and making the board a non-deterministic function of the seed. Pre-existing harness (real input lands in story 1.6); `registerRootComponent` doesn't enable StrictMode today.~~ **CLOSED with verification by story 1.6 (2026-08-18):** real swipe input landed (T3), and the initializer was re-checked per T4.3 — `registerRootComponent` (Expo) does not enable StrictMode, so the initializer runs exactly once and the ref is NOT consumed twice. The board init was NOT touched, so no new test is required. Latent only if StrictMode is ever enabled (then gate the board init behind its own test).
+
+## Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)
+
+- `ceilingDetector` quebra em row ausente/undefined (`row.length` em undefined) (`triade/src/engine/core/ceiling.ts:5-7`). Contrato de board retangular do engine; pré-existente e consistente com o resto do core.
+- Fragilidade de ponto flutuante em `tierForCeiling` para ceilings muito grandes / >MAX_SAFE_INTEGER (`triade/src/engine/core/ceiling.ts:19`). Fórmula fechada endossada pelo spec; negligible dado o bound de tiles do jogo 2048.
+- Sem guard de teto superior nos tiers; `tierForCeiling` cresce ilimitado com o ceiling (`triade/src/engine/core/ceiling.ts:19`). Sem bug atual; risco de acoplamento caso consumidores assumam tiers enumerados fixos.
+- Valores de tile inválidos (NaN/negativo/0) silenciosamente tratados como sem-tile (`v !== null && v > max`) (`triade/src/engine/core/ceiling.ts:9`). Inalcançável com tiles válidos positivos potências de 2; defensivo apenas.
+- `tierForCeiling` não testado para entradas negativo/0/fracionário/Infinity (`triade/src/engine/core/ceiling.ts:18-19`). Entradas sempre são ceilings válidos produzidos por `ceilingDetector`.

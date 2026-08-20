@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import { ceilingDetector, tierForCeiling } from '../../src/engine/core/index.ts';
-import { SIZE, emptyBoard, boardWith } from '../../test-utils/helpers.ts';
+import type { Board } from '../../src/engine/core/index.ts';
+import { emptyBoard, boardWith } from '../../test-utils/helpers.ts';
 
 test('empty board -> ceilingDetector returns 0 -> tier 0', () => {
   const board = emptyBoard();
@@ -55,6 +56,8 @@ test('board max at each boundary yields the correct tier (AC 1, 2, 4)', () => {
     [384, 4],
     [768, 5],
     [1536, 6],
+    [3072, 7],
+    [6144, 8],
   ];
   for (const [maxValue, expectedTier] of cases) {
     const board = boardWith([
@@ -66,4 +69,24 @@ test('board max at each boundary yields the correct tier (AC 1, 2, 4)', () => {
     assert.strictEqual(ceilingDetector(board), maxValue);
     assert.strictEqual(tierForCeiling(ceilingDetector(board)), expectedTier);
   }
+});
+
+test('tierForCeiling maps mid-tier (between-boundary) values correctly', () => {
+  assert.strictEqual(tierForCeiling(50), 1);
+  assert.strictEqual(tierForCeiling(100), 2);
+  assert.strictEqual(tierForCeiling(200), 3);
+  assert.strictEqual(tierForCeiling(400), 4);
+  assert.strictEqual(tierForCeiling(800), 5);
+  assert.strictEqual(tierForCeiling(1600), 6);
+  assert.strictEqual(tierForCeiling(3071), 6);
+  assert.strictEqual(tierForCeiling(3073), 7);
+});
+
+test('ceilingDetector scans all cells of a non-square / jagged board', () => {
+  const jagged: Board = [
+    [3, null],
+    [null, 6, 12],
+    [null, null, null, 768, 1536],
+  ];
+  assert.strictEqual(ceilingDetector(jagged), 1536);
 });

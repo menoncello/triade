@@ -4,7 +4,7 @@ baseline_commit: 7fc15d1143e5a7bbb5658b32f3d6d87e70dcd53b
 
 # Story 2.1: Detecção de teto de spawn (spawn ceiling)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -92,4 +92,26 @@ gds-create-story (BMAD) — context assembled from epics, architecture, GDD, and
 - triade/src/engine/core/ceiling.ts (added)
 - triade/src/engine/core/index.ts (modified: exports added)
 - triade/__tests__/engine/ceiling.test.ts (added)
+
+### Review Findings
+
+> Code review (adversarial, 3 camadas: Blind Hunter + Edge Case Hunter + Acceptance Auditor). Todas as ACs satisfeitas; implementação espelha fielmente o spec (fórmula fechada prescrita). Achados são quase inteiramente edge cases teóricos inalcançáveis num jogo 2048 com tiles positivos potências de 2 num board retangular fixo.
+
+- [x] [Review][Patch] Test coverage gap: testes cobrem só fronteiras exatas de tier; adicionar asserções de valores entre tiers (ex.: 50→1, 100→2) para travar regressões no `< 48` e no `Math.floor(log2)` [triade/__tests__/engine/ceiling.test.ts] — applied (teste mid-tier)
+- [x] [Review][Patch] Adicionar teste de board não-quadrado/jagged para travar o comportamento (já correto) de varrer toda célula [triade/src/engine/core/ceiling.ts:4-7] — applied (teste jagged board)
+
+- [x] [Review][Defer] `ceilingDetector` quebra em row ausente/undefined (`row.length` em undefined) [triade/src/engine/core/ceiling.ts:5-7] — deferred, pre-existing (contrato de board retangular do engine)
+- [x] [Review][Defer] Fragilidade de ponto flutuante em `tierForCeiling` para ceilings muito grandes / >MAX_SAFE_INTEGER [triade/src/engine/core/ceiling.ts:19] — deferred, pre-existing (fórmula fechada endossada pelo spec; negligible dado o bound de tiles do jogo)
+- [x] [Review][Defer] Sem guard de teto superior nos tiers; crescimento ilimitado com o ceiling [triade/src/engine/core/ceiling.ts:19] — deferred, pre-existing (sem bug atual; risco de acoplamento)
+- [x] [Review][Defer] Valores de tile inválidos (NaN/negativo/0) silenciosamente tratados como sem-tile [triade/src/engine/core/ceiling.ts:9] — deferred, pre-existing (inalcançável com tiles válidos positivos)
+- [x] [Review][Defer] `tierForCeiling` não testado para entradas negativo/0/fracionário/Infinity [triade/src/engine/core/ceiling.ts:18-19] — deferred, pre-existing (entradas sempre são ceilings válidos de `ceilingDetector`)
+
+#### Re-review (2026-08-20, gds-code-review — 3 camadas: Blind Hunter + Edge Case Hunter + Acceptance Auditor)
+
+As 3 camadas confirmaram as ACs 1–4 e a ausência de bugs reais. Os defers acima (pré-existentes, teóricos, inalcançáveis no fluxo do engine) seguem válidos e já registrados em `deferred-work.md`. Novos achados acionáveis:
+
+- [x] [Review][Patch] Remover import `SIZE` não utilizado em `ceiling.test.ts` (importado mas nunca referenciado) [triade/__tests__/engine/ceiling.test.ts:3]
+- [x] [Review][Patch] Estender o teste "board max at each boundary" para derivar `3072`/`6144` a partir de um board (AC2 lista `3072`; hoje `3072`/`6144` só são cobertos via `tierForCeiling` direto, não via `ceilingDetector`+board) [triade/__tests__/engine/ceiling.test.ts:60-69]
+
+> **Nota de processo:** os patches da revisão anterior (testes mid-tier e jagged board) constam como "applied" acima, mas estão **não commitados** no working tree (`git diff HEAD` em `ceiling.test.ts`) — não no commit `cc35f18` desta revisão. O Edge Case Hunter confirmou que ambos os testes passam no arquivo vivo e fecham as únicas lacunas de cobertura reais. Recomenda-se commitar o `ceiling.test.ts` junto com os 2 patches acima.
 
