@@ -3,5 +3,7 @@ export type { Board, Cell, Direction, MoveResult, Rng, SpawnResult, TraceEntry }
 export { canMerge, mergeValue } from './rules.ts';
 export { emptyBoard, boardsEqual } from './board.ts';
 export { movementLines, shiftLine, boardFromLines } from './line.ts';
+export { ceilingDetector, tierForCeiling } from './ceiling.ts';
+export type { CeilingTier } from './ceiling.ts';
 export { pickIndex, weightedValue, spawnTile } from './spawn.ts';
 export { newGame, move, isGameOver } from './game.ts';

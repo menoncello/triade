@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-08 13:01
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 project: 3-clone
 project_key: NOKEY
 tracking_system: file-system
@@ -52,8 +52,8 @@ development_status:
   1-7-legibilidade-dos-numerais-em-landscape: done
   epic-1-retrospective: done
 
-  epic-2: backlog
-  2-1-deteccao-de-teto-de-spawn-spawn-ceiling: backlog
+   epic-2: in-progress
+    2-1-deteccao-de-teto-de-spawn-spawn-ceiling: done
   2-2-pesos-fixos-1-2-em-40-40: backlog
   2-3-pot-tierizado-por-teto: backlog
   2-4-curva-halving-decay-normalizada: backlog
