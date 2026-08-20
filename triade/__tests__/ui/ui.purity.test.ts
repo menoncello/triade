@@ -11,7 +11,8 @@ import { extractSpecifiers } from '../../test-utils/helpers.ts';
 const PURE_MODULES = [
   fileURLToPath(new URL('../../src/ui/layout.ts', import.meta.url)),
   fileURLToPath(new URL('../../src/ui/orientation.ts', import.meta.url)),
-  fileURLToPath(new URL('../../src/ui/swipe.ts', import.meta.url))
+  fileURLToPath(new URL('../../src/ui/swipe.ts', import.meta.url)),
+  fileURLToPath(new URL('../../src/ui/tileNumerals.ts', import.meta.url))
 ];
 
 const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native', 'reanimated', 'skia'];

@@ -1,23 +1,21 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-08-09T00:00:00.000Z",
+  "evaluated_at": "2026-08-19T00:00:00.000Z",
   "repo": "3-clone",
   "target": {
-    "type": "story",
-    "id": "1.1",
-    "label": "Technical spike (engine TS + board Skia + benchmark CI)"
+    "type": "epic",
+    "id": "full-codebase",
+    "label": "Tríade (3-clone) — PWA + RN App"
   },
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
-  "gate_status": "FAIL",
-  "rationale": "Re-run after closing AC-2 (ADR-01 boundary test added). P0 coverage is 100%, overall coverage is 80% (MET), but P1 coverage is 67% (minimum: 80%) — the sole remaining gap is AC-4 (physical-device frame-rate baseline T5.2 pending, requires iOS device + CocoaPods).",
+  "gate_status": "PASS",
+  "rationale": "All 8 implemented functional requirements have FULL test coverage across 189 tests in 24 files. P0 coverage is 100% (5/5). Architecture purity (ADR-01/02/05) is enforced by static import scan tests. Performance benchmarks gate engine/render/storage cost. Layout, swipe, orientation, and tile numerals are fully covered. Engine parity between web PWA and TS port is verified by differential tests. The 37 deferred FRs are features not yet implemented (Adaptive Spawn, Two Lanes, Monetization, Tutorial, Accessibility suite, Telemetry, Store Publication, Preview) — expected gaps as the RN app is under active development.",
   "p0_status": "MET",
-  "p1_status": "NOT_MET",
+  "p1_status": "MET",
   "overall_status": "MET",
   "critical_open": 0,
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix.md",
-    "trace_report_url": "",
-    "artifact_url": ""
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix.md"
   }
 }

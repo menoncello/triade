@@ -5,16 +5,12 @@ import type { SkFont } from '@shopify/react-native-skia';
 import { useDerivedValue, useSharedValue, withDelay, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import type { Board, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
+import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
 function tileTextColor(value: number): string {
-  return value <= 12 ? '#3a2f1d' : '#fff8e8';
-}
-
-function tileFontSize(cell: number, value: number): number {
-  const digits = String(value).length;
-  return Math.min(cell * 0.44, (cell * 1.7) / digits);
+  return tileInkFor(value);
 }
 
 function centerX(font: SkFont, value: number, cell: number): number {
@@ -146,7 +142,7 @@ function AnimatedTile({
   const scaleTransform = useDerivedValue(() => [{ scale: scale.value }]);
 
   const font = useMemo(() => {
-    const size = tileFontSize(cell, value);
+    const size = numeralSizeFor(value, cell);
     return matchFont({ fontFamily: TILE_FONT_FAMILY, fontSize: size, fontWeight: 'bold' });
   }, [cell, value]);
 
