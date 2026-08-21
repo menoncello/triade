@@ -1,4 +1,5 @@
 import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
+import { FIXED_WEIGHTS, POT_VALUE } from '../config/spawnConfig.ts';
 
 export function pickIndex(len: number, rng: Rng): number {
   let idx = Math.floor(rng() * len);
@@ -9,9 +10,9 @@ export function pickIndex(len: number, rng: Rng): number {
 
 export function weightedValue(rng: Rng = Math.random): number {
   const roll = rng();
-  if (roll < 0.4) return 1;
-  if (roll < 0.8) return 2;
-  return 3;
+  if (roll < FIXED_WEIGHTS[1]) return 1;
+  if (roll < FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]) return 2;
+  return POT_VALUE;
 }
 
 export function spawnTile(board: Board, rng: Rng = Math.random): SpawnResult {
