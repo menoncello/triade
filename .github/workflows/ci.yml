@@ -27,10 +27,10 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
-      - name: Run engine tests + deterministic benchmark gate (node --test)
-        run: node --test
+      - name: Run tests + deterministic benchmark gate (tsx + react-native stub)
+        run: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test
 
       - name: Coverage report (informational — never gates)
-        run: node --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**' --test-coverage-include='src/ui/**'
+        run: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**' --test-coverage-include='src/ui/**'
         continue-on-error: true
 

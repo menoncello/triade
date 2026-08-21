@@ -14,14 +14,39 @@ export interface HydratedState {
   settings: Settings;
 }
 
+// Storage backend contract. In production this is backed by MMKV (see `mmkv()`);
+// tests inject a fake via `setStorageBackendForTests` so the persistence logic
+// can be exercised under `node:test` without the native module.
+export interface StorageBackend {
+  getString(key: string): string | undefined;
+  set(key: string, value: string): void;
+}
+
+export interface BestLoadResult {
+  best: number;
+  ok: boolean;
+}
+
+// Injected backend for tests; when set, `mmkv()` returns it directly and the
+// native `react-native-mmkv` module is never imported. TEST-ONLY hook — never
+// call from app code: replacing the backend here silently swaps MMKV for
+// whatever is injected and discards any in-flight native init (`storePromise`).
+let backendOverride: StorageBackend | null = null;
+
 // MMKV is synchronous and single-instance — resolve + create it once and reuse.
-// The module-level promise survives the module's lifetime in the app; node:test
-// only exercises the pure layers, so this native path stays unreachable there.
+// The module-level promise survives the module's lifetime in the app; tests
+// exercise the native path only through the injected backend above.
 // On rejection the cached promise is reset so the next call retries (one bad
 // init must not brick persistence for the process).
-let storePromise: Promise<{ getString(key: string): string | undefined; set(key: string, value: string): void }> | null = null;
+let storePromise: Promise<StorageBackend> | null = null;
 
-async function mmkv(): Promise<{ getString(key: string): string | undefined; set(key: string, value: string): void }> {
+export function setStorageBackendForTests(backend: StorageBackend | null): void {
+  backendOverride = backend;
+  storePromise = null;
+}
+
+async function mmkv(): Promise<StorageBackend> {
+  if (backendOverride) return backendOverride;
   if (!storePromise) {
     storePromise = (async () => {
       const mod = (await import('react-native-mmkv')) as typeof import('react-native-mmkv');
@@ -34,9 +59,15 @@ async function mmkv(): Promise<{ getString(key: string): string | undefined; set
   return storePromise;
 }
 
-export interface BestLoadResult {
-  best: number;
-  ok: boolean;
+// Pure parser for the persisted best score. Separated so the validation rules
+// (non-negative integer, no leading junk) are unit-testable without a backend.
+export function parseBest(raw: string | undefined): BestLoadResult {
+  if (raw === undefined) return { best: 0, ok: true };
+  const trimmed = raw.trim();
+  if (!/^\d+$/.test(trimmed)) return { best: 0, ok: false };
+  const value = Number(trimmed);
+  if (Number.isSafeInteger(value) && value > 0) return { best: value, ok: true };
+  return { best: 0, ok: false };
 }
 
 // ok=false means the read degraded (native failure or unparseable stored value):
@@ -45,13 +76,7 @@ export interface BestLoadResult {
 export async function loadBest(): Promise<BestLoadResult> {
   try {
     const store = await mmkv();
-    const raw = store.getString(STORAGE_KEYS.best);
-    if (raw === undefined) return { best: 0, ok: true };
-    const trimmed = raw.trim();
-    if (!/^\d+$/.test(trimmed)) return { best: 0, ok: false };
-    const value = Number(trimmed);
-    if (Number.isSafeInteger(value) && value > 0) return { best: value, ok: true };
-    return { best: 0, ok: false };
+    return parseBest(store.getString(STORAGE_KEYS.best));
   } catch {
     return { best: 0, ok: false };
   }
@@ -98,7 +123,7 @@ export async function loadSettingsFromStorage(): Promise<Settings> {
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {
-  let store: { getString(key: string): string | undefined; set(key: string, value: string): void };
+  let store: StorageBackend;
   try {
     store = await mmkv();
   } catch (err) {

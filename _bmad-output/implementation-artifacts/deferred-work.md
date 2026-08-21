@@ -84,3 +84,11 @@
 - Sem guard de teto superior nos tiers; `tierForCeiling` cresce ilimitado com o ceiling (`triade/src/engine/core/ceiling.ts:19`). Sem bug atual; risco de acoplamento caso consumidores assumam tiers enumerados fixos.
 - Valores de tile inválidos (NaN/negativo/0) silenciosamente tratados como sem-tile (`v !== null && v > max`) (`triade/src/engine/core/ceiling.ts:9`). Inalcançável com tiles válidos positivos potências de 2; defensivo apenas.
 - `tierForCeiling` não testado para entradas negativo/0/fracionário/Infinity (`triade/src/engine/core/ceiling.ts:18-19`). Entradas sempre são ceilings válidos produzidos por `ceilingDetector`.
+
+## Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)
+
+- Sem validação em runtime dos pesos em `spawnConfig` — edição futura dos pesos degrada silenciosamente (pot absorve excesso de probabilidade, NaN/negativo envenena as comparações e tudo vira pot); a invariante `FIXED_WEIGHTS[1]+FIXED_WEIGHTS[2] === 1-POT_WEIGHT` é guardada apenas pelo teste de soma com epsilon (`triade/src/engine/config/spawnConfig.ts:1-5`, `triade/src/engine/core/spawn.ts:11-16`). Por design do spec: 2.4 (`weightedPicker`) re-normalizará e nunca confiará na soma exata.
+- `Readonly<Record<1|2, number>>` é somente compile-time; o objeto é mutável em runtime (sem `Object.freeze`) (`triade/src/engine/config/spawnConfig.ts:3`). Hardening trivial; revisitar quando 2.5 tornar `spawnConfig` configurável.
+- Fallback de `rngOf` retorna 0.5 para sempre — um rng sub-provisionado num teste de `spawnTile` produz silenciosamente valor 2 em vez de falhar rápido (`triade/test-utils/helpers.ts:17-23`). Pre-existente ao diff.
+- Benchmarks timing-sensitive continuam no run default do CI — script `benchmark` idêntico a `test`, mantendo benchmarks no caminho padrão (`triade/package.json`). Recomendação pré-existente do review R1 (mover benchmarks para fora do run default) ainda não atendida.
+- Testes de busy-gate de `gesture-pipeline.test.ts` exercitam uma cópia local do contrato `handleSwipe`, não o wiring real de `App.tsx` (`triade/__tests__/ui/gesture-pipeline.test.ts`). Regex WIRING + suíte do pipeline cobrem o essencial; extrair handler para módulo testável é refactor para story futura. (Re-review 2026-08-21)
