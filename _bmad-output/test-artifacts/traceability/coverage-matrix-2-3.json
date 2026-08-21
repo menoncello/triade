@@ -1,0 +1,150 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-21T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "2.3",
+    "label": "Pot tierizado por teto"
+  },
+  "collection_mode": "sequential",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/2-3-pot-tierizado-por-teto.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 2.3"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "story": "2.3",
+      "criterion": "20% of spawn weight is a pot for pieces >=3, opened per ceiling tier (FR-7)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.3-POT-003", "title": "[P0] weightedValue wiring resolves pot values by tier", "file": "triade/__tests__/engine/pot.test.ts", "line": 48, "level": "unit", "status": "active" },
+        { "id": "2.3-POT-004", "title": "[P0] draw-count pin: tier 0 consumes one roll, tier >= 1 consumes two", "file": "triade/__tests__/engine/pot.test.ts", "line": 57, "level": "unit", "status": "active" },
+        { "id": "2.3-POT-005", "title": "[P0] draw-count pin: tier >= 1 with roll inside the fixed band consumes one roll", "file": "triade/__tests__/engine/pot.test.ts", "line": 74, "level": "unit", "status": "active" },
+        { "id": "2.3-GAME-PIN", "title": "weightedValue respects 40/40/20 distribution", "file": "triade/__tests__/engine/game.test.ts", "line": 22, "level": "unit", "status": "active" },
+        { "id": "2.3-SPAWN-PIN", "title": "statistical sampling: weightedValue frequencies match 40/40/20 within +/-2% (drift tripwire)", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "story": "2.3",
+      "criterion": "Tier ladder <48->[3]; >=48->[3,6]; >=96->[3,6,12]; >=192->[+24]; >=384->[+48]; >=768->[+96]; doubling thereafter",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.3-POT-001", "title": "[P0] FR-7 ladder matrix pinned literally for tiers 0..7", "file": "triade/__tests__/engine/pot.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "2.3-POT-002", "title": "[P1] structural invariants hold for tiers 0..12 (>=3, doubling, length = tier + 1)", "file": "triade/__tests__/engine/pot.test.ts", "line": 34, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "story": "2.3",
+      "criterion": "potResolver is a pure function keyed by the validated spawnConfig - never scattered literals (boundary rule 4)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.3-POT-007", "title": "[P1] resolver purity and spawnConfig keying (no scattered literals, re-exported, no UI imports)", "file": "triade/__tests__/engine/pot.test.ts", "line": 91, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "story": "2.3",
+      "criterion": "Pot always sums to 20% of total spawn weight within epsilon tolerance; band unchanged, only drawable values grow",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.3-SPAWN-PIN-SUM", "title": "distribution sum is 1.0 within epsilon (coupling invariant)", "file": "triade/__tests__/engine/spawn.test.ts", "line": 11, "level": "unit", "status": "active" },
+        { "id": "2.3-SPAWN-PIN-BAND", "title": "the pot band equals the top (1 - POT_WEIGHT) of the roll", "file": "triade/__tests__/engine/spawn.test.ts", "line": 16, "level": "unit", "status": "active" },
+        { "id": "2.3-SPAWN-PIN", "title": "statistical sampling drift tripwire (~20% pot frequency within +/-2%)", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "level": "unit", "status": "active" },
+        { "id": "2.3-POT-004", "title": "[P0] draw-count pin: tier 0 consumes one roll, tier >= 1 consumes two", "file": "triade/__tests__/engine/pot.test.ts", "line": 57, "level": "unit", "status": "active" },
+        { "id": "2.3-GAME-PIN", "title": "weightedValue respects 40/40/20 distribution", "file": "triade/__tests__/engine/game.test.ts", "line": 22, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 4,
+    "fully_covered": 4,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 0, "covered": 0, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 3,
+      "cases": 9,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 9, "criteria_covered": 4 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "2.3-POT-001", "file": "triade/__tests__/engine/pot.test.ts", "line": 27, "title": "[P0] FR-7 ladder matrix pinned literally for tiers 0..7", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-002", "file": "triade/__tests__/engine/pot.test.ts", "line": 34, "title": "[P1] structural invariants hold for tiers 0..12", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-003", "file": "triade/__tests__/engine/pot.test.ts", "line": 48, "title": "[P0] weightedValue wiring resolves pot values by tier", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-004", "file": "triade/__tests__/engine/pot.test.ts", "line": 57, "title": "[P0] draw-count pin: tier 0 one roll, tier >=1 two rolls", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-005", "file": "triade/__tests__/engine/pot.test.ts", "line": 74, "title": "[P0] draw-count pin: roll inside fixed band consumes one roll", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-006", "file": "triade/__tests__/engine/pot.test.ts", "line": 84, "title": "[P1] defensive guard: negative tiers clamp to tier 0, fractional tiers floor", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-POT-007", "file": "triade/__tests__/engine/pot.test.ts", "line": 91, "title": "[P1] resolver purity and spawnConfig keying", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-GAME-PIN", "file": "triade/__tests__/engine/game.test.ts", "line": 22, "title": "weightedValue respects 40/40/20 distribution", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.3-SPAWN-PIN", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "title": "statistical sampling drift tripwire", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality of the new pot.test.ts suite",
+      "requirements": []
+    },
+    {
+      "priority": "INFO",
+      "action": "Re-trace after Stories 2.4 (halving-decay weights) and 2.5 (configurable curve) land, since they replace the uniform intra-pot pick placeholder traced here",
+      "requirements": ["AC-1"]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-21T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "2.3",
+    "label": "Pot tierizado por teto"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% and overall coverage is 100% (minimum: 80%). No P1 requirements detected. All 4 acceptance criteria are FULL covered by deterministic unit tests (7 in-scope tests + 2 compatibility pins), full engine suite 236/236 green with zero regressions on the RNG-stream and distribution pins.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-2-3.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}
