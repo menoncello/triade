@@ -92,3 +92,11 @@
 - Fallback de `rngOf` retorna 0.5 para sempre — um rng sub-provisionado num teste de `spawnTile` produz silenciosamente valor 2 em vez de falhar rápido (`triade/test-utils/helpers.ts:17-23`). Pre-existente ao diff.
 - Benchmarks timing-sensitive continuam no run default do CI — script `benchmark` idêntico a `test`, mantendo benchmarks no caminho padrão (`triade/package.json`). Recomendação pré-existente do review R1 (mover benchmarks para fora do run default) ainda não atendida.
 - Testes de busy-gate de `gesture-pipeline.test.ts` exercitam uma cópia local do contrato `handleSwipe`, não o wiring real de `App.tsx` (`triade/__tests__/ui/gesture-pipeline.test.ts`). Regex WIRING + suíte do pipeline cobrem o essencial; extrair handler para módulo testável é refactor para story futura. (Re-review 2026-08-21)
+
+## Deferred from: code review of story 2-3-pot-tierizado-por-teto (2026-08-21)
+
+- Tier not wired into `spawnTile`/`move()` — the pot feature is dead via real gameplay until the tier is plumbed. Spec explicitly defers this to Story 2.6 (`resolveSpawn`/`pendingSpawn`/tier-in-`move()` integration). Trigger: Story 2.6 adds the wiring.
+- Variable RNG draw-count per `weightedValue` call (1 roll in fixed band / tier-0 pot; 2 rolls for tier ≥ 1 pot) is behavior-pinned by draw-count tests but undocumented in the `Rng` contract. Spec-mandated (tier-0 single roll is a determinism contract). Re-evaluate when 2.6 plumbing makes draw count depend on live board state.
+- `POT_WEIGHT` is exported from `spawnConfig` but never consulted — the pot band is derived as `FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]`. Pre-existing from 2.2 (threshold coupling carried over deliberately); runtime weight validation lands with 2.5.
+- Source-text-coupled purity test (`readFileSync` + import-specifier/export regex in `pot.test.ts`) is brittle under file moves/reformats. Documented ATDD purity/`spawnConfig`-keying check; revisit if it becomes a maintenance burden.
+- `pickIndex` lets NaN rolls through both clamps (`NaN < 0` and `NaN >= len` both false) → `NaN` index. Pre-existing in `pickIndex`; newly reachable via the pot branch's 2nd roll. Requires a contract-violating `Rng` (must return `[0,1)`).

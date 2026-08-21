@@ -1,5 +1,7 @@
 import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
-import { FIXED_WEIGHTS, POT_VALUE } from '../config/spawnConfig.ts';
+import { FIXED_WEIGHTS } from '../config/spawnConfig.ts';
+import type { CeilingTier } from './ceiling.ts';
+import { potForTier } from './pot.ts';
 
 export function pickIndex(len: number, rng: Rng): number {
   let idx = Math.floor(rng() * len);
@@ -8,11 +10,12 @@ export function pickIndex(len: number, rng: Rng): number {
   return idx;
 }
 
-export function weightedValue(rng: Rng = Math.random): number {
+export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): number {
   const roll = rng();
   if (roll < FIXED_WEIGHTS[1]) return 1;
   if (roll < FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]) return 2;
-  return POT_VALUE;
+  const pot = potForTier(tier);
+  return pot.length === 1 ? pot[0] : pot[pickIndex(pot.length, rng)];
 }
 
 export function spawnTile(board: Board, rng: Rng = Math.random): SpawnResult {
