@@ -1,5 +1,5 @@
 # generated: 2026-08-08 13:01
-# last_updated: 2026-08-21 (story 2-4 → done)
+# last_updated: 2026-08-22 (story 2-5 → review)
 # project: 3-clone
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-08 13:01
-last_updated: 2026-08-21
+last_updated: 2026-08-22 (story 2-5 review complete → done)
 
 project: 3-clone
 project_key: NOKEY
@@ -58,7 +58,7 @@ development_status:
   2-2-pesos-fixos-1-2-em-40-40: done
   2-3-pot-tierizado-por-teto: done
   2-4-curva-halving-decay-normalizada: done
-  2-5-spawnconfig-configuravel: backlog
+  2-5-spawnconfig-configuravel: done
   2-6-integracao-com-o-engine-merge-once-e-effective-move: backlog
   epic-2-retrospective: optional
 

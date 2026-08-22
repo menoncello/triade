@@ -1,0 +1,166 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-22T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "2.5",
+    "label": "spawnConfig configurável"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/2-5-spawnconfig-configuravel.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 2.5",
+      "_bmad-output/test-artifacts/atdd-checklist-2-5-spawnconfig-configuravel.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "title": "Weights driven by one parameter per tile value (POT_CURVE keyed by tile VALUE), exposed in a config (FR-9); initial values are the halving decay",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.5-CFG-001", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 48, "title": "[P0] POT_CURVE literal matrix equals the documented halving decay exactly (AC 1)", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-002", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 55, "title": "[P1] POT_CURVE structural invariants: keys are POT_BASE_VALUE * 2^k ascending, weights finite positive strictly decreasing (AC 1, 4)", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-006", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 131, "title": "[P1] fallback-rule proof: potWeights keeps strict halving beyond the configured range, tiers 6..12 (AC 1 vs MAX_POT_TIER)", "level": "unit", "status": "active" },
+        { "id": "2.5-W-PIN-FR8", "file": "triade/__tests__/engine/weights.test.ts", "line": 23, "title": "[P0] potWeights literal halving matrix equals FR-8 exactly (AC 1) — byte-for-byte equivalence pin", "level": "unit", "status": "active" },
+        { "id": "2.5-POT-PIN-WIRING", "file": "triade/__tests__/engine/pot.test.ts", "line": 48, "title": "[P0] weightedValue wiring resolves pot values by tier (weightedValue(rngOf(0.9, 0.99), 5) → 96) — unchanged under config-driven weights", "level": "unit", "status": "active" },
+        { "id": "2.5-PIPE-PIN-REACH", "file": "triade/__tests__/engine/pot-tier-pipeline.test.ts", "line": 74, "title": "[P1] every intra-pot slot is reachable at its tier (weighted-aware reachability, halving decay) — unchanged", "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "The config is data, not code, validated by engine tests (pot sums to 20%, epsilon tolerance); validator is pure (ok|rejected, never throws)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.5-CFG-003", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 79, "title": "[P0] validateSpawnConfig() returns { ok: true } on the shipped defaults (AC 2)", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-004", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 83, "title": "[P0] validateSpawnConfig rejection matrix: every invalid config yields { ok: false } with errors, never throws (AC 2)", "level": "unit", "status": "active" },
+        { "id": "2.5-W-PIN-NORM", "file": "triade/__tests__/engine/weights.test.ts", "line": 29, "title": "[P0] normalizeTo(POT_WEIGHT, potWeights(pot)) sums to 0.2 within 1e-9 for pot lengths 1..6 (AC 2) — unchanged", "level": "unit", "status": "active" },
+        { "id": "2.5-SPAWN-PIN-SUM", "file": "triade/__tests__/engine/spawn.test.ts", "line": 11, "title": "distribution sum is 1.0 within epsilon (coupling invariant) — unchanged", "level": "unit", "status": "active" },
+        { "id": "2.5-SPAWN-PIN-DRIFT", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "title": "statistical sampling: weightedValue frequencies match 40/40/20 within ±2% (drift tripwire) — unchanged", "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "title": "Changing a weight value requires no code change and no rebuild beyond the config (config-driven purity)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.5-CFG-007", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 148, "title": "[P1] config-driven purity: core/index.ts re-exports POT_CURVE + validateSpawnConfig, weights.ts keys off spawnConfig, no UI imports (AC 3, 5)", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-006", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 131, "title": "[P1] fallback-rule proof: potWeights keeps strict halving beyond the configured range, tiers 6..12 (AC 1 vs MAX_POT_TIER) — extends via config, no code change", "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "title": "Initial values are the halving decay, documented in the config and the architecture ADR/decision log; config data frozen (Object.freeze)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.5-CFG-001", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 48, "title": "[P0] POT_CURVE literal matrix equals the documented halving decay exactly (AC 1) — initial values pinned literally", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-002", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 55, "title": "[P1] POT_CURVE structural invariants: keys are POT_BASE_VALUE * 2^k ascending, weights finite positive strictly decreasing (AC 1, 4)", "level": "unit", "status": "active" },
+        { "id": "2.5-CFG-005", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 119, "title": "[P0] Object.freeze hardening: POT_CURVE and FIXED_WEIGHTS are frozen at runtime and resist mutation (AC 4)", "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "title": "The config is the single access point — no scattered weight literals anywhere in src/engine (data pattern, boundary rule 4)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.5-CFG-007", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 148, "title": "[P1] config-driven purity: core/index.ts re-exports POT_CURVE + validateSpawnConfig, weights.ts keys off spawnConfig, no UI imports (AC 3, 5)", "level": "unit", "status": "active" },
+        { "id": "2.5-POT-PIN-PURITY", "file": "triade/__tests__/engine/pot.test.ts", "line": 94, "title": "[P1] resolver purity and spawnConfig keying (no scattered literals, re-exported, no UI imports) — unchanged", "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 3, "covered": 3, "percentage": 100 },
+      "P1": { "total": 2, "covered": 2, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 5,
+      "cases": 14,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 14, "criteria_covered": 5 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "2.5-CFG-001", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 48, "title": "[P0] POT_CURVE literal matrix equals the documented halving decay exactly (AC 1)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-002", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 55, "title": "[P1] POT_CURVE structural invariants: keys are POT_BASE_VALUE * 2^k ascending, weights finite positive strictly decreasing (AC 1, 4)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-003", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 79, "title": "[P0] validateSpawnConfig() returns { ok: true } on the shipped defaults (AC 2)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-004", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 83, "title": "[P0] validateSpawnConfig rejection matrix: every invalid config yields { ok: false } with errors, never throws (AC 2)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-005", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 119, "title": "[P0] Object.freeze hardening: POT_CURVE and FIXED_WEIGHTS are frozen at runtime and resist mutation (AC 4)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-006", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 131, "title": "[P1] fallback-rule proof: potWeights keeps strict halving beyond the configured range, tiers 6..12 (AC 1 vs MAX_POT_TIER)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-CFG-007", "file": "triade/__tests__/engine/spawn-config.test.ts", "line": 148, "title": "[P1] config-driven purity: core/index.ts re-exports POT_CURVE + validateSpawnConfig, weights.ts keys off spawnConfig, no UI imports (AC 3, 5)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-W-PIN-FR8", "file": "triade/__tests__/engine/weights.test.ts", "line": 23, "title": "[P0] potWeights literal halving matrix equals FR-8 exactly (AC 1) — byte-for-byte equivalence pin", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-W-PIN-NORM", "file": "triade/__tests__/engine/weights.test.ts", "line": 29, "title": "[P0] normalizeTo(POT_WEIGHT, potWeights(pot)) sums to 0.2 within 1e-9 for pot lengths 1..6 (AC 2) — unchanged", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-POT-PIN-WIRING", "file": "triade/__tests__/engine/pot.test.ts", "line": 48, "title": "[P0] weightedValue wiring resolves pot values by tier (weightedValue(rngOf(0.9, 0.99), 5) → 96) — unchanged under config-driven weights", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-POT-PIN-PURITY", "file": "triade/__tests__/engine/pot.test.ts", "line": 94, "title": "[P1] resolver purity and spawnConfig keying (no scattered literals, re-exported, no UI imports) — unchanged", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-SPAWN-PIN-SUM", "file": "triade/__tests__/engine/spawn.test.ts", "line": 11, "title": "distribution sum is 1.0 within epsilon (coupling invariant) — unchanged", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-SPAWN-PIN-DRIFT", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "title": "statistical sampling: weightedValue frequencies match 40/40/20 within ±2% (drift tripwire) — unchanged", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "2.5-PIPE-PIN-REACH", "file": "triade/__tests__/engine/pot-tier-pipeline.test.ts", "line": 74, "title": "[P1] every intra-pot slot is reachable at its tier (weighted-aware reachability, halving decay) — unchanged", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    },
+    {
+      "priority": "INFO",
+      "action": "Re-trace after Story 2.6 (combined single-roll resolveSpawn pick) lands — the two-stage draw structure and statistical band/pick alternation will change; draw-count pins stay authoritative",
+      "requirements": []
+    }
+  ]
+}

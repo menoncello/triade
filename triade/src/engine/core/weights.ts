@@ -1,8 +1,13 @@
-import { POT_BASE_VALUE } from '../config/spawnConfig.ts';
+import { POT_BASE_VALUE, POT_CURVE } from '../config/spawnConfig.ts';
 import type { Rng } from './types.ts';
 
+// Override+fallback contract: POT_CURVE covers the calibratable FR-7 base
+// ladder (3..96). The pot ladder extends to POT_BASE_VALUE * 2^MAX_POT_TIER
+// and cannot be fully enumerated in config, so values beyond the last
+// configured entry continue the documented halving rule via the formula
+// fallback. Retuning an unlisted value = add ONE entry to POT_CURVE.
 export function potWeights(pot: readonly number[]): readonly number[] {
-  return pot.map((v) => POT_BASE_VALUE / v);
+  return pot.map((v) => POT_CURVE[v] ?? POT_BASE_VALUE / v);
 }
 
 export function normalizeTo(target: number, weights: readonly number[]): number[] {
