@@ -1,40 +1,56 @@
-## Automation Summary
+# Automation Summary
 
-**Engine**: TypeScript / node:test (RN + Expo + Skia app, `triade/`)
-**Story**: 2.3 — Pot tierizado por teto (status: review)
-**Tests Generated**: 4 (suite: 230 → 234, all green)
-**Date**: 2026-08-21
+**Engine**: React Native + Expo (headless harness via `node:test` + `tsx`)
+**Tests Generated**: 13 (5 E2E + 3 Integration + 3 Smoke) + 4 infrastructure files
+**Date**: 2026-08-22
 
-### Coverage Analysis
+## Test Distribution
 
-Story 2.3 already had its ATDD scaffolds activated in `triade/__tests__/engine/pot.test.ts`
-(FR-7 matrix tiers 0–7, structural invariants 0–12, weightedValue wiring, draw-count pin,
-purity/spawnConfig keying) plus the 20% sum invariant in `spawn.test.ts`. Gap analysis
-against the story ACs found three uncovered areas:
+| Type        | Count | Coverage |
+| ----------- | ----- | -------- |
+| Infrastructure | 4 files | Fixture, Scenario Builder, Input Simulator, Async Assertions, Storage fake |
+| E2E         | 5     | launch/hydration, input threshold gating, core loop (50-move session), record persistence, degraded-hydration guard |
+| Integration | 3     | engine trace → transitionPlan → rendered tiles; matchScore session accumulation; save/load round-trip through injected backend |
+| Smoke Tests | 3     | new game valid board (9 tiles, never game over), 200-turn core loop without crash, full launch→play→persist critical path |
 
-1. The full Dev-Notes pipeline (board → ceilingDetector → tierForCeiling → potForTier →
-   weightedValue) had no end-to-end test.
-2. The defensive input guards in potForTier (fractional/negative tiers) were untested.
-3. Intra-pot slot reachability (uniform pick placeholder before Story 2.4) was untested.
+## Files Created
 
-### Test Distribution
+### Infrastructure (`triade/test-utils/e2e/`)
 
-| Type        | Count | Coverage                                        |
-| ----------- | ----- | ----------------------------------------------- |
-| Unit Tests  | 0 new | (already complete from ATDD activation)         |
-| Integration | 4     | tier pipeline, defensive inputs, slot reachability |
+- `memoryStorage.ts` — in-memory `StorageBackend` for `setStorageBackendForTests`
+- `asyncAssertions.ts` — `waitFor`, `waitForEvent`, `tick`
+- `inputSimulator.ts` — swipe gestures via `resolveSwipeDirection` + busy-gate awareness
+- `GameE2ETestFixture.ts` — session fixture mirroring `App.tsx` pipeline (hydration → move → gate → persistence)
+- `scenarioBuilder.ts` — fluent launch configuration with queued swipes
 
-### Files Created
+### Tests
 
-- `triade/__tests__/engine/pot-tier-pipeline.test.ts`
+- `triade/__tests__/e2e/session.e2e.test.ts`
+- `triade/__tests__/integration/session.integration.test.ts`
+- `triade/__tests__/smoke/criticalPath.smoke.test.ts`
 
-### Next Steps
+## Verification
 
-1. Review the generated integration tests
-2. Keep the suite green (`npm test` — runs node --test via tsx loader)
-3. Story 2.4 will replace the uniform intra-pot pick; the slot-reachability test is a
-   documented placeholder and must be updated alongside it
+Full suite: **265 pass / 0 fail** (`npm test`, ~2.5s).
 
-### Verification
+## Anti-pattern checks
 
-- Full suite: 234/234 pass, 0 fail
+- No engine functionality tested — all assertions target game contracts
+- Sync via settle()/predicates, not hardcoded waits
+- Tests independent; storage backend reset in teardown of every test
+- Deterministic via seeded RNG (`mulberry32`)
+- Assertions carry messages throughout
+
+## Checklist Validation
+
+- [x] Engine detected (React Native/Expo — adapted templates)
+- [x] AAA pattern, parameterized where appropriate
+- [x] Critical path smoke coverage (launch, core loop, save/load)
+- [x] No orphan state after tests
+- [x] Summary documented
+
+## Next Steps
+
+1. Review generated tests and fill gaps as UI features land (settings, pause)
+2. Run suite in CI pipeline
+3. Optionally add device-level runner (Detox/Maestro) for render-layer E2E

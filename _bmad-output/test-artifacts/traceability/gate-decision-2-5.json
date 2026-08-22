@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-22T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": { "type": "story", "id": "2.5", "label": "spawnConfig configurável" },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% and overall coverage is 100% (minimum: 80%). P1 coverage is 100% (target: 90%). All 5 acceptance criteria are FULL covered: the POT_CURVE config is pinned literally via deepStrictEqual plus structural invariants and the override+fallback regression tripwire, with the FR-8 matrix, pot wiring, and weighted-aware reachability pins kept green UNCHANGED (AC-1); the config is data validated by a pure ok|rejected predicate whose 8-case rejection matrix asserts doesNotThrow per case, with pot-sum (1e-9), coupling-sum, and statistical drift pins kept green (AC-2); config-driven purity is proven by source-keying (weights.ts keys off spawnConfig.ts), re-export, and no-UI-import checks plus the fallback contract (AC-3); the initial values are pinned literally as the halving decay, documented in spawnConfig.ts + decision-log #17/#23, and the config data is frozen (Object.isFrozen + mutation-throws pins) (AC-4); and the single-access-point boundary is enforced by purity pins in spawn-config.test.ts and pot.test.ts (AC-5). Full engine suite 265/265 green, zero regressions on compatibility pins.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-2-5.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}
