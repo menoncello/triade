@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-21T18:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "2.4",
+    "label": "Curva halving-decay normalizada"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% and overall coverage is 100% (minimum: 80%). P1 coverage is 100% (target: 90%). All 5 acceptance criteria are FULL covered by deterministic unit tests (12 in-scope tests + 6 compatibility pins): FR-8 halving matrix pinned literally plus monotonicity/purity guards (AC-1, AC-3), per-tier normalization to POT_WEIGHT within 1e-9 (AC-2), weightedPicker N1 re-normalization + boundary/draw-count/guard pins with 40/40/20 regressions green (AC-4), and statistical ±1%/±10% sampling + weighted-aware reachability (AC-5). Full engine suite 247/247 green, zero regressions on compatibility pins.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-2-4.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

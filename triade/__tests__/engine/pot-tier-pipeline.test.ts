@@ -1,10 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import {
+  POT_WEIGHT,
   ceilingDetector,
   tierForCeiling,
   potForTier,
   weightedValue,
+  potWeights,
+  normalizeTo,
   type Board,
 } from '../../src/engine/core/index.ts';
 import { rngOf } from '../../test-utils/helpers.ts';
@@ -13,6 +16,9 @@ import { rngOf } from '../../test-utils/helpers.ts';
 // pipeline described in the Dev Notes: board -> ceilingDetector ->
 // tierForCeiling -> potForTier -> weightedValue pot branch. Complements
 // pot.test.ts (unit pins) without duplicating the spawn.test.ts sum invariant.
+// Story 2.4 (curva halving-decay normalizada) — the uniform-reachability test
+// below was rewritten weighted-aware (halving-decay weights, midpoint rolls);
+// it runs once potWeights/normalizeTo are exported from core/index.ts.
 
 function boardWithMax(max: number): Board {
   const b: Board = [
@@ -65,18 +71,30 @@ test('[P1] defensive inputs: fractional tiers floor, negative tiers clamp to bas
   assert.deepStrictEqual(potForTier(-0.5), [3]);
 });
 
-test('[P1] every intra-pot slot is reachable at its tier (uniform pick placeholder)', () => {
+test('[P1] every intra-pot slot is reachable at its tier (weighted-aware reachability, halving decay)', () => {
   for (const tier of [2, 5]) {
     const pot = potForTier(tier);
-    const seen = new Set<number>();
-    for (let i = 0; i < pot.length; i++) {
-      // pickIndex uses floor(roll * len): mid-slot roll lands on index i.
-      seen.add(weightedValue(rngOf(0.9, i / pot.length + 1e-6), tier));
+    const weights = normalizeTo(POT_WEIGHT, potWeights(pot));
+    const total = weights.reduce((a, b) => a + b, 0);
+    const cum: number[] = [];
+    let acc = 0;
+    for (const w of weights) {
+      acc += w;
+      cum.push(acc);
     }
-    assert.deepStrictEqual(
-      [...seen].sort((a, b) => a - b),
-      pot,
-      `tier ${tier}: all pot values must be drawable`
-    );
+    for (let i = 0; i < pot.length; i++) {
+      // Feed MIDPOINTS of the cumulative band, never the exact boundary, so the
+      // test is robust against float drift and the picker's < vs <= semantics.
+      const mid = i === 0
+        ? cum[0] / 2 / total
+        : i === pot.length - 1
+          ? (cum[pot.length - 2] + total) / 2 / total
+          : (cum[i - 1] + cum[i]) / 2 / total;
+      assert.strictEqual(
+        weightedValue(rngOf(0.9, mid), tier),
+        pot[i],
+        `tier ${tier} slot ${i}: midpoint ${mid.toFixed(6)} must land on pot value ${pot[i]}`
+      );
+    }
   }
 });

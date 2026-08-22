@@ -1,5 +1,9 @@
 # Deferred Work
 
+## Deferred from: code review of story 2-4-curva-halving-decay-normalizada (2026-08-21)
+
+- `weightedValue` retorna `undefined` para pot vazio — a composição em `spawn.ts:18-21` guarda só `pot.length === 1`; se `potForTier` retornasse `[]`, `normalizeTo(POT_WEIGHT, [])` → `[]` → `weightedPicker([], rng)` → `0` → `pot[0]` → `undefined` silencioso de função tipada `number`. Inalcançável hoje: `potForTier` sempre retorna ≥ 1 elemento (pot.ts:8); caminho antigo via `pickIndex` igualmente quebrava em pot vazio. Pre-existing, latente para callers futuros de `potForTier`.
+
 ## Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)
 
 - ~~Preview placeholder (76×76) overlaps the centered "TEMP move harness" hint text on devices with `insets.bottom === 0` (visual only — card is `pointerEvents="none"`) (`triade/src/ui/Hud.tsx:53`, `triade/App.tsx:131`). Temp harness is replaced by real swipe input in story 1.6.~~ **CLOSED by story 1.6 (2026-08-18):** T3.1 removed the TEMP hint text and the harness from `App.tsx`; the placeholder no longer overlaps anything.
