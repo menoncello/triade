@@ -7,5 +7,6 @@ export { ceilingDetector, tierForCeiling } from './ceiling.ts';
 export type { CeilingTier } from './ceiling.ts';
 export { pickIndex, weightedValue, spawnTile } from './spawn.ts';
 export { potForTier } from './pot.ts';
+export { potWeights, normalizeTo, weightedPicker } from './weights.ts';
 export { POT_WEIGHT, FIXED_WEIGHTS, POT_BASE_VALUE } from '../config/spawnConfig.ts';
 export { newGame, move, isGameOver } from './game.ts';
