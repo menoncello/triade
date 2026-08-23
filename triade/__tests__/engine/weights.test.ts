@@ -120,21 +120,25 @@ test('[P1] statistical sampling: within-pot frequencies match halving-decay rati
     const weights = normalizeTo(POT_WEIGHT, potWeights(pot));
     const ratios = new Map<number, number>();
     for (let i = 0; i < pot.length; i++) ratios.set(pot[i], weights[i] / POT_WEIGHT);
-    // Force the band roll into the pot branch so every sample lands in the pot;
-    // each weightedValue call consumes 2 rolls: band (even call → 0.9), pick (odd
-    // call → mulberry stream). Alternation must stay strict or the distribution skews.
+    // Story 2.6 combined single-roll pick: one draw per weightedValue call.
+    // Filter to pot values (>= 3) and compare each pot value's CONDITIONAL
+    // frequency to its within-pot ratio — identical under the combined pick
+    // because the pot sub-distribution is normalized to POT_WEIGHT.
     const rng = mulberry32(0x2a4d);
-    let call = 0;
-    const potBandRng = () => (call++ % 2 === 0 ? 0.9 : rng());
     const freqs = new Map<number, number>();
     for (const v of pot) freqs.set(v, 0);
+    let potSamples = 0;
     for (let i = 0; i < N; i++) {
-      const v = weightedValue(potBandRng, tier);
-      assert.ok(freqs.has(v), `tier ${tier}: value ${v} must be an open pot value`);
-      freqs.set(v, (freqs.get(v) as number) + 1);
+      const v = weightedValue(rng, tier);
+      if (v >= 3) {
+        assert.ok(freqs.has(v), `tier ${tier}: value ${v} must be an open pot value`);
+        freqs.set(v, (freqs.get(v) as number) + 1);
+        potSamples++;
+      }
     }
+    assert.ok(potSamples > N * 0.1, `tier ${tier}: pot band must be sampled (${potSamples} samples)`);
     for (const v of pot) {
-      const freq = (freqs.get(v) as number) / N;
+      const freq = (freqs.get(v) as number) / potSamples;
       const ratio = ratios.get(v) as number;
       // Absolute floor keeps the high-frequency slots tight; the relative band
       // constrains the tail slots (e.g. 96 ≈ 0.0159) where ±1% absolute alone has

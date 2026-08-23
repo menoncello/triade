@@ -1,0 +1,46 @@
+{
+  "phase": "PHASE_2_COMPLETE",
+  "generated_at": "2026-08-22T00:00:00.000Z",
+  "trace_target": { "type": "story", "id": "2.6", "label": "Integração com o engine — merge-once e effective-move" },
+  "gate_type": "story",
+  "decision_mode": "deterministic",
+  "decision": "PASS",
+  "coverage_summary": {
+    "overall_coverage_percentage": 100,
+    "p0": { "total": 6, "covered": 6, "percentage": 100 },
+    "p1": { "total": 1, "covered": 1, "percentage": 100 }
+  },
+  "test_execution": {
+    "total_tests": 278,
+    "passed": 278,
+    "failed": 0,
+    "skipped": 0,
+    "source": "local run npm test (triade/), 2026-08-22"
+  },
+  "p0_evaluation": {
+    "p0_coverage_100": true,
+    "p0_pass_rate_100": true,
+    "critical_nfr_failures_zero": true,
+    "flaky_tests_zero": true
+  },
+  "p1_evaluation": {
+    "p1_coverage_ge_80": true,
+    "p1_pass_rate_ge_90": true,
+    "overall_pass_rate_ge_90": true,
+    "overall_coverage_ge_80": true
+  },
+  "nfrs": {
+    "performance": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS"
+  },
+  "critical_issues": [],
+  "blockers": [],
+  "rationale": "All 7 ACs FULL covered by 13 primary integration tests + supporting pins (effective-move-only spawn with fully-pinned noop semantics at unit and e2e; uniform-cell ±2% over 10k placements; merge-once/one-cell untouched pins + pot-pending integration assertion; FIXED draw budget 20/3/0/1 pinned; return-shape key-set pin with assertable spawned trace; immutable snapshot structural pins incl. no-aliasing noop and rewind shape; statistical 40/40+pot distribution with N3 invariant over >=10k pairs and ceiling-ordering guard). Suite 278/278 green; both tsc gates clean.",
+  "recommendations": [
+    "Proceed - Story 2.6 meets all coverage and pass-rate thresholds.",
+    "Confirm PR ready - engine core + App.tsx port + test rewrites + new integration suite; CI runs tsc --noEmit + npm test.",
+    "Track the two [Review][Defer] findings in deferred-work.md (malformed-rng hardening class; statistical sigma-budget documentation).",
+    "Re-trace after Epic 7 lands to validate the N3 consumer side (HUD reads pendingSpawn, never rolls)."
+  ]
+}

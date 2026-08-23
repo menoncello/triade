@@ -99,8 +99,26 @@
 
 ## Deferred from: code review of story 2-3-pot-tierizado-por-teto (2026-08-21)
 
-- Tier not wired into `spawnTile`/`move()` — the pot feature is dead via real gameplay until the tier is plumbed. Spec explicitly defers this to Story 2.6 (`resolveSpawn`/`pendingSpawn`/tier-in-`move()` integration). Trigger: Story 2.6 adds the wiring.
-- Variable RNG draw-count per `weightedValue` call (1 roll in fixed band / tier-0 pot; 2 rolls for tier ≥ 1 pot) is behavior-pinned by draw-count tests but undocumented in the `Rng` contract. Spec-mandated (tier-0 single roll is a determinism contract). Re-evaluate when 2.6 plumbing makes draw count depend on live board state.
-- `POT_WEIGHT` is exported from `spawnConfig` but never consulted — the pot band is derived as `FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]`. Pre-existing from 2.2 (threshold coupling carried over deliberately); runtime weight validation lands with 2.5.
+- ~~Tier not wired into `spawnTile`/`move()` — the pot feature is dead via real gameplay until the tier is plumbed.~~ **CLOSED by story 2.6** (tier flows `ceilingDetector → tierForCeiling → resolveSpawn` inside `move()`).
+- ~~Variable RNG draw-count per `weightedValue` call (1 roll in fixed band / tier-0 pot; 2 rolls for tier ≥ 1 pot) is behavior-pinned by draw-count tests but undocumented in the `Rng` contract.~~ **CLOSED by story 2.6** (fixed draw-budget contract documented on `Rng`: effective=3 / noop=0 / newGame=20 / resolver=1; two-stage draw deleted).
+- ~~`POT_WEIGHT` is exported from `spawnConfig` but never consulted — the pot band is derived as `FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]`.~~ **CLOSED by story 2.6** (`pickCombined` builds `[FIXED_WEIGHTS[1], FIXED_WEIGHTS[2], ...normalizeTo(POT_WEIGHT, …)]`).
 - Source-text-coupled purity test (`readFileSync` + import-specifier/export regex in `pot.test.ts`) is brittle under file moves/reformats. Documented ATDD purity/`spawnConfig`-keying check; revisit if it becomes a maintenance burden.
-- `pickIndex` lets NaN rolls through both clamps (`NaN < 0` and `NaN >= len` both false) → `NaN` index. Pre-existing in `pickIndex`; newly reachable via the pot branch's 2nd roll. Requires a contract-violating `Rng` (must return `[0,1)`).
+- ~~`pickIndex` lets NaN rolls through both clamps (`NaN < 0` and `NaN >= len` both false) → `NaN` index.~~ **CLOSED by story 2.6 code review (2026-08-22)** (`Number.isFinite` guard degrades deterministically to index 0, mirroring `weightedPicker`'s NaN defense).
+
+## Deferred from: code review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-22)
+
+- Malformed-rng hardening without crash: a roll ≥ 1 in `weightedPicker` collapses deterministically to the top pot slot (no clamp to a valid band), and a NaN third draw is copied unvalidated into `pendingSpawn.displayRoll` (breaking the documented `[0,1)` contract silently). Pre-existing trust-the-rng class — the engine assumes well-behaved `[0,1)` rngs; only crash-capable paths (see `pickIndex` patch) were fixed this story.
+- Statistical gates in `adaptive-spawn-integration.test.ts` use fixed per-test seeds (AC2 uniformity `0xc31` at N=15000, ±2% absolute ≈ ~10σ; AC7 session `0x26c6`; ceiling-ordering derived from `0x51ce + ceiling`). Deterministic tripwires today, but brittle to any future seed rotation or rng switch; document the σ budget next time these tests are touched. (Numbers corrected by the third-pass review 2026-08-23: previously said "±2% at N=10k, ~4–5σ". In that same pass the AC7 frequency gates were switched to sigma-scaled 5σ bounds — see sigmaBound in the test file — eliminating the seed-starvation/knife-edge coupling for those specific gates; AC2 and the aggregate 40/40/20 window remain absolute.)
+
+## Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)
+
+- Circular-oracle risk in rewritten `pot.test.ts`: cumulative bands are recomputed from the same formula as the implementation, so a consistently-wrong formula passes both sides; only the hand-computed inline boundary comments are independent. Fix = hand-computed expected-value table (triade/__tests__/engine/pot.test.ts).
+- `spyRng` in `adaptive-spawn-integration.test.ts` silently serves `0.5` forever once its supplied values are exhausted instead of throwing — a regression that over-draws can pass frequency-style assertions unnoticed; exact `calls` deep-equal pins cover the P0 paths (triade/__tests__/engine/adaptive-spawn-integration.test.ts:16-24).
+- `gameState()` test helper defaults `{ value: 1, displayRoll: 0 }` — hidden magic default silently drives ~two dozen migrated assertions and means those sessions never exercise realistic pending-value flow (triade/test-utils/helpers.ts).
+- `weights.test.ts` statistical pot-sampling floor (`> N * 0.1`) is far looser than the surrounding ±1–2% frequency gates — triggers only after catastrophic failure (triade/__tests__/engine/weights.test.ts).
+- `{ board: result.board, pendingSpawn: result.pendingSpawn }` reconstruction duplicated ad hoc across App.tsx + smoke/integration tests instead of a shared `stateFromResult` helper — drift risk.
+- Tier-0 ceiling-ordering exception (documented "harmless" in game.ts comments) is the exact case excluded from the ceiling-ordering test — asserted nowhere.
+
+## Deferred from: third-pass review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)
+
+- Malformed-GameState hardening: an effective move throws TypeError if `state.pendingSpawn` is undefined (violates engine-never-throws); a noop degrades `{...undefined}` to `{}`, silently dropping both required fields; and an unvalidated `pendingSpawn.value` (NaN/non-ladder) is placed onto the board where `ceilingDetector` ignores it invisibly (triade/src/engine/core/game.ts:53,69, triade/src/engine/core/spawn.ts:61-72). Trust-the-input class — malformed GameState is outside the valid API domain; same posture as the 2026-08-22 malformed-rng deferral.

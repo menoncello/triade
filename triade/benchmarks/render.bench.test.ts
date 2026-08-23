@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { performance } from 'node:perf_hooks';
 import * as engine from '../src/engine/core/index.ts';
 import type { Board, Rng } from '../src/engine/core/index.ts';
-import { emptyBoard, mulberry32 } from '../test-utils/helpers.ts';
+import { emptyBoard, mulberry32, gameState } from '../test-utils/helpers.ts';
 import { planTileTransitions, resultingTiles } from '../src/render/transitionPlan.ts';
 
 const GRID_SIZE = engine.GRID_SIZE;
@@ -55,7 +55,7 @@ test('benchmark: transition-plan cost per move < 0.05ms median / 0.1ms p99 (fram
   const rng = mulberry32(20260808);
   for (let i = 0; i < WARMUP; i++) {
     const board = seededRandomBoard(rng);
-    const res = engine.move(board, DIRECTIONS[Math.floor(rng() * 4)], rng);
+    const res = engine.move(gameState(board), DIRECTIONS[Math.floor(rng() * 4)], rng);
     planTileTransitions(board, res);
   }
 
@@ -63,7 +63,7 @@ test('benchmark: transition-plan cost per move < 0.05ms median / 0.1ms p99 (fram
   while (samples.length < TURNS) {
     const board = seededRandomBoard(rng);
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
-    const res = engine.move(board, dir, rng);
+    const res = engine.move(gameState(board), dir, rng);
     if (!res.moved) continue;
     const start = performance.now();
     for (let b = 0; b < BATCH; b++) {

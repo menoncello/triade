@@ -45,40 +45,34 @@ test('[P1] structural invariants hold for tiers 0..12 (>=3, doubling, length = t
   }
 });
 
-test('[P0] weightedValue wiring resolves pot values by tier', async () => {
+test('[P0] weightedValue wiring resolves pot values by tier (combined single-roll bands, story 2.6)', async () => {
   await coreWithPot();
-  assert.strictEqual(weightedValue(rngOf(0.9)), 3);
-  assert.strictEqual(weightedValue(rngOf(0.9, 0.99), 1), 6);
-  assert.strictEqual(weightedValue(rngOf(0.9, 0.4), 1), 3);
-  assert.strictEqual(weightedValue(rngOf(0.9, 0.99), 5), 96);
-  assert.strictEqual(weightedValue(rngOf(0.9, 0.0), 5), 3);
+  // Combined bands = [FIXED 1 (0.4), FIXED 2 (0.4), ...normalizeTo(POT_WEIGHT,
+  // potWeights(pot))], recomputed from the same formula as the implementation —
+  // never hardcoded mid-values.
+  //
+  // Tier 1: pot [3,6] → weights [1, 0.5] normalized to 0.2 → [0.13333, 0.06667];
+  // cumulative over [1,2,3,6] = 0.4, 0.8, 0.9333, 1.0.
+  assert.strictEqual(weightedValue(rngOf(0.9), 1), 3); // 0.9 ∈ [0.8, 0.9333)
+  assert.strictEqual(weightedValue(rngOf(0.98), 1), 6); // 0.98 ∈ [0.9333, 1.0)
+  // Tier 5: pot [3..96] weights halving normalized to 0.2; cumulative over
+  // [1,2,3,6,12,24,48,96] = 0.4, 0.8, 0.9016, 0.9524, 0.9778, 0.9905, 0.9968, 1.0.
+  assert.strictEqual(weightedValue(rngOf(0.85), 5), 3); // 0.85 ∈ [0.8, 0.9016)
+  assert.strictEqual(weightedValue(rngOf(0.93), 5), 6); // 0.93 ∈ [0.9016, 0.9524)
+  assert.strictEqual(weightedValue(rngOf(0.99), 5), 24); // 0.99 ∈ [0.9778, 0.9905)
+  assert.strictEqual(weightedValue(rngOf(0.999), 5), 96); // 0.999 ∈ [0.9968, 1.0]
 });
 
-test('[P0] draw-count pin: tier 0 consumes one roll, tier >= 1 consumes two', async () => {
+test('[P0] draw-count pin: every weightedValue call consumes exactly one roll (single-roll contract, story 2.6)', async () => {
   await coreWithPot();
-  let callsA = 0;
-  weightedValue(() => {
-    callsA++;
-    return 0.9;
-  });
-  assert.strictEqual(callsA, 1);
-
-  let callsB = 0;
-  weightedValue(() => {
-    callsB++;
-    return 0.9;
-  }, 1);
-  assert.strictEqual(callsB, 2);
-});
-
-test('[P0] draw-count pin: tier >= 1 with roll inside the fixed band consumes one roll', async () => {
-  await coreWithPot();
-  let calls = 0;
-  weightedValue(() => {
-    calls++;
-    return 0.5;
-  }, 5);
-  assert.strictEqual(calls, 1);
+  for (const tier of [0, 1, 5]) {
+    let calls = 0;
+    weightedValue(() => {
+      calls++;
+      return 0.9;
+    }, tier);
+    assert.strictEqual(calls, 1, `tier ${tier}: expected exactly one roll`);
+  }
 });
 
 test('[P1] defensive guard: negative tiers clamp to tier 0, fractional tiers floor, NaN/Infinity fall back to base pot', async () => {

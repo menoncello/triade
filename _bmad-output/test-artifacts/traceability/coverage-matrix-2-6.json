@@ -1,0 +1,171 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-22T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "2.6",
+    "label": "Integração com o engine — merge-once e effective-move"
+  },
+  "collection_mode": "sequential",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/2-6-integracao-com-o-engine-merge-once-e-effective-move.md",
+      "_bmad-output/planning-artifacts/epics.md#Story 2.6"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "criterion": "Spawn only after an effective move; noop spawns nothing, scores nothing, consumes no turn (FR-10)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-001", "title": "[P0] AC1 noop on a full board: no spawn, no score, pendingSpawn unchanged, 0 draws", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 80, "level": "unit", "status": "active" },
+        { "id": "2.6-G-PIN-NOOPTRACE", "title": "noop move produces no spawned trace entry", "file": "triade/__tests__/engine/game.test.ts", "line": 321, "level": "unit", "status": "active" },
+        { "id": "2.6-G-PIN-SPAWN3", "title": "spawn happens exactly once, in a uniformly random empty cell, after an effective move", "file": "triade/__tests__/engine/game.test.ts", "line": 218, "level": "unit", "status": "active" },
+        { "id": "2.6-E2E-NOOP", "title": "e2e core loop — noop-aware busy gate pin", "file": "triade/__tests__/e2e/session.e2e.test.ts", "line": 35, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "criterion": "Spawn position is a uniformly random empty cell",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-009", "title": "[P1] AC2 spawn cell is uniformly random across empty cells within ±2% (drift tripwire)", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 184, "level": "unit", "status": "active" },
+        { "id": "2.6-G-PIN-SPAWN3", "title": "spawn happens exactly once, in a uniformly random empty cell, after an effective move", "file": "triade/__tests__/engine/game.test.ts", "line": 218, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "criterion": "Merge-once and one-cell movement rules unchanged by Adaptive Spawn",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-006", "title": "[P0] AC3 merge-once holds when a pot tile is pending: [3,3,3,3] left -> [6,3,3,spawn]", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 148, "level": "unit", "status": "active" },
+        { "id": "2.6-G-PIN-RULES", "title": "merge-once / one-cell / cascade pin battery (NO_1_1, NO_2_2, EQUAL_GE3, NEW_TILE_NOT_REMERGED, ONE_CELL x5)", "file": "triade/__tests__/engine/game.test.ts", "line": 50, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "criterion": "RNG injected via the rng param (never Math.random), deterministic suite green, fixed draw budget",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-002", "title": "[P0] AC4 effective move consumes exactly 3 draws in order (cell, next value, displayRoll)", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 91, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-003", "title": "[P0] AC4 newGame consumes exactly 20 draws in order", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 99, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-001", "title": "[P0] AC1 noop consumes 0 draws", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 80, "level": "unit", "status": "active" },
+        { "id": "2.6-P-PIN-DRAW", "title": "[P0] draw-count pin: every weightedValue call consumes exactly one roll (single-roll contract, story 2.6)", "file": "triade/__tests__/engine/pot.test.ts", "line": 66, "level": "unit", "status": "active" },
+        { "id": "2.6-S-PIN-DRIFT", "title": "statistical sampling: weightedValue frequencies match 40/40/20 within ±2% (drift tripwire)", "file": "triade/__tests__/engine/spawn.test.ts", "line": 25, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-011", "title": "[P1] determinism: identical seed reproduces the identical { board, pendingSpawn } sequence", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 247, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "criterion": "move() still returns { board, score, moved, trace } and the trace is assertable, including the spawned tile",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-007", "title": "[P0] AC5 move returns { board, score, moved, trace, pendingSpawn } and an assertable spawn trace", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 160, "level": "unit", "status": "active" },
+        { "id": "2.6-G-PIN-SPAWN3", "title": "spawn happens exactly once ... assert calls === 3 and board outcome", "file": "triade/__tests__/engine/game.test.ts", "line": 218, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-6",
+      "criterion": "Pre-resolved pendingSpawn (real value + display roll) lives in the immutable snapshot from day one (N3 / ADR-06)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-008", "title": "[P0] AC6 snapshot shape: newGame returns GameState with a valid initial pendingSpawn", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 172, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-001", "title": "[P0] AC1 noop returns pendingSpawn deep-equal to input (shallow copy, no aliasing)", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 80, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-012", "title": "[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 254, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "AC-7",
+      "criterion": "pendingSpawn resolved on every effective move from the same Adaptive Spawn distribution and rewound by undo with the board",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "2.6-INT-010", "title": "[P0] AC7 statistical distribution matches fixed 40/40 + pot-by-ceiling, N3 invariant and displayRoll uniformity over 10k spawns", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 219, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-004", "title": "[P0] tier wiring pin: post-merge ceiling 96 -> tier 2 combined bands", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 112, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-005", "title": "[P0] tier ladder variants: pending pot membership for ceilings 96 / 192 / 384", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 127, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-013", "title": "[P1] ceiling ordering: resolveSpawn never returns a value above its ceiling (tier >= 1)", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 266, "level": "unit", "status": "active" },
+        { "id": "2.6-INT-012", "title": "[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 254, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 7,
+    "fully_covered": 7,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 6, "covered": 6, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 21,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 1, "criteria_covered": 1 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 20, "criteria_covered": 7 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "note": "20 unit tests = 13 primary integration tests + 7 supporting pins (game/spawn/pot/weights); full suite runs 278 tests, all green."
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": [],
+      "note": "Already performed by Game QA — report _bmad-output/test-review-report-story-2-6.md (findings patched or explicitly deferred)."
+    },
+    {
+      "priority": "INFO",
+      "action": "Re-trace after Epic 7 preview lands to confirm pendingSpawn/displayRoll consumers read but never roll (N3 contract end-to-end)",
+      "requirements": ["AC-6", "AC-7"]
+    }
+  ]
+}

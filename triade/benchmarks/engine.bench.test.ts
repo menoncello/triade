@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { performance } from 'node:perf_hooks';
 import * as engine from '../src/engine/core/index.ts';
 import type { Board, Rng } from '../src/engine/core/index.ts';
-import { emptyBoard, mulberry32 } from '../test-utils/helpers.ts';
+import { emptyBoard, mulberry32, gameState } from '../test-utils/helpers.ts';
 
 const GRID_SIZE = engine.GRID_SIZE;
 
@@ -65,7 +65,7 @@ test('benchmark: engine cost per turn < 0.1ms (spawn + merge-once + game-over de
   const rng = mulberry32(20260808);
   for (let i = 0; i < WARMUP; i++) {
     const board = seededRandomBoard(rng);
-    engine.move(board, DIRECTIONS[Math.floor(rng() * 4)], rng);
+    engine.move(gameState(board), DIRECTIONS[Math.floor(rng() * 4)], rng);
   }
 
   const samples: number[] = [];
@@ -73,7 +73,7 @@ test('benchmark: engine cost per turn < 0.1ms (spawn + merge-once + game-over de
     const board = seededRandomBoard(rng);
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
     const start = performance.now();
-    const res = engine.move(board, dir, rng);
+    const res = engine.move(gameState(board), dir, rng);
     engine.isGameOver(res.board);
     const elapsed = performance.now() - start;
     if (res.moved) samples.push(elapsed);
@@ -117,7 +117,7 @@ test('benchmark: frame-logic tail p99 < 0.2ms (merge-heavy slides across all dir
   for (let i = 0; i < WARMUP; i++) {
     const b = boards[i % boards.length];
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
-    engine.move(b, dir, rng);
+    engine.move(gameState(b), dir, rng);
   }
 
   const samples: number[] = [];
@@ -125,7 +125,7 @@ test('benchmark: frame-logic tail p99 < 0.2ms (merge-heavy slides across all dir
     const b = boards[i % boards.length];
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
     const start = performance.now();
-    engine.move(b, dir, rng);
+    engine.move(gameState(b), dir, rng);
     samples.push(performance.now() - start);
   }
   const tailMs = percentile(samples, 0.99);

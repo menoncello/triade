@@ -5,7 +5,7 @@ import type { MoveResult } from '../../src/engine/core/index.ts';
 import { emptyBoard } from '../../test-utils/helpers.ts';
 
 function moveResult(score: number, moved = true): MoveResult {
-  return { board: emptyBoard(), score, moved, trace: [] };
+  return { board: emptyBoard(), score, moved, trace: [], pendingSpawn: { value: 1, displayRoll: 0 } };
 }
 
 test('initialScore seeds score 0 with the stored best', () => {

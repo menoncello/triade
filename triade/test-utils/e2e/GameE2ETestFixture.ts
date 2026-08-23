@@ -1,5 +1,5 @@
 import { newGame, move, isGameOver } from '../../src/engine/core/index.ts';
-import type { Board, Direction, MoveResult } from '../../src/engine/core/index.ts';
+import type { Board, Direction, GameState, MoveResult, PendingSpawn } from '../../src/engine/core/index.ts';
 import { applyMove, initialScore, isNewRecord } from '../../src/game/matchScore.ts';
 import type { MatchScore } from '../../src/game/matchScore.ts';
 import {
@@ -36,7 +36,7 @@ export class GameE2ETestFixture {
   private hydrationOkRef = true;
   private busyRef = false;
   private readyState = false;
-  private boardState: Board = [];
+  private state: GameState = { board: [], pendingSpawn: { value: 1, displayRoll: 0 } };
   private matchState: MatchScore = { score: 0, best: 0 };
   private persistedBestState = 0;
   private lastResult: MoveResult | null = null;
@@ -57,7 +57,7 @@ export class GameE2ETestFixture {
     fixture.sessionStartBestRef = result.best;
     fixture.persistedBestState = result.best;
     fixture.matchState = initialScore(result.best);
-    fixture.boardState = newGame(fixture.rng);
+    fixture.state = newGame(fixture.rng);
     fixture.readyState = true;
 
     fixture.input = new InputSimulator(
@@ -70,8 +70,8 @@ export class GameE2ETestFixture {
   doMove(dir: Direction): MoveResult {
     if (!this.readyState) throw new Error('fixture not launched');
     if (this.busyRef) return this.lastMoveGuard();
-    const result = move(this.boardState, dir, this.rng);
-    this.boardState = result.board;
+    const result = move(this.state, dir, this.rng);
+    this.state = { board: result.board, pendingSpawn: result.pendingSpawn };
     this.lastResult = result;
     this.matchState = applyMove(this.matchState, result);
     if (result.moved) this.busyRef = true;
@@ -101,7 +101,7 @@ export class GameE2ETestFixture {
 
   snapshot(): SessionSnapshot {
     return {
-      board: this.boardState.map((row) => row.slice()),
+      board: this.board.map((row) => row.slice()),
       match: { ...this.matchState },
       persistedBest: this.persistedBestState,
       hydrationOk: this.hydrationOkRef,
@@ -111,7 +111,11 @@ export class GameE2ETestFixture {
   }
 
   get board(): Board {
-    return this.boardState;
+    return this.state.board;
+  }
+
+  get pendingSpawn(): PendingSpawn {
+    return { ...this.state.pendingSpawn };
   }
 
   get score(): number {
@@ -127,12 +131,12 @@ export class GameE2ETestFixture {
   }
 
   get gameOver(): boolean {
-    return isGameOver(this.boardState);
+    return isGameOver(this.state.board);
   }
 
   get occupiedCount(): number {
     let n = 0;
-    for (const row of this.boardState) {
+    for (const row of this.state.board) {
       for (const cell of row) {
         if (cell !== null) n++;
       }
@@ -145,6 +149,15 @@ export class GameE2ETestFixture {
   }
 
   private lastMoveGuard(): MoveResult {
-    return this.lastResult ?? { board: this.boardState, score: 0, moved: false, trace: [] };
+    // ADR-06 copying discipline: the fallback must not hand out live fixture
+    // state — board rows and pendingSpawn are both copied so a mutating caller
+    // cannot corrupt the snapshot.
+    return this.lastResult ?? {
+      board: this.state.board.map((row) => row.slice()),
+      score: 0,
+      moved: false,
+      trace: [],
+      pendingSpawn: { ...this.state.pendingSpawn }
+    };
   }
 }

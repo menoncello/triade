@@ -6,7 +6,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
 import { newGame, move } from './src/engine/core/index.ts';
-import type { Board, Direction, MoveResult } from './src/engine/core/index.ts';
+import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
 import type { MatchScore } from './src/game/matchScore.ts';
 import { loadBest, saveBest } from './src/services/storage/settingsStore.ts';
@@ -38,7 +38,7 @@ function AppContent() {
   const hydrationOkRef = useRef(true);
   const [ready, setReady] = useState(false);
   const [persistedBest, setPersistedBest] = useState(0);
-  const [board, setBoard] = useState<Board>(() => newGame(rngRef.current));
+  const [game, setGame] = useState<GameState>(() => newGame(rngRef.current));
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
 
@@ -77,8 +77,8 @@ function AppContent() {
 
   const doMove = useCallback(
     (dir: Direction) => {
-      const result = move(board, dir, rngRef.current);
-      setBoard(result.board);
+      const result = move(game, dir, rngRef.current);
+      setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
       if (result.moved) {
@@ -90,7 +90,7 @@ function AppContent() {
         busyRef.current = true;
       }
     },
-    [board]
+    [game]
   );
 
   // Stable gesture (created once) reads the latest doMove through a ref so a
@@ -142,7 +142,7 @@ function AppContent() {
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
           <GestureDetector gesture={panGesture}>
-            <GameBoard board={board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
+            <GameBoard board={game.board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
           </GestureDetector>
         </View>
         <Text style={styles.stats}>
