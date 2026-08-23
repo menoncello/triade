@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
-import { SIZE, emptyBoard, rngOf, boardWith, mulberry32, assertNoLeak } from '../../test-utils/helpers.ts';
+import { SIZE, emptyBoard, rngOf, boardWith, mulberry32, assertNoLeak, gameState } from '../../test-utils/helpers.ts';
 import { planTileTransitions } from '../../src/render/transitionPlan.ts';
 
 const DIRECTIONS = ['left', 'right', 'up', 'down'] as const;
@@ -18,7 +18,7 @@ function boardOf(...rows: Array<Array<number | null>>) {
 
 test('planTileTransitions: slide left maps the moving tile from source to dest', () => {
   const board = boardOf([null, null, 2, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -29,7 +29,7 @@ test('planTileTransitions: slide left maps the moving tile from source to dest',
 
 test('planTileTransitions: slide right maps the moving tile from source to dest', () => {
   const board = boardOf([null, 2, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'right', rngOf(0, 0));
+  const result = game.move(gameState(board), 'right', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -40,7 +40,7 @@ test('planTileTransitions: slide right maps the moving tile from source to dest'
 
 test('planTileTransitions: slide up maps the moving tile from source to dest', () => {
   const board = boardOf([null, null, null, null], [null, 9, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'up', rngOf(0, 0));
+  const result = game.move(gameState(board), 'up', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -51,7 +51,7 @@ test('planTileTransitions: slide up maps the moving tile from source to dest', (
 
 test('planTileTransitions: slide down maps the moving tile from source to dest', () => {
   const board = boardOf([null, 9, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'down', rngOf(0, 0));
+  const result = game.move(gameState(board), 'down', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -62,7 +62,7 @@ test('planTileTransitions: slide down maps the moving tile from source to dest',
 
 test('planTileTransitions: merge 1+2 converges two sources to dest with merged value', () => {
   const board = boardOf([1, 2, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -73,7 +73,7 @@ test('planTileTransitions: merge 1+2 converges two sources to dest with merged v
 
 test('planTileTransitions: merge 2+1 (reversed order) converges the same two sources', () => {
   const board = boardOf([2, 1, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -84,7 +84,7 @@ test('planTileTransitions: merge 2+1 (reversed order) converges the same two sou
 
 test('planTileTransitions: merge equal >=3 doubles the value at dest', () => {
   const board = boardOf([3, 3, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -95,7 +95,7 @@ test('planTileTransitions: merge equal >=3 doubles the value at dest', () => {
 
 test('planTileTransitions: stationary tiles become hold transitions in a partial move', () => {
   const board = boardOf([2, null, null, null], [null, 3, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
@@ -107,7 +107,7 @@ test('planTileTransitions: stationary tiles become hold transitions in a partial
 
 test('planTileTransitions: noop move (moved:false) yields an empty plan even though trace has entries', () => {
   const board = boardOf([2, 3, 6, 12], [3, 6, 12, 24], [3, 6, 12, 24], [3, 6, 12, 24]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, false);
   assert.ok(result.trace.length > 0, 'trace still describes the stationary board');
   assert.deepStrictEqual(planTileTransitions(board, result), []);
@@ -115,21 +115,21 @@ test('planTileTransitions: noop move (moved:false) yields an empty plan even tho
 
 test('planTileTransitions: no 1+1 merge is a noop with an empty plan', () => {
   const board = boardOf([1, 1, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, false);
   assert.deepStrictEqual(planTileTransitions(board, result), []);
 });
 
 test('planTileTransitions: no 2+2 merge is a noop with an empty plan', () => {
   const board = boardOf([2, 2, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, false);
   assert.deepStrictEqual(planTileTransitions(board, result), []);
 });
 
 test('planTileTransitions: spawn lands on the last empty cell [3,3]', () => {
   const board = boardOf([3, 6, 12, 24], [3, 6, 12, 24], [3, 6, 12, 24], [3, 6, null, 12]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   const spawn = plan.find((t) => t.type === 'spawn');
@@ -148,7 +148,7 @@ test('planTileTransitions: the plan derives from result.trace only, never from p
     emptyBoard()
   ];
   for (const { board, dir } of cases) {
-    const result = game.move(board, dir, rngOf(0, 0));
+    const result = game.move(gameState(board), dir, rngOf(0, 0));
     const expected = planTileTransitions(board, result);
     for (const wrong of unrelatedBoards) {
       assert.deepStrictEqual(
@@ -162,7 +162,7 @@ test('planTileTransitions: the plan derives from result.trace only, never from p
 
 test('planTileTransitions: full-board merge-once produces merges, slides, and one spawn', () => {
   const board = boardOf([3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3]);
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   const merges = plan.filter((t) => t.type === 'merge');
@@ -175,8 +175,8 @@ test('planTileTransitions: full-board merge-once produces merges, slides, and on
 });
 
 test('planTileTransitions: 9-start-tile board plan covers every occupied cell (no-leak oracle)', () => {
-  const board = game.newGame(mulberry32(20260808));
-  const result = game.move(board, 'left', rngOf(0, 0));
+  const board = game.newGame(mulberry32(20260808)).board;
+  const result = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.strictEqual(plan.length, result.trace.length, 'every trace entry maps to exactly one transition');
@@ -185,10 +185,10 @@ test('planTileTransitions: 9-start-tile board plan covers every occupied cell (n
 
 test('planTileTransitions: resultingTiles is the no-leak oracle across random deterministic moves', () => {
   const rng = mulberry32(20260808);
-  let board = game.newGame(rng);
+  let board = game.newGame(rng).board;
   for (let i = 0; i < 200; i++) {
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
-    const result = game.move(board, dir, rng);
+    const result = game.move(gameState(board), dir, rng);
     const plan = planTileTransitions(board, result);
     if (result.moved) {
       assert.ok(plan.length > 0, `move ${i} (${dir}) moved but produced an empty plan`);
@@ -197,6 +197,6 @@ test('planTileTransitions: resultingTiles is the no-leak oracle across random de
       assert.deepStrictEqual(plan, [], `move ${i} (${dir}) did not move but produced a non-empty plan`);
     }
     board = result.board;
-    if (game.isGameOver(board)) board = game.newGame(rng);
+    if (game.isGameOver(board)) board = game.newGame(rng).board;
   }
 });

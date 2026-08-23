@@ -1,8 +1,12 @@
 import assert from 'node:assert';
-import type { Board, Rng } from '../src/engine/core/index.ts';
+import type { Board, GameState, PendingSpawn, Rng } from '../src/engine/core/index.ts';
 import { resultingTiles, type TileTransition } from '../src/render/transitionPlan.ts';
 
 export const SIZE = 4;
+
+export function gameState(board: Board, pendingSpawn: PendingSpawn = { value: 1, displayRoll: 0 }): GameState {
+  return { board, pendingSpawn };
+}
 
 export function emptyBoard(): Board {
   const b: Board = [];

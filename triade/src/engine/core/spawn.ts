@@ -1,27 +1,64 @@
 import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
 import { FIXED_WEIGHTS, POT_WEIGHT } from '../config/spawnConfig.ts';
 import type { CeilingTier } from './ceiling.ts';
+import { tierForCeiling } from './ceiling.ts';
 import { potForTier } from './pot.ts';
 import { potWeights, normalizeTo, weightedPicker } from './weights.ts';
 
+// Combined single-roll pick (promised by 2.4's AC "the combined distribution is
+// picked by a weightedPicker that always re-normalizes" and 2.5's dev note
+// "combined single-roll pick (that is 2.6)"): fixed 40/40 bands for values
+// 1 and 2, plus the pot normalized to POT_WEIGHT — built as ONE weight array
+// picked by a single weightedPicker call, which re-normalizes (N1 float rule)
+// and consumes EXACTLY one rng draw per call. It consults POT_WEIGHT directly,
+// closing the 2.3 deferred item "POT_WEIGHT exported but never consulted".
+// Keys off spawnConfig only (boundary rule 4) — no scattered weight literals.
+function pickCombined(tier: CeilingTier, rng: Rng): number {
+  const pot = potForTier(tier);
+  const norm = normalizeTo(POT_WEIGHT, potWeights(pot)); // sums to POT_WEIGHT (0.2)
+  const combined = [FIXED_WEIGHTS[1], FIXED_WEIGHTS[2], ...norm]; // [1, 2, ...pot] bands
+  const idx = weightedPicker(combined, rng); // re-normalizes (N1 float rule), 1 draw
+  return idx < 2 ? idx + 1 : pot[idx - 2];
+}
+
+// THE spawn resolver for move(): same combined distribution for any ceiling;
+// ceiling < 48 resolves to tier 0, whose combined pick is exactly the base
+// 40/40/20. Consumes exactly one rng draw.
+// Note: intentionally deviates from N1's guide signature resolveSpawn(config,
+// ceiling, rng) — the config param is omitted because spawnConfig is the
+// module-level single access point (boundary rule 4) and there is exactly one
+// config instance; re-add the param only if a second spawn config ever exists.
+export function resolveSpawn(ceiling: number, rng: Rng): number {
+  return pickCombined(tierForCeiling(ceiling), rng);
+}
+
 export function pickIndex(len: number, rng: Rng): number {
-  let idx = Math.floor(rng() * len);
-  if (idx < 0) idx = 0;
-  if (idx >= len) idx = len - 1;
+  // Empty collection: no valid index exists — degrade deterministically to 0
+  // instead of leaking len - 1 (-1) through the idx >= len clamp below.
+  // Callers guard today (spawnTile checks empties first); this keeps the
+  // engine-never-throws posture even if a future caller forgets.
+  if (len <= 0) return 0;
+  const idx = Math.floor(rng() * len);
+  // Contract-violating rng (NaN / ±Infinity) degrades deterministically to
+  // index 0 instead of poisoning downstream indexing — same defense posture
+  // as weightedPicker's NaN guard; the engine never throws.
+  if (!Number.isFinite(idx)) return 0;
+  if (idx < 0) return 0;
+  if (idx >= len) return len - 1;
   return idx;
 }
 
+// Consolidated onto the combined single-roll path (2.6): replaces the old
+// two-stage draw (band roll, then a second pot-pick roll). Every call now
+// consumes exactly one rng draw, regardless of tier.
 export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): number {
-  const roll = rng();
-  if (roll < FIXED_WEIGHTS[1]) return 1;
-  if (roll < FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2]) return 2;
-  const pot = potForTier(tier);
-  if (pot.length === 1) return pot[0];
-  const weights = normalizeTo(POT_WEIGHT, potWeights(pot));
-  return pot[weightedPicker(weights, rng)];
+  return pickCombined(tier, rng);
 }
 
-export function spawnTile(board: Board, rng: Rng = Math.random): SpawnResult {
+// Place, not roll: puts the given value (the materialized pendingSpawn, per
+// the N3 invariant — the value is never rolled here) into a uniformly random
+// empty cell (one draw via pickIndex). On a full board nothing is placed.
+export function spawnTile(board: Board, value: number, rng: Rng = Math.random): SpawnResult {
   const empty: Array<[number, number]> = [];
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
@@ -30,7 +67,6 @@ export function spawnTile(board: Board, rng: Rng = Math.random): SpawnResult {
   }
   if (empty.length === 0) return { board, cell: null, value: null };
   const cell = empty[pickIndex(empty.length, rng)];
-  const value = weightedValue(rng);
   board[cell[0]][cell[1]] = value;
   return { board, cell, value };
 }

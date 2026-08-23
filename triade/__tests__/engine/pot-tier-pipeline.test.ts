@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import {
+  FIXED_WEIGHTS,
   POT_WEIGHT,
   ceilingDetector,
   tierForCeiling,
@@ -71,27 +72,27 @@ test('[P1] defensive inputs: fractional tiers floor, negative tiers clamp to bas
   assert.deepStrictEqual(potForTier(-0.5), [3]);
 });
 
-test('[P1] every intra-pot slot is reachable at its tier (weighted-aware reachability, halving decay)', () => {
+test('[P1] every intra-pot slot is reachable at its tier (combined single-roll midpoints, story 2.6)', () => {
   for (const tier of [2, 5]) {
     const pot = potForTier(tier);
-    const weights = normalizeTo(POT_WEIGHT, potWeights(pot));
-    const total = weights.reduce((a, b) => a + b, 0);
-    const cum: number[] = [];
-    let acc = 0;
-    for (const w of weights) {
-      acc += w;
-      cum.push(acc);
+    // Combined bands: fixed [1,2] at 0.4 each, then the pot normalized to
+    // POT_WEIGHT — the exact distribution weightedValue picks with ONE roll.
+    const norm = normalizeTo(POT_WEIGHT, potWeights(pot));
+    const lower = new Array<number>(pot.length);
+    const upper = new Array<number>(pot.length);
+    let acc = FIXED_WEIGHTS[1] + FIXED_WEIGHTS[2];
+    for (let i = 0; i < pot.length; i++) {
+      lower[i] = acc;
+      acc += norm[i];
+      upper[i] = acc;
     }
     for (let i = 0; i < pot.length; i++) {
-      // Feed MIDPOINTS of the cumulative band, never the exact boundary, so the
-      // test is robust against float drift and the picker's < vs <= semantics.
-      const mid = i === 0
-        ? cum[0] / 2 / total
-        : i === pot.length - 1
-          ? (cum[pot.length - 2] + total) / 2 / total
-          : (cum[i - 1] + cum[i]) / 2 / total;
+      // Feed MIDPOINTS of the combined band as the single roll, never the exact
+      // boundary, so the test is robust against float drift and the picker's
+      // < vs <= semantics.
+      const mid = (lower[i] + upper[i]) / 2;
       assert.strictEqual(
-        weightedValue(rngOf(0.9, mid), tier),
+        weightedValue(rngOf(mid), tier),
         pot[i],
         `tier ${tier} slot ${i}: midpoint ${mid.toFixed(6)} must land on pot value ${pot[i]}`
       );

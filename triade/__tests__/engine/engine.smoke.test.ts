@@ -17,7 +17,8 @@ function tileCount(board: Array<Array<number | null>>): number {
 
 test('SMOKE: game launches — newGame returns a playable 4x4 board', () => {
   const rng = mulberry32(12345);
-  const board = game.newGame(rng);
+  const state = game.newGame(rng);
+  const board = state.board;
   assert.strictEqual(board.length, SIZE, 'board has 4 rows');
   for (let r = 0; r < SIZE; r++) {
     assert.strictEqual(board[r].length, SIZE, `row ${r} has 4 cells`);
@@ -31,27 +32,27 @@ test('SMOKE: game launches — newGame returns a playable 4x4 board', () => {
 
 test('SMOKE: core loop executes — 500 deterministic moves never crash and score never decreases', () => {
   const rng = mulberry32(20260808);
-  let board = game.newGame(rng);
+  let state = game.newGame(rng);
   let score = 0;
   let moves = 0;
   let games = 0;
   while (moves < 500) {
     const dir = DIRECTIONS[Math.floor(rng() * 4)];
-    const res = game.move(board, dir, rng);
-    assert.strictEqual(board.length, SIZE, 'board stays 4x4');
+    const res = game.move(state, dir, rng);
+    assert.strictEqual(res.board.length, SIZE, 'board stays 4x4');
     assert.strictEqual(typeof res.score, 'number', 'score is a number');
     assert.ok(res.score >= 0, 'score is non-negative');
     assert.ok(score + res.score >= score, 'cumulative score never decreases');
     assert.ok(Array.isArray(res.trace), 'move returns a trace');
     score += res.score;
-    board = res.board;
+    state = { board: res.board, pendingSpawn: res.pendingSpawn };
     moves++;
-    const count = tileCount(board);
+    const count = tileCount(state.board);
     assert.ok(count >= 1 && count <= SIZE * SIZE, `after move ${moves} tile count ${count} stays in bounds`);
-    if (game.isGameOver(board)) {
-      const noop = game.move(board, dir, rng);
+    if (game.isGameOver(state.board)) {
+      const noop = game.move(state, dir, rng);
       assert.strictEqual(noop.moved, false, 'game-over board cannot move');
-      board = game.newGame(rng);
+      state = game.newGame(rng);
       games++;
     }
   }

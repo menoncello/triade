@@ -40,17 +40,40 @@ test('e2e: core loop — moves accumulate score, gate opens after settle', async
       const dirs = ['left', 'up', 'right', 'down'] as const;
       for (const dir of dirs) {
         if (fixture.gameOver) break;
+        const before = fixture.snapshot().board;
+        const scoreBefore = fixture.score;
+        const occupiedBefore = fixture.occupiedCount;
+        const pendingBefore = fixture.pendingSpawn;
         const dispatched = fixture.input.swipeDirection(dir);
         if (dispatched) {
-          moves++;
-          assert.strictEqual(fixture.isBusy, true, 'effective move engages the busy gate');
-          fixture.settle();
-          assert.strictEqual(fixture.isBusy, false, 'settle reopens the input gate');
+          // Story 2.6: a dispatched swipe can be a NOOP (moved:false) — by
+          // design it consumes no turn, spawns nothing, scores nothing, keeps
+          // the pending preview put and never engages the in-flight gate
+          // (noop deadlock guard). Only an effective move engages it; settle
+          // must always reopen it.
+          if (fixture.isBusy) {
+            moves++;
+            fixture.settle();
+            assert.strictEqual(fixture.isBusy, false, 'settle reopens the input gate');
+          } else {
+            assert.deepStrictEqual(
+              fixture.board,
+              before,
+              'a dispatch that does not engage the gate must be a noop'
+            );
+            assert.strictEqual(fixture.score, scoreBefore, 'noop scores nothing');
+            assert.strictEqual(fixture.occupiedCount, occupiedBefore, 'noop spawns nothing');
+            assert.deepStrictEqual(
+              fixture.pendingSpawn,
+              pendingBefore,
+              'noop keeps the pending preview unchanged'
+            );
+          }
           await waitFor(() => fixture.occupiedCount > 0);
         }
       }
     }
-    assert.ok(moves > 0, 'at least one move should dispatch in a fresh session');
+    assert.ok(moves > 0, 'at least one effective move should happen in a fresh session');
     assert.ok(fixture.score >= 0, 'score never goes negative');
     assert.ok(fixture.occupiedCount >= 9, 'board never drops below spawn count');
   } finally {

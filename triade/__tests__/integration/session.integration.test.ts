@@ -27,7 +27,7 @@ test('integration: move trace renders exactly the occupied cells of the result b
   const start = newGame(mulberry32(314159));
   const result = move(start, 'left', mulberry32(271828));
   assert.strictEqual(result.moved, true, 'seeded session must produce an effective first move');
-  const plan = planTileTransitions(start, result);
+  const plan = planTileTransitions(start.board, result);
   const tiles = resultingTiles(plan)
     .map((t) => ({ cell: t.cell, value: t.value }))
     .sort((a, b) => a.cell[0] - b.cell[0] || a.cell[1] - b.cell[1]);
@@ -40,12 +40,12 @@ test('integration: move trace renders exactly the occupied cells of the result b
 
 test('integration: matchScore accumulates across a full session of moves', () => {
   let match = initialScore(50);
-  let board = newGame(mulberry32(777));
+  let state = newGame(mulberry32(777));
   const dirs: Direction[] = ['left', 'up', 'right', 'down'];
   for (let i = 0; i < 80; i++) {
-    const result = move(board, dirs[i % 4], mulberry32(9000 + i));
+    const result = move(state, dirs[i % 4], mulberry32(9000 + i));
     if (result.moved) {
-      board = result.board;
+      state = { board: result.board, pendingSpawn: result.pendingSpawn };
       match = applyMove(match, result);
     }
   }
