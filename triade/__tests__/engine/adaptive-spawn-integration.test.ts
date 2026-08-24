@@ -2,7 +2,15 @@ import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
 import type { Board, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../../src/engine/core/index.ts';
-import { rngOf, staticBoard, boardWith, mulberry32, gameState } from '../../test-utils/helpers.ts';
+import {
+  rngOf,
+  staticBoard,
+  boardWith,
+  mulberry32,
+  gameState,
+  runSeededSession,
+  sigmaBound,
+} from '../../test-utils/helpers.ts';
 
 // Story 2.6 (integração com o engine — merge-once e effective-move) — acceptance
 // tests for Adaptive Spawn wired into the live move path via the immutable
@@ -12,6 +20,10 @@ import { rngOf, staticBoard, boardWith, mulberry32, gameState } from '../../test
 // Activated from the ATDD RED-phase scaffolds (T1–T6 landed; R1 rewrites applied
 // separately in pot/pot-tier-pipeline/weights tests). Typed against the real
 // engine exports — no facade, no casts.
+//
+// sigmaBound and runSeededSession live in test-utils/helpers.ts (lifted from
+// the former module-local copies so the statistical windows shared with the
+// 7.1 contract suite can't drift apart).
 
 function spyRng(...values: number[]): Rng & { calls: number[] } {
   const calls: number[] = [];
@@ -37,65 +49,6 @@ function isValidSpawnValue(v: number): boolean {
   if (v === 1 || v === 2) return true;
   const k = Math.log2(v / 3);
   return v >= 3 && Number.isInteger(k);
-}
-
-// Statistical tolerance scaled by sigma: z * sqrt(p(1-p)/n). Auto-adjusts to
-// sample size so a frequency gate can never be simultaneously seed-starved
-// (dead) and knife-edge flaky when a future seed/rng rotation revives it.
-// Shared by the AC7 session gate and the per-ceiling composition gate so the
-// two statistical windows can't drift apart again.
-function sigmaBound(expected: number, n: number, z = 5): number {
-  return z * Math.sqrt((expected * (1 - expected)) / n);
-}
-
-// Seeded session harness: plays effective moves cycling directions, restarts
-// the game when stuck (deterministic — same seed replays identically) and
-// records materialized spawn values plus the N3 promise/materialization pairs.
-// tieredPairs buckets each MATERIALIZED value by the tier its pending was
-// resolved from (recovered from the pre-spawn board), enabling pot-by-ceiling
-// composition checks over the live move path.
-function runSeededSession(seed: number, targetSpawns: number) {
-  const rng = mulberry32(seed);
-  const dirs: Direction[] = ['left', 'up', 'right', 'down'];
-  let state: GameState = game.newGame(rng);
-  let lastPending: PendingSpawn = state.pendingSpawn;
-  let lastResolvedTier = game.tierForCeiling(game.ceilingDetector(state.board));
-  const spawnValues: number[] = [];
-  const displayRolls: number[] = [];
-  const n3pairs: Array<{ promised: number; materialized: number }> = [];
-  const tieredPairs: Array<{ tier: number; value: number }> = [];
-  const snapshots: Array<{ board: Board; pendingSpawn: PendingSpawn }> = [];
-  let dirIdx = 0;
-  let stale = 0;
-  while (spawnValues.length < targetSpawns) {
-    const res = game.move(state, dirs[dirIdx++ % 4], rng);
-    if (!res.moved) {
-      stale++;
-      if (stale >= 8 || game.isGameOver(res.board)) {
-        state = game.newGame(rng);
-        lastPending = state.pendingSpawn;
-        lastResolvedTier = game.tierForCeiling(game.ceilingDetector(state.board));
-        stale = 0;
-      }
-      continue;
-    }
-    stale = 0;
-    const spawned = res.trace.find((e) => e.spawned);
-    assert.ok(spawned, 'effective move must produce a spawned trace entry');
-    spawnValues.push(spawned.value);
-    displayRolls.push(res.pendingSpawn.displayRoll);
-    n3pairs.push({ promised: lastPending.value, materialized: spawned.value });
-    tieredPairs.push({ tier: lastResolvedTier, value: spawned.value });
-    snapshots.push({ board: res.board, pendingSpawn: res.pendingSpawn });
-    state = { board: res.board, pendingSpawn: res.pendingSpawn };
-    lastPending = res.pendingSpawn;
-    // The NEXT pending was resolved from the post-merge board BEFORE placing
-    // the spawn — reconstruct that pre-spawn board to recover its tier.
-    const preSpawnBoard: Board = res.board.map((row) => row.slice());
-    preSpawnBoard[spawned.to[0]][spawned.to[1]] = null;
-    lastResolvedTier = game.tierForCeiling(game.ceilingDetector(preSpawnBoard));
-  }
-  return { spawnValues, displayRolls, n3pairs, tieredPairs, snapshots };
 }
 
 test('[P0] AC1 noop on a full board: no spawn, no score, pendingSpawn unchanged, 0 draws', () => {
