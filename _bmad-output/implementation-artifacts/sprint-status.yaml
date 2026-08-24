@@ -1,5 +1,5 @@
 # generated: 2026-08-08 13:01
-# last_updated: 2026-08-23 (story 2-6 third-pass review: patches applied, stays done)
+# last_updated: 2026-08-23 (story 7-1 created — ready-for-dev)
 # project: 3-clone
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-08 13:01
-last_updated: 2026-08-23 (story 2-6 third-pass review: patches applied, stays done)
+last_updated: 2026-08-24 (story 7-2 review — code review complete, done)
 
 project: 3-clone
 project_key: NOKEY
@@ -53,14 +53,28 @@ development_status:
   1-7-legibilidade-dos-numerais-em-landscape: done
   epic-1-retrospective: done
 
-  epic-2: in-progress
+  epic-2: done
   2-1-deteccao-de-teto-de-spawn-spawn-ceiling: done
   2-2-pesos-fixos-1-2-em-40-40: done
   2-3-pot-tierizado-por-teto: done
   2-4-curva-halving-decay-normalizada: done
   2-5-spawnconfig-configuravel: done
   2-6-integracao-com-o-engine-merge-once-e-effective-move: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
+
+  epic-7: in-progress
+  7-1-pendingspawn-pre-resolvido-no-snapshot: done
+  7-2-preview-card-no-hud-60-40-nas-duas-pistas: done
+  7-3-faixa-ambigua-correta: backlog
+  7-4-invariante-preview-nunca-altera-o-spawn: backlog
+  epic-7-retrospective: optional
+
+  epic-6: backlog
+  6-1-overlay-de-game-over-com-stats-imediatos: backlog
+  6-2-morte-elegante-em-soft-fade: backlog
+  6-3-restart-1-tap: backlog
+  6-4-novo-recorde-como-numero-destacado: backlog
+  epic-6-retrospective: optional
 
   epic-3: backlog
   3-1-selecao-de-pista-no-menu-lane-select: backlog
@@ -85,20 +99,6 @@ development_status:
   5-3-ajuda-contextual-por-pista-na-primeira-sessao: backlog
   5-4-i18n-pt-en-para-onboarding: backlog
   epic-5-retrospective: optional
-
-  epic-6: backlog
-  6-1-overlay-de-game-over-com-stats-imediatos: backlog
-  6-2-morte-elegante-em-soft-fade: backlog
-  6-3-restart-1-tap: backlog
-  6-4-novo-recorde-como-numero-destacado: backlog
-  epic-6-retrospective: optional
-
-  epic-7: backlog
-  7-1-pendingspawn-pre-resolvido-no-snapshot: backlog
-  7-2-preview-card-no-hud-60-40-nas-duas-pistas: backlog
-  7-3-faixa-ambigua-correta: backlog
-  7-4-invariante-preview-nunca-altera-o-spawn: backlog
-  epic-7-retrospective: optional
 
   epic-8: backlog
   8-1-haptics-escalados-por-valor-de-merge: backlog

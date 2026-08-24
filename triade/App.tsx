@@ -9,6 +9,7 @@ import { newGame, move } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
 import type { MatchScore } from './src/game/matchScore.ts';
+import { previewFor } from './src/game/preview.ts';
 import { loadBest, saveBest } from './src/services/storage/settingsStore.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
@@ -138,6 +139,10 @@ function AppContent() {
         isLandscape={isLandscape}
         insets={insets}
         bandHeight={bandHeight}
+        previews={{
+          clean: previewFor(game.pendingSpawn),
+          accelerated: previewFor(game.pendingSpawn),
+        }}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
