@@ -194,6 +194,8 @@ FR45: Epic 7 - Preview nas duas pistas
 
 ## Epic List
 
+> **Execution priority (CC 2026-08-23):** Epics 1–2 delivered. Remaining order: **7 → 6 → 3 → 4 → 5 → 8 → 9 → 10 → 11**. Epic 7 and 6 run on the single-lane board first; two-lane acceptance criteria in 7.2 / 6.3 land with Epic 3. Story IDs remain stable.
+
 ### Epic 1: Jogo Jogável no iOS — Migração RN + Skia
 Jogadores instalam e jogam Tríade completo no iOS com as mesmas regras do PWA provado: board Skia 4×4, animações por trace, offline/instalável, portrait e landscape.
 **FRs covered:** FR1, FR2, FR3, FR4, FR5
@@ -201,6 +203,14 @@ Jogadores instalam e jogam Tríade completo no iOS com as mesmas regras do PWA p
 ### Epic 2: Adaptive Spawn — O Jogo Cresce com o Jogador
 Jogadores sentem a mecânica assinatura: o pot de tiles ≥3 abre conforme o teto do board sobe, com 1/2 fixos em 40/40 e curva configurável.
 **FRs covered:** FR6, FR7, FR8, FR9, FR10
+
+### Epic 7: Next Piece Preview — Planeje o Board
+Jogadores planejam a leitura vendo o próximo spawn (exato 60% ou faixa ambígua 40%) nas duas pistas, sem nunca alterar o spawn.
+**FRs covered:** FR41, FR42, FR43, FR44, FR45
+
+### Epic 6: Failure Suite — Game Over como Informação
+Jogadores veem stats completos imediatamente e reiniciam com 1 tap após uma morte elegante em soft fade.
+**FRs covered:** FR25, FR26, FR27
 
 ### Epic 3: Duas Pistas — Integridade de Score como Feature
 Jogadores escolhem entre Clean (pura) e Accelerated/Iniciante (com ajuda), com leaderboards por pista que nunca misturam.
@@ -213,14 +223,6 @@ Jogadores recuperam erros (undo) e mortes (continue) via rewarded ads e removem 
 ### Epic 5: Tutorial & Onboarding
 Novos jogadores aprendem a regra contra-intuitiva (1+2) jogando, com primeiro merge em ~20s, e veteranos pulam direto para o jogo.
 **FRs covered:** FR21, FR22, FR23, FR24
-
-### Epic 6: Failure Suite — Game Over como Informação
-Jogadores veem stats completos imediatamente e reiniciam com 1 tap após uma morte elegante em soft fade.
-**FRs covered:** FR25, FR26, FR27
-
-### Epic 7: Next Piece Preview — Planeje o Board
-Jogadores planejam a leitura vendo o próximo spawn (exato 60% ou faixa ambígua 40%) nas duas pistas, sem nunca alterar o spawn.
-**FRs covered:** FR41, FR42, FR43, FR44, FR45
 
 ### Epic 8: Core Feel Feedback — O Merge como Momento
 Jogadores sentem o grande merge via haptics escalados, punch visual, shake direcional e bullet time (Reduced Motion aware), com som e haptics acoplados.
@@ -763,6 +765,8 @@ So that a loss doesn't feel like an abrupt cutoff.
 
 ### Story 6.3: Restart 1-tap
 
+> **Scope note (CC 2026-08-23):** Epic 6 runs before Epics 3/4 on the single-lane board. The Clean-lane restart ("Jogar de novo", no Continue offer) lands first; the Accelerated-lane Continue offer (FR-18) lands with Epic 3/4.
+
 As a player,
 I want to start over with one tap,
 So that the "one more" loop is frictionless.
@@ -818,6 +822,8 @@ So that I can plan the board in advance.
 
 ### Story 7.2: Preview card no HUD (60/40) nas duas pistas
 
+> **Scope note (CC 2026-08-23):** Epic 7 runs before Epic 3 on the single-lane board. The preview card lands on the current (single) lane first; the "both Clean and Accelerated lanes" aspect (FR-45) lands with Epic 3.
+
 As a player,
 I want to see my next piece in the HUD,
 So that I can plan each swipe.
@@ -828,7 +834,7 @@ So that I can plan each swipe.
 **When** the HUD renders,
 **Then** the preview card shows the next spawn value, drawn from the same distribution as the actual spawn (FR-41).
 **And** the preview shows the exact value in 60% of spawns and an ambiguous range in 40% of spawns (separate display roll) (FR-42).
-**And** the preview card is shown in both Clean and Accelerated lanes — core strategy information, not a learning aid (FR-45, UX-DR-8).
+**And** the preview card is shown in both Clean and Accelerated lanes — core strategy information, not a learning aid (FR-45, UX-DR-8). *(two-lane aspect lands with Epic 3)*
 **And** the preview card sits in the portrait bottom corner near the swipe finger and in the landscape top edge band (right side) (UX-DR-7, UX-DR-5).
 **And** the card renders the value in accent ink at 20pt — a chip, not a tile (UX-DR-8).
 **And** feel effects never fire on the preview card — it is chrome, not the board (UX-DR-8).
