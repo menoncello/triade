@@ -119,6 +119,24 @@
 - `{ board: result.board, pendingSpawn: result.pendingSpawn }` reconstruction duplicated ad hoc across App.tsx + smoke/integration tests instead of a shared `stateFromResult` helper — drift risk.
 - Tier-0 ceiling-ordering exception (documented "harmless" in game.ts comments) is the exact case excluded from the ceiling-ordering test — asserted nowhere.
 
+## Deferred from: dev of story 7-1-pendingspawn-pre-resolvido-no-snapshot (2026-08-24)
+
+- **`npx tsc --noEmit -p tsconfig.test.json` fails at the repo baseline (verified pre-existing on `870c9ab` via `git stash`), so the "both tsc clean" gate cannot pass without out-of-scope work** (`triade/tsconfig.test.json`, `triade/test-utils/rn-stub.ts`). Two layers: (1) TS 6.0.3 raises TS5101 (`baseUrl` deprecated) and aborts the check before type-checking; (2) bypassing the abort exposes 3 masked type errors — `App.tsx:3` (`useWindowDimensions` not exported by the stub), `App.tsx:21` (`style` missing on `GestureHandlerRootViewProps`, RNGH types degraded by the stubbed `react-native`), `GameBoard.tsx:2` (`Platform` not exported) — because the `react-native` paths mapping swaps ALL RN types for the minimal test stub during this check. Fix requires either a fuller typed RN facade for tests or production typing changes (out of story 7.1's strict no-production-change scope). The default tsconfig gate (`npx tsc --noEmit`, the CI gate) IS clean. Waived by owner (Eduardo) 2026-08-24; trigger to close: give the test config its own RN type surface (or drop the redundant `-p` gate in favor of the default one).
+
+
 ## Deferred from: third-pass review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)
 
 - Malformed-GameState hardening: an effective move throws TypeError if `state.pendingSpawn` is undefined (violates engine-never-throws); a noop degrades `{...undefined}` to `{}`, silently dropping both required fields; and an unvalidated `pendingSpawn.value` (NaN/non-ladder) is placed onto the board where `ceilingDetector` ignores it invisibly (triade/src/engine/core/game.ts:53,69, triade/src/engine/core/spawn.ts:61-72). Trust-the-input class — malformed GameState is outside the valid API domain; same posture as the 2026-08-22 malformed-rng deferral.
+
+## Deferred from: code review pass 2 of 7-1-pendingspawn-pre-resolvido-no-snapshot (2026-08-24)
+
+- Scanner regex-literal handling: `stripCommentsAndStrings` treats regex literals as plain code, so a quote/apostrophe inside a regex (e.g. `/it's/`) flips the state machine into string mode and blanks all subsequent real source until the next quote — producing false NEGATIVES in the ui.norolls structural guard. Documented as a known limitation in the helper, but the blast radius is mode-desync swallowing real code, not mere pass-through. No such pattern exists in any currently scanned view/service file; proper fix requires division-vs-regex disambiguation (real lexer work) — revisit if scanned sources ever adopt regex literals with quote characters (triade/test-utils/helpers.ts).
+
+## Deferred from: traceability gate of story 7-2-preview-card-no-hud-60-40-nas-duas-pistas (2026-08-25)
+
+- **7.2-AC3 — two-lane preview** (both lanes show a preview card): **IMPLEMENTED (HUD fan-out, 2026-08-24)** — `Hud` now takes `previews: { clean, accelerated }` and fans the lane-agnostic `previewFor(game.pendingSpawn)` into two labeled `PreviewCard`s (Clean / Accelerated) in portrait & landscape (`triade/src/ui/Hud.tsx`). Both lanes currently show the same pre-resolved preview; **per-lane board differentiation (distinct `pendingSpawn` per lane) remains Epic 3** — no Hud rework needed, just feed distinct `previews` when Epic 3 builds two-lane boards. Traced as `7.2-AC3` in `traceability-matrix-7-2.md`.
+
+## Deferred from: code review of story 7-2-preview-card-no-hud-60-40-nas-duas-pistas (2026-08-24)
+
+- `contiguousWindowContaining` returns `[value]` for any out-of-ladder value, which `PreviewCard` renders identically to an `exact` (single-element range shows as plain `"99"`) — the defensive "range" is indistinguishable from exact in the UI. Content/ambiguity semantics ("always contains truth", N3) are owned by Story 7.3 — deferred. [triade/src/game/preview.ts:25]
+- `Hud` throws if the `previews` prop is omitted by a caller (`previews.clean`/`previews.accelerated` accessed unconditionally). No current caller omits it; pre-existing robustness gap — deferred. [triade/src/ui/Hud.tsx:237]

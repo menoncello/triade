@@ -2,6 +2,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { HIT_TARGET, PauseButton } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
+import { PreviewCard, type Preview } from './PreviewCard.tsx';
+
+// Vertical gap between the two stacked portrait lane cards (review P4) — kept as a
+// named constant so the accelerated card's offset tracks `laneBoxPortrait.height`.
+const LANE_STACK_GAP = 8;
 
 export interface HudProps {
   score: number;
@@ -9,9 +14,24 @@ export interface HudProps {
   isLandscape: boolean;
   insets: EdgeInsets;
   bandHeight: number;
+  // FR-45: the lane-agnostic preview is fanned out to both lanes (Clean /
+  // Accelerated). The engine owns a single `pendingSpawn`; each lane shows the
+  // same pre-resolved preview today — Epic 3 differentiates per-lane boards later.
+  previews: { clean: Preview; accelerated: Preview };
 }
 
-export function Hud({ score, best, isLandscape, insets, bandHeight }: HudProps) {
+// FR-45 — one labeled preview chip per lane. `label` drives the a11y note and
+// the small lane caption; the chrome + value rendering stays in PreviewCard.
+// `isLandscape` selects the per-orientation box size (pinned AC4 markers).
+function LanePreview({ label, preview, isLandscape }: { label: string; preview: Preview; isLandscape: boolean }) {
+  return (
+    <View style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}>
+      <PreviewCard preview={preview} label={label} />
+    </View>
+  );
+}
+
+export function Hud({ score, best, isLandscape, insets, bandHeight, previews }: HudProps) {
   const topPad = insets.top + SAFE_MARGIN;
   const leftPad = insets.left + SAFE_MARGIN;
   const rightPad = insets.right + SAFE_MARGIN;
@@ -30,7 +50,10 @@ export function Hud({ score, best, isLandscape, insets, bandHeight }: HudProps) 
             </Text>
           </View>
           <View style={styles.landscapeRight}>
-            <View pointerEvents="none" style={styles.previewLandscape} />
+            <View pointerEvents="none" style={styles.landscapePreviews}>
+              <LanePreview label="Clean" preview={previews.clean} isLandscape />
+              <LanePreview label="Accelerated" preview={previews.accelerated} isLandscape />
+            </View>
             <PauseButton />
           </View>
         </View>
@@ -54,7 +77,12 @@ export function Hud({ score, best, isLandscape, insets, bandHeight }: HudProps) 
           <PauseButton />
         </View>
       </View>
-      <View pointerEvents="none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]} />
+        <View pointerEvents="none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
+          <LanePreview label="Clean" preview={previews.clean} isLandscape={false} />
+        </View>
+        <View pointerEvents="none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad + LANE_STACK_GAP + styles.laneBoxPortrait.height }]}>
+          <LanePreview label="Accelerated" preview={previews.accelerated} isLandscape={false} />
+        </View>
     </View>
   );
 }
@@ -98,12 +126,16 @@ const styles = StyleSheet.create({
   },
   previewPortrait: {
     position: 'absolute',
+  },
+  // FR-45 — per-lane preview box (chrome lives on PreviewCard). Pinned AC4
+  // markers: square 76×76 portrait, compact 60×44 landscape band.
+  laneBoxPortrait: {
     width: 76,
     height: 76,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#c9c4b8',
-    backgroundColor: '#f1eee6',
+  },
+  laneBoxLandscape: {
+    minWidth: 60,
+    height: 44,
   },
   landscapeBand: {
     position: 'absolute',
@@ -134,12 +166,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  previewLandscape: {
-    height: 44,
-    minWidth: 60,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#c9c4b8',
-    backgroundColor: '#f1eee6',
+  landscapePreviews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
 });
