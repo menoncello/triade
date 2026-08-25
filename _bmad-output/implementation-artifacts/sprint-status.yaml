@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-08 13:01
-last_updated: 2026-08-24 (story 7-2 review — code review complete, done)
+last_updated: 2026-08-25 (story 7-3 code review — done)
 
 project: 3-clone
 project_key: NOKEY
@@ -65,7 +65,7 @@ development_status:
   epic-7: in-progress
   7-1-pendingspawn-pre-resolvido-no-snapshot: done
   7-2-preview-card-no-hud-60-40-nas-duas-pistas: done
-  7-3-faixa-ambigua-correta: backlog
+   7-3-faixa-ambigua-correta: done
   7-4-invariante-preview-nunca-altera-o-spawn: backlog
   epic-7-retrospective: optional
 
