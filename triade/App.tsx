@@ -5,9 +5,8 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
-import { newGame, move, ceilingDetector, tierForCeiling } from './src/engine/core/index.ts';
+import { newGame, move } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
-import { potForTier } from './src/engine/core/pot.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
 import type { MatchScore } from './src/game/matchScore.ts';
 import { previewFor } from './src/game/preview.ts';
@@ -132,10 +131,6 @@ function AppContent() {
     );
   }
 
-  // FR-43 "only 3 available" semantics: the spawnable pot set is driven by the
-  // live board ceiling, computed once per render and shared by both lane previews.
-  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
-
   return (
     <View style={styles.container}>
       <Hud
@@ -145,8 +140,8 @@ function AppContent() {
         insets={insets}
         bandHeight={bandHeight}
         previews={{
-          clean: previewFor(game.pendingSpawn, availablePot),
-          accelerated: previewFor(game.pendingSpawn, availablePot),
+          clean: previewFor(game.pendingSpawn),
+          accelerated: previewFor(game.pendingSpawn),
         }}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
