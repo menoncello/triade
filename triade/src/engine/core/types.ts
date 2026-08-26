@@ -14,7 +14,11 @@ export type Direction = 'left' | 'right' | 'up' | 'down';
 //   resolveSpawn / weightedValue = 1 draw each
 //   spawnTile (cell pick) = 1 draw — except on a full board, where it returns
 //                         early with nulls and consumes 0 draws (unreachable
-//                         via move(): an effective move always frees a cell)
+//                         via move(): an effective move always frees a cell).
+//                         When called with a `candidates` pool (Story 12.1
+//                         directional spawn) it still draws exactly 1 value and
+//                         picks uniformly within that pool; a provided-but-empty
+//                         pool returns nulls with 0 draws (engine-never-throws).
 export type Rng = () => number;
 
 // GameState is the immutable engine snapshot (ADR-06). Anything the undo must

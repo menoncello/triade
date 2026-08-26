@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-25T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "12.1",
+    "label": "Story 12.1: Spawn no lado oposto das linhas movidas"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (7/7 acceptance criteria fully covered by active, green tests), overall coverage is 100% (minimum: 80%). No critical gaps. All 42 mapped tests pass (396 total suite pass / 0 fail). Directional placement, moved-line eligibility, uniformity/1-draw budget, no-fallback guarantee, backward-compatible candidates, and move-shape invariants are exhaustively pinned across unit suites with seeded statistical guards (5σ).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-12-1.md"
+  }
+}

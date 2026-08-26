@@ -1,0 +1,143 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-08-25T00:00:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "",
+  "target": {
+    "type": "story",
+    "id": "12.1",
+    "label": "Story 12.1: Spawn no lado oposto das linhas movidas"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/12-1-spawn-no-lado-oposto-das-linhas-movidas.md",
+      "_bmad-output/test-artifacts/atdd-checklist-12-1-spawn-no-lado-oposto-das-linhas-movidas.md",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/types.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 7,
+      "total": 7,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 7,
+        "covered": 7,
+        "pct": 100
+      },
+      "P1": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "api": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 42,
+        "criteria_covered": 7
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 6,
+    "cases": 42,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "not_applicable",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review on the 12.1 suites for quality DoD validation (determinism, <1.5min, <300 lines, no hard waits).",
+      "requirements": []
+    },
+    {
+      "priority": "INFO",
+      "action": "No gaps — all 7 acceptance criteria have FULL coverage with active, green tests. Draw-budget contract preserved: effective move 3 draws, spawnTile 1 draw, noop 0 draws.",
+      "requirements": [
+        "12.1-AC1",
+        "12.1-AC2",
+        "12.1-AC3",
+        "12.1-AC4",
+        "12.1-AC5",
+        "12.1-AC6",
+        "12.1-AC7"
+      ]
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-12-1.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

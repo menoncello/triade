@@ -33,7 +33,7 @@ test('HAPPY_PATH: [1,2,_,_] swipe left -> [3,_,_,_] + spawn, score +3', () => {
   const res = game.move(gameState(board), 'left', rng);
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 3);
-  assert.deepStrictEqual(res.board[0], [3, 1, null, null]);
+  assert.deepStrictEqual(res.board[0], [3, null, null, 1]);
   for (let r = 1; r < SIZE; r++) {
     assert.deepStrictEqual(res.board[r], [3, 6, 12, 24]);
   }
@@ -76,14 +76,14 @@ test('NEW_TILE_NOT_REMERGED: [1,2,3,_] swipe left -> [3,3,_,_] (new 3 does not m
   const res = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 3);
-  assert.deepStrictEqual(res.board[0], [3, 3, 1, null]);
+  assert.deepStrictEqual(res.board[0], [3, 3, null, 1]);
 });
 
 test('EQUAL_GE3 cascades are blocked: [3,3,6,_] -> [6,6,_,_] not [12,...]', () => {
   const board = staticBoard([3, 3, 6, null]);
   const res = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(res.score, 6);
-  assert.deepStrictEqual(res.board[0], [6, 6, 1, null]);
+  assert.deepStrictEqual(res.board[0], [6, 6, null, 1]);
 });
 
 test('ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge)', () => {
@@ -91,7 +91,7 @@ test('ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge
   const res = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 0);
-  assert.deepStrictEqual(res.board[0], [3, 3, 1, null]);
+  assert.deepStrictEqual(res.board[0], [3, 3, null, 1]);
 });
 
 test('ONE_CELL: [_,3,_,3] swipe left -> [3,_,3,_] (both advance one cell)', () => {
@@ -99,7 +99,7 @@ test('ONE_CELL: [_,3,_,3] swipe left -> [3,_,3,_] (both advance one cell)', () =
   const res = game.move(gameState(board), 'left', rngOf(0, 0));
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 0);
-  assert.deepStrictEqual(res.board[0], [3, 1, 3, null]);
+  assert.deepStrictEqual(res.board[0], [3, null, 3, 1]);
 });
 
 test('ONE_CELL right: [3,3,3,_] swipe right -> [_,3,3,3] (no merge, space at wall)', () => {
@@ -151,7 +151,7 @@ test('move up mirrors the left rules on columns', () => {
   assert.strictEqual(res.board[0][0], 3);
   assert.strictEqual(res.board[1][0], 3);
   assert.strictEqual(res.board[2][0], 6);
-  assert.strictEqual(res.board[3][0], null);
+  assert.strictEqual(res.board[3][0], 1);
 });
 
 test('move down mirrors the up rules on columns: [2,1,3,6] col swipe down -> [1,3,3,6]', () => {
@@ -309,7 +309,7 @@ test('trace: merged tile records both sources, spawn is flagged spawned', () => 
   const spawned = res.trace.find(t => t.spawned);
   assert.ok(spawned, 'spawned tile present in trace');
   assert.deepStrictEqual(spawned!.from, []);
-  assert.deepStrictEqual(spawned!.to, [0, 2]);
+  assert.deepStrictEqual(spawned!.to, [0, 3]);
   assert.strictEqual(spawned!.value, 1);
 });
 

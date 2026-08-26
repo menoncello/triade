@@ -1,0 +1,911 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-25T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "12.1",
+    "label": "Story 12.1: Spawn no lado oposto das linhas movidas"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/12-1-spawn-no-lado-oposto-das-linhas-movidas.md",
+      "_bmad-output/test-artifacts/atdd-checklist-12-1-spawn-no-lado-oposto-das-linhas-movidas.md",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/types.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "12.1-AC1",
+      "requirement": "[AC1 — directional placement] After an effective move, the spawned tile is placed only on the opposite edge of a line that changed: left→rightmost col (c=GRID_SIZE-1), right→leftmost col (c=0), up→bottom row (r=GRID_SIZE-1), down→top row (r=0)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-001",
+          "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 39,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-002",
+          "title": "[P0] AC1 right: spawn lands on the leftmost column of the only moved row",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 52,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-003",
+          "title": "[P0] AC1 up: spawn lands on the bottom row of the only moved column",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-004",
+          "title": "[P0] AC1 down: spawn lands on the top row of the only moved column",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 79,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC2",
+      "requirement": "[AC2 — only moved lines eligible] Only lines (rows for horizontal, columns for vertical) that moved and/or merged are eligible. A line whose content did not change is never an eligible spawn line.",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-005",
+          "title": "[P0] AC2 only moved lines eligible: spawn restricted to the moved-row opposite edges, never an unchanged line",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 99,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-006",
+          "title": "[P0] AC2 seeded drift tripwire: across many effective left moves the spawn NEVER lands off a moved line",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 119,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-I-001",
+          "title": "[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the opposite edge of the moved line (move-path, drift tripwire)",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 158,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-012",
+          "title": "[P0] shiftLine returns moved flag alongside line and score",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 17,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-013",
+          "title": "[P0] moved=false when line already packed and non-mergeable",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 25,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-014",
+          "title": "[P0] moved=false when all empties",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 34,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-015",
+          "title": "[P0] moved=false when 1,1 or 2,2 are adjacent (no merge, already wall-packed)",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 41,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-016",
+          "title": "[P0] moved=true when a lone tile shifts toward the wall",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-017",
+          "title": "[P0] moved=true when tiles compact without merge",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-018",
+          "title": "[P0] moved=true when 1+2 merges into 3",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 73,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-019",
+          "title": "[P0] moved=true when equal >=3 merges",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 80,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-020",
+          "title": "[P0] moved=true when merge cascades but tile positions still shift",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 87,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-022",
+          "title": "[P0] moved flag parity: table-driven exhaustive over key line shapes",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 107,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC3",
+      "requirement": "[AC3 — uniform among candidates, 1 draw] Among eligible opposite-edge cells selection is uniform via pickIndex and consumes exactly 1 rng draw for the cell pick. The effective-move draw budget stays at 3 (cell, next value, next displayRoll).",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-007",
+          "title": "[P0] AC3 spawnTile with candidates: picks uniformly among candidates and consumes EXACTLY 1 draw",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 143,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-027",
+          "title": "[P0] spawnTile provided candidates: filtered to empties, uniform among pool, 1 draw",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 66,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-030",
+          "title": "[P0] spawnTile provided single candidate that is empty: deterministic pick, 1 draw",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 158,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-031",
+          "title": "[P0] spawnTile candidate determinism: same rng value picks same index",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 171,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-034",
+          "title": "[P1] pickIndex contract: 1 draw per spawnTile cell pick, never -1",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 230,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-035",
+          "title": "[P1] spawnTile with mix of empty and occupied candidates respects exactly the empty subset (statistical)",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 240,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-037",
+          "title": "[P0] AC4 effective move consumes exactly 3 draws in order (cell, next value, displayRoll)",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-038",
+          "title": "[P0] AC4 newGame consumes exactly 20 draws in order (18 alternating cell/value + pending value + displayRoll)",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 73,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC4",
+      "requirement": "[AC4 — no fallback needed] An eligible (changed) line always vacates its opposite-edge cell during the shift, so the candidate set is guaranteed non-empty whenever moved===true. No fallback branch is required. Provided-but-empty pool returns nulls with 0 draws (engine-never-throws).",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-008",
+          "title": "[P0] AC4 effective move always yields a spawn cell (candidate set non-empty); noop yields none and 0 draws",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 199,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-026",
+          "title": "[P0] spawnTile omitted + full board: returns nulls, 0 draws (engine never throws)",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 50,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-028",
+          "title": "[P0] spawnTile provided but all candidates occupied: returns nulls, 0 draws",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 123,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-029",
+          "title": "[P0] spawnTile provided empty array: returns nulls, 0 draws (edge)",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 144,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-033",
+          "title": "[P0] spawnTile does not mutate board when pool empty (provided)",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 217,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-021",
+          "title": "[P0] moved detection compares values not references (value equality)",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 95,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-023",
+          "title": "[P0] moved remains stable under multiple calls with same input (purity)",
+          "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+          "line": 128,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC5",
+      "requirement": "[AC5 — value + preview unchanged, backward compatible] The value placed is still state.pendingSpawn.value (place-not-roll). spawnTile gains optional candidates?: Array<[number,number]>. When omitted, behavior unchanged (all-empty pick). Provided-but-empty never falls back to all-empty.",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-009",
+          "title": "[P0] AC5 spawnTile with no candidates (omitted) keeps all-empty behavior: places on an empty cell, 1 draw",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 231,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-010",
+          "title": "[P0] AC5 spawnTile with a provided-but-empty candidate pool returns {cell:null,value:null} and 0 draws (engine-never-throws)",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 248,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-025",
+          "title": "[P0] spawnTile omitted candidates: places uniformly among all empties, 1 draw",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 13,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-032",
+          "title": "[P0] spawnTile place-not-roll invariant holds for both paths",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 201,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-036",
+          "title": "[P1] spawnTile backward compat: omitted vs provided-with-all-empties are equivalent in eligibility",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 266,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC6",
+      "requirement": "[AC6 — move shape unchanged] move() still returns { board, score, moved, trace, pendingSpawn }; the spawned tile appears in trace with spawned:true. A noop still produces no spawn and 0 draws.",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-U-011",
+          "title": "[P0] AC6 move() returns {board,score,moved,trace,pendingSpawn} and the spawn carries spawned:true",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 270,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-008",
+          "title": "[P0] AC4/AC6 effective move always yields a spawn cell; noop yields none and 0 draws",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 199,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-G-001",
+          "title": "NOOP_SWIPE: full grid with no merges, swipe left changes nothing",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 121,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-G-002",
+          "title": "trace: merged tile records both sources, spawn is flagged spawned",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 300,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "12.1-AC7",
+      "requirement": "[AC7 — tests updated] The AC2 tripwire in adaptive-spawn-integration.test.ts:158 is rewritten to assert directional placement (every spawned cell is on opposite edge of a changed line; zero elsewhere). New spawn-placement.test.ts covers per-direction candidates. All existing engine tests (incl. game.test.ts, pending-spawn-contract.test.ts) remain green.",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "12.1-I-001",
+          "title": "[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the opposite edge of the moved line (move-path, drift tripwire)",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 158,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-001",
+          "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 39,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-U-006",
+          "title": "[P0] AC2 seeded drift tripwire: across many effective left moves the spawn NEVER lands off a moved line",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 119,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-R-001",
+          "title": "Regression: game.test.ts full suite (28 tests) remains green after directional change",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 7,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-R-002",
+          "title": "Regression: pending-spawn-contract.test.ts draw-budget and N3 invariants remain green",
+          "file": "triade/__tests__/engine/pending-spawn-contract.test.ts",
+          "line": 54,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-R-003",
+          "title": "Regression: transitionPlan.test.ts render positions updated to directional placement, suite green",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "12.1-R-004",
+          "title": "Regression: full engine+render+ui suite 396 pass / 0 fail",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 7,
+    "fully_covered": 7,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 7,
+        "covered": 7,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_states_missing_coverage": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 42,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "api": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 42,
+          "criteria_covered": 7
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "12.1-U-001",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 39,
+        "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-002",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 52,
+        "title": "[P0] AC1 right: spawn lands on the leftmost column of the only moved row",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-003",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 65,
+        "title": "[P0] AC1 up: spawn lands on the bottom row of the only moved column",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-004",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 79,
+        "title": "[P0] AC1 down: spawn lands on the top row of the only moved column",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-005",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 99,
+        "title": "[P0] AC2 only moved lines eligible: spawn restricted to the moved-row opposite edges, never an unchanged line",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-006",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 119,
+        "title": "[P0] AC2 seeded drift tripwire: across many effective left moves the spawn NEVER lands off a moved line",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-007",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 143,
+        "title": "[P0] AC3 spawnTile with candidates: picks uniformly among candidates and consumes EXACTLY 1 draw",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-008",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 199,
+        "title": "[P0] AC4 effective move always yields a spawn cell (candidate set non-empty); noop yields none and 0 draws",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-009",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 231,
+        "title": "[P0] AC5 spawnTile with no candidates (omitted) keeps all-empty behavior: places on an empty cell, 1 draw",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-010",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 248,
+        "title": "[P0] AC5 spawnTile with a provided-but-empty candidate pool returns {cell:null,value:null} and 0 draws (engine-never-throws)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-011",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 270,
+        "title": "[P0] AC6 move() returns {board,score,moved,trace,pendingSpawn} and the spawn carries spawned:true",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-012",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 17,
+        "title": "[P0] shiftLine returns moved flag alongside line and score",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-013",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 25,
+        "title": "[P0] moved=false when line already packed and non-mergeable",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-014",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 34,
+        "title": "[P0] moved=false when all empties",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-015",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 41,
+        "title": "[P0] moved=false when 1,1 or 2,2 are adjacent (no merge, already wall-packed)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-016",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 58,
+        "title": "[P0] moved=true when a lone tile shifts toward the wall",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-017",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 65,
+        "title": "[P0] moved=true when tiles compact without merge",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-018",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 73,
+        "title": "[P0] moved=true when 1+2 merges into 3",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-019",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 80,
+        "title": "[P0] moved=true when equal >=3 merges",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-020",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 87,
+        "title": "[P0] moved=true when merge cascades but tile positions still shift",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-021",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 95,
+        "title": "[P0] moved detection compares values not references (value equality)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-022",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 107,
+        "title": "[P0] moved flag parity: table-driven exhaustive over key line shapes",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-023",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 128,
+        "title": "[P0] moved remains stable under multiple calls with same input (purity)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-024",
+        "file": "triade/__tests__/engine/line-moved.unit.test.ts",
+        "line": 137,
+        "title": "[P1] shiftLine from tracking follows the line (from arrays preserved)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-025",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 13,
+        "title": "[P0] spawnTile omitted candidates: places uniformly among all empties, 1 draw",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-026",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 50,
+        "title": "[P0] spawnTile omitted + full board: returns nulls, 0 draws (engine never throws)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-027",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 66,
+        "title": "[P0] spawnTile provided candidates: filtered to empties, uniform among pool, 1 draw",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-028",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 123,
+        "title": "[P0] spawnTile provided but all candidates occupied: returns nulls, 0 draws",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-029",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 144,
+        "title": "[P0] spawnTile provided empty array: returns nulls, 0 draws (edge)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-030",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 158,
+        "title": "[P0] spawnTile provided single candidate that is empty: deterministic pick, 1 draw",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-031",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 171,
+        "title": "[P0] spawnTile candidate determinism: same rng value picks same index",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-032",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 201,
+        "title": "[P0] spawnTile place-not-roll invariant holds for both paths",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-033",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 217,
+        "title": "[P0] spawnTile does not mutate board when pool empty (provided)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-034",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 230,
+        "title": "[P1] pickIndex contract: 1 draw per spawnTile cell pick, never -1",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-035",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 240,
+        "title": "[P1] spawnTile with mix of empty and occupied candidates respects exactly the empty subset (statistical)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-036",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 266,
+        "title": "[P1] spawnTile backward compat: omitted vs provided-with-all-empties are equivalent in eligibility",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-I-001",
+        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+        "line": 158,
+        "title": "[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the opposite edge of the moved line (move-path, drift tripwire)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-037",
+        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+        "line": 65,
+        "title": "[P0] AC4 effective move consumes exactly 3 draws in order (cell, next value, displayRoll)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-U-038",
+        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+        "line": 73,
+        "title": "[P0] AC4 newGame consumes exactly 20 draws in order (18 alternating cell/value + pending value + displayRoll)",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-R-001",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 7,
+        "title": "Regression: game.test.ts full suite (28 tests) remains green after directional change",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-R-002",
+        "file": "triade/__tests__/engine/pending-spawn-contract.test.ts",
+        "line": 54,
+        "title": "Regression: pending-spawn-contract.test.ts draw-budget and N3 invariants remain green",
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "12.1-R-003",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 1,
+        "title": "Regression: transitionPlan.test.ts render positions updated to directional placement, suite green",
+        "level": "unit",
+        "status": "active"
+      }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review on the 12.1 suites for quality DoD validation (determinism, <1.5min, <300 lines, no hard waits).",
+      "requirements": []
+    },
+    {
+      "priority": "INFO",
+      "action": "No gaps — all 7 acceptance criteria have FULL coverage with active, green tests. Draw-budget contract (types.ts:7-17) preserved: effective move 3 draws, spawnTile 1 draw, noop 0 draws. Candidate derivation in game.ts is the only new runtime path and is exhaustively pinned.",
+      "requirements": [
+        "12.1-AC1",
+        "12.1-AC2",
+        "12.1-AC3",
+        "12.1-AC4",
+        "12.1-AC5",
+        "12.1-AC6",
+        "12.1-AC7"
+      ]
+    }
+  ]
+}
