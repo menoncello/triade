@@ -155,14 +155,17 @@ test('[P0] AC6 snapshot shape: newGame returns GameState with a valid initial pe
   assert.ok(res.pendingSpawn.displayRoll >= 0 && res.pendingSpawn.displayRoll < 1);
 });
 
-test('[P1] AC2 spawn cell is uniformly random across post-merge empties within ±2% (move-path, drift tripwire)', () => {
-  // Exercises the FULL move path (spec T8: "run many effective moves"): the
-  // [3,3] row merges to [6], so move() computes the empty set on the
-  // POST-MERGE board and spawnTile picks uniformly among those 15 cells.
-  // A bug in move()'s post-merge empty-cell computation can no longer hide.
-  const N = 15000;
-  const counts: number[][] = Array.from({ length: 4 }, () => new Array<number>(4).fill(0));
+test('[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the opposite edge of the moved line (move-path, drift tripwire)', () => {
+  // Story 12.1 redefined spawn placement (supersedes Epic 2 / 2-6 AC2 uniform
+  // random). The [3,3] row merges to [6]; rows 1-3 are empty and UNCHANGED.
+  // Only row 0 moved, so the ONLY eligible opposite-edge cell is (0, 3) — the
+  // rightmost column of the moved row. Every effective move must spawn there,
+  // never elsewhere and never in an unchanged line. A regression back to
+  // board-wide uniform spawn (or any off-edge placement) fails loudly.
+  const N = 5000;
   const rng = mulberry32(0xc31);
+  let onEdge = 0;
+  let offEdge = 0;
   for (let i = 0; i < N; i++) {
     const state = gameState(boardWith([[3, 3, null, null], [], [], []]), { value: 1, displayRoll: 0 });
     const res = game.move(state, 'left', rng);
@@ -170,21 +173,11 @@ test('[P1] AC2 spawn cell is uniformly random across post-merge empties within �
     const spawned = res.trace.find((e) => e.spawned);
     assert.ok(spawned, 'effective move must produce a spawned trace entry');
     assert.strictEqual(spawned.value, 1, 'spawn materializes the pending value');
-    counts[spawned.to[0]][spawned.to[1]]++;
+    if (spawned.to[0] === 0 && spawned.to[1] === 3) onEdge++;
+    else offEdge++;
   }
-  const expected = 1 / 15;
-  for (let r = 0; r < 4; r++) {
-    for (let c = 0; c < 4; c++) {
-      if (r === 0 && c === 0) {
-        assert.strictEqual(counts[r][c], 0, 'merged cell (0,0) is occupied and never receives the spawn');
-        continue;
-      }
-      assert.ok(
-        Math.abs(counts[r][c] / N - expected) < 0.02,
-        `cell ${r},${c}: ${(counts[r][c] / N).toFixed(4)} vs expected ~${expected.toFixed(4)}`
-      );
-    }
-  }
+  assert.strictEqual(offEdge, 0, `directional contract violated: ${offEdge}/${N} spawns landed off the moved-line edge (0,3)`);
+  assert.strictEqual(onEdge, N, `every effective move must spawn on (0,3) (got ${onEdge}/${N})`);
 });
 
 test('[P0] AC7 statistical distribution matches fixed 40/40 + pot-by-ceiling, N3 invariant and displayRoll uniformity over 10k spawns', () => {

@@ -1,9 +1,12 @@
 import assert from 'node:assert';
 import {
   ceilingDetector,
+  GRID_SIZE,
   isGameOver,
   move,
+  movementLines,
   newGame,
+  shiftLine,
   tierForCeiling,
 } from '../src/engine/core/index.ts';
 import type { Board, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../src/engine/core/index.ts';
@@ -31,6 +34,26 @@ export function rngOf(...values: number[]): Rng {
     const v = values[i++];
     return v === undefined ? 0.5 : v;
   };
+}
+
+// Scripted RNG spy: returns the next queued value on each draw (errors if the
+// engine draws more than scripted) and records every draw in `calls`. Shared so
+// exact draw-budget assertions live in one place rather than being duplicated
+// (and drifting) across suites.
+export function spyRng(...values: number[]): Rng & { calls: number[] } {
+  const calls: number[] = [];
+  let i = 0;
+  const rng = (): number => {
+    if (i >= values.length) {
+      throw new Error(
+        `spyRng exhausted after ${calls.length} scripted draw(s) — the engine drew more than expected`
+      );
+    }
+    const v = values[i++];
+    calls.push(v);
+    return v;
+  };
+  return Object.assign(rng, { calls });
 }
 
 export function staticBoard(row: Array<number | null>): Board {
@@ -84,6 +107,27 @@ export function sigmaBound(expected: number, n: number, z = 5): number {
   assert.ok(Number.isFinite(expected) && expected > 0 && expected < 1, 'sigmaBound requires 0 < expected < 1');
   assert.ok(Number.isFinite(n) && n > 0, 'sigmaBound requires n > 0');
   return z * Math.sqrt((expected * (1 - expected)) / n);
+}
+
+// Single source of truth for 12.1 directional-spawn test oracle: derives the
+// eligible opposite-edge cells from the engine's own shift semantics (movementLines
+// + shiftLine). Canonical definition: a line moved iff any value changed
+// (orig.some(v !== shifted), matching `line.ts:67`). Used by unit/integration/
+// E2E/smoke suites to avoid 4-file duplication drift — consolidate here.
+export function oppositeEdgeCandidates(board: Board, dir: Direction): Array<[number, number]> {
+  const lines = movementLines(board, dir);
+  const eligible: Array<[number, number]> = [];
+  for (let i = 0; i < lines.length; i++) {
+    const orig = lines[i].map((c) => c.v);
+    const shifted = shiftLine(lines[i]).line.map((s) => s.v);
+    const moved = orig.some((v, idx) => v !== shifted[idx]);
+    if (!moved) continue;
+    if (dir === 'left') eligible.push([i, GRID_SIZE - 1]);
+    else if (dir === 'right') eligible.push([i, 0]);
+    else if (dir === 'up') eligible.push([GRID_SIZE - 1, i]);
+    else eligible.push([0, i]);
+  }
+  return eligible;
 }
 
 // Reconstruct the post-move/pre-spawn board by removing the tile placed by

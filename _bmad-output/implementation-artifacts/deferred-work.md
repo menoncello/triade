@@ -140,3 +140,17 @@
 
 - `contiguousWindowContaining` returns `[value]` for any out-of-ladder value, which `PreviewCard` renders identically to an `exact` (single-element range shows as plain `"99"`) — the defensive "range" is indistinguishable from exact in the UI. Content/ambiguity semantics ("always contains truth", N3) are owned by Story 7.3 — deferred. [triade/src/game/preview.ts:25]
 - `Hud` throws if the `previews` prop is omitted by a caller (`previews.clean`/`previews.accelerated` accessed unconditionally). No current caller omits it; pre-existing robustness gap — deferred. [triade/src/ui/Hud.tsx:237]
+
+## Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-25)
+
+- `spawnTile` muta o board de entrada e retorna a mesma referência (`board[cell[0]][cell[1]] = value; return { board, cell, value }`) — pre-existing (js/game.js idêntico), documentado desde 1-1; `move()` só passa board recém-construído por `boardFromLines`, então aliases não vazam. Não causado por 12.1, latente para callers futuros que reutilizem o board. [triade/src/engine/core/spawn.ts:82-89]
+- `pickIndex` / `weightedPicker` degradam NaN/Infinity para índice 0 em vez de lançar — trust-the-rng, já documentado em deferred 2-6; `spawnTile` com pool vazio retorna `nulls` com 0 draws (engine-never-throws) enquanto `move()` assume AC4 (pool sempre não-vazio quando `moved===true`), então o orçamento de 3 draws cairia para 2 no branch inalcançável mas guardado. Pre-existing. [triade/src/engine/core/spawn.ts:35-48]
+
+## Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)
+
+- D1 — Sem validação de limites/tipo em `candidates` (OOB `[4,0]`, `null`, `[r]` sem `c`) — intencionalmente não guardado por spec `spawn.ts:58-67` "add guard only if second caller"; produção garante in-bounds via `game.ts:53-64` opposite-edge. Pre-existing design decision, segunda caller dispara guard (`r>=0 && r<GRID_SIZE && board[r]?.[c]===null`). [triade/src/engine/core/spawn.ts:86]
+- D2 — Duplicatas em `candidates` inflariam `pool` e enviesariam `pickIndex` (célula duplicada 2x mais provável, quebra uniforme AC3) — não alcançável via `game.ts` (push distinto por linha/coluna), só via API direta/teste. [triade/src/engine/core/spawn.ts:86]
+- D3 — Compactação single-pass falha para linhas com múltiplos gaps (`[null,null,null,2]` → `[null,null,2,null]` em vez de `[2,null,null,null]`) em `shiftLine` loop `dest=i-1` — pre-existing em `line.ts:46-64`, não causado por 12.1 (só `moved` adicionado); exposição limitada porque board é sempre compactado por direção. [triade/src/engine/core/line.ts:46]
+- D4 — `spawnTile` muta `board` in-place (já listado em 2026-08-25, re-confirmado) — `move()` passa board fresco de `boardFromLines`, aliases não vazam hoje. [triade/src/engine/core/spawn.ts:82]
+- D5 — `pickIndex`/`weightedPicker` degradam NaN/Infinity para 0 / clamp e `pool=[]` retorna `nulls` 0 draws — trust-the-rng, branch inalcançável mas guardado per AC5 engine-never-throws. [triade/src/engine/core/spawn.ts:35]
+- D6 — Acoplamento `GRID_SIZE` fixo 4x4 (`line.ts` assume 4, `helpers.ts:15` `SIZE=4`) — contrato `Board` é fixo, não configurável por nível. [triade/test-utils/helpers.ts:15 + triade/src/engine/core/line.ts:38]

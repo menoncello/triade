@@ -23,7 +23,7 @@ test('planTileTransitions: slide left maps the moving tile from source to dest',
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'slide', value: 2, to: [0, 1], from: [[0, 2]] },
-    { type: 'spawn', value: 1, to: [0, 0], from: [] }
+    { type: 'spawn', value: 1, to: [0, 3], from: [] }
   ]);
 });
 
@@ -45,7 +45,7 @@ test('planTileTransitions: slide up maps the moving tile from source to dest', (
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'slide', value: 9, to: [0, 1], from: [[1, 1]] },
-    { type: 'spawn', value: 1, to: [0, 0], from: [] }
+    { type: 'spawn', value: 1, to: [3, 1], from: [] }
   ]);
 });
 
@@ -56,7 +56,7 @@ test('planTileTransitions: slide down maps the moving tile from source to dest',
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'slide', value: 9, to: [1, 1], from: [[0, 1]] },
-    { type: 'spawn', value: 1, to: [0, 0], from: [] }
+    { type: 'spawn', value: 1, to: [0, 1], from: [] }
   ]);
 });
 
@@ -67,7 +67,7 @@ test('planTileTransitions: merge 1+2 converges two sources to dest with merged v
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'merge', value: 3, to: [0, 0], from: [[0, 0], [0, 1]] },
-    { type: 'spawn', value: 1, to: [0, 1], from: [] }
+    { type: 'spawn', value: 1, to: [0, 3], from: [] }
   ]);
 });
 
@@ -78,7 +78,7 @@ test('planTileTransitions: merge 2+1 (reversed order) converges the same two sou
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'merge', value: 3, to: [0, 0], from: [[0, 0], [0, 1]] },
-    { type: 'spawn', value: 1, to: [0, 1], from: [] }
+    { type: 'spawn', value: 1, to: [0, 3], from: [] }
   ]);
 });
 
@@ -89,7 +89,7 @@ test('planTileTransitions: merge equal >=3 doubles the value at dest', () => {
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
     { type: 'merge', value: 6, to: [0, 0], from: [[0, 0], [0, 1]] },
-    { type: 'spawn', value: 1, to: [0, 1], from: [] }
+    { type: 'spawn', value: 1, to: [0, 3], from: [] }
   ]);
 });
 
@@ -101,7 +101,7 @@ test('planTileTransitions: stationary tiles become hold transitions in a partial
   assert.deepStrictEqual(plan, [
     { type: 'hold', value: 2, to: [0, 0], from: [[0, 0]] },
     { type: 'slide', value: 3, to: [1, 0], from: [[1, 1]] },
-    { type: 'spawn', value: 1, to: [0, 1], from: [] }
+    { type: 'spawn', value: 1, to: [1, 3], from: [] }
   ]);
 });
 

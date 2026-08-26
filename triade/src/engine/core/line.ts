@@ -35,7 +35,7 @@ export function movementLines(board: Board, dir: Direction): CellRef[][] {
   return lines;
 }
 
-export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number } {
+export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number; moved: boolean } {
   const out: ShiftedCell[] = line.map((cell) =>
     cell.v === null
       ? { v: null, from: [] }
@@ -64,7 +64,8 @@ export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number
     }
   }
 
-  return { line: out, score };
+  const moved = out.some((cell, i) => cell.v !== line[i].v);
+  return { line: out, score, moved };
 }
 
 export function boardFromLines(lines: ShiftedCell[][], dir: Direction): { board: Board; trace: TraceEntry[] } {
