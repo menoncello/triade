@@ -1,0 +1,163 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-26T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "7.4",
+    "label": "Story 7.4: Invariante — preview nunca altera o spawn"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/7-4-invariante-preview-nunca-altera-o-spawn.md",
+      "_bmad-output/test-artifacts/atdd-checklist-7-4-invariante-preview-nunca-altera-o-spawn.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "7.4-AC1",
+      "title": "60/40 display decision never alters materialized spawn — placed tile always equals pre-resolved pendingSpawn.value (N3 invariant, FR-44)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.4-U-001", "title": "[P0] AC1 sweep — previewFor never mutates pending and branch kind correct across FULL × displayRoll × POT-only availabilities", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 49, "level": "unit", "status": "active" },
+        { "id": "7.4-U-003", "title": "[P0] AC1 materialization left — display decision never alters placed tile (exact and range)", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 101, "level": "unit", "status": "active" },
+        { "id": "7.4-U-004", "title": "[P0] AC1 materialization up — display decision never alters placed tile (directional candidates up)", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 122, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.4-AC2",
+      "title": "Invariant across full distribution — exact, ambiguous-1/2 (1|2→[1,2]), ambiguous-3 ([3]→[3]), ambiguous-range (3/6, 3/6/12 etc. with larger pots) — FR-44",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.4-U-002", "title": "[P0] AC2 sweep — range always contains valued truth and is contiguous (FULL × POT-only availabilities)", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 83, "level": "unit", "status": "active" },
+        { "id": "7.4-U-005", "title": "[P0] AC2 FR-44 — value 1 ambiguous with [3] yields [1,2]", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 157, "level": "unit", "status": "active" },
+        { "id": "7.4-U-006", "title": "[P0] AC2 FR-44 — value 2 ambiguous with [3] yields [1,2]", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 166, "level": "unit", "status": "active" },
+        { "id": "7.4-U-007", "title": "[P0] AC2 FR-44 — value 3 ambiguous with [3] yields [3]", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 175, "level": "unit", "status": "active" },
+        { "id": "7.4-U-008", "title": "[P0] AC2 FR-44 — value 3 ambiguous with [3,6,12] yields [3,6,12]", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 184, "level": "unit", "status": "active" },
+        { "id": "7.4-U-009", "title": "[P0] AC2 FR-44 — value 6 ambiguous with [3,6,12,24] yields [6,12,24]", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 193, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.4-AC3",
+      "title": "Undo rewinds preview with board — pendingSpawn lives in immutable snapshot so rewinding restores both board and preview together (ADR-06, state-placement master rule)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.4-U-015", "title": "[P0] AC3 7.4 isolation — shallow-copy keeps snapshot independent; mutating result never rewrites prior history", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 290, "level": "unit", "status": "active" },
+        { "id": "7.4-U-016", "title": "[P0] AC3 7.4 snapshot carries preview — reconstructing GameState from result deterministically replays next move", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 304, "level": "unit", "status": "active" },
+        { "id": "7.4-U-017", "title": "[P0] AC3 7.4 noop — full immovable board returns pending deepEqual, 0 draws, no spawned entry, trace length 16", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 314, "level": "unit", "status": "active" },
+        { "id": "7.4-U-018", "title": "[P0] AC3 7.4 direction-agnostic — snapshot carries preview for left (row) and up (column) equally", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 327, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.4-AC4",
+      "title": "Preview never influences spawn position, spawn value, or spawn timing — FR-44 (position directional candidates, value place-not-roll, timing effective-move only)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.4-U-010", "title": "[P0] AC4 value — same board and pending.value but different displayRoll yields identical spawn cell and value (displayRoll never flows into spawnTile)", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 203, "level": "unit", "status": "active" },
+        { "id": "7.4-U-011", "title": "[P0] AC4 position — previewFor output never supplies candidates; candidates derived only from shiftLine.moved opposite-edge", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 221, "level": "unit", "status": "active" },
+        { "id": "7.4-U-012", "title": "[P0] AC4 timing — previewFor consumes 0 draws by construction; effective move 3 draws, noop 0 draws", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 247, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.4-AC5",
+      "title": "Changing display logic requires no change to spawn resolver — N3 separation: preview.ts never imports roll symbols and spawn.ts/game.ts never import preview (structural boundary)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.4-U-013", "title": "[P0] AC5 structural boundary — preview.ts never imports roll symbols and never uses Math.random; engine never imports preview", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 283, "level": "unit", "status": "active" },
+        { "id": "7.4-U-014", "title": "[P0] AC5 purity — previewFor is pure and RANGE_1_2 frozen identity retained", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 335, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 5, "covered": 5, "percentage": 100 },
+      "P1": { "total": 0, "covered": 0, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_states_missing_coverage": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure engine/game invariant story: no API endpoints, no auth surfaces. Negative paths covered via AC4 timing (noop 0 draws) and AC3 noop. UI journey/state gaps are N/A within this oracle (PreviewCard/Hud rendering is Story 7.2/7.3 scope; 7.4 is informational-only invariant). Display decision error paths swept via 0.599/0.6 boundary and FULL × avail matrix with defensive tail validated."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 2,
+      "cases": 18,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 18, "criteria_covered": 5 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "7.4-U-001", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 49, "title": "[P0] AC1 sweep — previewFor never mutates pending and branch kind correct across FULL × displayRoll × POT-only availabilities", "level": "unit", "status": "active" },
+      { "id": "7.4-U-002", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 83, "title": "[P0] AC2 sweep — range always contains valued truth and is contiguous (FULL × POT-only availabilities)", "level": "unit", "status": "active" },
+      { "id": "7.4-U-003", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 101, "title": "[P0] AC1 materialization left — display decision never alters placed tile (exact and range)", "level": "unit", "status": "active" },
+      { "id": "7.4-U-004", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 122, "title": "[P0] AC1 materialization up — display decision never alters placed tile (directional candidates up)", "level": "unit", "status": "active" },
+      { "id": "7.4-U-005", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 157, "title": "[P0] AC2 FR-44 — value 1 ambiguous with [3] yields [1,2]", "level": "unit", "status": "active" },
+      { "id": "7.4-U-006", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 166, "title": "[P0] AC2 FR-44 — value 2 ambiguous with [3] yields [1,2]", "level": "unit", "status": "active" },
+      { "id": "7.4-U-007", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 175, "title": "[P0] AC2 FR-44 — value 3 ambiguous with [3] yields [3]", "level": "unit", "status": "active" },
+      { "id": "7.4-U-008", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 184, "title": "[P0] AC2 FR-44 — value 3 ambiguous with [3,6,12] yields [3,6,12]", "level": "unit", "status": "active" },
+      { "id": "7.4-U-009", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 193, "title": "[P0] AC2 FR-44 — value 6 ambiguous with [3,6,12,24] yields [6,12,24]", "level": "unit", "status": "active" },
+      { "id": "7.4-U-010", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 203, "title": "[P0] AC4 value — same board and pending.value but different displayRoll yields identical spawn cell and value", "level": "unit", "status": "active" },
+      { "id": "7.4-U-011", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 221, "title": "[P0] AC4 position — previewFor output never supplies candidates; candidates derived only from shiftLine.moved opposite-edge", "level": "unit", "status": "active" },
+      { "id": "7.4-U-012", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 247, "title": "[P0] AC4 timing — previewFor consumes 0 draws by construction; effective move 3 draws, noop 0 draws", "level": "unit", "status": "active" },
+      { "id": "7.4-U-013", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 283, "title": "[P0] AC5 structural boundary — preview.ts never imports roll symbols and never uses Math.random; engine never imports preview", "level": "unit", "status": "active" },
+      { "id": "7.4-U-014", "file": "triade/__tests__/game/preview-invariant.test.ts", "line": 335, "title": "[P0] AC5 purity — previewFor is pure and RANGE_1_2 frozen identity retained", "level": "unit", "status": "active" },
+      { "id": "7.4-U-015", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 290, "title": "[P0] AC3 7.4 isolation — shallow-copy keeps snapshot independent; mutating result never rewrites prior history", "level": "unit", "status": "active" },
+      { "id": "7.4-U-016", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 304, "title": "[P0] AC3 7.4 snapshot carries preview — reconstructing GameState from result deterministically replays next move", "level": "unit", "status": "active" },
+      { "id": "7.4-U-017", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 314, "title": "[P0] AC3 7.4 noop — full immovable board returns pending deepEqual, 0 draws, no spawned entry, trace length 16", "level": "unit", "status": "active" },
+      { "id": "7.4-U-018", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 327, "title": "[P0] AC3 7.4 direction-agnostic — snapshot carries preview for left (row) and up (column) equally", "level": "unit", "status": "active" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    { "priority": "LOW", "action": "Run /bmad:tea:test-review on the 7.4 invariant suite for quality DoD validation (already executed: 7.4 review 2026-08-26 — 18/18 green, 0 flaky, 414 suite green).", "requirements": [] },
+    { "priority": "MEDIUM", "action": "Keep preview-invariant.test.ts as N3 single source of truth; any future display edit (threshold, window cap, fallback) must keep 18 pins green. Track -p tsconfig.test.json TS5101 repair in deferred-work.md (pre-existing waived since 7-1, default tsc --noEmit gates CI).", "requirements": [] },
+    { "priority": "LOW", "action": "Optional polish: O-1 NaN/Infinity defensive sweep, O-2 tighten RANGE_1_2 isFrozen assert, O-3 right/down direction twins — all P3 accepted, not blocking (review §Quality Assessment).", "requirements": [] }
+  ]
+}
