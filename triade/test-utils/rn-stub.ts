@@ -37,8 +37,11 @@ export const Animated = {
       return this._value;
     }
   },
-  timing: (_value: any, _config: any) => ({
+  timing: (value: any, config: any) => ({
     start: (cb?: (r: { finished: boolean }) => void) => {
+      if (value && typeof value.setValue === 'function' && config && 'toValue' in config) {
+        value.setValue(config.toValue);
+      }
       cb?.({ finished: true });
     },
     stop: () => {},
@@ -52,8 +55,11 @@ export const Animated = {
       anims.forEach((a) => a?.stop?.());
     },
   }),
-  spring: (_value: any, _config: any) => ({
+  spring: (value: any, config: any) => ({
     start: (cb?: (r: { finished: boolean }) => void) => {
+      if (value && typeof value.setValue === 'function' && config && 'toValue' in config) {
+        value.setValue(config.toValue);
+      }
       cb?.({ finished: true });
     },
     stop: () => {},

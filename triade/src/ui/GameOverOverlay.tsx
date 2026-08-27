@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    alignSelf: 'center',
   },
   ctaLabel: {
     color: '#1C1206',
