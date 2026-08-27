@@ -91,6 +91,7 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, 
               <Text style={styles.value}>{String(stats.longestStreak)}</Text>
             </View>
           </View>
+          {/* AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here */}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Jogar de novo"
@@ -157,6 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
     marginTop: 12,
   },
   ctaLabel: {

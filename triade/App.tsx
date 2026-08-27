@@ -101,6 +101,7 @@ function AppContent() {
   );
 
   const handleRestart = useCallback(() => {
+    // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
     const s = newGame(rngRef.current);
     setGame(s);
     setMoveResult(null);

@@ -171,3 +171,17 @@
 ## Deferred from: code review of story 6-2-morte-elegante-em-soft-fade (2026-08-27 — gds-code-review, 3 camadas)
 
 - ~~Stub Animated incompleto — `Animated.timing` em `triade/test-utils/rn-stub.ts:34` não avança `_value` (timing `start` apenas chama `cb` sem `setValue`), então teste de `reducedMotion=false` não valida progressão; em produção `react-native` anima corretamente. Test-tooling only, não é regressão de produção; eventual melhoria do stub pode simular `setValue(toValue)` no `timing` para gate mais fiel.~~ **CLOSED 2026-08-27 (fix commit):** `triade/test-utils/rn-stub.ts:40,55` `timing`/`spring` agora `value.setValue(config.toValue)` síncrono no `start()` — 448 pass valida progressão; `deferred-work` fechado. [triade/test-utils/rn-stub.ts:40]
+
+## Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)
+
+- Forfeited-continue vacuous (comment-only discard) — `triade/App.tsx:104` `// AC6/7 forfeited continue dies` sem state para descartar; futuro `continueCredit/reviveCount` burla `!continueBudget` — vacuous hoje (Clean single-lane) mas pin frágil — deferred, low. [triade/App.tsx:104 + triade/__tests__/ui/components/app.restart.test.ts:312]
+- Persist race + degraded hydration discards live best — `triade/App.tsx:75-82 + 103-110` `initialScore(persistedBest)` `[persistedBest]` only; `saveBest` async vs restart pode perder record; `hydrationOkRef=false` zera best — trade-off spec para não vazar `match.best` — deferred, medium. [triade/App.tsx:75]
+- Tiles corrupt after restart (null moveResult never rebuilds) — `triade/src/render/GameBoard.tsx:262-265` `if(!moveResult) return` deixa tiles stale 16->9 — não causado por 6.3 (`render` byte-identical), já deferido em 1-3 — deferred, high (pre-existing). [triade/src/render/GameBoard.tsx:262]
+- Settle-timer leak fires after restart (Df5) — `triade/src/render/GameBoard.tsx:273-280` timer não limpo em `handleRestart` — Df5 já deferido — deferred. [triade/App.tsx:110]
+- moved:true + empty plan deadlock (Df1) — `triade/App.tsx:91-98` + `GameBoard.tsx:275` — Df1 já deferido — deferred. [triade/src/render/GameBoard.tsx:275]
+- Reduced-motion branch stale across remounts — `triade/src/ui/GameOverOverlay.tsx:26-50` `useRef` captura só 1º mount — não alcançável hoje `reducedMotion={false}` — deferred, low. [triade/src/ui/GameOverOverlay.tsx:26]
+- insets undefined / rotation during fade — `triade/src/ui/GameOverOverlay.tsx:17-20` defensivo `?.top ??0` — edge tablet — deferred, low. [triade/src/ui/GameOverOverlay.tsx:17]
+- RNG determinism discontinuity never reseeded — `triade/App.tsx:40` `mulberry32(20260808)` único — deferred, low. [triade/App.tsx:40]
+- AvailablePot fan-out stale com deflate — `triade/App.tsx:152` + `preview.ts:55-65` — FR-43 edge — deferred, low. [triade/src/game/preview.ts:55]
+- Navigation/hardware-back não bloqueado — `triade/src/ui/GameOverOverlay.tsx:56-64` + `triade/App.tsx:184` — não bloqueia `BackHandler` — deferred, medium (Epic 3/4). [triade/src/ui/GameOverOverlay.tsx:62]
+- Stroke tiling restart during gesture race — `triade/App.tsx:119-139` `doMoveRef` + `panGesture` `runOnJS:true` — Df1-4 ledger — deferred, medium. [triade/App.tsx:133]
