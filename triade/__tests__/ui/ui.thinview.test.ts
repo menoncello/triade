@@ -4,15 +4,18 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { extractNamedImports, extractSpecifiers } from '../../test-utils/helpers.ts';
 
-// Story 1.5 boundary rule (AC-3, UX-DR-6): Hud.tsx and PauseButton.tsx are the
-// thin RN views of the UI layer. They may import react-native view primitives
-// and same-dir siblings in src/ui — never engine/state/render/service/game
-// logic and never Skia/Expo/Reanimated (a HUD duplicating game rules is the
-// exact failure the game.js/ui.js split forbids). RN composition is validated
-// manually on the simulator, so this static guard is the automated tripwire.
+// Story 1.5 boundary rule (AC-3, UX-DR-6): Hud.tsx, PauseButton.tsx and
+// GameOverOverlay.tsx are the thin RN views of the UI layer. They may import
+// react-native view primitives and same-dir siblings in src/ui — never
+// engine/state/render/service/game logic and never Skia/Expo/Reanimated (a HUD
+// duplicating game rules is the exact failure the game.js/ui.js split forbids).
+// RN composition is validated manually on the simulator, so this static guard
+// is the automated tripwire. GameOverOverlay was added in 6.1; its local
+// scanner in gameOverOverlay.test.ts now delegates to this production guard.
 const VIEW_FILES = [
   { file: fileURLToPath(new URL('../../src/ui/Hud.tsx', import.meta.url)), rel: 'Hud.tsx' },
-  { file: fileURLToPath(new URL('../../src/ui/PauseButton.tsx', import.meta.url)), rel: 'PauseButton.tsx' }
+  { file: fileURLToPath(new URL('../../src/ui/PauseButton.tsx', import.meta.url)), rel: 'PauseButton.tsx' },
+  { file: fileURLToPath(new URL('../../src/ui/GameOverOverlay.tsx', import.meta.url)), rel: 'GameOverOverlay.tsx' }
 ];
 
 // Symbols that re-derive layout/rule logic. A thin view may consume pure
@@ -36,7 +39,7 @@ function isAllowedViewImport(specifier: string): boolean {
   );
 }
 
-test('[P1] AC-3/UX-DR-6: Hud.tsx and PauseButton.tsx import only react-native primitives and same-dir siblings (thin views, no rule logic)', async () => {
+test('[P1] AC-3/UX-DR-6: Hud.tsx, PauseButton.tsx and GameOverOverlay.tsx import only react-native primitives and same-dir siblings (thin views, no rule logic)', async () => {
   for (const { file, rel } of VIEW_FILES) {
     const source = await readFile(file, 'utf8');
     for (const spec of extractSpecifiers(source)) {

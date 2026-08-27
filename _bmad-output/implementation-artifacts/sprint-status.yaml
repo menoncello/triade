@@ -1,5 +1,5 @@
 # generated: 2026-08-08 13:01
-# last_updated: 2026-08-25 (story 12-1 created — ready-for-dev)
+# last_updated: 2026-08-26 (story 6-1 code review done — patches applied)
 # project: 3-clone
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-08 13:01
-last_updated: 2026-08-25 (story 12-1 — done)
+last_updated: 2026-08-26 (story 6-1 code review done — patches applied)
 
 project: 3-clone
 project_key: NOKEY
@@ -62,15 +62,15 @@ development_status:
   2-6-integracao-com-o-engine-merge-once-e-effective-move: done
   epic-2-retrospective: done
 
-  epic-7: in-progress
+  epic-7: done
   7-1-pendingspawn-pre-resolvido-no-snapshot: done
   7-2-preview-card-no-hud-60-40-nas-duas-pistas: done
    7-3-faixa-ambigua-correta: done
-  7-4-invariante-preview-nunca-altera-o-spawn: backlog
-  epic-7-retrospective: optional
+   7-4-invariante-preview-nunca-altera-o-spawn: done
+  epic-7-retrospective: done
 
-  epic-6: backlog
-  6-1-overlay-de-game-over-com-stats-imediatos: backlog
+  epic-6: in-progress
+  6-1-overlay-de-game-over-com-stats-imediatos: done
   6-2-morte-elegante-em-soft-fade: backlog
   6-3-restart-1-tap: backlog
   6-4-novo-recorde-como-numero-destacado: backlog
