@@ -1,0 +1,153 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-24T00:00:00Z",
+  "trace_target": {
+    "type": "story",
+    "id": "7-1",
+    "label": "Story 7.1: pendingSpawn pre-resolvido no snapshot"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/7-1-pendingspawn-pre-resolvido-no-snapshot.md (ACs 1-5)",
+      "_bmad-output/planning-artifacts/epics.md (Epic 7 / Story 7.1)"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "7.1-AC1",
+      "title": "Engine pre-resolves the NEXT pendingSpawn into the immutable snapshot on every effective move (real value + display roll, N3); newGame returns an initial resolved pending",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.1-U-001", "title": "[P0] AC1 effective move resolves the NEXT pending from the post-merge ceiling; newGame returns an initial resolved pending (draw budget 20)", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 50, "level": "unit", "status": "active" },
+        { "id": "2.6-I-006", "title": "[P0] AC6 snapshot shape: newGame returns GameState with a valid initial pendingSpawn", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 146, "level": "unit", "status": "active" },
+        { "id": "2.6-I-010", "title": "[P1] determinism: identical seed reproduces the identical { board, pendingSpawn } sequence", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 283, "level": "unit", "status": "active" },
+        { "id": "2.6-I-002", "title": "[P0] AC4 newGame consumes exactly 20 draws in order (18 alternating cell/value + pending value + displayRoll)", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 73, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.1-AC2",
+      "title": "pendingSpawn drawn from the same distribution as the actual spawn (Adaptive Spawn curve when applicable) (FR-41)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.1-U-002", "title": "[P0] AC2/FR-41 pendingSpawn shares the actual spawn distribution over >=10k effective moves (seeded, 5sigma) and every materialization honors N3", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 83, "level": "unit", "status": "active" },
+        { "id": "2.6-I-003", "title": "[P0] tier ladder variants: pending pot membership for ceilings 96 / 192 / 384", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 101, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.1-AC3",
+      "title": "pendingSpawn lives in the snapshot so undo rewinds it with the board (ADR-06)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.1-U-003", "title": "[P0] AC3/ADR-06 pendingSpawn lives in the snapshot: rewind shape reproduces the identical next result", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 132, "level": "unit", "status": "active" },
+        { "id": "7.1-U-004", "title": "[P0] AC3/ADR-06 shallow-copy isolation: mutating a caller pendingSpawn never rewrites history (noop returns a copy, not a live reference)", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 146, "level": "unit", "status": "active" },
+        { "id": "2.6-I-009", "title": "[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 290, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.1-AC4",
+      "title": "The UI never rolls - it only reads pendingSpawn; the placed tile always equals the pre-resolved pendingSpawn.value",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.1-U-005", "title": "[P0] AC4 place-not-roll: spawnTile places exactly the given value (never rolls it); materialized tile equals the pre-resolved pending across the distribution sweep", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 168, "level": "unit", "status": "active" },
+        { "id": "7.1-U-007", "title": "[P0] AC4 combined-resolver band edges: a draw landing EXACTLY on a cumulative boundary selects the next band", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 204, "level": "unit", "status": "active" },
+        { "id": "7.1-S-001", "title": "[P0] AC4 UI never rolls: App/src-ui/src-render/src-services never import or reference roll symbols and never use Math.random", "file": "triade/__tests__/ui/ui.norolls.test.ts", "line": 54, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "7.1-AC5",
+      "title": "A NOOP move does not change the pendingSpawn (no new preview on a rejected move) (UX-DR-23)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "7.1-U-006", "title": "[P0] AC5/UX-DR-23 NOOP never re-resolves the preview: pendingSpawn deep-equal to input, 0 rng draws", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 195, "level": "unit", "status": "active" },
+        { "id": "2.6-I-001", "title": "[P0] AC1 noop on a full board: no spawn, no score, pendingSpawn unchanged, 0 draws", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 54, "level": "unit", "status": "active" },
+        { "id": "base-G-001", "title": "NOOP_SWIPE: full grid with no merges, swipe left changes nothing", "file": "triade/__tests__/engine/game.test.ts", "line": 121, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 5, "covered": 5, "percentage": 100 },
+      "P1": { "total": 0, "covered": 0, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure engine/UI-static contract story: no API endpoints, no auth surfaces. Negative paths covered via NOOP/rejected-move tests (AC5). HUD preview card rendering is Story 7.2 scope, intentionally out of this oracle."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 13,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 13, "criteria_covered": 5 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad-testarch-test-review on the two new 7.1 suites (quality DoD check)",
+      "requirements": ["7.1-AC1", "7.1-AC2", "7.1-AC3", "7.1-AC4", "7.1-AC5"]
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Close deferred-work entry for `tsc --noEmit -p tsconfig.test.json` (pre-existing TS5101 + masked stub errors, waived by owner 2026-08-24) before Epic 7 grows further test-only surface",
+      "requirements": []
+    },
+    {
+      "priority": "LOW",
+      "action": "Commit or discard the uncommitted shared-helper refactor (sigmaBound/runSeededSession lifted into triade/test-utils/helpers.ts) that post-dates the story record's '287 tests' baseline (suite now 288)",
+      "requirements": []
+    }
+  ]
+}

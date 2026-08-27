@@ -1,0 +1,125 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-25T00:00:00.000Z",
+  "trace_target": { "type": "story", "id": "7.2", "label": "Story 7.2: Preview card no HUD (60/40)" },
+  "collection_mode": "contract_static",
+  "allow_gate": "true",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md",
+      "_bmad-output/test-artifacts/atdd-checklist-7-2-preview-card-no-hud-60-40-nas-duas-pistas.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    { "id": "7.2-AC1", "requirement": "Reads game.pendingSpawn, never re-rolls", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-U-007", "title": "[P0] AC1/AC7 — previewFor is pure: identical input yields deep-equal output", "file": "triade/__tests__/game/preview.test.ts", "line": 93, "level": "unit", "status": "active" },
+      { "id": "7.2-U-008", "title": "[P0] AC1 — previewFor never re-rolls: distinct displayRoll values do not collide on exact", "file": "triade/__tests__/game/preview.test.ts", "line": 99, "level": "unit", "status": "active" },
+      { "id": "7.2-U-011", "title": "[P0] AC1/F-3 — out-of-ladder value yields a defensive single-element range", "file": "triade/__tests__/game/preview.test.ts", "line": 55, "level": "unit", "status": "active" },
+      { "id": "7.2-S-001", "title": "[P0] AC4 UI never rolls: App/src-ui/src-render/src-services never import or reference roll symbols and never use Math.random", "file": "triade/__tests__/ui/ui.norolls.test.ts", "line": 83, "level": "unit", "status": "active" },
+      { "id": "7.2-C-009", "title": "[P0] AC1/AC2 — exact pending (displayRoll < 0.6) renders its value through the Hud", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 56, "level": "component", "status": "active" },
+      { "id": "7.2-C-011", "title": "[P0] AC1/AC4 — landscape wiring reuses the same previewFor output (compact 60x44 band)", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 76, "level": "component", "status": "active" }
+    ]},
+    { "id": "7.2-AC2", "requirement": "<0.6 exact / >=0.6 range; contiguous window <=3 joined '/'", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-U-001", "title": "[P0] AC2 — displayRoll below 0.6 yields the exact value", "file": "triade/__tests__/game/preview.test.ts", "line": 29, "level": "unit", "status": "active" },
+      { "id": "7.2-U-002", "title": "[P0] AC2 — displayRoll at 0.6 (boundary) yields a range", "file": "triade/__tests__/game/preview.test.ts", "line": 34, "level": "unit", "status": "active" },
+      { "id": "7.2-U-010", "title": "[P0] AC2/F-2 — displayRoll exactly 0.6 produces a valid window", "file": "triade/__tests__/game/preview.test.ts", "line": 41, "level": "unit", "status": "active" },
+      { "id": "7.2-U-003", "title": "[P0] AC2 — exact path echoes pendingSpawn.value verbatim", "file": "triade/__tests__/game/preview.test.ts", "line": 61, "level": "unit", "status": "active" },
+      { "id": "7.2-U-004", "title": "[P0] AC2 — range path always contains the pending value", "file": "triade/__tests__/game/preview.test.ts", "line": 67, "level": "unit", "status": "active" },
+      { "id": "7.2-U-005", "title": "[P0] AC2 — range is capped at 3 values and ascending", "file": "triade/__tests__/game/preview.test.ts", "line": 75, "level": "unit", "status": "active" },
+      { "id": "7.2-U-006", "title": "[P0] AC2 — range is a contiguous window of the tier sequence", "file": "triade/__tests__/game/preview.test.ts", "line": 86, "level": "unit", "status": "active" },
+      { "id": "7.2-C-001", "title": "[P0] AC2 — exact preview renders the value as its own Text node", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 49, "level": "component", "status": "active" },
+      { "id": "7.2-C-002", "title": "[P0] AC2 — range preview renders values joined by '/'", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 55, "level": "component", "status": "active" },
+      { "id": "7.2-C-010", "title": "[P0] AC1/AC2 — range pending (displayRoll >= 0.6) renders a joined window through the Hud", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 68, "level": "component", "status": "active" }
+    ]},
+    { "id": "7.2-AC3", "requirement": "Both lanes (Clean + Accelerated) show the preview", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-C-012", "title": "[P0] AC3/F-4 — Hud renders labeled previews for both Clean and Accelerated lanes", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 119, "level": "component", "status": "active" },
+      { "id": "7.2-C-013", "title": "[P0] AC1/AC3/F-4 — two distinct lane previews render through previewFor wiring", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 89, "level": "component", "status": "active" }
+    ]},
+    { "id": "7.2-AC4", "requirement": "Portrait bottom corner / landscape top band placement", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-C-007", "title": "[P0] AC4 — portrait renders the square 76x76 preview panel (assert within 'Hud renders a pause button in portrait', ~line 72)", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 66, "level": "component", "status": "active" },
+      { "id": "7.2-C-008", "title": "[P0] AC4 — landscape renders the compact 60x44 preview band (assert within 'Hud switches to the landscape layout', ~line 87)", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 77, "level": "component", "status": "active" },
+      { "id": "7.2-C-011", "title": "[P0] AC1/AC4 — landscape wiring reuses the same previewFor output (compact 60x44 band)", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 76, "level": "component", "status": "active" }
+    ]},
+    { "id": "7.2-AC5", "requirement": "Accent #E8A33D @20pt, chrome #f1eee6/#c9c4b8/12pt", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-C-003", "title": "[P0] AC5 — value text uses accent ink #E8A33D at 20pt", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 63, "level": "component", "status": "active" },
+      { "id": "7.2-C-004", "title": "[P0] AC5 — card chrome (light theme shipped): #f1eee6 fill, #c9c4b8 border, 12pt radius", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 71, "level": "component", "status": "active" },
+      { "id": "7.2-C-005", "title": "[P0] AC5 — accessibilityLabel announces the next spawn", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 79, "level": "component", "status": "active" },
+      { "id": "7.2-U-009", "title": "[P0] AC5/UX-DR-23 NOOP never re-resolves the preview: pendingSpawn deep-equal to input, 0 rng draws", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 212, "level": "unit", "status": "active" }
+    ]},
+    { "id": "7.2-AC6", "requirement": "No feel/animation on card", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-C-006", "title": "[P0] AC6 — card carries no animation/transform props (chrome, not board)", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 92, "level": "component", "status": "active" }
+    ]},
+    { "id": "7.2-AC7", "requirement": "NOOP never changes pendingSpawn", "priority": "P0", "coverage": "FULL", "tests": [
+      { "id": "7.2-U-009", "title": "[P0] AC5/UX-DR-23 NOOP never re-resolves the preview: pendingSpawn deep-equal to input, 0 rng draws", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 212, "level": "unit", "status": "active" },
+      { "id": "7.2-E-001", "title": "[P0] AC7 — noop keeps the pending preview unchanged (assertion embedded in 'e2e: core loop — moves accumulate score, gate opens after settle', ~line 67)", "file": "triade/__tests__/e2e/session.e2e.test.ts", "line": 35, "level": "e2e", "status": "active" }
+    ]}
+  ],
+  "coverage_statistics": {
+    "total_requirements": 7,
+    "fully_covered": 7,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 7, "covered": 7, "percentage": 100 },
+      "P1": { "total": 0, "covered": 0, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": { "critical_gaps": [], "high_gaps": [], "medium_gaps": [], "low_gaps": [], "partial_coverage_items": [], "unit_only_items": [] },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_states_missing_coverage": [],
+    "counts": { "endpoints_without_tests": 0, "auth_missing_negative_paths": 0, "happy_path_only_criteria": 0, "ui_journeys_without_e2e": 0, "ui_states_missing_coverage": 0 }
+  },
+  "test_inventory": {
+    "summary": { "files": 7, "cases": 26, "skipped_cases": 0, "fixme_cases": 0, "pending_cases": 0, "by_level": {
+      "e2e": { "tests": 1, "criteria_covered": 1 }, "api": { "tests": 0, "criteria_covered": 0 },
+      "component": { "tests": 13, "criteria_covered": 6 }, "unit": { "tests": 12, "criteria_covered": 4 },
+      "other": { "tests": 0, "criteria_covered": 0 } } },
+    "tests": [
+      { "id": "7.2-U-001", "file": "triade/__tests__/game/preview.test.ts", "line": 29, "title": "[P0] AC2 — displayRoll below 0.6 yields the exact value", "level": "unit", "status": "active" },
+      { "id": "7.2-U-002", "file": "triade/__tests__/game/preview.test.ts", "line": 34, "title": "[P0] AC2 — displayRoll at 0.6 (boundary) yields a range", "level": "unit", "status": "active" },
+      { "id": "7.2-U-010", "file": "triade/__tests__/game/preview.test.ts", "line": 41, "title": "[P0] AC2/F-2 — displayRoll exactly 0.6 produces a valid window", "level": "unit", "status": "active" },
+      { "id": "7.2-U-011", "file": "triade/__tests__/game/preview.test.ts", "line": 55, "title": "[P0] AC1/F-3 — out-of-ladder value yields a defensive single-element range", "level": "unit", "status": "active" },
+      { "id": "7.2-U-003", "file": "triade/__tests__/game/preview.test.ts", "line": 61, "title": "[P0] AC2 — exact path echoes pendingSpawn.value verbatim", "level": "unit", "status": "active" },
+      { "id": "7.2-U-004", "file": "triade/__tests__/game/preview.test.ts", "line": 67, "title": "[P0] AC2 — range path always contains the pending value", "level": "unit", "status": "active" },
+      { "id": "7.2-U-005", "file": "triade/__tests__/game/preview.test.ts", "line": 75, "title": "[P0] AC2 — range is capped at 3 values and ascending", "level": "unit", "status": "active" },
+      { "id": "7.2-U-006", "file": "triade/__tests__/game/preview.test.ts", "line": 86, "title": "[P0] AC2 — range is a contiguous window of the tier sequence", "level": "unit", "status": "active" },
+      { "id": "7.2-U-007", "file": "triade/__tests__/game/preview.test.ts", "line": 93, "title": "[P0] AC1/AC7 — previewFor is pure: identical input yields deep-equal output", "level": "unit", "status": "active" },
+      { "id": "7.2-U-008", "file": "triade/__tests__/game/preview.test.ts", "line": 99, "title": "[P0] AC1 — previewFor never re-rolls: distinct displayRoll values do not collide on exact", "level": "unit", "status": "active" },
+      { "id": "7.2-C-001", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 49, "title": "[P0] AC2 — exact preview renders the value as its own Text node", "level": "component", "status": "active" },
+      { "id": "7.2-C-002", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 55, "title": "[P0] AC2 — range preview renders values joined by '/'", "level": "component", "status": "active" },
+      { "id": "7.2-C-003", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 63, "title": "[P0] AC5 — value text uses accent ink #E8A33D at 20pt", "level": "component", "status": "active" },
+      { "id": "7.2-C-004", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 71, "title": "[P0] AC5 — card chrome (light theme shipped): #f1eee6 fill, #c9c4b8 border, 12pt radius", "level": "component", "status": "active" },
+      { "id": "7.2-C-005", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 79, "title": "[P0] AC5 — accessibilityLabel announces the next spawn", "level": "component", "status": "active" },
+      { "id": "7.2-C-006", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 92, "title": "[P0] AC6 — card carries no animation/transform props (chrome, not board)", "level": "component", "status": "active" },
+      { "id": "7.2-C-007", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 66, "title": "[P0] AC4 — portrait renders the square 76x76 preview panel (assert within 'Hud renders a pause button in portrait', ~line 72)", "level": "component", "status": "active" },
+      { "id": "7.2-C-008", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 77, "title": "[P0] AC4 — landscape renders the compact 60x44 preview band (assert within 'Hud switches to the landscape layout', ~line 87)", "level": "component", "status": "active" },
+      { "id": "7.2-C-012", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 119, "title": "[P0] AC3/F-4 — Hud renders labeled previews for both Clean and Accelerated lanes", "level": "component", "status": "active" },
+      { "id": "7.2-C-009", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 56, "title": "[P0] AC1/AC2 — exact pending (displayRoll < 0.6) renders its value through the Hud", "level": "component", "status": "active" },
+      { "id": "7.2-C-010", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 68, "title": "[P0] AC1/AC2 — range pending (displayRoll >= 0.6) renders a joined window through the Hud", "level": "component", "status": "active" },
+      { "id": "7.2-C-011", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 76, "title": "[P0] AC1/AC4 — landscape wiring reuses the same previewFor output (compact 60x44 band)", "level": "component", "status": "active" },
+      { "id": "7.2-C-013", "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts", "line": 89, "title": "[P0] AC1/AC3/F-4 — two distinct lane previews render through previewFor wiring", "level": "component", "status": "active" },
+      { "id": "7.2-S-001", "file": "triade/__tests__/ui/ui.norolls.test.ts", "line": 83, "title": "[P0] AC4 UI never rolls: App/src-ui/src-render/src-services never import or reference roll symbols and never use Math.random", "level": "unit", "status": "active" },
+      { "id": "7.2-U-009", "file": "triade/__tests__/engine/pending-spawn-contract.test.ts", "line": 212, "title": "[P0] AC5/UX-DR-23 NOOP never re-resolves the preview: pendingSpawn deep-equal to input, 0 rng draws", "level": "unit", "status": "active" },
+      { "id": "7.2-E-001", "file": "triade/__tests__/e2e/session.e2e.test.ts", "line": 35, "title": "[P0] AC7 — noop keeps the pending preview unchanged (assertion embedded in 'e2e: core loop — moves accumulate score, gate opens after settle', ~line 67)", "level": "e2e", "status": "active" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    { "priority": "LOW", "action": "Run /bmad:tea:test-review on the 7.2 suites for quality DoD validation.", "requirements": [] },
+    { "priority": "INFO", "action": "AC3 two-lane preview deferral CLOSED: now implemented and tested (7.2-C-012/7.2-C-013); trace updated to include AC3 as in-scope FULL coverage.", "requirements": ["7.2-AC3"], "status": "closed", "closed_at": "2026-08-24" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-25T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": { "type": "story", "id": "7.2", "label": "Story 7.2: Preview card no HUD (60/40)" },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (7/7 acceptance criteria fully covered by active, green tests, including the now-implemented AC3 two-lane preview), no P1 requirements in scope (effective target met), and overall coverage is 100% (minimum: 80%). Mapped 7.2 suites re-verified green at run time — 40 pass / 0 fail across the 7 referenced files; full suite re-run: 311 pass / 0 fail.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-7-2.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}
