@@ -1,0 +1,206 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-27T00:00:00Z",
+  "trace_target": {
+    "type": "story",
+    "id": "6-2",
+    "label": "Story 6.2: Morte elegante em soft fade"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/6-2-morte-elegante-em-soft-fade.md (ACs 1-5)",
+      "_bmad-output/planning-artifacts/epics.md (Epic 6 / Story 6.2, lines 750-764)",
+      "_bmad-output/planning-artifacts/architectures/architecture-3-clone-2026-08-07/game-architecture.md (screen-state overlay, ADR-01/06, EFFECTS.md, UX-DR-25)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/DESIGN.md (tokens scrim #0C0E11 rgba(12,14,17,0.7), stat-row, HIT_TARGET 44, zIndex:2)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/EXPERIENCE.md (S6.4 elegant fall, UX-DR-25 quiet drift, UX-DR-16 FR-30 reduced-motion)",
+      "_bmad-output/test-artifacts/atdd-checklist-6-2-morte-elegante-em-soft-fade.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "6.2-AC1",
+      "title": "Given a game over, When the overlay appears, Then the board soft-fades and the last move stays visible behind the stats (FR-27, D-010)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.2-C-005", "title": "[P0] AC2 scrim uses rgba(12,14,17,0.7) via backgroundColor (not opacity) — children keep full opacity (DESIGN.md:193, mockup key-gameover.html:43)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 138, "level": "component", "status": "active" },
+        { "id": "6.2-C-006", "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto (one-level overlay, DESIGN.md:251-253)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 158, "level": "component", "status": "active" },
+        { "id": "6.2-C-012", "title": "[P0] AC1/AC2 overlay mounts synchronously with all five stats and CTA pressable during fade (no forced wait)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 266, "level": "component", "status": "active" },
+        { "id": "6.2-C-013", "title": "[P0] AC1 board last move stays visible — overlay does not unmount GameBoard", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 290, "level": "component", "status": "active" },
+        { "id": "6.2-C-001", "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 84, "level": "component", "status": "active" },
+        { "id": "6.2-C-002", "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 93, "level": "component", "status": "active" },
+        { "id": "6.2-C-003", "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 112, "level": "component", "status": "active" },
+        { "id": "6.2-C-004", "title": "[P0] AC1 CTA \"Jogar de novo\" calls onRestart once (thin-view, no confirmation dialog)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 127, "level": "component", "status": "active" },
+        { "id": "6.2-C-008", "title": "[P0] AC2 CTA hit target is HIT_TARGET (44) via width+height directly (thinview gate thinview.test.ts:39-40)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 191, "level": "component", "status": "active" },
+        { "id": "6.2-W-001", "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "level": "component", "status": "active" },
+        { "id": "6.2-W-004", "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "level": "component", "status": "active" },
+        { "id": "6.2-W-003", "title": "[P0] AC1 doMove projects via applyMoveStats on post-move board (maxTile monotonic source)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 72, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.2-AC2",
+      "title": "And the stats drift in quietly over the frozen board — no abrupt cutoff, no forced wait (UX-DR-25, S6.4)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.2-C-007", "title": "[P0] AC2/AC3 supersedes 6.1 timing guard — mount sync (no setTimeout gating) but post-mount Animated.timing 280/80/Easing/useNativeDriver IS present (elegant fall)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 167, "level": "component", "status": "active" },
+        { "id": "6.2-C-012", "title": "[P0] AC1/AC2 overlay mounts synchronously with all five stats and CTA pressable during fade (no forced wait)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 266, "level": "component", "status": "active" },
+        { "id": "6.2-C-014", "title": "[P0] AC2/AC3 soft fade + drift exist when reducedMotion=false (elegant fall)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 307, "level": "component", "status": "active" },
+        { "id": "6.2-C-020", "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak (restart during 280ms fade)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 484, "level": "component", "status": "active" },
+        { "id": "6.2-C-005", "title": "[P0] AC2 scrim uses rgba(12,14,17,0.7) via backgroundColor — final scrim stays while Animated opacity drives fade", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 138, "level": "component", "status": "active" },
+        { "id": "6.2-C-006", "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) pointerEvents auto — frozen board stays under scrim", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 158, "level": "component", "status": "active" },
+        { "id": "6.2-W-004", "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.2-AC3",
+      "title": "And the death treatment receives the same care as the big merge — the \"fall\" is elegant, not abrupt (UX-DR-25)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.2-C-007", "title": "[P0] AC2/AC3 supersedes 6.1 timing guard — mount sync but post-mount Animated.timing 280/80/Easing/useNativeDriver IS present", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 167, "level": "component", "status": "active" },
+        { "id": "6.2-C-014", "title": "[P0] AC2/AC3 soft fade + drift exist when reducedMotion=false (elegant fall) — FADE_MS 280, Easing.out(cubic), delay 80, useNativeDriver:true", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 307, "level": "component", "status": "active" },
+        { "id": "6.2-C-020", "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak (restart during 280ms fade)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 484, "level": "component", "status": "active" },
+        { "id": "6.2-C-012", "title": "[P0] AC1/AC2 overlay mounts synchronously — CTA pressable at opacity 0 proves no abrupt input gate", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 266, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.2-AC4",
+      "title": "And under Reduced Motion, the game-over soft fade is cut or smoothed while haptics and sound stay (UX-DR-16, FR-30)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.2-C-015", "title": "[P0] AC4 reducedMotion=true cuts fade/drift (setValue, drift 0, haptics/sound stay)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 349, "level": "component", "status": "active" },
+        { "id": "6.2-C-011", "title": "[P1] reducedMotion prop gates future fade — defaults appropriately and overlay carries no transform when false (Epic 9 gate for 6.2)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 240, "level": "component", "status": "active" },
+        { "id": "6.2-C-019", "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 445, "level": "component", "status": "active" },
+        { "id": "6.2-C-020", "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak — reducedMotion true path also doesNotThrow", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 484, "level": "component", "status": "active" },
+        { "id": "6.2-W-001", "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) with reducedMotion={false} literal until Epic 9", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "level": "component", "status": "active" },
+        { "id": "6.2-C-010", "title": "[P1] AC4 overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 219, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.2-AC5",
+      "title": "And no celebration, confetti, or reward pacing appears on the overlay (D-013)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.2-C-016", "title": "[P0] AC5 no celebration/confetti/reward pacing", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 392, "level": "component", "status": "active" },
+        { "id": "6.2-C-014", "title": "[P0] AC2/AC3 soft fade + drift is only motion — no shakeMs/particleBurst (Epic 8 feel not in this file)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 307, "level": "component", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 5, "covered": 5, "percentage": 100 },
+      "P1": { "total": 0, "covered": 0, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure app-domain story: no API endpoints, no auth surfaces. Negative paths covered via reducedMotion true branch (setValue early return not duration:0), runtime unmount mid-fade, emptyBoard / full-but-mergeable edge (W-005), zero-merge streak reset. UI journey is state-overlay (isGameOver -> {gameOver ? <GameOverOverlay : null} sibling to frozen GameBoard) not a route — E2E intentionally N/A (same posture as 6.1/7.1/7.2). Error handling pinned as state-not-error: deterministic pure projection (matchStats 10) + thin-view guards (ui.norolls/ui.thinview/engine.purity green). Haptics/sound not gated here (Epic 8 owns expo-haptics/expo-audio, stripped source proves absence)."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 3,
+      "cases": 35,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 25, "criteria_covered": 5 },
+        "unit": { "tests": 10, "criteria_covered": 3 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "6.2-U-001", "file": "triade/__tests__/game/matchStats.test.ts", "line": 27, "title": "[P0] AC1 initialStats seeds merges=0, longest=0, current=0 and maxTile from ceilingDetector(board)", "level": "unit", "status": "active" },
+      { "id": "6.2-U-002", "file": "triade/__tests__/game/matchStats.test.ts", "line": 43, "title": "[P0] AC1 initialStats on empty-ish board uses ceiling 0 (defensive floor)", "level": "unit", "status": "active" },
+      { "id": "6.2-U-003", "file": "triade/__tests__/game/matchStats.test.ts", "line": 53, "title": "[P0] AC1 initialStats on game board (newGame-like 9-tile setup) maxTile matches ceiling", "level": "unit", "status": "active" },
+      { "id": "6.2-U-004", "file": "triade/__tests__/game/matchStats.test.ts", "line": 67, "title": "[P0] AC1 applyMoveStats increments merges by trace merge count (from.length===2, or classify==='merge')", "level": "unit", "status": "active" },
+      { "id": "6.2-U-005", "file": "triade/__tests__/game/matchStats.test.ts", "line": 102, "title": "[P0] AC1 applyMoveStats streak: consecutive merge moves increment currentStreak by 1, longestStreak tracks max", "level": "unit", "status": "active" },
+      { "id": "6.2-U-006", "file": "triade/__tests__/game/matchStats.test.ts", "line": 143, "title": "[P0] AC1 streak is per-move, not per-tile: [3,3,3,3]->[6,6] (two merges in one swipe) counts as ONE streak step", "level": "unit", "status": "active" },
+      { "id": "6.2-U-007", "file": "triade/__tests__/game/matchStats.test.ts", "line": 174, "title": "[P0] AC1 maxTile monotonic: never decreases and tracks ceilingDetector(postBoard)", "level": "unit", "status": "active" },
+      { "id": "6.2-U-008", "file": "triade/__tests__/game/matchStats.test.ts", "line": 207, "title": "[P1] AC1/AC4 applyMoveStats determinism: same prev+board+result yields deepEqual, no mutation of prev", "level": "unit", "status": "active" },
+      { "id": "6.2-U-009", "file": "triade/__tests__/game/matchStats.test.ts", "line": 236, "title": "[P1] AC4 applyMoveStats purity: no Math.random, no engine roll symbols, host-testable (no RN)", "level": "unit", "status": "active" },
+      { "id": "6.2-U-010", "file": "triade/__tests__/game/matchStats.test.ts", "line": 265, "title": "[P1] AC3 lane-scoped best is NOT inside MatchStats — matchStats only owns merges/longestStreak/maxTile/currentStreak (separation pin)", "level": "unit", "status": "active" },
+      { "id": "6.2-C-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 84, "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)", "level": "component", "status": "active" },
+      { "id": "6.2-C-002", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 93, "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)", "level": "component", "status": "active" },
+      { "id": "6.2-C-003", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 112, "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D", "level": "component", "status": "active" },
+      { "id": "6.2-C-004", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 127, "title": "[P0] AC1 CTA \"Jogar de novo\" calls onRestart once (thin-view, no confirmation dialog)", "level": "component", "status": "active" },
+      { "id": "6.2-C-005", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 138, "title": "[P0] AC2 scrim uses rgba(12,14,17,0.7) via backgroundColor (not opacity) — children keep full opacity (DESIGN.md:193, mockup key-gameover.html:43)", "level": "component", "status": "active" },
+      { "id": "6.2-C-006", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 158, "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto (one-level overlay, DESIGN.md:251-253)", "level": "component", "status": "active" },
+      { "id": "6.2-C-007", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 167, "title": "[P0] AC2/AC3 supersedes 6.1 timing guard — mount sync (no setTimeout gating) but post-mount Animated.timing 280/80/Easing/useNativeDriver IS present (elegant fall)", "level": "component", "status": "active" },
+      { "id": "6.2-C-008", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 191, "title": "[P0] AC2 CTA hit target is HIT_TARGET (44) via width+height directly (thinview gate thinview.test.ts:39-40)", "level": "component", "status": "active" },
+      { "id": "6.2-C-009", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 208, "title": "[P1] AC1/AC2 stat row tokens: label muted #8a8578 13/500, value text #1a1d23 17/500 tabular-nums (DESIGN.md:153-279 token table)", "level": "component", "status": "active" },
+      { "id": "6.2-C-010", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 219, "title": "[P1] AC4 overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic (ui.norolls + ui.thinview + engine.purity)", "level": "component", "status": "active" },
+      { "id": "6.2-C-011", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 240, "title": "[P1] reducedMotion prop gates future fade — defaults appropriately and overlay carries no transform when false (Epic 9 gate for 6.2)", "level": "component", "status": "active" },
+      { "id": "6.2-C-012", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 266, "title": "[P0] AC1/AC2 overlay mounts synchronously with all five stats and CTA pressable during fade (no forced wait)", "level": "component", "status": "active" },
+      { "id": "6.2-C-013", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 290, "title": "[P0] AC1 board last move stays visible — overlay does not unmount GameBoard", "level": "component", "status": "active" },
+      { "id": "6.2-C-014", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 307, "title": "[P0] AC2/AC3 soft fade + drift exist when reducedMotion=false (elegant fall)", "level": "component", "status": "active" },
+      { "id": "6.2-C-015", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 349, "title": "[P0] AC4 reducedMotion=true cuts fade/drift (setValue, drift 0, haptics/sound stay)", "level": "component", "status": "active" },
+      { "id": "6.2-C-016", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 392, "title": "[P0] AC5 no celebration/confetti/reward pacing", "level": "component", "status": "active" },
+      { "id": "6.2-C-017", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 408, "title": "[P1] tokens + HIT_TARGET preserved through fade (DESIGN.md:153-279 table)", "level": "component", "status": "active" },
+      { "id": "6.2-C-018", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 424, "title": "[P1] thin-view + norolls still green (overlay imports only react-native + same-dir + SAFE_MARGIN)", "level": "component", "status": "active" },
+      { "id": "6.2-C-019", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 445, "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)", "level": "component", "status": "active" },
+      { "id": "6.2-C-020", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 484, "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak (restart during 280ms fade)", "level": "component", "status": "active" },
+      { "id": "6.2-W-001", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats", "level": "component", "status": "active" },
+      { "id": "6.2-W-002", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 55, "title": "[P0] AC4/T3 handleRestart deadlock defense: App.tsx resets game + match + matchStats + busyRef", "level": "component", "status": "active" },
+      { "id": "6.2-W-003", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 72, "title": "[P0] AC1 doMove projects via applyMoveStats on post-move board (maxTile monotonic source)", "level": "component", "status": "active" },
+      { "id": "6.2-W-004", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "level": "component", "status": "active" },
+      { "id": "6.2-W-005", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 147, "title": "[P1] AC1 gameOver board edge: emptyBoard is NOT gameOver, full-but-mergeable board is NOT gameOver", "level": "component", "status": "active" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Keep gameOverOverlay.test.ts 20 active as single source of truth for FR-27/UX-DR-25/S6.4 elegant fall; any display change (FADE_MS 280, drift 12, delay 80, Easing.cubic, scrim rgba) must keep 20 pins green.",
+      "requirements": ["6.2-AC1", "6.2-AC2", "6.2-AC3"],
+      "status": "open"
+    },
+    {
+      "priority": "INFO",
+      "action": "App wiring handleRestart busyRef=false×2 + availablePot once-per-render + reducedMotion literal forward-compat will be exercised when Epic 9 settings land (9-4 replaces literal). No new App.tsx change in 6.2 correct.",
+      "requirements": ["6.2-AC1", "6.2-AC4"],
+      "status": "open"
+    }
+  ]
+}

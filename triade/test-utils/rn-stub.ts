@@ -19,6 +19,57 @@ export const StyleSheet = {
   hairlineWidth: 1,
 };
 
+export const Animated = {
+  View: (props: Props) => React.createElement('Animated.View', props, props.children),
+  Text: (props: Props) => React.createElement('Animated.Text', props, props.children),
+  Value: class AnimatedValue {
+    _value: number;
+    constructor(v: number) {
+      this._value = v;
+    }
+    setValue(v: number) {
+      this._value = v;
+    }
+    stopAnimation(cb?: () => void) {
+      cb?.();
+    }
+    interpolate() {
+      return this._value;
+    }
+  },
+  timing: (_value: any, _config: any) => ({
+    start: (cb?: (r: { finished: boolean }) => void) => {
+      cb?.({ finished: true });
+    },
+    stop: () => {},
+  }),
+  parallel: (anims: any[]) => ({
+    start: (cb?: (r: { finished: boolean }) => void) => {
+      anims.forEach((a) => a?.start?.());
+      cb?.({ finished: true });
+    },
+    stop: () => {
+      anims.forEach((a) => a?.stop?.());
+    },
+  }),
+  spring: (_value: any, _config: any) => ({
+    start: (cb?: (r: { finished: boolean }) => void) => {
+      cb?.({ finished: true });
+    },
+    stop: () => {},
+  }),
+};
+
+export const Easing = {
+  linear: (t: number) => t,
+  cubic: (t: number) => t * t * t,
+  quad: (t: number) => t * t,
+  out: (fn: (t: number) => number) => fn,
+  in: (fn: (t: number) => number) => fn,
+  inOut: (fn: (t: number) => number) => fn,
+  bezier: (..._args: any[]) => (t: number) => t,
+};
+
 // --- Minimal RN hooks / APIs used by App.tsx / GameBoard.tsx ---
 export const useWindowDimensions = () => ({ width: 390, height: 844, scale: 2, fontScale: 1 });
 export const useColorScheme = () => 'light' as const;

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-08-27T00:00:00Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "6-2",
+    "label": "Story 6.2: Morte elegante em soft fade"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (5/5 acceptance criteria fully covered: AC1 board soft-fades last-move visible, AC2 stats drift quietly no forced wait, AC3 elegant fall 280/Easing.cubic/delay80, AC4 reducedMotion cuts fade via setValue while haptics/sound stay, AC5 no celebration), 35 mapped tests active (25 component overlay + 5 wiring + 10 unit matchStats) all green, 0 skipped/fixme/pending; suite verified green at run time (448 pass / 0 fail). Gate logic: P0 100% required MET, P1 >=90% target MET (effective 100% — no P1 requirements uncovered), overall 100% >=80% MET. No critical/high gaps, no endpoint/auth blind spots (pure app-domain), thin-view/purity guards green, engine/preview/matchStats/render/services byte-identical.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-6-2.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}
