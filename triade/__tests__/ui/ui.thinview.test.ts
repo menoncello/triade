@@ -33,6 +33,7 @@ function isSameDirImport(specifier: string): boolean {
 function isAllowedViewImport(specifier: string): boolean {
   const lower = specifier.toLowerCase();
   return (
+    lower === 'react' ||
     lower === 'react-native' ||
     lower.startsWith('react-native/') ||
     isSameDirImport(lower)

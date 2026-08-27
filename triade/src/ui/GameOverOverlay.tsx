@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { HIT_TARGET } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 
@@ -12,7 +13,7 @@ export interface GameOverOverlayProps {
   insets: { top: number; bottom: number; left: number; right: number };
 }
 
-export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion: _reducedMotion, insets }: GameOverOverlayProps) {
+export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, insets }: GameOverOverlayProps) {
   const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
   const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
   const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
@@ -22,57 +23,86 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion: 
     `Game over. Score ${stats.score}, best ${stats.best}, max tile ${stats.maxTile}, merges ${stats.merges}, longest streak ${stats.longestStreak}` +
     (isNewRecord ? ' Novo recorde' : '');
 
+  const scrimOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const contentOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const contentY = useRef(new Animated.Value(reducedMotion ? 0 : 12)).current;
+
+  useEffect(() => {
+    if (reducedMotion) {
+      scrimOpacity.setValue(1);
+      contentOpacity.setValue(1);
+      contentY.setValue(0);
+      return;
+    }
+    const FADE_MS = 280;
+    const anim = Animated.parallel([
+      Animated.timing(scrimOpacity, { toValue: 1, duration: FADE_MS, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(contentOpacity, { toValue: 1, duration: FADE_MS, delay: 80, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(contentY, { toValue: 0, duration: FADE_MS, delay: 80, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+    ]);
+    anim.start();
+    return () => {
+      anim.stop();
+      scrimOpacity.stopAnimation();
+      contentOpacity.stopAnimation();
+      contentY.stopAnimation();
+    };
+  }, [reducedMotion]);
+
   // D1 fix (a11y aninhada): outer overlay NÃO é `accessible` — bloqueia gestos via `pointerEvents="auto"`
   // e centra o card. Inner `View accessible alert` agrupa só as stats para anúncio; CTA `Pressable`
   // é irmão do alert, ficando alcançável no VoiceOver/TalkBack (antes pai accessible ocultava o botão).
   return (
-    <View
+    <Animated.View
       style={[
         styles.overlay,
+        { opacity: scrimOpacity },
         { paddingTop: padTop, paddingBottom: padBottom, paddingLeft: padLeft, paddingRight: padRight },
       ]}
       pointerEvents="auto"
       accessibilityViewIsModal
     >
-      <View style={styles.content}>
-        <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Pontuação</Text>
-            {/* TODO 5.4: t('gameOver.score') */}
-            <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
+      <Animated.View style={{ width: '100%', maxWidth: 420, alignSelf: 'center', opacity: contentOpacity, transform: [{ translateY: contentY }] }}>
+        <View style={styles.content}>
+          <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
+            <View style={styles.row}>
+              <Text style={styles.label}>Pontuação</Text>
+              {/* TODO 5.4: t('gameOver.score') */}
+              <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Recorde</Text>
+              {/* TODO 5.4: t('gameOver.best') */}
+              <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Maior peça</Text>
+              {/* TODO 5.4: t('gameOver.maxTile') */}
+              <Text style={styles.value}>{String(stats.maxTile)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Fusões</Text>
+              {/* TODO 5.4: t('gameOver.merges') */}
+              <Text style={styles.value}>{String(stats.merges)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Maior sequência</Text>
+              {/* TODO 5.4: t('gameOver.longestStreak') */}
+              <Text style={styles.value}>{String(stats.longestStreak)}</Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Recorde</Text>
-            {/* TODO 5.4: t('gameOver.best') */}
-            <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Maior peça</Text>
-            {/* TODO 5.4: t('gameOver.maxTile') */}
-            <Text style={styles.value}>{String(stats.maxTile)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Fusões</Text>
-            {/* TODO 5.4: t('gameOver.merges') */}
-            <Text style={styles.value}>{String(stats.merges)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Maior sequência</Text>
-            {/* TODO 5.4: t('gameOver.longestStreak') */}
-            <Text style={styles.value}>{String(stats.longestStreak)}</Text>
-          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Jogar de novo"
+            onPress={onRestart}
+            style={styles.cta}
+          >
+            <Text style={styles.ctaLabel}>Jogar de novo</Text>
+            {/* TODO 5.4: t('gameOver.restart') */}
+          </Pressable>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Jogar de novo"
-          onPress={onRestart}
-          style={styles.cta}
-        >
-          <Text style={styles.ctaLabel}>Jogar de novo</Text>
-          {/* TODO 5.4: t('gameOver.restart') */}
-        </Pressable>
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 }
 
@@ -128,7 +158,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    alignSelf: 'center',
   },
   ctaLabel: {
     color: '#1C1206',
