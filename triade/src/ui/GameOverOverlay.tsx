@@ -1,0 +1,139 @@
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { HIT_TARGET } from './PauseButton';
+import { SAFE_MARGIN } from './layout';
+
+export interface GameOverOverlayProps {
+  stats: { score: number; best: number; maxTile: number; merges: number; longestStreak: number };
+  isNewRecord: boolean;
+  onRestart: () => void;
+  reducedMotion?: boolean;
+  // T2 fix: insets is required (like Hud.tsx:15 `insets: EdgeInsets`) — App.tsx sempre passa `insets={insets}`.
+  // Mantido fallback defensivo `insets?.top ?? 0` para chamadas `as any` / testes bare sem insets (gameOverOverlay.test.ts:252).
+  insets: { top: number; bottom: number; left: number; right: number };
+}
+
+export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion: _reducedMotion, insets }: GameOverOverlayProps) {
+  const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
+  const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
+  const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
+  const padRight = (insets?.right ?? 0) + SAFE_MARGIN;
+
+  const a11yLabel =
+    `Game over. Score ${stats.score}, best ${stats.best}, max tile ${stats.maxTile}, merges ${stats.merges}, longest streak ${stats.longestStreak}` +
+    (isNewRecord ? ' Novo recorde' : '');
+
+  // D1 fix (a11y aninhada): outer overlay NÃO é `accessible` — bloqueia gestos via `pointerEvents="auto"`
+  // e centra o card. Inner `View accessible alert` agrupa só as stats para anúncio; CTA `Pressable`
+  // é irmão do alert, ficando alcançável no VoiceOver/TalkBack (antes pai accessible ocultava o botão).
+  return (
+    <View
+      style={[
+        styles.overlay,
+        { paddingTop: padTop, paddingBottom: padBottom, paddingLeft: padLeft, paddingRight: padRight },
+      ]}
+      pointerEvents="auto"
+      accessibilityViewIsModal
+    >
+      <View style={styles.content}>
+        <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Pontuação</Text>
+            {/* TODO 5.4: t('gameOver.score') */}
+            <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Recorde</Text>
+            {/* TODO 5.4: t('gameOver.best') */}
+            <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Maior peça</Text>
+            {/* TODO 5.4: t('gameOver.maxTile') */}
+            <Text style={styles.value}>{String(stats.maxTile)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fusões</Text>
+            {/* TODO 5.4: t('gameOver.merges') */}
+            <Text style={styles.value}>{String(stats.merges)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Maior sequência</Text>
+            {/* TODO 5.4: t('gameOver.longestStreak') */}
+            <Text style={styles.value}>{String(stats.longestStreak)}</Text>
+          </View>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Jogar de novo"
+          onPress={onRestart}
+          style={styles.cta}
+        >
+          <Text style={styles.ctaLabel}>Jogar de novo</Text>
+          {/* TODO 5.4: t('gameOver.restart') */}
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+    elevation: 2,
+    backgroundColor: 'rgba(12,14,17,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  label: {
+    color: '#8a8578',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  value: {
+    color: '#1a1d23',
+    fontSize: 17,
+    fontWeight: '500',
+    fontVariant: ['tabular-nums'],
+  },
+  valueRecord: {
+    color: '#E8A33D',
+    fontSize: 17,
+    fontWeight: '500',
+    fontVariant: ['tabular-nums'],
+  },
+  cta: {
+    width: HIT_TARGET,
+    height: HIT_TARGET,
+    backgroundColor: '#E8A33D',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    alignSelf: 'center',
+  },
+  ctaLabel: {
+    color: '#1C1206',
+    fontSize: 17,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+});

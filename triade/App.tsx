@@ -5,12 +5,15 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
-import { newGame, move, ceilingDetector, tierForCeiling } from './src/engine/core/index.ts';
+import { newGame, move, isGameOver, ceilingDetector, tierForCeiling } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { potForTier } from './src/engine/core/pot.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
 import type { MatchScore } from './src/game/matchScore.ts';
+import { initialStats, applyMoveStats } from './src/game/matchStats.ts';
+import type { MatchStats } from './src/game/matchStats.ts';
 import { previewFor } from './src/game/preview.ts';
+import { GameOverOverlay } from './src/ui/GameOverOverlay.tsx';
 import { loadBest, saveBest } from './src/services/storage/settingsStore.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
@@ -43,6 +46,7 @@ function AppContent() {
   const [game, setGame] = useState<GameState>(() => newGame(rngRef.current));
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
+  const [matchStats, setMatchStats] = useState<MatchStats>(() => initialStats(game.board));
 
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
@@ -83,6 +87,7 @@ function AppContent() {
       setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
+      setMatchStats((prev) => applyMoveStats(prev, result.board, result));
       if (result.moved) {
         // T3.4 in-flight gate: an effective move animates; block further swipes
         // until the input gate re-opens (~30% of the animation, via GameBoard's
@@ -94,6 +99,15 @@ function AppContent() {
     },
     [game]
   );
+
+  const handleRestart = useCallback(() => {
+    const s = newGame(rngRef.current);
+    setGame(s);
+    setMoveResult(null);
+    setMatch(initialScore(persistedBest));
+    setMatchStats(initialStats(s.board));
+    busyRef.current = false;
+  }, [persistedBest]);
 
   // Stable gesture (created once) reads the latest doMove through a ref so a
   // move dispatched during an in-flight animation never uses a stale board
@@ -136,6 +150,8 @@ function AppContent() {
   // live board ceiling, computed once per render and shared by both lane previews.
   const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
+  const gameOver = isGameOver(game.board);
+
   return (
     <View style={styles.container}>
       <Hud
@@ -164,6 +180,21 @@ function AppContent() {
           score: {match.score} · live best: {match.best} · persisted best: {persistedBest}
         </Text>
       </View>
+      {gameOver ? (
+        <GameOverOverlay
+          stats={{
+            score: match.score,
+            best: match.best,
+            maxTile: matchStats.maxTile,
+            merges: matchStats.merges,
+            longestStreak: matchStats.longestStreak,
+          }}
+          isNewRecord={isNewRecord(sessionStartBestRef.current, match.score)}
+          onRestart={handleRestart}
+          reducedMotion={false}
+          insets={insets}
+        />
+      ) : null}
       <StatusBar style="auto" />
     </View>
   );

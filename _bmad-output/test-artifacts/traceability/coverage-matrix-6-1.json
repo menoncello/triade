@@ -1,0 +1,203 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-26T00:00:00Z",
+  "trace_target": {
+    "type": "story",
+    "id": "6-1",
+    "label": "Story 6.1: Overlay de game over com stats imediatos"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/6-1-overlay-de-game-over-com-stats-imediatos.md (ACs 1-4)",
+      "_bmad-output/planning-artifacts/epics.md (Epic 6 / Story 6.1, lines 735-749)",
+      "_bmad-output/planning-artifacts/architectures/architecture-3-clone-2026-08-07/game-architecture.md (screen-state overlay, ADR-01/06, state-placement master 776-777)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/DESIGN.md (tokens scrim/hit-target/stat-row)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/EXPERIENCE.md (73/82-84 overlay, 199/212 stair)",
+      "_bmad-output/test-artifacts/atdd-checklist-6-1-overlay-de-game-over-com-stats-imediatos.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "6.1-AC1",
+      "title": "Overlay shows immediately when isGameOver(board)===true: score, best, maxTile, merges, longestStreak (FR-25, UX-DR-12, EXPERIENCE.md:73)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.1-U-001", "title": "[P0] AC1 initialStats seeds merges=0, longest=0, current=0 and maxTile from ceilingDetector(board)", "file": "triade/__tests__/game/matchStats.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "6.1-U-002", "title": "[P0] AC1 initialStats on empty-ish board uses ceiling 0 (defensive floor)", "file": "triade/__tests__/game/matchStats.test.ts", "line": 43, "level": "unit", "status": "active" },
+        { "id": "6.1-U-003", "title": "[P0] AC1 initialStats on game board (newGame-like 9-tile setup) maxTile matches ceiling", "file": "triade/__tests__/game/matchStats.test.ts", "line": 53, "level": "unit", "status": "active" },
+        { "id": "6.1-U-004", "title": "[P0] AC1 applyMoveStats increments merges by trace merge count (from.length===2, or classify==='merge')", "file": "triade/__tests__/game/matchStats.test.ts", "line": 67, "level": "unit", "status": "active" },
+        { "id": "6.1-U-005", "title": "[P0] AC1 applyMoveStats streak: consecutive merge moves increment currentStreak by 1, longestStreak tracks max", "file": "triade/__tests__/game/matchStats.test.ts", "line": 102, "level": "unit", "status": "active" },
+        { "id": "6.1-U-006", "title": "[P0] AC1 streak is per-move, not per-tile: [3,3,3,3]->[6,6] (two merges in one swipe) counts as ONE streak step", "file": "triade/__tests__/game/matchStats.test.ts", "line": 143, "level": "unit", "status": "active" },
+        { "id": "6.1-U-007", "title": "[P0] AC1 maxTile monotonic: never decreases and tracks ceilingDetector(postBoard)", "file": "triade/__tests__/game/matchStats.test.ts", "line": 174, "level": "unit", "status": "active" },
+        { "id": "6.1-C-001", "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 84, "level": "component", "status": "active" },
+        { "id": "6.1-C-002", "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 93, "level": "component", "status": "active" },
+        { "id": "6.1-C-003", "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 112, "level": "component", "status": "active" },
+        { "id": "6.1-C-004", "title": "[P0] AC1 CTA \"Jogar de novo\" calls onRestart once (thin-view, no confirmation dialog)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 127, "level": "component", "status": "active" },
+        { "id": "6.1-W-001", "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "level": "component", "status": "active" },
+        { "id": "6.1-W-003", "title": "[P0] AC1 doMove projects via applyMoveStats on post-move board (maxTile monotonic source)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 72, "level": "component", "status": "active" },
+        { "id": "6.1-W-004", "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "level": "component", "status": "active" },
+        { "id": "6.1-U-008", "title": "[P1] AC1/AC4 applyMoveStats determinism: same prev+board+result yields deepEqual, no mutation of prev", "file": "triade/__tests__/game/matchStats.test.ts", "line": 207, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.1-AC2",
+      "title": "Stats appear without any forced wait — no timer, no artificial delay gates the overlay; last move stays visible behind stats (FR-27, D-010, UX-DR-12)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.1-C-005", "title": "[P0] AC2 scrim uses rgba(12,14,17,0.7) via backgroundColor (not opacity) — children keep full opacity (DESIGN.md:193, mockup key-gameover.html:43)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 138, "level": "component", "status": "active" },
+        { "id": "6.1-C-006", "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto (one-level overlay, DESIGN.md:251-253)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 157, "level": "component", "status": "active" },
+        { "id": "6.1-C-007", "title": "[P0] AC2 overlay renders synchronously — no setTimeout, no Animated.timing before mount, no transform props (timing contract)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 166, "level": "component", "status": "active" },
+        { "id": "6.1-C-008", "title": "[P0] AC2 CTA hit target is HIT_TARGET (44) via width+height directly (thinview gate thinview.test.ts:39-40)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 186, "level": "component", "status": "active" },
+        { "id": "6.1-W-004", "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "level": "component", "status": "active" },
+        { "id": "6.1-C-011", "title": "[P1] reducedMotion prop gates future fade — defaults appropriately and overlay carries no transform when false (Epic 9 gate for 6.2)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 235, "level": "component", "status": "active" },
+        { "id": "6.1-C-009", "title": "[P1] AC1/AC2 stat row tokens: label muted #8a8578 13/500, value text #1a1d23 17/500 tabular-nums (DESIGN.md:153-279 token table)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 203, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.1-AC3",
+      "title": "Stats are lane-scoped where relevant (best = active lane's live match.best seeded from persistedBest via initialScore/isNewRecord; best never derived from global) (P3, FR14)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.1-U-010", "title": "[P1] AC3 lane-scoped best is NOT inside MatchStats — matchStats only owns merges/longestStreak/maxTile/currentStreak (separation pin)", "file": "triade/__tests__/game/matchStats.test.ts", "line": 264, "level": "unit", "status": "active" },
+        { "id": "6.1-W-001", "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats (isNewRecord gated on sessionStartBestRef.current)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "level": "component", "status": "active" },
+        { "id": "6.1-W-004", "title": "[P0] AC1/AC2 runtime: lane-scoped MatchScore + MatchStats thin-view posture (overlay receives resolved stats + isNewRecord)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "level": "component", "status": "active" }
+      ]
+    },
+    {
+      "id": "6.1-AC4",
+      "title": "Game over is a state, not an error — engine emits no throw; isGameOver is called on the post-move board, overlay renders from app-owned MatchScore + MatchStats (architecture error handling, move() never throws, ADR-02/06)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "6.1-U-008", "title": "[P1] AC1/AC4 applyMoveStats determinism: same prev+board+result yields deepEqual, no mutation of prev", "file": "triade/__tests__/game/matchStats.test.ts", "line": 207, "level": "unit", "status": "active" },
+        { "id": "6.1-U-009", "title": "[P1] AC4 applyMoveStats purity: no Math.random, no engine roll symbols, host-testable (no RN)", "file": "triade/__tests__/game/matchStats.test.ts", "line": 236, "level": "unit", "status": "active" },
+        { "id": "6.1-C-010", "title": "[P1] AC4 overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic (ui.norolls + ui.thinview + engine.purity)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 214, "level": "component", "status": "active" },
+        { "id": "6.1-C-012", "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 245, "level": "component", "status": "active" },
+        { "id": "6.1-W-001", "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) (committed snapshot, not moveResult.board)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "level": "component", "status": "active" },
+        { "id": "6.1-W-002", "title": "[P0] AC4/T3 handleRestart deadlock defense: App.tsx resets game + match + matchStats + busyRef", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 55, "level": "component", "status": "active" },
+        { "id": "6.1-W-003", "title": "[P0] AC1 doMove projects via applyMoveStats on post-move board (maxTile monotonic source)", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 72, "level": "component", "status": "active" },
+        { "id": "6.1-W-005", "title": "[P1] AC1 gameOver board edge: emptyBoard is NOT gameOver, full-but-mergeable board is NOT gameOver", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 147, "level": "component", "status": "active" },
+        { "id": "6.1-C-011", "title": "[P1] reducedMotion prop gates future fade — defaults appropriately and overlay carries no transform when false (Epic 9 gate for 6.2)", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 235, "level": "component", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 4,
+    "fully_covered": 4,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 2, "covered": 2, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 0, "covered": 0, "percentage": 100 },
+      "P3": { "total": 1, "covered": 1, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure app-domain story: no API endpoints, no auth surfaces. Negative paths covered via NOOP/rejected-move edge tests (W-005 emptyBoard / full-but-mergeable) and zero-merge streak reset. UI journey is state-overlay (isGameOver), not a route — E2E intentionally N/A (same posture as 7.1/7.2). Error handling pinned as 'game over is state, not error' via deterministic pure projection + thin-view guards (ui.norolls/ui.thinview/engine.purity still green)."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 3,
+      "cases": 27,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 17, "criteria_covered": 4 },
+        "unit": { "tests": 10, "criteria_covered": 3 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "6.1-U-001", "file": "triade/__tests__/game/matchStats.test.ts", "line": 27, "title": "[P0] AC1 initialStats seeds merges=0, longest=0, current=0 and maxTile from ceilingDetector(board)", "level": "unit", "status": "active" },
+      { "id": "6.1-U-002", "file": "triade/__tests__/game/matchStats.test.ts", "line": 43, "title": "[P0] AC1 initialStats on empty-ish board uses ceiling 0 (defensive floor)", "level": "unit", "status": "active" },
+      { "id": "6.1-U-003", "file": "triade/__tests__/game/matchStats.test.ts", "line": 53, "title": "[P0] AC1 initialStats on game board (newGame-like 9-tile setup) maxTile matches ceiling", "level": "unit", "status": "active" },
+      { "id": "6.1-U-004", "file": "triade/__tests__/game/matchStats.test.ts", "line": 67, "title": "[P0] AC1 applyMoveStats increments merges by trace merge count (from.length===2, or classify==='merge')", "level": "unit", "status": "active" },
+      { "id": "6.1-U-005", "file": "triade/__tests__/game/matchStats.test.ts", "line": 102, "title": "[P0] AC1 applyMoveStats streak: consecutive merge moves increment currentStreak by 1, longestStreak tracks max", "level": "unit", "status": "active" },
+      { "id": "6.1-U-006", "file": "triade/__tests__/game/matchStats.test.ts", "line": 143, "title": "[P0] AC1 streak is per-move, not per-tile: [3,3,3,3]->[6,6] (two merges in one swipe) counts as ONE streak step", "level": "unit", "status": "active" },
+      { "id": "6.1-U-007", "file": "triade/__tests__/game/matchStats.test.ts", "line": 174, "title": "[P0] AC1 maxTile monotonic: never decreases and tracks ceilingDetector(postBoard)", "level": "unit", "status": "active" },
+      { "id": "6.1-U-008", "file": "triade/__tests__/game/matchStats.test.ts", "line": 207, "title": "[P1] AC1/AC4 applyMoveStats determinism: same prev+board+result yields deepEqual, no mutation of prev", "level": "unit", "status": "active" },
+      { "id": "6.1-U-009", "file": "triade/__tests__/game/matchStats.test.ts", "line": 236, "title": "[P1] AC4 applyMoveStats purity: no Math.random, no engine roll symbols, host-testable (no RN)", "level": "unit", "status": "active" },
+      { "id": "6.1-U-010", "file": "triade/__tests__/game/matchStats.test.ts", "line": 264, "title": "[P1] AC3 lane-scoped best is NOT inside MatchStats — matchStats only owns merges/longestStreak/maxTile/currentStreak (separation pin)", "level": "unit", "status": "active" },
+      { "id": "6.1-C-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 84, "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)", "level": "component", "status": "active" },
+      { "id": "6.1-C-002", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 93, "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)", "level": "component", "status": "active" },
+      { "id": "6.1-C-003", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 112, "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D", "level": "component", "status": "active" },
+      { "id": "6.1-C-004", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 127, "title": "[P0] AC1 CTA \"Jogar de novo\" calls onRestart once (thin-view, no confirmation dialog)", "level": "component", "status": "active" },
+      { "id": "6.1-C-005", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 138, "title": "[P0] AC2 scrim uses rgba(12,14,17,0.7) via backgroundColor (not opacity) — children keep full opacity (DESIGN.md:193, mockup key-gameover.html:43)", "level": "component", "status": "active" },
+      { "id": "6.1-C-006", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 157, "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto (one-level overlay, DESIGN.md:251-253)", "level": "component", "status": "active" },
+      { "id": "6.1-C-007", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 166, "title": "[P0] AC2 overlay renders synchronously — no setTimeout, no Animated.timing before mount, no transform props (timing contract)", "level": "component", "status": "active" },
+      { "id": "6.1-C-008", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 186, "title": "[P0] AC2 CTA hit target is HIT_TARGET (44) via width+height directly (thinview gate thinview.test.ts:39-40)", "level": "component", "status": "active" },
+      { "id": "6.1-C-009", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 203, "title": "[P1] AC1/AC2 stat row tokens: label muted #8a8578 13/500, value text #1a1d23 17/500 tabular-nums (DESIGN.md:153-279 token table)", "level": "component", "status": "active" },
+      { "id": "6.1-C-010", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 214, "title": "[P1] AC4 overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic (ui.norolls + ui.thinview + engine.purity)", "level": "component", "status": "active" },
+      { "id": "6.1-C-011", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 235, "title": "[P1] reducedMotion prop gates future fade — defaults appropriately and overlay carries no transform when false (Epic 9 gate for 6.2)", "level": "component", "status": "active" },
+      { "id": "6.1-C-012", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 245, "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)", "level": "component", "status": "active" },
+      { "id": "6.1-W-001", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 31, "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats", "level": "component", "status": "active" },
+      { "id": "6.1-W-002", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 55, "title": "[P0] AC4/T3 handleRestart deadlock defense: App.tsx resets game + match + matchStats + busyRef", "level": "component", "status": "active" },
+      { "id": "6.1-W-003", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 72, "title": "[P0] AC1 doMove projects via applyMoveStats on post-move board (maxTile monotonic source)", "level": "component", "status": "active" },
+      { "id": "6.1-W-004", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 86, "title": "[P0] AC1/AC2 runtime: gameOver board is full with no mergeable pair — isGameOver true and overlay would mount with correct stats shape", "level": "component", "status": "active" },
+      { "id": "6.1-W-005", "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts", "line": 147, "title": "[P1] AC1 gameOver board edge: emptyBoard is NOT gameOver, full-but-mergeable board is NOT gameOver", "level": "component", "status": "active" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad-testarch-test-review on the three 6.1 suites for quality DoD validation (determinism, isolation, GWT). — DONE 2026-08-26: purity guards upgraded to stripCommentsAndStrings (helpers.ts) in matchStats.test.ts:236 + gameOverOverlay.test.ts:214/166, verified 27/27 green, no new gaps.",
+      "requirements": ["6.1-AC1", "6.1-AC2", "6.1-AC3", "6.1-AC4"],
+      "status": "closed",
+      "closed_at": "2026-08-26"
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Close deferred-work legacy entries unrelated to 6.1 (tsconfig.test.json TS5101 waived 2026-08-24, 3 stub-typing errors) — do not conflate with 6.1's clean tsc --noEmit gate.",
+      "requirements": [],
+      "status": "closed",
+      "closed_at": "2026-08-26",
+      "fix": "triade/test-utils/rn-stub.ts now exports useWindowDimensions/Platform/Dimensions/ViewStyle shims + triade/tsconfig.test.json ignoreDeprecations:6.0; verified npx tsc --noEmit -p tsconfig.test.json exit 0; deferred-work.md 2026-08-24 entry marked CLOSED"
+    },
+    {
+      "priority": "INFO",
+      "action": "App wiring (matchStats state + handleRestart busyRef + availablePot once-per-render + insets) now has direct structural + runtime pins (W-001..W-005) — the ATDD 'verified indirectly' deferral is CLOSED.",
+      "requirements": ["6.1-AC1", "6.1-AC3", "6.1-AC4"],
+      "status": "closed",
+      "closed_at": "2026-08-26"
+    }
+  ]
+}
