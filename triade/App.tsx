@@ -51,6 +51,7 @@ import {
   confirmUndoIap as orchestratorConfirmUndoIap,
   cancelUndo as orchestratorCancelUndo,
   requestHint as orchestratorRequestHint,
+  purchaseHintPack as orchestratorPurchaseHintPack,
   consumeContinueAd as orchestratorConsumeContinueAd,
   consumeContinueIap as orchestratorConsumeContinueIap,
   canUndoForState as orchestratorCanUndoForState,
@@ -61,6 +62,7 @@ import type { OrchestratorState } from './src/game/matchOrchestrator.ts';
 import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAids.tsx';
 import { createRewardedAdGateway } from './src/services/monetization/rewardedAds.ts';
 import { rewardedContinueUnitId } from './src/services/monetization/adsConfig.ts';
+import { createPurchasesGateway } from './src/services/monetization/purchases.ts';
 
 export default function App() {
   return (
@@ -85,6 +87,7 @@ function AppContent() {
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
   const adBusyRef = useRef(false);
+  const purchaseBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const hydrationOkByLaneRef = useRef<Record<LaneId, boolean>>({ clean: true, accelerated: true });
   const [ready, setReady] = useState(false);
@@ -360,6 +363,28 @@ function AppContent() {
     setHintHighlight(res.state.hintHighlight);
   }, [hintBudget, game.board, activeProfile, undoHistory, undoBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
+  const handleHintPurchase = useCallback(async () => {
+    if (purchaseBusyRef.current || adBusyRef.current) return;
+    if (!activeProfile.canHint) return;
+    purchaseBusyRef.current = true;
+    try {
+      const maybeMock = (globalThis as unknown as { __triadePurchasesMock?: { purchaseHintPack: () => Promise<{ granted: boolean }> } })
+        .__triadePurchasesMock;
+      const gateway = maybeMock ?? createPurchasesGateway();
+      const res = await gateway.purchaseHintPack();
+      if (!res.granted) return;
+      // Use functional update to avoid stale closure after await
+      setHintBudget((prev) => {
+        if (!activeProfile.canHint) return prev;
+        const next = prev.remaining + 5;
+        if (!Number.isSafeInteger(next) || next > 999) return { remaining: 999 };
+        return { remaining: next };
+      });
+    } finally {
+      purchaseBusyRef.current = false;
+    }
+  }, [activeProfile]);
+
   const handleContinueAd = useCallback(async () => {
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
@@ -541,6 +566,10 @@ function AppContent() {
         {/* 3.3 Reward prompt for undo (between-turn, never during animation or gameOver) */}
         {activeLaneId === 'accelerated' && showUndoPrompt && !gameOver ? (
           <RewardPrompt title="Desfazer último movimento?" onAd={handleUndoAd} onIap={handleUndoIap} onCancel={handleUndoCancel} />
+        ) : null}
+        {/* 4.3 Hint 5-pack purchase prompt — only Accelerated when hints exhausted (no canHint) AND board has pair, Clean never mounts */}
+        {activeLaneId === 'accelerated' && !canHintDerived && hintBudget.remaining === 0 && hintHighlight === null && !gameOver && findMergeablePair(game.board) !== null ? (
+          <RewardPrompt title="Sem dicas — comprar 5?" onAd={() => {}} onIap={handleHintPurchase} onCancel={() => {}} />
         ) : null}
         <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel="Pistas">
           <Text style={styles.menuLabel}>Pistas</Text>

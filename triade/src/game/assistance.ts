@@ -24,6 +24,8 @@ export function initialUndoBudget(): UndoBudget {
   return { freeUsed: false, iapRemaining: 0, unlimited: false };
 }
 
+export const HINT_PACK_SIZE = 5 as const;
+
 export function initialHintBudget(initial = 5): HintBudget {
   return { remaining: initial };
 }

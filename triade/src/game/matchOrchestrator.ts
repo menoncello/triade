@@ -13,6 +13,7 @@ import {
   initialUndoBudget,
   initialHintBudget,
   initialContinueBudget,
+  HINT_PACK_SIZE,
 } from './assistance.ts';
 import type { UndoBudget, HintBudget, ContinueBudget } from './assistance.ts';
 
@@ -188,6 +189,15 @@ export function consumeContinueIap(
     };
   }
   return { ok: true, state: { ...state, continueBudget: res.budget, hintHighlight: null, showUndoPrompt: false } };
+}
+
+export const HINT_PURCHASE_INCREMENT = HINT_PACK_SIZE;
+
+export function purchaseHintPack(state: OrchestratorState, profile: LaneProfile): OrchestratorState {
+  if (!profile.canHint) return state;
+  const next = state.hintBudget.remaining + HINT_PURCHASE_INCREMENT;
+  if (!Number.isSafeInteger(next) || next > 999) return { ...state, hintBudget: { remaining: 999 } };
+  return { ...state, hintBudget: { remaining: next } };
 }
 
 export function resetForNewMatch(state: OrchestratorState): OrchestratorState {

@@ -1,0 +1,12 @@
+{
+  "actions": [
+    "Create App Store Connect In-App Purchase product triade_hint_5_pack (Type: Consumable, Price: US$0.99 / R$4.90, Reference Name: Hint 5-pack) and associate it with the Tr\u00edade app bundle",
+    "Configure RevenueCat dashboard: create Product triade_hint_5_pack, link to App Store product, create Entitlement triade_hint_5, and add product to current Offering/Package",
+    "Set RevenueCat API keys in Expo env: EXPO_PUBLIC_REVENUECAT_IOS_API_KEY and EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY (or EXPO_PUBLIC_PURCHASES_HINT_5 if overriding product ID) and redeploy build",
+    "Validate purchase on a physical iOS device via sandbox/TestFlight: buy Hint 5-pack in Accelerated lane, verify hintBudget increments by 5 and entitlement persists via restore"
+  ],
+  "parked_at": "2026-08-28",
+  "run_id": "20260828-170559-0bdf",
+  "spec_file": "_bmad-output/implementation-artifacts/spec-4-3-iap-hint-5-pack.md",
+  "story_key": "4-3-iap-hint-5-pack"
+}
