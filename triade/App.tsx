@@ -45,6 +45,19 @@ import {
   findMergeablePair,
 } from './src/game/assistance.ts';
 import type { UndoBudget, HintBudget, ContinueBudget } from './src/game/assistance.ts';
+import {
+  requestUndo as orchestratorRequestUndo,
+  confirmUndoAd as orchestratorConfirmUndoAd,
+  confirmUndoIap as orchestratorConfirmUndoIap,
+  cancelUndo as orchestratorCancelUndo,
+  requestHint as orchestratorRequestHint,
+  consumeContinueAd as orchestratorConsumeContinueAd,
+  consumeContinueIap as orchestratorConsumeContinueIap,
+  canUndoForState as orchestratorCanUndoForState,
+  canHintForState as orchestratorCanHintForState,
+  canContinueForState as orchestratorCanContinueForState,
+} from './src/game/matchOrchestrator.ts';
+import type { OrchestratorState } from './src/game/matchOrchestrator.ts';
 import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAids.tsx';
 
 export default function App() {
@@ -232,112 +245,153 @@ function AppContent() {
   const activeProfile = profileForLaneId(activeLaneIdForHandlers);
 
   const handleUndoRequest = useCallback(() => {
-    if (!activeProfile.canUndo) return;
-    if (showUndoPrompt) return;
-    if (!canUndo(undoBudget, undoHistory.length, activeProfile)) return;
-    // Reward prompt at moment of need (between-turn, not mid-animation)
-    if (busyRef.current) return;
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorRequestUndo(tmp, activeProfile, busyRef.current);
+    if (!res.ok) return;
     setShowUndoPrompt(true);
-  }, [activeProfile, undoBudget, undoHistory.length, showUndoPrompt]);
+  }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleUndoAd = useCallback(() => {
-    const res = consumeUndo(undoBudget, undoHistory.length, activeProfile);
-    if (!res.ok) {
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorConfirmUndoAd(tmp, activeProfile);
+    if (!res.ok || !res.snapshot) {
       setShowUndoPrompt(false);
       return;
     }
-    const snap = undoHistory[undoHistory.length - 1];
-    if (!snap) {
-      setShowUndoPrompt(false);
-      return;
-    }
-    setUndoHistory((prev) => prev.slice(0, -1));
-    setUndoBudget(res.budget);
+    const snap = res.snapshot;
+    setUndoHistory(res.state.undoHistory);
+    setUndoBudget(res.state.undoBudget);
+    setHintHighlight(res.state.hintHighlight);
+    setShowUndoPrompt(res.state.showUndoPrompt);
     setGame(snap.game);
     setMatch(snap.match);
     setMatchStats(snap.matchStats);
     setMoveResult(null);
-    setHintHighlight(null);
     busyRef.current = false;
-    setShowUndoPrompt(false);
-  }, [undoBudget, undoHistory, activeProfile]);
+  }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleUndoIap = useCallback(() => {
-    // Stub IAP path: same consume logic (Epic 4 will wire entitlements to iapRemaining/unlimited)
-    // For 3.3 demo, treat IAP as granting 1 use if remaining else unlimited mock
-    // If budget already has iapRemaining>0 or unlimited, consumeVia same path
-    // Otherwise simulate IAP purchase of 1 by injecting remaining=1 then consuming
-    let budgetForCheck = undoBudget;
-    if (undoBudget.freeUsed && !undoBudget.unlimited && undoBudget.iapRemaining === 0) {
-      // Simulate buying 1 undo pack for the prompt demo
-      budgetForCheck = { ...undoBudget, iapRemaining: 1 };
-    }
-    const res = consumeUndo(budgetForCheck, undoHistory.length, activeProfile);
-    if (!res.ok) {
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorConfirmUndoIap(tmp, activeProfile);
+    if (!res.ok || !res.snapshot) {
       setShowUndoPrompt(false);
       return;
     }
-    const snap = undoHistory[undoHistory.length - 1];
-    if (!snap) {
-      setShowUndoPrompt(false);
-      return;
-    }
-    setUndoHistory((prev) => prev.slice(0, -1));
-    setUndoBudget(res.budget);
+    const snap = res.snapshot;
+    setUndoHistory(res.state.undoHistory);
+    setUndoBudget(res.state.undoBudget);
+    setHintHighlight(res.state.hintHighlight);
+    setShowUndoPrompt(res.state.showUndoPrompt);
     setGame(snap.game);
     setMatch(snap.match);
     setMatchStats(snap.matchStats);
     setMoveResult(null);
-    setHintHighlight(null);
     busyRef.current = false;
-    setShowUndoPrompt(false);
-  }, [undoBudget, undoHistory, activeProfile]);
+  }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
-  const handleUndoCancel = useCallback(() => setShowUndoPrompt(false), []);
+  const handleUndoCancel = useCallback(() => {
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const next = orchestratorCancelUndo(tmp);
+    setShowUndoPrompt(next.showUndoPrompt);
+  }, [undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleHint = useCallback(() => {
-    if (busyRef.current) return;
-    if (!canHint(hintBudget, game.board, activeProfile)) return;
-    const pair = findMergeablePair(game.board);
-    if (!pair) return;
-    const res = consumeHint(hintBudget, game.board, activeProfile);
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorRequestHint(tmp, game.board, activeProfile, busyRef.current);
     if (!res.ok) return;
-    setHintBudget(res.budget);
-    setHintHighlight(pair);
-  }, [hintBudget, game.board, activeProfile]);
+    setHintBudget(res.state.hintBudget);
+    setHintHighlight(res.state.hintHighlight);
+  }, [hintBudget, game.board, activeProfile, undoHistory, undoBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(() => {
-    const res = consumeContinue(continueBudget, activeProfile);
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorConsumeContinueAd(tmp, activeProfile);
     if (!res.ok) return;
-    const snap = undoHistory[undoHistory.length - 1];
-    if (snap) {
-      setUndoHistory((prev) => prev.slice(0, -1));
-      setGame(snap.game);
-      setMatch(snap.match);
-      setMatchStats(snap.matchStats);
+    if (res.snapshot) {
+      setUndoHistory(res.state.undoHistory);
+      setGame(res.snapshot.game);
+      setMatch(res.snapshot.match);
+      setMatchStats(res.snapshot.matchStats);
       setMoveResult(null);
     }
-    setContinueBudget(res.budget);
-    setHintHighlight(null);
+    setContinueBudget(res.state.continueBudget);
+    setHintHighlight(res.state.hintHighlight);
+    setShowUndoPrompt(res.state.showUndoPrompt);
     busyRef.current = false;
-  }, [continueBudget, undoHistory, activeProfile]);
+  }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueIap = useCallback(() => {
-    // Stub IAP for continue: same as ad path in 3.3 (Epic 4 owns entitlements)
-    const res = consumeContinue(continueBudget, activeProfile);
+    const tmp: OrchestratorState = {
+      undoHistory,
+      undoBudget,
+      hintBudget,
+      continueBudget,
+      hintHighlight,
+      bannerDismissed,
+      showUndoPrompt,
+    };
+    const res = orchestratorConsumeContinueIap(tmp, activeProfile);
     if (!res.ok) return;
-    const snap = undoHistory[undoHistory.length - 1];
-    if (snap) {
-      setUndoHistory((prev) => prev.slice(0, -1));
-      setGame(snap.game);
-      setMatch(snap.match);
-      setMatchStats(snap.matchStats);
+    if (res.snapshot) {
+      setUndoHistory(res.state.undoHistory);
+      setGame(res.snapshot.game);
+      setMatch(res.snapshot.match);
+      setMatchStats(res.snapshot.matchStats);
       setMoveResult(null);
     }
-    setContinueBudget(res.budget);
-    setHintHighlight(null);
+    setContinueBudget(res.state.continueBudget);
+    setHintHighlight(res.state.hintHighlight);
+    setShowUndoPrompt(res.state.showUndoPrompt);
     busyRef.current = false;
-  }, [continueBudget, undoHistory, activeProfile]);
+  }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   // Stable gesture (created once) reads the latest doMove through a ref so a
   // move dispatched during an in-flight animation never uses a stale board
@@ -404,9 +458,18 @@ function AppContent() {
   const emptyCount = game.board.flat().filter((v) => v === null).length;
   const showCeilingBanner = profile.showLearningAids && !gameOver && !bannerDismissed.ceiling && ceiling >= 48;
   const showStuckBanner = profile.showLearningAids && !gameOver && !bannerDismissed.stuck && emptyCount <= 2;
-  const canUndoDerived = profile.canUndo && canUndo(undoBudget, undoHistory.length, profile);
-  const canHintDerived = profile.canHint && canHint(hintBudget, game.board, profile);
-  const canContinueDerived = profile.canContinue && canContinue(continueBudget, profile);
+  const tmpForGates: OrchestratorState = {
+    undoHistory,
+    undoBudget,
+    hintBudget,
+    continueBudget,
+    hintHighlight,
+    bannerDismissed,
+    showUndoPrompt,
+  };
+  const canUndoDerived = orchestratorCanUndoForState(tmpForGates, profile);
+  const canHintDerived = orchestratorCanHintForState(tmpForGates, game.board, profile);
+  const canContinueDerived = orchestratorCanContinueForState(tmpForGates, profile);
 
   return (
     <View style={styles.container}>
