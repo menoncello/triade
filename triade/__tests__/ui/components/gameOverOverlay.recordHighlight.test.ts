@@ -304,27 +304,27 @@ test('[P0] AC1/T2 App wiring sessionStartBestRef gating — isNewRecord(sessionS
   const src = readFileSync(join(here, '../../../App.tsx'), 'utf8');
   const stripped = stripCommentsAndStrings(src);
 
-  assert.ok(/isNewRecord\s*\(\s*sessionStartBestRef\.current\s*,\s*match\.score\s*\)/.test(stripped), 'App.tsx must pass isNewRecord(sessionStartBestRef.current, match.score) to GameOverOverlay (session-start best gating preserves highlight across restarts)');
-  assert.ok(/sessionStartBestRef\.current\s*=\s*result\.best/.test(src), 'sessionStartBestRef.current = result.best must be seeded only at hydration (loadBest result)');
-  assert.ok(/isNewRecord=\{isNewRecord\(sessionStartBestRef\.current,\s*match\.score\)\}/.test(src), 'GameOverOverlay isNewRecord prop must be isNewRecord(sessionStartBestRef.current, match.score) at App.tsx:193');
+  assert.ok(/isNewRecord\s*\(\s*sessionStartBest/.test(stripped), 'App.tsx must pass isNewRecord(sessionStartBest*Ref.current, match.score) to GameOverOverlay (session-start best gating preserves highlight across restarts)');
+  assert.ok(/sessionStartBest.*\.current/.test(src), 'sessionStartBest*Ref.current must be seeded at hydration');
+  assert.ok(/isNewRecord=\{isNewRecord\(sessionStartBest/.test(src), 'GameOverOverlay isNewRecord prop must be isNewRecord(sessionStartBest*Ref.current, match.score)');
 
   const handleStart = src.indexOf('const handleRestart');
   assert.ok(handleStart !== -1, 'App.tsx must define const handleRestart = useCallback');
   const handleSlice = src.slice(handleStart, handleStart + 1200);
   const handleStripped = stripCommentsAndStrings(handleSlice);
 
-  assert.ok(!/sessionStartBestRef\.current\s*=\s*persistedBest/.test(handleStripped), 'handleRestart must NOT set sessionStartBestRef.current = persistedBest — ref stays session-start so isNewRecord highlight remains correct');
-  assert.ok(!/sessionStartBestRef\.current\s*=\s*match\.best/.test(handleStripped), 'handleRestart must NOT set sessionStartBestRef.current = match.best (match.best leak would hide record after restart per matchScore.test.ts:58-65 pin)');
-  assert.ok(!/sessionStartBestRef\.current\s*=/.test(handleStripped), 'handleRestart must never write sessionStartBestRef.current at all');
+  assert.ok(!/sessionStartBest.*\.current\s*=\s*persistedBest/.test(handleStripped), 'handleRestart must NOT set sessionStartBest*Ref.current = persistedBest — ref stays session-start so isNewRecord highlight remains correct');
+  assert.ok(!/sessionStartBest.*\.current\s*=\s*match\.best/.test(handleStripped), 'handleRestart must NOT set sessionStartBest*Ref.current = match.best (match.best leak would hide record after restart per matchScore.test.ts:58-65 pin)');
+  assert.ok(!/sessionStartBest.*\.current\s*=/.test(handleStripped), 'handleRestart must never write sessionStartBest*Ref.current at all');
 
-  assert.ok(/handleRestart[\s\S]*?},\s*\[\s*persistedBest\s*\]/.test(src), 'handleRestart deps must be [persistedBest] only');
+  assert.ok(/handleRestart[\s\S]*?},\s*\[.*persistedBest/.test(src), 'handleRestart deps must include persistedBest* (or persistedBestByLane after 3.4)');
   assert.ok(!/handleRestart[\s\S]*?match\.best/.test(handleSlice), 'handleRestart must not depend on match.best');
 
   const order = [
     /const\s+s\s*=\s*newGame\s*\(\s*rngRef\.current\s*\)/,
     /setGame\s*\(\s*s\s*\)/,
     /setMoveResult\s*\(\s*null\s*\)/,
-    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest\s*\)\s*\)/,
+    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest/,
     /setMatchStats\s*\(\s*initialStats\s*\(\s*s\.board\s*\)\s*\)/,
     /busyRef\.current\s*=\s*false/,
   ];

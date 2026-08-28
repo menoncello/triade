@@ -154,7 +154,7 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
     /const\s+s\s*=\s*newGame\s*\(\s*rngRef\.current\s*\)/,
     /setGame\s*\(\s*s\s*\)/,
     /setMoveResult\s*\(\s*null\s*\)/,
-    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest\s*\)\s*\)/,
+    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest/,
     /setMatchStats\s*\(\s*initialStats\s*\(\s*s\.board\s*\)\s*\)/,
     /busyRef\.current\s*=\s*false/,
   ];
@@ -174,8 +174,8 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
   assert.ok(!/setInterval/.test(handleSlice), 'handleRestart must not contain setInterval');
   assert.ok(!stripped.includes('navigation') || !/navigation/.test(handleSlice), 'handleRestart must not navigate');
 
-  // Dependency must be [persistedBest] only — never match.best or sessionStartBestRef.current
-  assert.ok(/handleRestart[\s\S]*?},\s*\[\s*persistedBest\s*\]/.test(src), 'handleRestart deps must be [persistedBest] only');
+  // Dependency must include persistedBest* (per-lane after 3.4 is persistedBestByLane) — never match.best or sessionStartBestRef
+  assert.ok(/handleRestart[\s\S]*?},\s*\[.*persistedBest/.test(src), 'handleRestart deps must include persistedBest* (or persistedBestByLane after 3.4)');
   assert.ok(!/handleRestart[\s\S]*?match\.best/.test(handleSlice), 'handleRestart must not depend on match.best (would leak session-only best after hydration failure)');
   // Do NOT add sessionStartBestRef.current = persistedBest inside handleRestart
   assert.ok(!/sessionStartBestRef\.current\s*=\s*persistedBest/.test(handleSlice), 'handleRestart must NOT set sessionStartBestRef.current = persistedBest — ref stays session-start so isNewRecord highlight remains correct');
@@ -269,9 +269,10 @@ test('[P0] AC4 9-tile same lane', async () => {
   const avail = potForTier(tierForCeiling(ceilingDetector(a.board)));
   assert.ok(Array.isArray(avail), 'availablePot must be an array derived from potForTier(tierForCeiling(ceilingDetector(board)))');
 
-  // After Epic 3 lane preservation would be explicit LaneProfile.id — this test documents that today restart is implicit same-lane
-  // Verify App.tsx handleRestart has no lane-switch import/assignment
-  assert.ok(!/LaneProfile|laneId|setLane/.test(appSrc) || !appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 500).includes('lane'), 'handleRestart must not flip lane — implicit same-lane (FR-26)');
+  // After Epic 3 lane preservation is explicit per-lane best (3.4): handleRestart reads persistedBestByLane[activeLaneId] but never flips lane
+  const handleSlice2 = appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 800);
+  assert.ok(handleSlice2.includes('persistedBest'), 'handleRestart must still use persistedBest* (now per-lane)');
+  assert.ok(!/setSelectedLaneIndex|setLane\(/.test(handleSlice2), 'handleRestart must not flip lane — implicit same-lane (FR-26)');
 });
 
 test('[P0] AC6/AC7 forfeited continue dies — never carried, never re-offered', async () => {

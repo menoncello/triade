@@ -16,7 +16,14 @@ import { previewFor } from './src/game/preview.ts';
 import { GameOverOverlay } from './src/ui/GameOverOverlay.tsx';
 import { LaneSelectScreen } from './src/ui/LaneSelectScreen.tsx';
 import { HIT_TARGET } from './src/ui/PauseButton';
-import { loadBest, saveBest, loadSettingsFromStorage, saveSettings } from './src/services/storage/settingsStore.ts';
+import {
+  loadAllBests,
+  saveBestForLane,
+  migrateLegacyBest,
+  loadSettingsFromStorage,
+  saveSettings,
+} from './src/services/storage/settingsStore.ts';
+import type { LaneId } from './src/services/storage/settingsStore.ts';
 import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
@@ -62,10 +69,10 @@ function AppContent() {
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
-  const sessionStartBestRef = useRef(0);
-  const hydrationOkRef = useRef(true);
+  const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
+  const hydrationOkByLaneRef = useRef<Record<LaneId, boolean>>({ clean: true, accelerated: true });
   const [ready, setReady] = useState(false);
-  const [persistedBest, setPersistedBest] = useState(0);
+  const [persistedBestByLane, setPersistedBestByLane] = useState<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const [settings, setSettings] = useState<Settings>({ ...DEFAULT_SETTINGS });
   const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(DEFAULT_SETTINGS.laneDefault);
   const [screen, setScreen] = useState<Screen>('laneSelect');
@@ -88,12 +95,17 @@ function AppContent() {
     void preloadAssets();
     let cancelled = false;
     (async () => {
-      const [result, loadedSettings] = await Promise.all([loadBest(), loadSettingsFromStorage()]);
+      const loadedSettings = await loadSettingsFromStorage();
       if (cancelled) return;
-      hydrationOkRef.current = result.ok;
-      sessionStartBestRef.current = result.best;
-      setPersistedBest(result.best);
-      setMatch(initialScore(result.best));
+      // Migrate legacy single-key best to per-lane storage (once, non-destructive).
+      await migrateLegacyBest(loadedSettings.laneDefault);
+      const byLane = await loadAllBests();
+      if (cancelled) return;
+      hydrationOkByLaneRef.current = { clean: byLane.clean.ok, accelerated: byLane.accelerated.ok };
+      sessionStartBestByLaneRef.current = { clean: byLane.clean.best, accelerated: byLane.accelerated.best };
+      setPersistedBestByLane({ clean: byLane.clean.best, accelerated: byLane.accelerated.best });
+      const activeLane: LaneId = loadedSettings.laneDefault === 1 ? 'accelerated' : 'clean';
+      setMatch(initialScore(byLane[activeLane].best));
       setSettings(loadedSettings);
       setSelectedLaneIndex(loadedSettings.laneDefault);
       setReady(true);
@@ -103,19 +115,20 @@ function AppContent() {
     };
   }, []);
 
-  // Persist only when the live session best actually passes the persisted value —
-  // gated on the session-start best (isNewRecord contract), never `current.best`.
-  // Runs in an effect (committed state), not inside the setMatch updater (purity).
-  // When hydration degraded (ok=false) persistence is blocked for the session so
-  // a new score can never overwrite a record the app failed to read.
+  // Persist per-lane: only the active lane's best is ever written, gated on that
+  // lane's session-start best (isNewRecord) and hydrationOk for that lane.
   useEffect(() => {
-    if (!hydrationOkRef.current) return;
-    if (isNewRecord(sessionStartBestRef.current, match.best) && match.best > persistedBest) {
-      void saveBest(match.best).then((ok) => {
-        if (ok) setPersistedBest(match.best);
+    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+    if (!hydrationOkByLaneRef.current[activeLaneId]) return;
+    if (
+      isNewRecord(sessionStartBestByLaneRef.current[activeLaneId], match.best) &&
+      match.best > persistedBestByLane[activeLaneId]
+    ) {
+      void saveBestForLane(activeLaneId, match.best).then((ok) => {
+        if (ok) setPersistedBestByLane((prev) => ({ ...prev, [activeLaneId]: match.best }));
       });
     }
-  }, [match.best, persistedBest]);
+  }, [match.best, persistedBestByLane, selectedLaneIndex]);
 
   const hasActiveMatch = match.score > 0 || matchStats.merges > 0;
 
@@ -133,22 +146,26 @@ function AppContent() {
     (index: number) => {
       const needsReset = hasActiveMatch;
       if (index === selectedLaneIndex && !needsReset) return;
-      // Changing lane always starts a new game (FR-11, D-008)
+      const nextLaneId: LaneId = laneFromIndex(index).id as LaneId;
+      // Changing lane always starts a new game (FR-11, D-008) — best is lane-scoped
       if (needsReset) {
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
-        setMatch(initialScore(persistedBest));
+        setMatch(initialScore(persistedBestByLane[nextLaneId]));
         setMatchStats(initialStats(s.board));
         busyRef.current = false;
         resetAssistance();
+      } else {
+        // No active match: sync HUD best to the newly selected lane's persisted best
+        setMatch(initialScore(persistedBestByLane[nextLaneId]));
       }
       setSelectedLaneIndex(index);
       const nextSettings: Settings = { ...settings, laneDefault: index };
       setSettings(nextSettings);
       void saveSettings(nextSettings);
     },
-    [hasActiveMatch, selectedLaneIndex, settings, persistedBest, resetAssistance],
+    [hasActiveMatch, selectedLaneIndex, settings, persistedBestByLane, resetAssistance],
   );
 
   const handleJogar = useCallback(() => {
@@ -194,10 +211,11 @@ function AppContent() {
 
   const handleRestart = useCallback(() => {
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
+    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
     setGame(s);
     setMoveResult(null);
-    setMatch(initialScore(persistedBest));
+    setMatch(initialScore(persistedBestByLane[activeLaneId]));
     setMatchStats(initialStats(s.board));
     busyRef.current = false;
     setUndoHistory([]);
@@ -207,7 +225,7 @@ function AppContent() {
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
-  }, [persistedBest]);
+  }, [persistedBestByLane, selectedLaneIndex]);
 
   // 3.3 Accelerated assistance handlers — gated by LaneProfile
   const activeLaneIdForHandlers = laneFromIndex(selectedLaneIndex).id;
@@ -431,7 +449,7 @@ function AppContent() {
             : 'recording frame rate baseline…'}
         </Text>
         <Text style={styles.stats}>
-          score: {match.score} · live best: {match.best} · persisted best: {persistedBest}
+          score: {match.score} · live best: {match.best} · persisted best: {persistedBestByLane[activeLaneId as LaneId]}
         </Text>
       </View>
       {gameOver ? (
@@ -443,7 +461,7 @@ function AppContent() {
             merges: matchStats.merges,
             longestStreak: matchStats.longestStreak,
           }}
-          isNewRecord={isNewRecord(sessionStartBestRef.current, match.score)}
+          isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score)}
           onRestart={handleRestart}
           reducedMotion={false}
           insets={insets}
