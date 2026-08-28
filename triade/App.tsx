@@ -24,6 +24,7 @@ import { mulberry32 } from './src/utils/mulberry32.ts';
 import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
 import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
 import { Hud } from './src/ui/Hud';
+import { laneFromIndex } from './src/game/lanes.ts';
 
 export default function App() {
   return (
@@ -217,6 +218,7 @@ function AppContent() {
   const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   const gameOver = isGameOver(game.board);
+  const activeLaneId = laneFromIndex(selectedLaneIndex).id;
 
   return (
     <View style={styles.container}>
@@ -226,6 +228,7 @@ function AppContent() {
         isLandscape={isLandscape}
         insets={insets}
         bandHeight={bandHeight}
+        activeLaneId={activeLaneId}
         previews={{
           clean: previewFor(game.pendingSpawn, availablePot),
           accelerated: previewFor(game.pendingSpawn, availablePot),
@@ -262,6 +265,7 @@ function AppContent() {
           onRestart={handleRestart}
           reducedMotion={false}
           insets={insets}
+          activeLaneId={activeLaneId}
         />
       ) : null}
       <StatusBar style="auto" />

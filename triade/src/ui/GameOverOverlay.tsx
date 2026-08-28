@@ -3,6 +3,8 @@ import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-nativ
 import { HIT_TARGET } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 
+type LaneId = 'clean' | 'accelerated';
+
 export interface GameOverOverlayProps {
   stats: { score: number; best: number; maxTile: number; merges: number; longestStreak: number };
   isNewRecord: boolean;
@@ -11,6 +13,8 @@ export interface GameOverOverlayProps {
   // T2 fix: insets is required (like Hud.tsx:15 `insets: EdgeInsets`) — App.tsx sempre passa `insets={insets}`.
   // Mantido fallback defensivo `insets?.top ?? 0` para chamadas `as any` / testes bare sem insets (gameOverOverlay.test.ts:252).
   insets: { top: number; bottom: number; left: number; right: number };
+  // 3.2 Clean lane: no continue/ad/hint — activeLaneId gates any future continue slot.
+  activeLaneId?: LaneId;
 }
 
 export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, insets }: GameOverOverlayProps) {
@@ -18,6 +22,8 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, 
   const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
   const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
   const padRight = (insets?.right ?? 0) + SAFE_MARGIN;
+  // 3.2 Clean lane: no continue/ad/hint — see LaneProfile. Invalid → clean fallback.
+  // activeLaneId is reserved for the future Accelerated continue slot (profile.canContinue); Clean stays single CTA.
 
   const a11yLabel =
     `Game over. Score ${stats.score}, best ${stats.best}, max tile ${stats.maxTile}, merges ${stats.merges}, longest streak ${stats.longestStreak}` +
@@ -92,6 +98,7 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, 
             </View>
           </View>
           {/* AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here */}
+          {/* 3.2 Clean lane: no continue/ad/hint — see LaneProfile */}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Jogar de novo"

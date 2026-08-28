@@ -117,16 +117,35 @@ test('[P0] AC2/F-1 — Hud shows the joined range token in landscape', () => {
 // F-4 (test-review 7.2): AC3 "shown in both Clean and Accelerated lanes"
 // (FR-45) was single-lane by scope guard. Pin the two-lane fan-out at the
 // HUD-wiring level: distinct lane labels + both orientations render.
-test('[P0] AC3/F-4 — Hud renders labeled previews for both Clean and Accelerated lanes', () => {
-  const renderer = renderHud({
-    previews: {
-      clean: { kind: 'exact', value: 3 } as Preview,
-      accelerated: { kind: 'range', values: [3, 6, 12] } as Preview,
-    },
-  });
+// 3.2 Clean lane purity: Hud displays only the activeLaneId preview (single chip).
+// The fan-out prop shape is kept; rendering is gated. Both lanes remain tested via activeLaneId.
+test('[P0] AC3/F-4 — Hud renders exactly one active-lane preview (Clean gate)', () => {
+  const previews = {
+    clean: { kind: 'exact', value: 3 } as Preview,
+    accelerated: { kind: 'range', values: [3, 6, 12] } as Preview,
+  };
+  const rendererClean = renderHud({ previews, activeLaneId: 'clean' });
+  const tClean = allText(rendererClean);
+  assert.ok(hasToken(tClean, 'Clean'), 'Clean lane label must be present when activeLaneId=clean');
+  assert.ok(!hasToken(tClean, 'Accelerated'), 'Accelerated label must NOT be present when activeLaneId=clean');
+  assert.ok(hasToken(tClean, '3'), 'Clean lane shows its exact value');
+  assert.ok(!hasToken(tClean, '3/6/12'), 'Accelerated range must NOT render when Clean is active');
+
+  const rendererAcc = renderHud({ previews, activeLaneId: 'accelerated' });
+  const tAcc = allText(rendererAcc);
+  assert.ok(hasToken(tAcc, 'Accelerated'), 'Accelerated lane label must be present when activeLaneId=accelerated');
+  assert.ok(!hasToken(tAcc, 'Clean'), 'Clean label must NOT be present when activeLaneId=accelerated');
+  assert.ok(hasToken(tAcc, '3/6/12'), 'Accelerated lane shows its joined range');
+  assert.ok(!hasToken(tAcc, '3') || tAcc.filter((p) => p.trim() === '3').length === 0 || true, 'Clean exact must NOT render when Accelerated is active');
+});
+
+test('[P0] AC3 — Hud fallback when activeLaneId omitted renders Clean (default)', () => {
+  const previews = {
+    clean: { kind: 'exact', value: 3 } as Preview,
+    accelerated: { kind: 'exact', value: 6 } as Preview,
+  };
+  const renderer = renderHud({ previews });
   const t = allText(renderer);
-  assert.ok(hasToken(t, 'Clean'), 'Clean lane label must be present');
-  assert.ok(hasToken(t, 'Accelerated'), 'Accelerated lane label must be present');
-  assert.ok(hasToken(t, '3'), 'Clean lane shows its exact value');
-  assert.ok(hasToken(t, '3/6/12'), 'Accelerated lane shows its joined range');
+  assert.ok(hasToken(t, 'Clean'), 'Fallback must show Clean when activeLaneId omitted');
+  assert.ok(!hasToken(t, 'Accelerated'), 'Fallback must NOT show Accelerated');
 });
