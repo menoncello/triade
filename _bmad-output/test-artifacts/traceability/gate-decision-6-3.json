@@ -1,11 +1,11 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-08-28T14:31:43.089425Z",
+  "evaluated_at": "2026-08-27T17:05:12.979504Z",
   "repo": "3-clone",
   "target": {
     "type": "story",
-    "id": "6.4",
-    "label": "Story 6.4: Novo recorde como número destacado"
+    "id": "6-3",
+    "label": "Story 6.3: Restart 1-tap"
   },
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
@@ -16,7 +16,7 @@
   "overall_status": "MET",
   "critical_open": 0,
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-6-4.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-6-3.md",
     "trace_report_url": "",
     "artifact_url": "",
     "journey_evidence_url": ""

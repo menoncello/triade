@@ -1,0 +1,771 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-08-28T14:31:33.604428Z",
+  "trace_target": {
+    "type": "story",
+    "id": "6.4",
+    "label": "Story 6.4: Novo recorde como número destacado"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/6-4-novo-recorde-como-numero-destacado.md (ACs 1-4)",
+      "_bmad-output/planning-artifacts/epics.md (Epic 6 / Story 6.4)",
+      "_bmad-output/planning-artifacts/architectures/architecture-3-clone-2026-08-07/game-architecture.md",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/DESIGN.md",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/EXPERIENCE.md",
+      "_bmad-output/test-artifacts/atdd-checklist-6-4-novo-recorde-como-numero-destacado.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "6.4-AC1",
+      "title": "Given game over where score exceeds lane's best, When stats render, Then new-record figure is highlighted in accent color — a number, not an event (D-013, UX-DR-12)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "6.4-RH-001",
+          "title": "[P0] AC1 highlight is number not event — isNewRecord true renders valueRecord #E8A33D, false renders no accent",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+          "line": 90,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-003",
+          "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 112,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-001",
+          "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 84,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-002",
+          "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 93,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-W-001",
+          "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats",
+          "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+          "line": 31,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.1-U-MScore-005",
+          "title": "[P0] isNewRecord flags the record transition against the stored best",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 44,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "6.1-U-MScore-007",
+          "title": "[P0] isNewRecord uses the session-start (persisted) best, not the live best",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "6.4-AC2",
+      "title": "And no confetti, banner, or celebration animation fires for a new record in MVP (D-013, GDD)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "6.4-RH-002",
+          "title": "[P0] AC2/AC3 no celebration — stripped source has no confetti/celebrat/lottie/reward/particleBurst/shakeMs and rendered overlay has no second CTA/banner/confetti node",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+          "line": 141,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-016",
+          "title": "[P0] no celebration/confetti/reward pacing (D-013)",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 392,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.3-R-001",
+          "title": "[P0] CTA one tap calls onRestart once with no confirmation (no Dialog)",
+          "file": "triade/__tests__/ui/components/app.restart.test.ts",
+          "line": 90,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.3-R-005",
+          "title": "[P1] Clean only primary CTA — no Continuar/onContinue/rewardedAd",
+          "file": "triade/__tests__/ui/components/app.restart.test.ts",
+          "line": 323,
+          "level": "component",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "6.4-AC3",
+      "title": "And the record milestone is shown as a number even across the ceiling-tier ladder (no tier-crossing celebration in MVP)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "6.4-RH-004",
+          "title": "[P1] AC3 ceiling ladder produces no celebration — increasing ceilingDetector still only isNewRecord highlight, thin-view no engine import",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+          "line": 206,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-010",
+          "title": "[P1] overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 219,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-W-001b",
+          "title": "[P0] App wiring holds availablePot = potForTier(tierForCeiling(ceilingDetector(board))) once after if(!ready)",
+          "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+          "line": 31,
+          "level": "component",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "6.4-AC4",
+      "title": "And the record highlight respects both theme contrast (accent on surface-raised ≈6.2:1) and the color-blind theme's shape/text encoding (E9)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "6.4-RH-003",
+          "title": "[P1] AC4 contrast & color-blind — valueRecord #E8A33D token + tabular-nums preserved, muted/text tokens unchanged, shape/text beyond color",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+          "line": 174,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-009",
+          "title": "[P1] stat row tokens: label muted #8a8578 13/500, value text #1a1d23 17/500 tabular-nums",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 208,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-C-017",
+          "title": "[P1] tokens + HIT_TARGET preserved through fade",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 408,
+          "level": "component",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "6.4-AC1-T2",
+      "title": "App wiring: isNewRecord gated on sessionStartBestRef.current (not match.best) and handleRestart never writes sessionStartBestRef (FR-25, matchScore contract)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "6.4-RH-005",
+          "title": "[P0] AC1/T2 App wiring sessionStartBestRef gating — isNewRecord(sessionStartBestRef.current, match.score) and handleRestart never writes sessionStartBestRef",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+          "line": 250,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.2-W-002",
+          "title": "[P0] handleRestart deadlock defense: App.tsx resets game + match + matchStats + busyRef",
+          "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+          "line": 55,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.3-R-002",
+          "title": "[P0] handleRestart resets store immediately — 9 tiles, score 0 best persisted, merges 0, null moveResult, busyRef false, same lane, no navigation (body order + dep [persistedBest])",
+          "file": "triade/__tests__/ui/components/app.restart.test.ts",
+          "line": 135,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "6.1-U-MScore-007c",
+          "title": "[P0] isNewRecord(sessionStartBestRef vs live best) leak pin (matchScore 58-65)",
+          "file": "triade/__tests__/game/matchScore.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 54,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "api": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "component": {
+          "tests": 36,
+          "criteria_covered": 5
+        },
+        "unit": {
+          "tests": 18,
+          "criteria_covered": 3
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "6.4-RH-001",
+        "title": "[P0] AC1 highlight is number not event — isNewRecord true renders valueRecord #E8A33D, false renders no accent",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+        "line": 90,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-003",
+        "title": "[P0] AC1 isNewRecord=true appends \"Novo recorde\" to a11y and highlights number with accent #E8A33D",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 112,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-001",
+        "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 84,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-002",
+        "title": "[P0] AC1 overlay accessibility announcement contains \"Game over\" + stats (a11y contract)",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 93,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-001",
+        "title": "[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(game.board) and passes lane-scoped stats",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 31,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-005",
+        "title": "[P0] isNewRecord flags the record transition against the stored best",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 44,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-007",
+        "title": "[P0] isNewRecord uses the session-start (persisted) best, not the live best",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 58,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.4-RH-002",
+        "title": "[P0] AC2/AC3 no celebration — stripped source has no confetti/celebrat/lottie/reward/particleBurst/shakeMs and rendered overlay has no second CTA/banner/confetti node",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+        "line": 141,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-016",
+        "title": "[P0] no celebration/confetti/reward pacing (D-013)",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 392,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.3-R-001",
+        "title": "[P0] CTA one tap calls onRestart once with no confirmation (no Dialog)",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 90,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.3-R-005",
+        "title": "[P1] Clean only primary CTA — no Continuar/onContinue/rewardedAd",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 323,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.4-RH-004",
+        "title": "[P1] AC3 ceiling ladder produces no celebration — increasing ceilingDetector still only isNewRecord highlight, thin-view no engine import",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+        "line": 206,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-010",
+        "title": "[P1] overlay is thin-view: never imports engine roll symbols, never Math.random, never layout/orientation rule logic",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 219,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-001b",
+        "title": "[P0] App wiring holds availablePot = potForTier(tierForCeiling(ceilingDetector(board))) once after if(!ready)",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 31,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.4-RH-003",
+        "title": "[P1] AC4 contrast & color-blind — valueRecord #E8A33D token + tabular-nums preserved, muted/text tokens unchanged, shape/text beyond color",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+        "line": 174,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-009",
+        "title": "[P1] stat row tokens: label muted #8a8578 13/500, value text #1a1d23 17/500 tabular-nums",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 208,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-017",
+        "title": "[P1] tokens + HIT_TARGET preserved through fade",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 408,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.4-RH-005",
+        "title": "[P0] AC1/T2 App wiring sessionStartBestRef gating — isNewRecord(sessionStartBestRef.current, match.score) and handleRestart never writes sessionStartBestRef",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts",
+        "line": 250,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-002",
+        "title": "[P0] handleRestart deadlock defense: App.tsx resets game + match + matchStats + busyRef",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 55,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.3-R-002",
+        "title": "[P0] handleRestart resets store immediately — 9 tiles, score 0 best persisted, merges 0, null moveResult, busyRef false, same lane, no navigation (body order + dep [persistedBest])",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 135,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-007c",
+        "title": "[P0] isNewRecord(sessionStartBestRef vs live best) leak pin (matchScore 58-65)",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 58,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-004",
+        "title": "[P0] CTA \"Jogar de novo\" calls onRestart once",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 127,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-005",
+        "title": "[P0] scrim uses rgba(12,14,17,0.7) via backgroundColor",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 138,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-006",
+        "title": "[P0] overlay sits above Hud (zIndex:2)",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 158,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-007",
+        "title": "[P0] post-mount Animated.timing 280/80/Easing/useNativeDriver",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 167,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-008",
+        "title": "[P0] CTA hit target HIT_TARGET 44",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 191,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-011",
+        "title": "[P1] reducedMotion prop gates future fade",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 240,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-012",
+        "title": "[P0] overlay mounts synchronously with all five stats + CTA pressable during fade",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 266,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-013",
+        "title": "[P0] board last move stays visible",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 290,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-014",
+        "title": "[P0] soft fade + drift exist when reducedMotion=false",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 307,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-015",
+        "title": "[P0] reducedMotion=true cuts fade/drift",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 349,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-018",
+        "title": "[P1] thin-view + norolls still green",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 424,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-019",
+        "title": "[P1] insets fallback",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 445,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-C-020",
+        "title": "[P1] unmount mid-fade cleans up animation",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 484,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-003",
+        "title": "[P0] doMove projects via applyMoveStats on post-move board",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 72,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-004",
+        "title": "[P0] runtime gameOver board true",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 86,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.2-W-005",
+        "title": "[P1] gameOver board edge: empty NOT gameOver, full-but-mergeable NOT gameOver",
+        "file": "triade/__tests__/ui/components/app.gameOverWiring.test.ts",
+        "line": 147,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.3-R-003",
+        "title": "[P0] 9-tile same lane",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 234,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.3-R-004",
+        "title": "[P0] forfeited continue dies — never carried, never re-offered",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 277,
+        "level": "component",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-001",
+        "title": "[P0] initialStats seeds merges=0 longest=0 current=0 maxTile ceilingDetector",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 27,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-002",
+        "title": "[P0] initialStats on empty-ish board uses ceiling 0",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 43,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-003",
+        "title": "[P0] initialStats on game board maxTile matches ceiling",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 53,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-004",
+        "title": "[P0] applyMoveStats increments merges",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 67,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-005",
+        "title": "[P0] streak consecutive merges",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 102,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-006",
+        "title": "[P0] streak per-move not per-tile",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 143,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-007",
+        "title": "[P0] maxTile monotonic",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 174,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-008",
+        "title": "[P1] determinism same prev+board+result yields deepEqual",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 207,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-009",
+        "title": "[P1] purity no Math.random no roll symbols",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 236,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-010",
+        "title": "[P1] lane-scoped best NOT inside MatchStats",
+        "file": "triade/__tests__/game/matchStats.test.ts",
+        "line": 265,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-001",
+        "title": "[P0] initialScore seeds score 0 with stored best",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 11,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-002",
+        "title": "[P0] applyMove accumulates score",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 16,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-003",
+        "title": "[P0] best tracks max score",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 24,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-004",
+        "title": "[P0] noop move adds nothing",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 34,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "6.1-U-MScore-008",
+        "title": "[P0] game-over wiring stays out of matchScore",
+        "file": "triade/__tests__/game/matchScore.test.ts",
+        "line": 68,
+        "level": "unit",
+        "status": "active"
+      }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality (L-1 header drift + L-2 symmetry)",
+      "requirements": []
+    },
+    {
+      "priority": "LOW",
+      "action": "Keep 5 recordHighlight pins as blocking gate for any GameOverOverlay/App/matchScore edit; re-validate #E8A33D + tabular-nums + a11yLabel on Epic 9 color-blind theme",
+      "requirements": [
+        "6.4-AC1",
+        "6.4-AC4",
+        "6.4-AC1-T2"
+      ]
+    }
+  ]
+}

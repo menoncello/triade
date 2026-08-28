@@ -1,0 +1,150 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-08-27T17:05:12.979504Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "3218d23b612c961a6f077a6149d8177ceacda901",
+  "target": {
+    "type": "story",
+    "id": "6-3",
+    "label": "Story 6.3: Restart 1-tap"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/6-3-restart-1-tap.md (ACs 1-7, FR-26/UJ-5, NFR-3, FR-18/FR-12, ADR-02)",
+      "_bmad-output/planning-artifacts/epics.md (Epic 6 / Story 6.3, lines 766-784, scope note CC 2026-08-23)",
+      "_bmad-output/planning-artifacts/architectures/architecture-3-clone-2026-08-07/game-architecture.md (screen-state overlay NFR-3 / ADR-02 per-match budgets / ADR-06 determinism)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/DESIGN.md (scrim rgba(12,14,17,0.7), HIT_TARGET 44, elevation zIndex:2)",
+      "_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-08-07/EXPERIENCE.md (UJ-5 one-more loop, S6.4 elegant fall, UX-DR-25 no forced wait, D-010/D-013)",
+      "_bmad-output/test-artifacts/atdd-checklist-6-3-restart-1-tap.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 7,
+      "total": 7,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "pct": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "api": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "component": {
+        "tests": 28,
+        "criteria_covered": 7
+      },
+      "unit": {
+        "tests": 10,
+        "criteria_covered": 1
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 38,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Keep app.restart.test.ts 5 active + gameOverOverlay.test.ts 18 + app.gameOverWiring.test.ts 5 + matchStats.test.ts 10 as single source of truth for FR-26 frictionless loop; any display change (FADE_MS 280, drift 12, delay 80, Easing.cubic, scrim rgba, HIT_TARGET) must keep 38 pins green.",
+      "requirements": [
+        "6.3-AC1",
+        "6.3-AC2",
+        "6.3-AC3",
+        "6.3-AC4",
+        "6.3-AC5"
+      ],
+      "status": "open"
+    },
+    {
+      "priority": "INFO",
+      "action": "When Epic 3 LaneProfile lands (S3.3), expand handleRestart same-lane implicit (single-lane) to explicit LaneProfile.id preservation — pin app.restart.test.ts:273 documents implicit today; do not add SecureStore/MMKV lane memory before S3.1.",
+      "requirements": [
+        "6.3-AC4"
+      ],
+      "status": "open"
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-6-3.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}
