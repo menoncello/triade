@@ -59,6 +59,7 @@ import {
 } from './src/game/matchOrchestrator.ts';
 import type { OrchestratorState } from './src/game/matchOrchestrator.ts';
 import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAids.tsx';
+import { createRewardedAdGateway } from './src/services/monetization/rewardedAds.ts';
 
 export default function App() {
   return (
@@ -82,6 +83,7 @@ function AppContent() {
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
+  const adBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const hydrationOkByLaneRef = useRef<Record<LaneId, boolean>>({ clean: true, accelerated: true });
   const [ready, setReady] = useState(false);
@@ -259,31 +261,45 @@ function AppContent() {
     setShowUndoPrompt(true);
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
-  const handleUndoAd = useCallback(() => {
-    const tmp: OrchestratorState = {
-      undoHistory,
-      undoBudget,
-      hintBudget,
-      continueBudget,
-      hintHighlight,
-      bannerDismissed,
-      showUndoPrompt,
-    };
-    const res = orchestratorConfirmUndoAd(tmp, activeProfile);
-    if (!res.ok || !res.snapshot) {
-      setShowUndoPrompt(false);
-      return;
+  const handleUndoAd = useCallback(async () => {
+    if (adBusyRef.current) return;
+    adBusyRef.current = true;
+    try {
+      const maybeMock = (globalThis as unknown as { __triadeRewardedAdMock?: { loadAndShow: () => Promise<{ granted: boolean }> } })
+        .__triadeRewardedAdMock;
+      const gateway = maybeMock ?? createRewardedAdGateway();
+      const adRes = await gateway.loadAndShow();
+      if (!adRes.granted) {
+        setShowUndoPrompt(false);
+        return;
+      }
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const res = orchestratorConfirmUndoAd(tmp, activeProfile);
+      if (!res.ok || !res.snapshot) {
+        setShowUndoPrompt(false);
+        return;
+      }
+      const snap = res.snapshot;
+      setUndoHistory(res.state.undoHistory);
+      setUndoBudget(res.state.undoBudget);
+      setHintHighlight(res.state.hintHighlight);
+      setShowUndoPrompt(res.state.showUndoPrompt);
+      setGame(snap.game);
+      setMatch(snap.match);
+      setMatchStats(snap.matchStats);
+      setMoveResult(null);
+      busyRef.current = false;
+    } finally {
+      adBusyRef.current = false;
     }
-    const snap = res.snapshot;
-    setUndoHistory(res.state.undoHistory);
-    setUndoBudget(res.state.undoBudget);
-    setHintHighlight(res.state.hintHighlight);
-    setShowUndoPrompt(res.state.showUndoPrompt);
-    setGame(snap.game);
-    setMatch(snap.match);
-    setMatchStats(snap.matchStats);
-    setMoveResult(null);
-    busyRef.current = false;
   }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleUndoIap = useCallback(() => {
