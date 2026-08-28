@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { rewardedUndoUnitId, TEST_IDS } from '../../src/services/monetization/adsConfig.ts';
+import { rewardedUndoUnitId, rewardedContinueUnitId, TEST_IDS } from '../../src/services/monetization/adsConfig.ts';
 import { createRewardedAdGateway, __resetRewardedAdsBusy } from '../../src/services/monetization/rewardedAds.ts';
 
 describe('rewardedAds — gateway contract (4.1)', () => {
@@ -81,5 +81,29 @@ describe('rewardedAds — gateway contract (4.1)', () => {
   it('rewardedAd unit for undo is a test-id pattern', () => {
     assert.match(TEST_IDS.ios.rewarded, /^ca-app-pub-3940256099942544\/\d+$/);
     assert.match(rewardedUndoUnitId(), /^ca-app-pub-/);
+  });
+
+  it('rewardedContinueUnitId defaults to same test unit as undo', () => {
+    const undo = rewardedUndoUnitId();
+    const cont = rewardedContinueUnitId();
+    assert.equal(typeof cont, 'string');
+    assert.ok(cont.length > 0);
+    assert.match(cont, /^ca-app-pub-/);
+    assert.equal(cont, undo);
+  });
+
+  it('continue gateway also returns granted:false when SDK missing (no throw)', async () => {
+    const { rewardedContinueUnitId: getContId } = await import('../../src/services/monetization/adsConfig.ts');
+    const gw = createRewardedAdGateway(getContId());
+    const res = await gw.loadAndShow();
+    assert.equal(res.granted, false);
+  });
+
+  it('continue env override does not crash (pure)', async () => {
+    const saved = process.env.EXPO_PUBLIC_ADMOB_REWARDED_CONTINUE;
+    process.env.EXPO_PUBLIC_ADMOB_REWARDED_CONTINUE = 'ca-app-pub-override-continue/999';
+    assert.equal(TEST_IDS.ios.rewarded, 'ca-app-pub-3940256099942544/5224354917');
+    if (saved === undefined) delete process.env.EXPO_PUBLIC_ADMOB_REWARDED_CONTINUE;
+    else process.env.EXPO_PUBLIC_ADMOB_REWARDED_CONTINUE = saved;
   });
 });

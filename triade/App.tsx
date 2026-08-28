@@ -60,6 +60,7 @@ import {
 import type { OrchestratorState } from './src/game/matchOrchestrator.ts';
 import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAids.tsx';
 import { createRewardedAdGateway } from './src/services/monetization/rewardedAds.ts';
+import { rewardedContinueUnitId } from './src/services/monetization/adsConfig.ts';
 
 export default function App() {
   return (
@@ -359,29 +360,46 @@ function AppContent() {
     setHintHighlight(res.state.hintHighlight);
   }, [hintBudget, game.board, activeProfile, undoHistory, undoBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
-  const handleContinueAd = useCallback(() => {
-    const tmp: OrchestratorState = {
-      undoHistory,
-      undoBudget,
-      hintBudget,
-      continueBudget,
-      hintHighlight,
-      bannerDismissed,
-      showUndoPrompt,
-    };
-    const res = orchestratorConsumeContinueAd(tmp, activeProfile);
-    if (!res.ok) return;
-    if (res.snapshot) {
-      setUndoHistory(res.state.undoHistory);
-      setGame(res.snapshot.game);
-      setMatch(res.snapshot.match);
-      setMatchStats(res.snapshot.matchStats);
-      setMoveResult(null);
+  const handleContinueAd = useCallback(async () => {
+    if (adBusyRef.current) return;
+    // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
+    if (!activeProfile.allowAds || !activeProfile.canContinue) return;
+    // Only meaningful when gameOver; App already only mounts Continue slot when gameOver, but guard for programmatic calls
+    // Do not block if game not over? The orchestrator will reject if budget not available anyway.
+    adBusyRef.current = true;
+    try {
+      const maybeMock = (globalThis as unknown as { __triadeRewardedAdMock?: { loadAndShow: () => Promise<{ granted: boolean }> } })
+        .__triadeRewardedAdMock;
+      const gateway = maybeMock ?? createRewardedAdGateway(rewardedContinueUnitId());
+      const adRes = await gateway.loadAndShow();
+      if (!adRes.granted) {
+        return;
+      }
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const res = orchestratorConsumeContinueAd(tmp, activeProfile);
+      if (!res.ok) return;
+      if (res.snapshot) {
+        setUndoHistory(res.state.undoHistory);
+        setGame(res.snapshot.game);
+        setMatch(res.snapshot.match);
+        setMatchStats(res.snapshot.matchStats);
+        setMoveResult(null);
+      }
+      setContinueBudget(res.state.continueBudget);
+      setHintHighlight(res.state.hintHighlight);
+      setShowUndoPrompt(res.state.showUndoPrompt);
+      busyRef.current = false;
+    } finally {
+      adBusyRef.current = false;
     }
-    setContinueBudget(res.state.continueBudget);
-    setHintHighlight(res.state.hintHighlight);
-    setShowUndoPrompt(res.state.showUndoPrompt);
-    busyRef.current = false;
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueIap = useCallback(() => {
@@ -408,6 +426,11 @@ function AppContent() {
     setShowUndoPrompt(res.state.showUndoPrompt);
     busyRef.current = false;
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
+
+  const handleContinueCancel = useCallback(() => {
+    // Cancel leaves budget and board untouched; primary CTA remains usable.
+    // No state mutation needed — continue slot stays gated by canContinueDerived if still true (retry allowed).
+  }, []);
 
   // Stable gesture (created once) reads the latest doMove through a ref so a
   // move dispatched during an in-flight animation never uses a stale board
@@ -548,7 +571,7 @@ function AppContent() {
           canContinue={canContinueDerived}
           onContinueAd={handleContinueAd}
           onContinueIap={handleContinueIap}
-          onContinueCancel={() => {}}
+          onContinueCancel={handleContinueCancel}
         />
       ) : null}
       <StatusBar style="auto" />

@@ -1,4 +1,4 @@
-import { rewardedUndoUnitId } from './adsConfig.ts';
+import { rewardedUndoUnitId, rewardedContinueUnitId } from './adsConfig.ts';
 
 export type RewardedAdResult = { granted: boolean; error?: string };
 
@@ -116,4 +116,8 @@ export function __resetRewardedAdsBusy(): void {
 // Also export a singleton convenience for App.tsx default usage
 export function showRewardedUndoAd(adUnitId?: string): Promise<RewardedAdResult> {
   return createRewardedAdGateway(adUnitId).loadAndShow();
+}
+
+export function showRewardedContinueAd(adUnitId?: string): Promise<RewardedAdResult> {
+  return createRewardedAdGateway(adUnitId ?? rewardedContinueUnitId()).loadAndShow();
 }
