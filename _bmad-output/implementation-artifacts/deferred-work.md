@@ -200,3 +200,8 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-1-selecao-de-pista-no-menu-lane-select.md`
   summary: Per-lane best tracking still global — `match.best`/`persistedBest` not yet scoped per lane (belongs to 3.4 leaderboards)
   evidence: App.tsx uses single `persistedBest`/`match.best` for both lanes; lane switch resets via `initialScore(persistedBest)` not lane-scoped store; correct per spec 3.1 scope (lane selection only), 3.4 will introduce per-lane leaderboard storage
+
+## Deferred from: code review of story 3-3-accelerated-lane-com-assistencia (2026-08-28 — dev-auto review)
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-3-accelerated-lane-com-assistencia.md`
+  summary: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
+  evidence: triade/App.tsx handleUndoIap synthesizes iapRemaining when freeUsed && !unlimited && iapRemaining===0; Epic 4 will wire real iapRemaining/unlimited from RevenueCat + SecureStore entitlements, 3.3 keeps IAP stub without SDK imports per boundary

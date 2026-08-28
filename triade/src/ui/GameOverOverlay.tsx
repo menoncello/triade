@@ -15,9 +15,25 @@ export interface GameOverOverlayProps {
   insets: { top: number; bottom: number; left: number; right: number };
   // 3.2 Clean lane: no continue/ad/hint — activeLaneId gates any future continue slot.
   activeLaneId?: LaneId;
+  // 3.3 Accelerated death-continue (discreet offer, once per game-over)
+  canContinue?: boolean;
+  onContinueAd?: () => void;
+  onContinueIap?: () => void;
+  onContinueCancel?: () => void;
 }
 
-export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, insets }: GameOverOverlayProps) {
+export function GameOverOverlay({
+  stats,
+  isNewRecord,
+  onRestart,
+  reducedMotion,
+  insets,
+  activeLaneId,
+  canContinue,
+  onContinueAd,
+  onContinueIap,
+  onContinueCancel,
+}: GameOverOverlayProps) {
   const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
   const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
   const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
@@ -108,6 +124,38 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, 
             <Text style={styles.ctaLabel}>Jogar de novo</Text>
             {/* TODO 5.4: t('gameOver.restart') */}
           </Pressable>
+          {/* 3.3 Accelerated death-continue — discreet, once per game-over, ad first + IAP alternative + Cancel */}
+          {activeLaneId === 'accelerated' && canContinue ? (
+            <View style={styles.continueWrap} accessibilityLabel="Continuar">
+              <Text style={styles.continueTitle}>Continuar?</Text>
+              <View style={styles.continueRow}>
+                <Pressable
+                  onPress={onContinueAd}
+                  style={styles.continueAd}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ver anúncio"
+                >
+                  <Text style={styles.continueAdLabel}>Ver anúncio</Text>
+                </Pressable>
+                <Pressable
+                  onPress={onContinueIap}
+                  style={styles.continueIap}
+                  accessibilityRole="button"
+                  accessibilityLabel="Comprar"
+                >
+                  <Text style={styles.continueIapLabel}>Comprar</Text>
+                </Pressable>
+              </View>
+              <Pressable
+                onPress={onContinueCancel}
+                style={styles.continueCancel}
+                accessibilityRole="button"
+                accessibilityLabel="Cancelar"
+              >
+                <Text style={styles.continueCancelLabel}>Cancelar</Text>
+              </Pressable>
+            </View>
+          ) : null}
         </View>
       </Animated.View>
     </Animated.View>
@@ -173,5 +221,62 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
+  },
+  continueWrap: {
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e7e4de',
+    paddingTop: 12,
+    gap: 8,
+  },
+  continueTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1a1d23',
+    textAlign: 'center',
+  },
+  continueRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  continueAd: {
+    flex: 1,
+    minHeight: HIT_TARGET,
+    backgroundColor: '#E8A33D',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueAdLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1C1206',
+  },
+  continueIap: {
+    flex: 1,
+    minHeight: HIT_TARGET,
+    backgroundColor: '#1a1d23',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueIapLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  continueCancel: {
+    minHeight: HIT_TARGET,
+    borderWidth: 1,
+    borderColor: '#e7e4de',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  continueCancelLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#1a1d23',
   },
 });

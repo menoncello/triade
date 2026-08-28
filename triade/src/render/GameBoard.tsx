@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Canvas, Group, RoundedRect, Text, matchFont } from '@shopify/react-native-skia';
 import type { SkFont } from '@shopify/react-native-skia';
 import { useDerivedValue, useSharedValue, withDelay, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
@@ -178,9 +178,10 @@ export interface GameBoardProps {
   moveResult: MoveResult | null;
   width: number;
   onMoveSettled?: () => void;
+  hintHighlight?: [[number, number], [number, number]] | null;
 }
 
-export function GameBoard({ board, moveResult, width, onMoveSettled }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlight }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
@@ -295,21 +296,45 @@ export function GameBoard({ board, moveResult, width, onMoveSettled }: GameBoard
   const ordered = [...tiles].sort((a, b) => renderOrder(a.kind) - renderOrder(b.kind));
 
   return (
-    <Canvas style={{ width, height: width }}>
-      <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
-      {ordered.map((t) => (
-        <AnimatedTile
-          key={t.id}
-          id={t.id}
-          value={t.value}
-          from={t.from}
-          to={t.to}
-          kind={t.kind}
-          cell={cell}
-          delay={t.delay}
-          onVanish={onVanish}
-        />
-      ))}
-    </Canvas>
+    <View style={{ width, height: width }}>
+      <Canvas style={{ width, height: width }}>
+        <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
+        {ordered.map((t) => (
+          <AnimatedTile
+            key={t.id}
+            id={t.id}
+            value={t.value}
+            from={t.from}
+            to={t.to}
+            kind={t.kind}
+            cell={cell}
+            delay={t.delay}
+            onVanish={onVanish}
+          />
+        ))}
+      </Canvas>
+      {hintHighlight
+        ? hintHighlight.map(([r, c]) => {
+            const pos = pixel([r, c], cell);
+            return (
+              <View
+                key={`hint-${r}-${c}`}
+                style={{
+                  position: 'absolute',
+                  left: pos.x,
+                  top: pos.y,
+                  width: cell,
+                  height: cell,
+                  borderWidth: 3,
+                  borderColor: '#E8A33D',
+                  borderRadius: CELL_RADIUS,
+                }}
+                pointerEvents="none"
+                accessibilityLabel="dica"
+              />
+            );
+          })
+        : null}
+    </View>
   );
 }

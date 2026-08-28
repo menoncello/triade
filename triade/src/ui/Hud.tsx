@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { HIT_TARGET, PauseButton } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
@@ -19,6 +19,12 @@ export interface HudProps {
   // 3.2 Clean lane purity: only the active lane preview is DISPLAYED; the fan-out shape is kept
   // so 7.2 previewWiring tests migrate via `activeLaneId` gate rather than a breaking prop change.
   activeLaneId?: LaneId;
+  // 3.3 Accelerated assistance affordances (Accelerated only, gated by parent)
+  canUndo?: boolean;
+  canHint?: boolean;
+  onUndo?: () => void;
+  onHint?: () => void;
+  hintHighlight?: [[number, number], [number, number]] | null;
 }
 
 // FR-45 — one labeled preview chip per lane. `label` drives the a11y note and
@@ -32,7 +38,19 @@ function LanePreview({ label, preview, isLandscape }: { label: string; preview: 
   );
 }
 
-export function Hud({ score, best, isLandscape, insets, bandHeight, previews, activeLaneId }: HudProps) {
+export function Hud({
+  score,
+  best,
+  isLandscape,
+  insets,
+  bandHeight,
+  previews,
+  activeLaneId,
+  canUndo,
+  canHint,
+  onUndo,
+  onHint,
+}: HudProps) {
   const topPad = insets.top + SAFE_MARGIN;
   const leftPad = insets.left + SAFE_MARGIN;
   const rightPad = insets.right + SAFE_MARGIN;
@@ -41,6 +59,7 @@ export function Hud({ score, best, isLandscape, insets, bandHeight, previews, ac
   const activeId: LaneId = activeLaneId === 'accelerated' ? 'accelerated' : 'clean';
   const activePreview = activeId === 'accelerated' ? previews.accelerated : previews.clean;
   const activeLabel = activeId === 'accelerated' ? 'Accelerated' : 'Clean';
+  const showAssistance = activeId === 'accelerated';
 
   if (isLandscape) {
     return (
@@ -58,6 +77,30 @@ export function Hud({ score, best, isLandscape, insets, bandHeight, previews, ac
             <View pointerEvents="none" style={styles.landscapePreviews}>
               <LanePreview label={activeLabel} preview={activePreview} isLandscape />
             </View>
+            {showAssistance && onUndo ? (
+              <Pressable
+                onPress={onUndo}
+                disabled={!canUndo}
+                style={[styles.assistBtn, !canUndo ? styles.assistBtnDisabled : null]}
+                accessibilityRole="button"
+                accessibilityLabel="Desfazer"
+                accessibilityState={{ disabled: !canUndo }}
+              >
+                <Text style={styles.assistLabel}>↩</Text>
+              </Pressable>
+            ) : null}
+            {showAssistance && onHint ? (
+              <Pressable
+                onPress={onHint}
+                disabled={!canHint}
+                style={[styles.assistBtn, !canHint ? styles.assistBtnDisabled : null]}
+                accessibilityRole="button"
+                accessibilityLabel="Dica"
+                accessibilityState={{ disabled: !canHint }}
+              >
+                <Text style={styles.assistLabel}>?</Text>
+              </Pressable>
+            ) : null}
             <PauseButton />
           </View>
         </View>
@@ -81,9 +124,37 @@ export function Hud({ score, best, isLandscape, insets, bandHeight, previews, ac
           <PauseButton />
         </View>
       </View>
-      <View pointerEvents="none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
+      <View pointerEvents="box-none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
         <LanePreview label={activeLabel} preview={activePreview} isLandscape={false} />
       </View>
+      {showAssistance && (onUndo || onHint) ? (
+        <View pointerEvents="auto" style={[styles.assistRowPortrait, { right: rightPad, bottom: bottomPad + 76 + 8 }]}>
+          {onUndo ? (
+            <Pressable
+              onPress={onUndo}
+              disabled={!canUndo}
+              style={[styles.assistBtn, !canUndo ? styles.assistBtnDisabled : null]}
+              accessibilityRole="button"
+              accessibilityLabel="Desfazer"
+              accessibilityState={{ disabled: !canUndo }}
+            >
+              <Text style={styles.assistLabel}>↩</Text>
+            </Pressable>
+          ) : null}
+          {onHint ? (
+            <Pressable
+              onPress={onHint}
+              disabled={!canHint}
+              style={[styles.assistBtn, !canHint ? styles.assistBtnDisabled : null]}
+              accessibilityRole="button"
+              accessibilityLabel="Dica"
+              accessibilityState={{ disabled: !canHint }}
+            >
+              <Text style={styles.assistLabel}>?</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -127,6 +198,30 @@ const styles = StyleSheet.create({
   },
   previewPortrait: {
     position: 'absolute',
+  },
+  assistRowPortrait: {
+    position: 'absolute',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  assistBtn: {
+    minWidth: HIT_TARGET,
+    minHeight: HIT_TARGET,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e7e4de',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  assistBtnDisabled: {
+    opacity: 0.4,
+  },
+  assistLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1a1d23',
   },
   // FR-45 — per-lane preview box (chrome lives on PreviewCard). Pinned AC4
   // markers: square 76×76 portrait, compact 60×44 landscape band.

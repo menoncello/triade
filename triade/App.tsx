@@ -24,7 +24,21 @@ import { mulberry32 } from './src/utils/mulberry32.ts';
 import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
 import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
 import { Hud } from './src/ui/Hud';
-import { laneFromIndex } from './src/game/lanes.ts';
+import { laneFromIndex, profileForLaneId } from './src/game/lanes.ts';
+import {
+  initialUndoBudget,
+  initialHintBudget,
+  initialContinueBudget,
+  canUndo,
+  consumeUndo,
+  canHint,
+  consumeHint,
+  canContinue,
+  consumeContinue,
+  findMergeablePair,
+} from './src/game/assistance.ts';
+import type { UndoBudget, HintBudget, ContinueBudget } from './src/game/assistance.ts';
+import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAids.tsx';
 
 export default function App() {
   return (
@@ -37,6 +51,8 @@ export default function App() {
 }
 
 type Screen = 'laneSelect' | 'playing';
+
+type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats };
 
 function AppContent() {
   const { width, height } = useWindowDimensions();
@@ -57,6 +73,14 @@ function AppContent() {
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
   const [matchStats, setMatchStats] = useState<MatchStats>(() => initialStats(game.board));
+  // 3.3 Accelerated per-match budgets (memory, die with match per ADR-02)
+  const [undoHistory, setUndoHistory] = useState<Snapshot[]>([]);
+  const [undoBudget, setUndoBudget] = useState<UndoBudget>(() => initialUndoBudget());
+  const [hintBudget, setHintBudget] = useState<HintBudget>(() => initialHintBudget(5));
+  const [continueBudget, setContinueBudget] = useState<ContinueBudget>(() => initialContinueBudget());
+  const [hintHighlight, setHintHighlight] = useState<[[number, number], [number, number]] | null>(null);
+  const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
+  const [showUndoPrompt, setShowUndoPrompt] = useState(false);
 
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
@@ -95,6 +119,16 @@ function AppContent() {
 
   const hasActiveMatch = match.score > 0 || matchStats.merges > 0;
 
+  const resetAssistance = useCallback(() => {
+    setUndoHistory([]);
+    setUndoBudget(initialUndoBudget());
+    setHintBudget(initialHintBudget(5));
+    setContinueBudget(initialContinueBudget());
+    setHintHighlight(null);
+    setBannerDismissed({ ceiling: false, stuck: false });
+    setShowUndoPrompt(false);
+  }, []);
+
   const applyLaneSelection = useCallback(
     (index: number) => {
       const needsReset = hasActiveMatch;
@@ -107,13 +141,14 @@ function AppContent() {
         setMatch(initialScore(persistedBest));
         setMatchStats(initialStats(s.board));
         busyRef.current = false;
+        resetAssistance();
       }
       setSelectedLaneIndex(index);
       const nextSettings: Settings = { ...settings, laneDefault: index };
       setSettings(nextSettings);
       void saveSettings(nextSettings);
     },
-    [hasActiveMatch, selectedLaneIndex, settings, persistedBest],
+    [hasActiveMatch, selectedLaneIndex, settings, persistedBest, resetAssistance],
   );
 
   const handleJogar = useCallback(() => {
@@ -133,6 +168,8 @@ function AppContent() {
 
   const doMove = useCallback(
     (dir: Direction) => {
+      // Capture snapshot before move for undo history (only if effective)
+      const snapshot: Snapshot = { game, match, matchStats };
       const result = move(game, dir, rngRef.current);
       setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
       setMoveResult(result);
@@ -145,9 +182,14 @@ function AppContent() {
         // transitionPlan — no animation runs, onMoveSettled never fires, so the
         // gate must only engage on real moves (noop deadlock guard).
         busyRef.current = true;
+        setUndoHistory((prev) => [...prev, snapshot]);
+        // Hint highlight is one-shot, clear on next move
+        setHintHighlight(null);
+        // Any move clears undo prompt (ad prompt only between turns)
+        setShowUndoPrompt(false);
       }
     },
-    [game],
+    [game, match, matchStats],
   );
 
   const handleRestart = useCallback(() => {
@@ -158,7 +200,126 @@ function AppContent() {
     setMatch(initialScore(persistedBest));
     setMatchStats(initialStats(s.board));
     busyRef.current = false;
+    setUndoHistory([]);
+    setUndoBudget(initialUndoBudget());
+    setHintBudget(initialHintBudget(5));
+    setContinueBudget(initialContinueBudget());
+    setHintHighlight(null);
+    setBannerDismissed({ ceiling: false, stuck: false });
+    setShowUndoPrompt(false);
   }, [persistedBest]);
+
+  // 3.3 Accelerated assistance handlers — gated by LaneProfile
+  const activeLaneIdForHandlers = laneFromIndex(selectedLaneIndex).id;
+  const activeProfile = profileForLaneId(activeLaneIdForHandlers);
+
+  const handleUndoRequest = useCallback(() => {
+    if (!activeProfile.canUndo) return;
+    if (showUndoPrompt) return;
+    if (!canUndo(undoBudget, undoHistory.length, activeProfile)) return;
+    // Reward prompt at moment of need (between-turn, not mid-animation)
+    if (busyRef.current) return;
+    setShowUndoPrompt(true);
+  }, [activeProfile, undoBudget, undoHistory.length, showUndoPrompt]);
+
+  const handleUndoAd = useCallback(() => {
+    const res = consumeUndo(undoBudget, undoHistory.length, activeProfile);
+    if (!res.ok) {
+      setShowUndoPrompt(false);
+      return;
+    }
+    const snap = undoHistory[undoHistory.length - 1];
+    if (!snap) {
+      setShowUndoPrompt(false);
+      return;
+    }
+    setUndoHistory((prev) => prev.slice(0, -1));
+    setUndoBudget(res.budget);
+    setGame(snap.game);
+    setMatch(snap.match);
+    setMatchStats(snap.matchStats);
+    setMoveResult(null);
+    setHintHighlight(null);
+    busyRef.current = false;
+    setShowUndoPrompt(false);
+  }, [undoBudget, undoHistory, activeProfile]);
+
+  const handleUndoIap = useCallback(() => {
+    // Stub IAP path: same consume logic (Epic 4 will wire entitlements to iapRemaining/unlimited)
+    // For 3.3 demo, treat IAP as granting 1 use if remaining else unlimited mock
+    // If budget already has iapRemaining>0 or unlimited, consumeVia same path
+    // Otherwise simulate IAP purchase of 1 by injecting remaining=1 then consuming
+    let budgetForCheck = undoBudget;
+    if (undoBudget.freeUsed && !undoBudget.unlimited && undoBudget.iapRemaining === 0) {
+      // Simulate buying 1 undo pack for the prompt demo
+      budgetForCheck = { ...undoBudget, iapRemaining: 1 };
+    }
+    const res = consumeUndo(budgetForCheck, undoHistory.length, activeProfile);
+    if (!res.ok) {
+      setShowUndoPrompt(false);
+      return;
+    }
+    const snap = undoHistory[undoHistory.length - 1];
+    if (!snap) {
+      setShowUndoPrompt(false);
+      return;
+    }
+    setUndoHistory((prev) => prev.slice(0, -1));
+    setUndoBudget(res.budget);
+    setGame(snap.game);
+    setMatch(snap.match);
+    setMatchStats(snap.matchStats);
+    setMoveResult(null);
+    setHintHighlight(null);
+    busyRef.current = false;
+    setShowUndoPrompt(false);
+  }, [undoBudget, undoHistory, activeProfile]);
+
+  const handleUndoCancel = useCallback(() => setShowUndoPrompt(false), []);
+
+  const handleHint = useCallback(() => {
+    if (busyRef.current) return;
+    if (!canHint(hintBudget, game.board, activeProfile)) return;
+    const pair = findMergeablePair(game.board);
+    if (!pair) return;
+    const res = consumeHint(hintBudget, game.board, activeProfile);
+    if (!res.ok) return;
+    setHintBudget(res.budget);
+    setHintHighlight(pair);
+  }, [hintBudget, game.board, activeProfile]);
+
+  const handleContinueAd = useCallback(() => {
+    const res = consumeContinue(continueBudget, activeProfile);
+    if (!res.ok) return;
+    const snap = undoHistory[undoHistory.length - 1];
+    if (snap) {
+      setUndoHistory((prev) => prev.slice(0, -1));
+      setGame(snap.game);
+      setMatch(snap.match);
+      setMatchStats(snap.matchStats);
+      setMoveResult(null);
+    }
+    setContinueBudget(res.budget);
+    setHintHighlight(null);
+    busyRef.current = false;
+  }, [continueBudget, undoHistory, activeProfile]);
+
+  const handleContinueIap = useCallback(() => {
+    // Stub IAP for continue: same as ad path in 3.3 (Epic 4 owns entitlements)
+    const res = consumeContinue(continueBudget, activeProfile);
+    if (!res.ok) return;
+    const snap = undoHistory[undoHistory.length - 1];
+    if (snap) {
+      setUndoHistory((prev) => prev.slice(0, -1));
+      setGame(snap.game);
+      setMatch(snap.match);
+      setMatchStats(snap.matchStats);
+      setMoveResult(null);
+    }
+    setContinueBudget(res.budget);
+    setHintHighlight(null);
+    busyRef.current = false;
+  }, [continueBudget, undoHistory, activeProfile]);
 
   // Stable gesture (created once) reads the latest doMove through a ref so a
   // move dispatched during an in-flight animation never uses a stale board
@@ -219,6 +380,15 @@ function AppContent() {
 
   const gameOver = isGameOver(game.board);
   const activeLaneId = laneFromIndex(selectedLaneIndex).id;
+  const profile = profileForLaneId(activeLaneId);
+  // 3.3 banner relevance (contextual, dismissible, Accelerated only)
+  const ceiling = ceilingDetector(game.board);
+  const emptyCount = game.board.flat().filter((v) => v === null).length;
+  const showCeilingBanner = profile.showLearningAids && !gameOver && !bannerDismissed.ceiling && ceiling >= 48;
+  const showStuckBanner = profile.showLearningAids && !gameOver && !bannerDismissed.stuck && emptyCount <= 2;
+  const canUndoDerived = profile.canUndo && canUndo(undoBudget, undoHistory.length, profile);
+  const canHintDerived = profile.canHint && canHint(hintBudget, game.board, profile);
+  const canContinueDerived = profile.canContinue && canContinue(continueBudget, profile);
 
   return (
     <View style={styles.container}>
@@ -233,13 +403,25 @@ function AppContent() {
           clean: previewFor(game.pendingSpawn, availablePot),
           accelerated: previewFor(game.pendingSpawn, availablePot),
         }}
+        canUndo={canUndoDerived}
+        canHint={canHintDerived}
+        onUndo={handleUndoRequest}
+        onHint={handleHint}
+        hintHighlight={hintHighlight}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
           <GestureDetector gesture={panGesture}>
-            <GameBoard board={game.board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
+            <GameBoard board={game.board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} hintHighlight={hintHighlight} />
           </GestureDetector>
         </View>
+        {/* 3.3 Accelerated learning aids — contextual dismissible prompt-banners, never in Clean */}
+        {showCeilingBanner ? <CeilingBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, ceiling: true }))} /> : null}
+        {showStuckBanner ? <StuckBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, stuck: true }))} /> : null}
+        {/* 3.3 Reward prompt for undo (between-turn, never during animation or gameOver) */}
+        {activeLaneId === 'accelerated' && showUndoPrompt && !gameOver ? (
+          <RewardPrompt title="Desfazer último movimento?" onAd={handleUndoAd} onIap={handleUndoIap} onCancel={handleUndoCancel} />
+        ) : null}
         <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel="Pistas">
           <Text style={styles.menuLabel}>Pistas</Text>
         </Pressable>
@@ -266,6 +448,10 @@ function AppContent() {
           reducedMotion={false}
           insets={insets}
           activeLaneId={activeLaneId}
+          canContinue={canContinueDerived}
+          onContinueAd={handleContinueAd}
+          onContinueIap={handleContinueIap}
+          onContinueCancel={() => {}}
         />
       ) : null}
       <StatusBar style="auto" />
