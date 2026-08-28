@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
@@ -14,7 +14,11 @@ import { initialStats, applyMoveStats } from './src/game/matchStats.ts';
 import type { MatchStats } from './src/game/matchStats.ts';
 import { previewFor } from './src/game/preview.ts';
 import { GameOverOverlay } from './src/ui/GameOverOverlay.tsx';
-import { loadBest, saveBest } from './src/services/storage/settingsStore.ts';
+import { LaneSelectScreen } from './src/ui/LaneSelectScreen.tsx';
+import { HIT_TARGET } from './src/ui/PauseButton';
+import { loadBest, saveBest, loadSettingsFromStorage, saveSettings } from './src/services/storage/settingsStore.ts';
+import type { Settings } from './src/services/storage/schema.ts';
+import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
 import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
@@ -31,6 +35,8 @@ export default function App() {
   );
 }
 
+type Screen = 'laneSelect' | 'playing';
+
 function AppContent() {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -43,6 +49,9 @@ function AppContent() {
   const hydrationOkRef = useRef(true);
   const [ready, setReady] = useState(false);
   const [persistedBest, setPersistedBest] = useState(0);
+  const [settings, setSettings] = useState<Settings>({ ...DEFAULT_SETTINGS });
+  const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(DEFAULT_SETTINGS.laneDefault);
+  const [screen, setScreen] = useState<Screen>('laneSelect');
   const [game, setGame] = useState<GameState>(() => newGame(rngRef.current));
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
@@ -54,12 +63,14 @@ function AppContent() {
     void preloadAssets();
     let cancelled = false;
     (async () => {
-      const result = await loadBest();
+      const [result, loadedSettings] = await Promise.all([loadBest(), loadSettingsFromStorage()]);
       if (cancelled) return;
       hydrationOkRef.current = result.ok;
       sessionStartBestRef.current = result.best;
       setPersistedBest(result.best);
       setMatch(initialScore(result.best));
+      setSettings(loadedSettings);
+      setSelectedLaneIndex(loadedSettings.laneDefault);
       setReady(true);
     })();
     return () => {
@@ -81,6 +92,44 @@ function AppContent() {
     }
   }, [match.best, persistedBest]);
 
+  const hasActiveMatch = match.score > 0 || matchStats.merges > 0;
+
+  const applyLaneSelection = useCallback(
+    (index: number) => {
+      const needsReset = hasActiveMatch;
+      if (index === selectedLaneIndex && !needsReset) return;
+      // Changing lane always starts a new game (FR-11, D-008)
+      if (needsReset) {
+        const s = newGame(rngRef.current);
+        setGame(s);
+        setMoveResult(null);
+        setMatch(initialScore(persistedBest));
+        setMatchStats(initialStats(s.board));
+        busyRef.current = false;
+      }
+      setSelectedLaneIndex(index);
+      const nextSettings: Settings = { ...settings, laneDefault: index };
+      setSettings(nextSettings);
+      void saveSettings(nextSettings);
+    },
+    [hasActiveMatch, selectedLaneIndex, settings, persistedBest],
+  );
+
+  const handleJogar = useCallback(() => {
+    // Jogar is one-tap shortcut into a game on the selected lane.
+    // If already playing on same lane with active match, just show the game.
+    // If no active match, ensure a fresh board (first game after install).
+    if (!hasActiveMatch && match.score === 0) {
+      // Fresh launch or after lane change that already reset — ensure board is fresh
+      // (newGame already called by applyLaneSelection when needed).
+    }
+    setScreen('playing');
+  }, [hasActiveMatch, match.score]);
+
+  const handleBackToLaneSelect = useCallback(() => {
+    setScreen('laneSelect');
+  }, []);
+
   const doMove = useCallback(
     (dir: Direction) => {
       const result = move(game, dir, rngRef.current);
@@ -97,7 +146,7 @@ function AppContent() {
         busyRef.current = true;
       }
     },
-    [game]
+    [game],
   );
 
   const handleRestart = useCallback(() => {
@@ -135,13 +184,29 @@ function AppContent() {
           const dir = resolveSwipeDirection({ dx: event.translationX, dy: event.translationY });
           if (dir) doMoveRef.current(dir);
         }),
-    []
+    [],
   );
 
   if (!ready) {
     return (
       <View style={styles.container}>
         <Text style={styles.stats}>preloading bundled assets…</Text>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  // Lane Select is the functional home surface (UX-DR-9)
+  if (screen === 'laneSelect') {
+    return (
+      <View style={styles.container}>
+        <LaneSelectScreen
+          selectedIndex={selectedLaneIndex}
+          hasActiveMatch={hasActiveMatch}
+          insets={insets}
+          onSelectLane={applyLaneSelection}
+          onJogar={handleJogar}
+        />
         <StatusBar style="auto" />
       </View>
     );
@@ -172,6 +237,9 @@ function AppContent() {
             <GameBoard board={game.board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} />
           </GestureDetector>
         </View>
+        <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel="Pistas">
+          <Text style={styles.menuLabel}>Pistas</Text>
+        </Pressable>
         <Text style={styles.stats}>
           {stats
             ? `baseline: ${stats.fps.toFixed(1)} fps · p99 ${stats.p99Ms.toFixed(2)}ms · ${stats.frames} frames`
@@ -219,6 +287,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+  menuBtn: {
+    marginTop: 8,
+    minHeight: HIT_TARGET,
+    minWidth: HIT_TARGET,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#e7e4de',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1a1d23',
   },
   stats: {
     marginTop: 12,

@@ -195,3 +195,8 @@
 - Overflow layout: `score >1e9` estoura `row space-between` sem `numberOfLines/ellipsizeMode/flexShrink` no `GameOverOverlay`. Pré-existente, fora de MVP. [triade/src/ui/GameOverOverlay.tsx:131-146]
 - `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual. [triade/src/ui/GameOverOverlay.tsx:17-20,26-28,111-117]
 - Ladder ceiling não pinado end-to-end: novo teste varia só `stats.maxTile` prop (thin-view correto), não cadeia `ceilingDetector→tierForCeiling→potForTier`; `isNewRecord(match.best,…)` leak via alias não Runtime-pinado. Thin-view é intencional per spec; cadeia é `engine.purity`/`preview-invariant`. [triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts:229; triade/src/engine/core/ceiling.ts:17]
+
+## Deferred from: code review of story 3-1-selecao-de-pista-no-menu-lane-select (2026-08-28 — dev-auto review)
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-selecao-de-pista-no-menu-lane-select.md`
+  summary: Per-lane best tracking still global — `match.best`/`persistedBest` not yet scoped per lane (belongs to 3.4 leaderboards)
+  evidence: App.tsx uses single `persistedBest`/`match.best` for both lanes; lane switch resets via `initialScore(persistedBest)` not lane-scoped store; correct per spec 3.1 scope (lane selection only), 3.4 will introduce per-lane leaderboard storage
