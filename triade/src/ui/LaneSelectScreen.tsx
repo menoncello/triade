@@ -11,9 +11,19 @@ export interface LaneSelectScreenProps {
   insets: EdgeInsets;
   onSelectLane: (index: number) => void;
   onJogar: () => void;
+  onRestorePurchases?: () => void | Promise<void>;
+  restoreBusy?: boolean;
 }
 
-export function LaneSelectScreen({ selectedIndex, hasActiveMatch, insets, onSelectLane, onJogar }: LaneSelectScreenProps) {
+export function LaneSelectScreen({
+  selectedIndex,
+  hasActiveMatch,
+  insets,
+  onSelectLane,
+  onJogar,
+  onRestorePurchases,
+  restoreBusy,
+}: LaneSelectScreenProps) {
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
   const handleCardPress = (index: number) => {
@@ -103,6 +113,18 @@ export function LaneSelectScreen({ selectedIndex, hasActiveMatch, insets, onSele
         >
           <Text style={styles.ctaLabel}>Jogar</Text>
         </Pressable>
+        {onRestorePurchases ? (
+          <Pressable
+            onPress={onRestorePurchases}
+            disabled={!!restoreBusy}
+            style={[styles.restoreBtn, restoreBusy ? styles.restoreBtnBusy : null]}
+            accessibilityRole="button"
+            accessibilityLabel="Restaurar compras"
+            accessibilityState={{ busy: !!restoreBusy, disabled: !!restoreBusy }}
+          >
+            <Text style={styles.restoreLabel}>{restoreBusy ? 'Restaurando…' : 'Restaurar compras'}</Text>
+          </Pressable>
+        ) : null}
         {hasActiveMatch && pendingIndex === null ? (
           <Text style={styles.footerNote}>Mudar de pista inicia um novo jogo</Text>
         ) : null}
@@ -254,5 +276,24 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#8a8578',
     textAlign: 'center',
+  },
+  restoreBtn: {
+    marginTop: 10,
+    minHeight: HIT_TARGET,
+    borderWidth: 1,
+    borderColor: '#e7e4de',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+  },
+  restoreBtnBusy: {
+    opacity: 0.6,
+  },
+  restoreLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#1a1d23',
   },
 });

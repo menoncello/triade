@@ -220,7 +220,35 @@ export function createPurchasesGateway(): PurchasesGateway {
     },
 
     async restorePurchases(): Promise<{ entitlements: Entitlements }> {
+      if (busy) {
+        console.warn('[purchases] restore busy');
+        const offline = await getEntitlements();
+        return { entitlements: offline };
+      }
+      busy = true;
       try {
+        // Test hook: allow injecting mock restore without native SDK
+        try {
+          const maybeMock = (globalThis as unknown as { __triadePurchasesMock?: { restorePurchases?: () => Promise<{ entitlements: Entitlements }> } })
+            .__triadePurchasesMock?.restorePurchases;
+          if (typeof maybeMock === 'function') {
+            const mocked = await maybeMock();
+            const mockActive = mocked?.entitlements ?? {};
+            const remote: Entitlements = {};
+            for (const [k, v] of Object.entries(mockActive)) {
+              if (typeof v === 'boolean' && v) remote[k] = true;
+              else if (v) remote[k] = true;
+            }
+            const offline = await getEntitlements();
+            const merged = mergeEntitlements(offline, remote);
+            await setEntitlements(merged);
+            return { entitlements: merged };
+          }
+        } catch (e) {
+          console.warn('[purchases] restore mock failed:', String((e as Error)?.message ?? e));
+          const offline = await getEntitlements();
+          return { entitlements: offline };
+        }
         let Purchases: unknown;
         try {
           // @ts-ignore — optional native module
@@ -261,6 +289,8 @@ export function createPurchasesGateway(): PurchasesGateway {
         console.warn('[purchases] restore unexpected error:', String((e as Error)?.message ?? e));
         const offline = await getEntitlements();
         return { entitlements: offline };
+      } finally {
+        busy = false;
       }
     },
   };

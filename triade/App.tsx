@@ -113,6 +113,7 @@ function AppContent() {
   const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
   const [entitlements, setEntitlements] = useState<Entitlements>({});
+  const [restoreBusy, setRestoreBusy] = useState(false);
 
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
@@ -619,6 +620,27 @@ function AppContent() {
     // No state mutation needed — continue slot stays gated by canContinueDerived if still true (retry allowed).
   }, []);
 
+  const handleRestorePurchases = useCallback(async () => {
+    if (purchaseBusyRef.current || adBusyRef.current || restoreBusy) return;
+    // Single-monetization guard — also respects global gateway busy
+    purchaseBusyRef.current = true;
+    setRestoreBusy(true);
+    try {
+      const gateway = createPurchasesGateway();
+      const result = await gateway.restorePurchases();
+      setEntitlements(result.entitlements);
+      // Re-derive unlimited from entitlements; per-match budgets never restored
+      if (result.entitlements[ENTITLEMENT_NO_ADS] === true) {
+        setUndoBudget((prev) => (prev.unlimited ? prev : { ...prev, unlimited: true }));
+      }
+    } catch {
+      // never throw to UI, leave board/budgets untouched
+    } finally {
+      purchaseBusyRef.current = false;
+      setRestoreBusy(false);
+    }
+  }, [restoreBusy]);
+
   // Stable gesture (created once) reads the latest doMove through a ref so a
   // move dispatched during an in-flight animation never uses a stale board
   // closure (the deferred "rapid same-frame moves" debt, replaced here by the
@@ -666,6 +688,8 @@ function AppContent() {
           insets={insets}
           onSelectLane={applyLaneSelection}
           onJogar={handleJogar}
+          onRestorePurchases={handleRestorePurchases}
+          restoreBusy={restoreBusy}
         />
         <StatusBar style="auto" />
       </View>
