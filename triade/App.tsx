@@ -68,6 +68,9 @@ import { createPurchasesGateway } from './src/services/monetization/purchases.ts
 import { ENTITLEMENT_NO_ADS } from './src/services/monetization/purchaseConfig.ts';
 import { getEntitlements } from './src/services/storage/entitlements.ts';
 import type { Entitlements } from './src/services/storage/entitlements.ts';
+import { TutorialOverlay } from './src/ui/TutorialOverlay.tsx';
+import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12MergeInResult } from './src/game/tutorial.ts';
+import type { TutorialState } from './src/game/tutorial.ts';
 
 export default function App() {
   return (
@@ -114,6 +117,7 @@ function AppContent() {
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
   const [entitlements, setEntitlements] = useState<Entitlements>({});
   const [restoreBusy, setRestoreBusy] = useState(false);
+  const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
 
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
@@ -197,9 +201,21 @@ function AppContent() {
         setMatchStats(initialStats(s.board));
         busyRef.current = false;
         resetAssistance();
+        // Tutorial: new lane may need its own 3-move sequence
+        if (!settings.tutorialCompleted[nextLaneId]) {
+          setTutorialState(createTutorialState(nextLaneId));
+        } else {
+          setTutorialState(null);
+        }
       } else {
         // No active match: sync HUD best to the newly selected lane's persisted best
         setMatch(initialScore(persistedBestByLane[nextLaneId]));
+        // Prepare tutorial for the newly selected lane if not yet completed
+        if (!settings.tutorialCompleted[nextLaneId]) {
+          setTutorialState(createTutorialState(nextLaneId));
+        } else {
+          setTutorialState(null);
+        }
       }
       setSelectedLaneIndex(index);
       const nextSettings: Settings = { ...settings, laneDefault: index };
@@ -210,19 +226,33 @@ function AppContent() {
   );
 
   const handleJogar = useCallback(() => {
-    // Jogar is one-tap shortcut into a game on the selected lane.
-    // If already playing on same lane with active match, just show the game.
-    // If no active match, ensure a fresh board (first game after install).
-    if (!hasActiveMatch && match.score === 0) {
-      // Fresh launch or after lane change that already reset — ensure board is fresh
-      // (newGame already called by applyLaneSelection when needed).
+    const activeLaneIdForTutorial: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+    const completed = settings.tutorialCompleted[activeLaneIdForTutorial];
+    if (!completed && !tutorialState) {
+      setTutorialState(createTutorialState(activeLaneIdForTutorial));
+    } else if (completed && tutorialState && isTutorialActive(tutorialState)) {
+      // Edge: flag was set elsewhere, clear stale active tutorial
+      setTutorialState(null);
     }
     setScreen('playing');
-  }, [hasActiveMatch, match.score]);
+  }, [hasActiveMatch, match.score, selectedLaneIndex, settings.tutorialCompleted, tutorialState]);
 
   const handleBackToLaneSelect = useCallback(() => {
     setScreen('laneSelect');
   }, []);
+
+  const handleSkipTutorial = useCallback(() => {
+    if (!tutorialState || !isTutorialActive(tutorialState)) return;
+    const laneId = tutorialState.laneId;
+    setTutorialState(null);
+    busyRef.current = false;
+    const nextSettings: Settings = {
+      ...settings,
+      tutorialCompleted: { ...settings.tutorialCompleted, [laneId]: true },
+    };
+    setSettings(nextSettings);
+    void saveSettings(nextSettings);
+  }, [tutorialState, settings]);
 
   const doMove = useCallback(
     (dir: Direction) => {
@@ -245,9 +275,35 @@ function AppContent() {
         setHintHighlight(null);
         // Any move clears undo prompt (ad prompt only between turns)
         setShowUndoPrompt(false);
+        // Tutorial progression — only on effective moves (NOOP stays on same phase)
+        if (tutorialState && isTutorialActive(tutorialState)) {
+          const did12Before = tutorialState.phase === 'merge12';
+          const next = nextPhase(tutorialState, result);
+          // Light haptic on the 1+2→3 climax (best-effort, never blocks)
+          if (did12Before && next.phase !== 'merge12' && has12MergeInResult(result)) {
+            try {
+              // @ts-ignore expo-haptics optional — SDK 57 pinned, may not be installed in test env
+              void import('expo-haptics')
+                .then((mod: any) => mod.impactAsync(mod.ImpactFeedbackStyle.Light))
+                .catch(() => {});
+            } catch {}
+          }
+          if (next.phase === 'completed') {
+            const laneId = next.laneId;
+            setTutorialState(null);
+            const nextSettings: Settings = {
+              ...settings,
+              tutorialCompleted: { ...settings.tutorialCompleted, [laneId]: true },
+            };
+            setSettings(nextSettings);
+            void saveSettings(nextSettings);
+          } else {
+            setTutorialState(next);
+          }
+        }
       }
     },
-    [game, match, matchStats],
+    [game, match, matchStats, tutorialState, settings],
   );
 
   const handleRestart = useCallback(() => {
@@ -760,6 +816,9 @@ function AppContent() {
         {/* 4.3 Hint 5-pack purchase prompt — only Accelerated when hints exhausted (no canHint) AND board has pair, Clean never mounts */}
         {activeLaneId === 'accelerated' && !canHintDerived && hintBudget.remaining === 0 && hintHighlight === null && !gameOver && findMergeablePair(game.board) !== null ? (
           <RewardPrompt title="Sem dicas — comprar 5?" onAd={() => {}} onIap={handleHintPurchase} onCancel={() => {}} />
+        ) : null}
+        {tutorialState && isTutorialActive(tutorialState) ? (
+          <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
         ) : null}
         <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel="Pistas">
           <Text style={styles.menuLabel}>Pistas</Text>

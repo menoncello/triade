@@ -8,7 +8,8 @@ export const STORAGE_KEYS = {
   theme: '@triade/theme',
   reducedMotion: '@triade/reducedMotion',
   language: '@triade/language',
-  laneDefault: '@triade/laneDefault'
+  laneDefault: '@triade/laneDefault',
+  tutorialCompleted: '@triade/tutorialCompleted'
 } as const;
 
 export type LaneId = 'clean' | 'accelerated';
@@ -181,11 +182,13 @@ export async function loadSettingsFromStorage(): Promise<Settings> {
     const reducedMotion = getField(store, STORAGE_KEYS.reducedMotion);
     const language = getField(store, STORAGE_KEYS.language);
     const laneDefault = getField(store, STORAGE_KEYS.laneDefault);
+    const tutorialCompleted = getField(store, STORAGE_KEYS.tutorialCompleted);
     const partial = {
       ...(theme !== undefined ? { theme } : {}),
       ...(reducedMotion !== undefined ? { reducedMotion } : {}),
       ...(language !== undefined ? { language } : {}),
-      ...(laneDefault !== undefined ? { laneDefault } : {})
+      ...(laneDefault !== undefined ? { laneDefault } : {}),
+      ...(tutorialCompleted !== undefined ? { tutorialCompleted } : {})
     };
     return loadSettings(JSON.stringify(partial));
   } catch {
@@ -207,7 +210,8 @@ export async function saveSettings(settings: Settings): Promise<void> {
     [STORAGE_KEYS.theme, JSON.stringify(settings.theme)],
     [STORAGE_KEYS.reducedMotion, JSON.stringify(settings.reducedMotion)],
     [STORAGE_KEYS.language, JSON.stringify(settings.language)],
-    [STORAGE_KEYS.laneDefault, JSON.stringify(settings.laneDefault)]
+    [STORAGE_KEYS.laneDefault, JSON.stringify(settings.laneDefault)],
+    [STORAGE_KEYS.tutorialCompleted, JSON.stringify(settings.tutorialCompleted)]
   ];
   for (const [key, value] of writes) {
     try {

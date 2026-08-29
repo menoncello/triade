@@ -1,15 +1,22 @@
+export interface TutorialCompleted {
+  clean: boolean;
+  accelerated: boolean;
+}
+
 export interface Settings {
   theme: string;
   reducedMotion: boolean;
   language: string;
   laneDefault: number;
+  tutorialCompleted: TutorialCompleted;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'dark',
   reducedMotion: false,
   language: 'en',
-  laneDefault: 0
+  laneDefault: 0,
+  tutorialCompleted: { clean: false, accelerated: false }
 };
 
 // Lane count is a game domain constant (Clean / Accelerated); laneDefault is an
@@ -23,6 +30,14 @@ function isObject(value: unknown): value is Record<string, unknown> {
 
 function isValidLaneIndex(value: unknown): value is number {
   return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value < LANE_COUNT;
+}
+
+function parseTutorialCompleted(value: unknown): TutorialCompleted {
+  if (!isObject(value)) return { ...DEFAULT_SETTINGS.tutorialCompleted };
+  return {
+    clean: typeof value.clean === 'boolean' ? value.clean : DEFAULT_SETTINGS.tutorialCompleted.clean,
+    accelerated: typeof value.accelerated === 'boolean' ? value.accelerated : DEFAULT_SETTINGS.tutorialCompleted.accelerated
+  };
 }
 
 export function loadSettings(raw: string): Settings {
@@ -39,7 +54,8 @@ export function loadSettings(raw: string): Settings {
     theme: typeof parsed.theme === 'string' ? parsed.theme : DEFAULT_SETTINGS.theme,
     reducedMotion: typeof parsed.reducedMotion === 'boolean' ? parsed.reducedMotion : DEFAULT_SETTINGS.reducedMotion,
     language: typeof parsed.language === 'string' ? parsed.language : DEFAULT_SETTINGS.language,
-    laneDefault: isValidLaneIndex(parsed.laneDefault) ? parsed.laneDefault : DEFAULT_SETTINGS.laneDefault
+    laneDefault: isValidLaneIndex(parsed.laneDefault) ? parsed.laneDefault : DEFAULT_SETTINGS.laneDefault,
+    tutorialCompleted: parseTutorialCompleted((parsed as Record<string, unknown>).tutorialCompleted)
   };
 }
 
