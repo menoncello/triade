@@ -71,6 +71,7 @@ import type { Entitlements } from './src/services/storage/entitlements.ts';
 import { TutorialOverlay } from './src/ui/TutorialOverlay.tsx';
 import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12MergeInResult } from './src/game/tutorial.ts';
 import type { TutorialState } from './src/game/tutorial.ts';
+import { ToneScreen } from './src/ui/ToneScreen.tsx';
 
 export default function App() {
   return (
@@ -82,7 +83,7 @@ export default function App() {
   );
 }
 
-type Screen = 'laneSelect' | 'playing';
+type Screen = 'tone' | 'laneSelect' | 'playing';
 
 type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats };
 
@@ -138,6 +139,12 @@ function AppContent() {
       setMatch(initialScore(byLane[activeLane].best));
       setSettings(loadedSettings);
       setSelectedLaneIndex(loadedSettings.laneDefault);
+      // Tone screen: first launch only — if not yet seen, show tone before laneSelect
+      if (!loadedSettings.hasSeenToneScreen) {
+        setScreen('tone');
+      } else {
+        setScreen('laneSelect');
+      }
       // Hydrate entitlements (SecureStore authoritative offline, ADR-02) — No Ads unlimited re-derived
       try {
         const ent = await getEntitlements();
@@ -253,6 +260,13 @@ function AppContent() {
     setSettings(nextSettings);
     void saveSettings(nextSettings);
   }, [tutorialState, settings]);
+
+  const handleToneDismiss = useCallback(() => {
+    setScreen('laneSelect');
+    const nextSettings: Settings = { ...settings, hasSeenToneScreen: true };
+    setSettings(nextSettings);
+    void saveSettings(nextSettings);
+  }, [settings]);
 
   const doMove = useCallback(
     (dir: Direction) => {
@@ -729,6 +743,15 @@ function AppContent() {
     return (
       <View style={styles.container}>
         <Text style={styles.stats}>preloading bundled assets…</Text>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  if (screen === 'tone') {
+    return (
+      <View style={styles.container}>
+        <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
         <StatusBar style="auto" />
       </View>
     );

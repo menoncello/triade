@@ -9,6 +9,7 @@ export interface Settings {
   language: string;
   laneDefault: number;
   tutorialCompleted: TutorialCompleted;
+  hasSeenToneScreen: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -16,7 +17,8 @@ export const DEFAULT_SETTINGS: Settings = {
   reducedMotion: false,
   language: 'en',
   laneDefault: 0,
-  tutorialCompleted: { clean: false, accelerated: false }
+  tutorialCompleted: { clean: false, accelerated: false },
+  hasSeenToneScreen: false
 };
 
 // Lane count is a game domain constant (Clean / Accelerated); laneDefault is an
@@ -55,7 +57,11 @@ export function loadSettings(raw: string): Settings {
     reducedMotion: typeof parsed.reducedMotion === 'boolean' ? parsed.reducedMotion : DEFAULT_SETTINGS.reducedMotion,
     language: typeof parsed.language === 'string' ? parsed.language : DEFAULT_SETTINGS.language,
     laneDefault: isValidLaneIndex(parsed.laneDefault) ? parsed.laneDefault : DEFAULT_SETTINGS.laneDefault,
-    tutorialCompleted: parseTutorialCompleted((parsed as Record<string, unknown>).tutorialCompleted)
+    tutorialCompleted: parseTutorialCompleted((parsed as Record<string, unknown>).tutorialCompleted),
+    hasSeenToneScreen:
+      typeof (parsed as Record<string, unknown>).hasSeenToneScreen === 'boolean'
+        ? ((parsed as Record<string, unknown>).hasSeenToneScreen as boolean)
+        : DEFAULT_SETTINGS.hasSeenToneScreen
   };
 }
 

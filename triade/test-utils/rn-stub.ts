@@ -91,6 +91,14 @@ export const Dimensions = {
 };
 export const StatusBar = () => null;
 
+export const AccessibilityInfo = {
+  isScreenReaderEnabled: () => Promise.resolve(false),
+  addEventListener: (_event: string, _handler: any) => ({ remove: () => {} }),
+  announceForAccessibility: (_msg: string) => {},
+  announceForAccessibilityWithOptions: (_msg: string, _opts: any) => {},
+  setAccessibilityFocus: (_id: number) => {},
+};
+
 // --- Type-level shims so `react-native-gesture-handler` + RN component props ---
 // resolve under the stub's path mapping (ViewStyle etc. are imported by RNGH
 // types via `react-native`). Keeping them as `any` preserves host-testable
