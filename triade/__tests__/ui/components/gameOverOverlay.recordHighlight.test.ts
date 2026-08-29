@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert';
 import React, { act } from 'react';
 import TestRenderer from 'react-test-renderer';
+import { i18n } from '../../../src/i18n/index.ts';
 
 // Story 6.4 — Novo recorde como número destacado (D-013, UX-DR-12)
 // `triade/src/ui/GameOverOverlay.tsx` already ships highlight via 6.1
@@ -75,6 +76,7 @@ function baseProps(overrides: Partial<OverlayProps> = {}): OverlayProps {
 }
 
 async function renderOverlay(props: Partial<OverlayProps> = {}): Promise<TestRenderer.ReactTestRenderer> {
+  await i18n.changeLanguage('pt');
   const { GameOverOverlay } = await import(SPEC);
   const merged = baseProps(props);
   let renderer: TestRenderer.ReactTestRenderer;
@@ -103,7 +105,7 @@ test('[P0] AC1 highlight is number not event — isNewRecord true renders valueR
   assert.ok(/valueRecord\s*:\s*\{[^}]*color\s*:\s*['"]#E8A33D['"]/.test(src), 'valueRecord style definition must be `{ color: \'#E8A33D\' }`');
   assert.ok(/valueRecord[^}]*fontVariant\s*:\s*\[.*tabular-nums.*\]/.test(src), 'valueRecord must preserve fontVariant: [\'tabular-nums\'] (E9 shape/text, DESIGN.md:261)');
 
-  assert.ok(/a11yLabel[\s\S]*isNewRecord\s*\?\s*['"] Novo recorde['"]/.test(src) || /a11yLabel[\s\S]*\(isNewRecord \? ' Novo recorde' : ''\)/.test(src), 'a11yLabel must append " Novo recorde" when isNewRecord true (UX-DR-2 announcement contract)');
+  assert.ok(/a11yLabel[\s\S]*isNewRecord[\s\S]*Novo recorde/.test(src) || /a11yLabel[\s\S]*gameOver\.newRecord/.test(src), 'a11yLabel must append " Novo recorde" (or t(gameOver.newRecord)) when isNewRecord true (UX-DR-2 announcement contract)');
 
   const off = await renderOverlay({ isNewRecord: false });
   const on = await renderOverlay({ isNewRecord: true });

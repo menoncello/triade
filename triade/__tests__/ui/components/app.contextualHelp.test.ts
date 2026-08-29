@@ -110,8 +110,11 @@ test('[P1] Banner copy is factual plain-spoken, nunca scolding, with design toke
   const { dirname, join } = await import('node:path');
   const here = dirname(fileURLToPath(import.meta.url));
   const bannerSrc = readFileSync(join(here, '../../../src/ui/AcceleratedAids.tsx'), 'utf8');
-  assert.ok(bannerSrc.includes('Teto aberto'), 'Ceiling copy must be "Teto aberto — peças maiores podem surgir."');
-  assert.ok(bannerSrc.includes('Pouco espaço'), 'Stuck copy must be "Pouco espaço — procure fusões."');
+  const ptJson = JSON.parse(readFileSync(join(here, '../../../src/i18n/locales/pt.json'), 'utf8'));
+  const hasCeiling = bannerSrc.includes('Teto aberto') || bannerSrc.includes("accelerated.ceilingHint") || (ptJson.accelerated && ptJson.accelerated.ceilingHint && ptJson.accelerated.ceilingHint.includes('Teto aberto'));
+  const hasStuck = bannerSrc.includes('Pouco espaço') || bannerSrc.includes("accelerated.stuckHint") || (ptJson.accelerated && ptJson.accelerated.stuckHint && ptJson.accelerated.stuckHint.includes('Pouco espaço'));
+  assert.ok(hasCeiling, 'Ceiling copy must be "Teto aberto — peças maiores podem surgir." via t(accelerated.ceilingHint) or pt.json');
+  assert.ok(hasStuck, 'Stuck copy must be "Pouco espaço — procure fusões." via t(accelerated.stuckHint) or pt.json');
   // scolding check scoped to the Text copy lines only (avoid matching style keys like borderRadius which contains "errad" case-insensitive)
   const copyLines = bannerSrc.split('\n').filter((l) => l.includes('<Text') && l.includes('style='));
   const copyText = copyLines.join(' ');
@@ -130,10 +133,11 @@ test('[P1] Dismiss buttons are 44pt and banners are a11y labelled, gameOver supp
   const here = dirname(fileURLToPath(import.meta.url));
   const appSrc = readFileSync(join(here, '../../../App.tsx'), 'utf8');
   const bannerSrc = readFileSync(join(here, '../../../src/ui/AcceleratedAids.tsx'), 'utf8');
-  // a11y labels in banner src
+  // a11y labels in banner src — now via t('accelerated.dismiss') but PT still "Dispensar"
   assert.ok(bannerSrc.includes('accessibilityLabel="indicador de teto"'), 'Ceiling must have a11y label indicador de teto');
   assert.ok(bannerSrc.includes('accessibilityLabel="aviso de travamento"'), 'Stuck must have a11y label aviso de travamento');
-  assert.ok((bannerSrc.match(/accessibilityLabel="Dispensar"/g) || []).length >= 2, 'both banners must have Dispensar button');
+  const hasDispensar = (bannerSrc.match(/accessibilityLabel="Dispensar"/g) || []).length >= 2 || (bannerSrc.match(/accelerated\.dismiss/g) || []).length >= 2;
+  assert.ok(hasDispensar, 'both banners must have Dispensar button via t(accelerated.dismiss) or literal');
   // gameOver suppress verified in App gating (already above) — extra pin
   assert.ok(/showCeilingBanner.*!gameOver/.test(appSrc), 'Ceiling must be suppressed by !gameOver');
   assert.ok(/showStuckBanner.*!gameOver/.test(appSrc), 'Stuck must be suppressed by !gameOver');

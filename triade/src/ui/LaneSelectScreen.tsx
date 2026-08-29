@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { HIT_TARGET } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
@@ -13,6 +15,8 @@ export interface LaneSelectScreenProps {
   onJogar: () => void;
   onRestorePurchases?: () => void | Promise<void>;
   restoreBusy?: boolean;
+  language?: 'pt' | 'en';
+  onLanguageChange?: (lng: 'pt' | 'en') => void;
 }
 
 export function LaneSelectScreen({
@@ -23,7 +27,10 @@ export function LaneSelectScreen({
   onJogar,
   onRestorePurchases,
   restoreBusy,
+  language,
+  onLanguageChange,
 }: LaneSelectScreenProps) {
+  const { t } = useTranslation();
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
   const handleCardPress = (index: number) => {
@@ -51,55 +58,62 @@ export function LaneSelectScreen({
   const leftPad = (insets?.left ?? 0) + SAFE_MARGIN;
   const rightPad = (insets?.right ?? 0) + SAFE_MARGIN;
 
+  const laneLabel = (id: string) => (id === 'clean' ? t('lane.clean.label') : t('lane.accelerated.label'));
+  const laneSubtitle = (id: string) => (id === 'clean' ? '' : t('lane.accelerated.subtitle'));
+  const laneTone = (id: string) => (id === 'clean' ? t('lane.clean.tone') : t('lane.accelerated.tone'));
+
   return (
     <View
       style={[styles.container, { paddingTop: topPad, paddingBottom: bottomPad, paddingLeft: leftPad, paddingRight: rightPad }]}
       accessibilityLabel="Lane Select"
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>Tríade</Text>
-        <Text style={styles.subtitle}>Escolha sua pista</Text>
+        <Text style={styles.title}>{t('laneSelect.title')}</Text>
+        <Text style={styles.subtitle}>{t('laneSelect.subtitle')}</Text>
 
         <View style={styles.cardsRow}>
           {LANES.map((lane) => {
             const isSelected = lane.index === selectedIndex;
+            const label = laneLabel(lane.id);
+            const subtitle = laneSubtitle(lane.id);
+            const tone = laneTone(lane.id);
             return (
               <Pressable
                 key={lane.id}
                 onPress={() => handleCardPress(lane.index)}
                 style={[styles.card, isSelected ? styles.cardSelected : styles.cardIdle]}
                 accessibilityRole="button"
-                accessibilityLabel={`${lane.label}${lane.subtitle ? ` ${lane.subtitle}` : ''}`}
+                accessibilityLabel={`${label}${subtitle ? ` ${subtitle}` : ''}`}
                 accessibilityState={{ selected: isSelected }}
               >
                 {isSelected ? <View style={styles.accentBar} /> : null}
-                <Text style={styles.cardLabel}>{lane.label}</Text>
-                {lane.subtitle ? <Text style={styles.cardSubtitle}>{lane.subtitle}</Text> : null}
-                <Text style={styles.cardTone}>{lane.toneLine}</Text>
+                <Text style={styles.cardLabel}>{label}</Text>
+                {subtitle ? <Text style={styles.cardSubtitle}>{subtitle}</Text> : null}
+                <Text style={styles.cardTone}>{tone}</Text>
               </Pressable>
             );
           })}
         </View>
 
         {pendingIndex !== null ? (
-          <View style={styles.warningBanner} accessibilityLabel="Mudar de pista inicia um novo jogo">
-            <Text style={styles.warningText}>Mudar de pista inicia um novo jogo. Continuar?</Text>
+          <View style={styles.warningBanner} accessibilityLabel={t('laneSelect.switchWarning')}>
+            <Text style={styles.warningText}>{t('laneSelect.switchWarning')}</Text>
             <View style={styles.warningActions}>
               <Pressable
                 onPress={handleConfirm}
                 style={styles.warningConfirm}
                 accessibilityRole="button"
-                accessibilityLabel="Confirmar"
+                accessibilityLabel={t('laneSelect.confirm')}
               >
-                <Text style={styles.warningConfirmLabel}>Confirmar</Text>
+                <Text style={styles.warningConfirmLabel}>{t('laneSelect.confirm')}</Text>
               </Pressable>
               <Pressable
                 onPress={handleCancel}
                 style={styles.warningCancel}
                 accessibilityRole="button"
-                accessibilityLabel="Cancelar"
+                accessibilityLabel={t('laneSelect.cancel')}
               >
-                <Text style={styles.warningCancelLabel}>Cancelar</Text>
+                <Text style={styles.warningCancelLabel}>{t('laneSelect.cancel')}</Text>
               </Pressable>
             </View>
           </View>
@@ -109,9 +123,9 @@ export function LaneSelectScreen({
           onPress={onJogar}
           style={styles.cta}
           accessibilityRole="button"
-          accessibilityLabel="Jogar"
+          accessibilityLabel={t('laneSelect.play')}
         >
-          <Text style={styles.ctaLabel}>Jogar</Text>
+          <Text style={styles.ctaLabel}>{t('laneSelect.play')}</Text>
         </Pressable>
         {onRestorePurchases ? (
           <Pressable
@@ -119,14 +133,36 @@ export function LaneSelectScreen({
             disabled={!!restoreBusy}
             style={[styles.restoreBtn, restoreBusy ? styles.restoreBtnBusy : null]}
             accessibilityRole="button"
-            accessibilityLabel="Restaurar compras"
+            accessibilityLabel={t('laneSelect.restore')}
             accessibilityState={{ busy: !!restoreBusy, disabled: !!restoreBusy }}
           >
-            <Text style={styles.restoreLabel}>{restoreBusy ? 'Restaurando…' : 'Restaurar compras'}</Text>
+            <Text style={styles.restoreLabel}>{restoreBusy ? t('laneSelect.restoring') : t('laneSelect.restore')}</Text>
           </Pressable>
         ) : null}
         {hasActiveMatch && pendingIndex === null ? (
-          <Text style={styles.footerNote}>Mudar de pista inicia um novo jogo</Text>
+          <Text style={styles.footerNote}>{t('laneSelect.footerNote')}</Text>
+        ) : null}
+        {onLanguageChange ? (
+          <View style={styles.langRow} accessibilityLabel="language selector">
+            <Pressable
+              onPress={() => onLanguageChange('pt')}
+              style={[styles.langBtn, language === 'pt' ? styles.langBtnSelected : styles.langBtnIdle]}
+              accessibilityRole="button"
+              accessibilityLabel="Português"
+              accessibilityState={{ selected: language === 'pt' }}
+            >
+              <Text style={[styles.langLabel, language === 'pt' ? styles.langLabelSelected : null]}>PT</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => onLanguageChange('en')}
+              style={[styles.langBtn, language === 'en' ? styles.langBtnSelected : styles.langBtnIdle]}
+              accessibilityRole="button"
+              accessibilityLabel="English"
+              accessibilityState={{ selected: language === 'en' }}
+            >
+              <Text style={[styles.langLabel, language === 'en' ? styles.langLabelSelected : null]}>EN</Text>
+            </Pressable>
+          </View>
         ) : null}
       </View>
     </View>
@@ -295,5 +331,36 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     color: '#1a1d23',
+  },
+  langRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    gap: 8,
+    alignSelf: 'center',
+  },
+  langBtn: {
+    minHeight: HIT_TARGET,
+    minWidth: HIT_TARGET,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  langBtnIdle: {
+    borderColor: '#e7e4de',
+    backgroundColor: '#fff',
+  },
+  langBtnSelected: {
+    borderColor: '#E8A33D',
+    backgroundColor: '#fff7ec',
+  },
+  langLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1a1d23',
+  },
+  langLabelSelected: {
+    color: '#1C1206',
   },
 });

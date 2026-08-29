@@ -45,6 +45,8 @@ function allText(renderer: TestRenderer.ReactTestRenderer): string[] {
 }
 
 test('[P0] CeilingBanner renders factual copy, accent edge and 44pt dismiss with a11y', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderCeiling(() => {});
   const texts = allText(renderer);
   assert.ok(texts.some((t) => t.includes('Teto aberto')), `CeilingBanner must contain "Teto aberto — peças maiores podem surgir."; got ${texts.join('|')}`);
@@ -71,6 +73,8 @@ test('[P0] CeilingBanner renders factual copy, accent edge and 44pt dismiss with
 });
 
 test('[P0] StuckBanner renders factual copy, accent and dismiss', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderStuck(() => {});
   const texts = allText(renderer);
   assert.ok(texts.some((t) => t.includes('Pouco espaço')), `StuckBanner must contain "Pouco espaço — procure fusões."; got ${texts.join('|')}`);
@@ -109,8 +113,8 @@ test('[P1] AcceleratedAids source has TODO 5.4 waiver and pure copy', async () =
   const { dirname, join } = await import('node:path');
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../src/ui/AcceleratedAids.tsx'), 'utf8');
-  assert.ok(src.includes("TODO 5.4: t('accelerated.ceilingHint')"), 'CeilingBanner must have // TODO 5.4: t(\'accelerated.ceilingHint\') waiver');
-  assert.ok(src.includes("TODO 5.4: t('accelerated.stuckHint')"), 'StuckBanner must have // TODO 5.4: t(\'accelerated.stuckHint\') waiver');
+  assert.ok(src.includes("t('accelerated.ceilingHint')") || src.includes('t("accelerated.ceilingHint")'), 'CeilingBanner must use t(\'accelerated.ceilingHint\')');
+  assert.ok(src.includes("t('accelerated.stuckHint')") || src.includes('t("accelerated.stuckHint")'), 'StuckBanner must use t(\'accelerated.stuckHint\')');
   assert.ok(src.includes("HIT_TARGET"), 'must reference HIT_TARGET for 44pt');
   assert.ok(!src.includes('Math.random'), 'banner must not use Math.random');
   assert.ok(!src.includes('ceilingDetector'), 'banner is presentational — must not import ceiling logic');

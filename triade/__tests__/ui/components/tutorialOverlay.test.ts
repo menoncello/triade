@@ -23,6 +23,8 @@ function findByLabel(root: any, label: string): any | null {
 }
 
 test('[P0] TutorialOverlay renders cue for merge12 and Pular button with 44pt and a11y', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderTutorial({ phase: 'merge12', insets, onSkip: () => {} });
   const textNodes = renderer.root.findAll((n: any) => n.type === 'Text');
   const texts = textNodes.map((n: any) => {
@@ -45,6 +47,8 @@ test('[P0] TutorialOverlay renders cue for merge12 and Pular button with 44pt an
 });
 
 test('[P0] TutorialOverlay per-phase text and null on completed', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const r1 = await renderTutorial({ phase: 'oneCell', insets, onSkip: () => {} });
   const texts1 = r1.root.findAll((n: any) => n.type === 'Text').map((n: any) => String(n.props.children ?? ''));
   assert.ok(JSON.stringify(texts1).includes('uma casa') || JSON.stringify(texts1).includes('mova'), 'oneCell cue must be present');
@@ -57,6 +61,8 @@ test('[P0] TutorialOverlay per-phase text and null on completed', async () => {
 });
 
 test('[P0] TutorialOverlay onSkip called and safe-margin padding used', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   let called = 0;
   const renderer = await renderTutorial({ phase: 'merge12', insets, onSkip: () => called++ });
   const btn = findByLabel(renderer.root, 'Pular tutorial');

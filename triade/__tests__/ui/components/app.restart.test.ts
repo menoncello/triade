@@ -341,8 +341,8 @@ test('[P1] AC5 Clean only primary CTA', async () => {
   // Source must have AC5 comment above Pressable
   assert.ok(src.includes('AC5: Continue offer is Epic 3/4'), 'GameOverOverlay.tsx must contain "// AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here" above Pressable');
 
-  // 3.3 Accelerated adds gated Continue — allow when gated by activeLaneId
-  assert.ok(/Continuar/.test(stripped), 'GameOverOverlay.tsx must contain Continuar for Accelerated gated offer');
+  // 3.3 Accelerated adds gated Continue — allow when gated by activeLaneId (now via i18n key)
+  assert.ok(/gameOver\.continueTitle/.test(src) || /Continuar/.test(stripped), 'GameOverOverlay.tsx must contain Continuar (or t(gameOver.continueTitle)) for Accelerated gated offer');
   assert.ok(/onContinue/.test(stripped), 'must contain onContinue gated prop');
   assert.ok(/activeLaneId\s*===\s*['"]accelerated['"]/.test(src), 'Continuar must be gated by activeLaneId === accelerated');
   assert.ok(!/react-native-purchases/.test(stripped), 'must not contain react-native-purchases');

@@ -55,6 +55,8 @@ async function renderLaneSelect(props: any): Promise<TestRenderer.ReactTestRende
 }
 
 test('[P0] Lane Select renders two cards + Jogar CTA', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderLaneSelect({
     selectedIndex: 0,
     hasActiveMatch: false,
@@ -70,6 +72,8 @@ test('[P0] Lane Select renders two cards + Jogar CTA', async () => {
 });
 
 test('[P0] default lane highlighted with accent #E8A33D and selected state', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderLaneSelect({
     selectedIndex: 0,
     hasActiveMatch: false,
@@ -84,6 +88,8 @@ test('[P0] default lane highlighted with accent #E8A33D and selected state', asy
 });
 
 test('[P0] Jogar CTA is ≥44pt, tabular-nums, calls onJogar', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   let calls = 0;
   const renderer = await renderLaneSelect({
     selectedIndex: 1,
@@ -106,6 +112,8 @@ test('[P0] Jogar CTA is ≥44pt, tabular-nums, calls onJogar', async () => {
 });
 
 test('[P0] tapping other lane without active match directly calls onSelectLane', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   let selected: number | null = null;
   const renderer = await renderLaneSelect({
     selectedIndex: 0,
@@ -123,6 +131,8 @@ test('[P0] tapping other lane without active match directly calls onSelectLane',
 });
 
 test('[P0] tapping other lane WITH active match shows warning with Confirmar/Cancelar', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   let selected: number | null = null;
   const renderer = await renderLaneSelect({
     selectedIndex: 0,
@@ -135,7 +145,7 @@ test('[P0] tapping other lane WITH active match shows warning with Confirmar/Can
   act(() => other.props.onPress());
   // Inline warning banner appears, not direct call
   assert.equal(selected, null, 'must not call onSelectLane before confirm');
-  const banner = renderer.root.findAll((n) => n.props?.accessibilityLabel === 'Mudar de pista inicia um novo jogo');
+  const banner = renderer.root.findAll((n) => typeof n.props?.accessibilityLabel === 'string' && n.props.accessibilityLabel.includes('Mudar de pista'));
   assert.ok(banner.length > 0, 'warning banner must appear');
   const t = allText(renderer);
   assert.ok(t.some((p) => String(p).includes('Mudar de pista')), 'banner text must contain warning');

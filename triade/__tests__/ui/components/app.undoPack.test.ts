@@ -31,11 +31,11 @@ test('App mounts undo 3-pack purchase prompt when accelerated undo exhausted (la
   const { fileURLToPath } = await import('node:url');
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../App.tsx'), 'utf8');
-  assert.match(src, /Sem desfazer — comprar 3\?/);
+  assert.ok(src.includes("t('reward.noUndo')") || src.includes('t("reward.noUndo")') || /Sem desfazer — comprar 3\?/.test(src), 'must use t(reward.noUndo) for undo prompt title');
   assert.match(src, /!canUndoDerived/);
   assert.match(src, /undoHistory\.length\s*>\s*0/);
   // Clean lane wall: prompt gated by accelerated
-  const promptIdx = src.indexOf('Sem desfazer — comprar 3?');
+  const promptIdx = src.indexOf('reward.noUndo') !== -1 ? src.indexOf('reward.noUndo') : src.indexOf('Sem desfazer — comprar 3?');
   const context = src.slice(Math.max(0, promptIdx - 800), promptIdx + 800);
   assert.ok(context.includes('accelerated'), 'prompt must be gated by accelerated');
   assert.ok(context.includes('handleUndoPurchase'), 'onIap must be handleUndoPurchase');
@@ -50,7 +50,7 @@ test('App suppresses undo ad prompt when hasNoAds (unlimited owners rewind immed
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../App.tsx'), 'utf8');
   // undo prompt gated by !hasNoAds
-  const undoPromptIdx = src.indexOf('Desfazer último movimento?');
+  const undoPromptIdx = src.indexOf('reward.undo') !== -1 ? src.indexOf('reward.undo') : src.indexOf('Desfazer último movimento?');
   const undoContext = src.slice(Math.max(0, undoPromptIdx - 1000), undoPromptIdx + 1000);
   assert.ok(undoContext.includes('!hasNoAds') || undoContext.includes('hasNoAds'), 'undo prompt must check hasNoAds');
   // handleUndoRequest immediate path when hasNoAds
@@ -168,6 +168,8 @@ test('purchase busy double-tap does not double-grant — shared busy across meth
 });
 
 test('RewardPrompt for undo purchase has correct title and button ordering', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const { RewardPrompt } = await import('../../../src/ui/AcceleratedAids.tsx');
   let ad = 0, iap = 0, cancel = 0;
   let renderer: TestRenderer.ReactTestRenderer;

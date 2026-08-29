@@ -12,16 +12,16 @@ export const LANES: readonly LaneDef[] = [
   {
     id: 'clean',
     index: 0,
-    label: 'Pura', // TODO 5.4: t('lane.clean.label')
-    subtitle: '', // Clean has no subtitle, tone line carries the fantasy
-    toneLine: 'Score puro, sem ajuda.', // TODO 5.4: t('lane.clean.tone')
+    label: 'Pura',
+    subtitle: '',
+    toneLine: 'Score puro, sem ajuda.',
   },
   {
     id: 'accelerated',
     index: 1,
-    label: 'Iniciante', // TODO 5.4: t('lane.accelerated.label')
-    subtitle: 'Com ajuda', // TODO 5.4: t('lane.accelerated.subtitle')
-    toneLine: 'Com ajuda quando precisar.', // TODO 5.4: t('lane.accelerated.tone')
+    label: 'Iniciante',
+    subtitle: 'Com ajuda',
+    toneLine: 'Com ajuda quando precisar.',
   },
 ] as const;
 

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { HIT_TARGET } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
 
@@ -34,6 +36,7 @@ export function GameOverOverlay({
   onContinueIap,
   onContinueCancel,
 }: GameOverOverlayProps) {
+  const { t } = useTranslation();
   const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
   const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
   const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
@@ -43,7 +46,7 @@ export function GameOverOverlay({
 
   const a11yLabel =
     `Game over. Score ${stats.score}, best ${stats.best}, max tile ${stats.maxTile}, merges ${stats.merges}, longest streak ${stats.longestStreak}` +
-    (isNewRecord ? ' Novo recorde' : '');
+    (isNewRecord ? ` ${t('gameOver.newRecord')}` : '');
 
   const scrimOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
   const contentOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
@@ -88,28 +91,23 @@ export function GameOverOverlay({
         <View style={styles.content}>
           <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
             <View style={styles.row}>
-              <Text style={styles.label}>Pontuação</Text>
-              {/* TODO 5.4: t('gameOver.score') */}
+              <Text style={styles.label}>{t('gameOver.score')}</Text>
               <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Recorde</Text>
-              {/* TODO 5.4: t('gameOver.best') */}
+              <Text style={styles.label}>{t('gameOver.best')}</Text>
               <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Maior peça</Text>
-              {/* TODO 5.4: t('gameOver.maxTile') */}
+              <Text style={styles.label}>{t('gameOver.maxTile')}</Text>
               <Text style={styles.value}>{String(stats.maxTile)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Fusões</Text>
-              {/* TODO 5.4: t('gameOver.merges') */}
+              <Text style={styles.label}>{t('gameOver.merges')}</Text>
               <Text style={styles.value}>{String(stats.merges)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Maior sequência</Text>
-              {/* TODO 5.4: t('gameOver.longestStreak') */}
+              <Text style={styles.label}>{t('gameOver.longestStreak')}</Text>
               <Text style={styles.value}>{String(stats.longestStreak)}</Text>
             </View>
           </View>
@@ -117,42 +115,41 @@ export function GameOverOverlay({
           {/* 3.2 Clean lane: no continue/ad/hint — see LaneProfile */}
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Jogar de novo"
+            accessibilityLabel={t('gameOver.restart')}
             onPress={onRestart}
             style={styles.cta}
           >
-            <Text style={styles.ctaLabel}>Jogar de novo</Text>
-            {/* TODO 5.4: t('gameOver.restart') */}
+            <Text style={styles.ctaLabel}>{t('gameOver.restart')}</Text>
           </Pressable>
           {/* 3.3 Accelerated death-continue — discreet, once per game-over, ad first + IAP alternative + Cancel */}
           {activeLaneId === 'accelerated' && canContinue ? (
-            <View style={styles.continueWrap} accessibilityLabel="Continuar">
-              <Text style={styles.continueTitle}>Continuar?</Text>
+            <View style={styles.continueWrap} accessibilityLabel={t('gameOver.continueTitle')}>
+              <Text style={styles.continueTitle}>{t('gameOver.continueTitle')}</Text>
               <View style={styles.continueRow}>
                 <Pressable
                   onPress={onContinueAd}
                   style={styles.continueAd}
                   accessibilityRole="button"
-                  accessibilityLabel="Ver anúncio"
+                  accessibilityLabel={t('gameOver.continueAd')}
                 >
-                  <Text style={styles.continueAdLabel}>Ver anúncio</Text>
+                  <Text style={styles.continueAdLabel}>{t('gameOver.continueAd')}</Text>
                 </Pressable>
                 <Pressable
                   onPress={onContinueIap}
                   style={styles.continueIap}
                   accessibilityRole="button"
-                  accessibilityLabel="Comprar"
+                  accessibilityLabel={t('gameOver.continueIap')}
                 >
-                  <Text style={styles.continueIapLabel}>Comprar</Text>
+                  <Text style={styles.continueIapLabel}>{t('gameOver.continueIap')}</Text>
                 </Pressable>
               </View>
               <Pressable
                 onPress={onContinueCancel}
                 style={styles.continueCancel}
                 accessibilityRole="button"
-                accessibilityLabel="Cancelar"
+                accessibilityLabel={t('gameOver.cancel')}
               >
-                <Text style={styles.continueCancelLabel}>Cancelar</Text>
+                <Text style={styles.continueCancelLabel}>{t('gameOver.cancel')}</Text>
               </Pressable>
             </View>
           ) : null}

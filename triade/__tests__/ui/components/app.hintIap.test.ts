@@ -27,11 +27,11 @@ test('App mounts hint purchase prompt when accelerated hints exhausted (lane wal
   const { fileURLToPath } = await import('node:url');
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../App.tsx'), 'utf8');
-  assert.match(src, /Sem dicas — comprar 5\?/);
+  assert.ok(src.includes("reward.noHint") || /Sem dicas — comprar 5\?/.test(src), 'must use t(reward.noHint) for hint prompt');
   assert.match(src, /activeLaneId\s*===\s*['"]accelerated['"]\s*&&\s*!canHintDerived/);
   assert.match(src, /hintHighlight\s*===\s*null/);
   // Clean lane wall: purchase prompt gated by accelerated
-  const promptIdx = src.indexOf('Sem dicas — comprar 5?');
+  const promptIdx = src.indexOf('reward.noHint') !== -1 ? src.indexOf('reward.noHint') : src.indexOf('Sem dicas — comprar 5?');
   const context = src.slice(Math.max(0, promptIdx - 500), promptIdx + 500);
   assert.ok(context.includes('accelerated'), 'prompt must be gated by accelerated');
   assert.ok(!context.includes('clean'), 'prompt context should not mount for clean');
@@ -156,6 +156,8 @@ test('App handleHint still gated by profile.canHint and busyRef', async () => {
 });
 
 test('RewardPrompt reused for hint purchase has correct title ordering', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const { RewardPrompt } = await import('../../../src/ui/AcceleratedAids.tsx');
   let ad = 0, iap = 0, cancel = 0;
   let renderer: TestRenderer.ReactTestRenderer;

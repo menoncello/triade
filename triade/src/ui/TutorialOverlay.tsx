@@ -1,4 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
 import type { TutorialPhase } from '../game/tutorial.ts';
@@ -10,17 +12,17 @@ interface Props {
   onSkip: () => void;
 }
 
-function textForPhase(phase: TutorialPhase): string {
-  // TODO 5.4: t('tutorial.*')
-  if (phase === 'merge12') return 'Junte 1 e 2 para fazer 3 — deslize eles juntos'; // TODO 5.4: t('tutorial.merge12')
-  if (phase === 'merge12_followup') return 'De novo — 1+2 vira 3'; // TODO 5.4: t('tutorial.merge12_followup')
-  if (phase === 'oneCell') return 'Agora mova uma peça uma casa'; // TODO 5.4: t('tutorial.oneCell')
+function textForPhase(phase: TutorialPhase, t: (key: string) => string): string {
+  if (phase === 'merge12') return t('tutorial.merge12');
+  if (phase === 'merge12_followup') return t('tutorial.merge12_followup');
+  if (phase === 'oneCell') return t('tutorial.oneCell');
   return '';
 }
 
 export function TutorialOverlay({ phase, insets, onSkip }: Props) {
+  const { t } = useTranslation();
   if (phase === 'completed' || phase === 'skipped') return null;
-  const text = textForPhase(phase);
+  const text = textForPhase(phase, t);
   return (
     <View pointerEvents="box-none" style={styles.overlay}>
       <View
@@ -43,9 +45,9 @@ export function TutorialOverlay({ phase, insets, onSkip }: Props) {
           onPress={onSkip}
           style={styles.skipBtn}
           accessibilityRole="button"
-          accessibilityLabel="Pular tutorial"
+          accessibilityLabel={t('tutorial.skipA11y')}
         >
-          <Text style={styles.skipLabel}>Pular</Text>
+          <Text style={styles.skipLabel}>{t('tutorial.skip')}</Text>
         </Pressable>
       </View>
     </View>

@@ -72,6 +72,9 @@ import { TutorialOverlay } from './src/ui/TutorialOverlay.tsx';
 import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12MergeInResult } from './src/game/tutorial.ts';
 import type { TutorialState } from './src/game/tutorial.ts';
 import { ToneScreen } from './src/ui/ToneScreen.tsx';
+import './src/i18n/index.ts';
+import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function App() {
   return (
@@ -88,6 +91,7 @@ type Screen = 'tone' | 'laneSelect' | 'playing';
 type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats };
 
 function AppContent() {
+  const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { boardSize, bandHeight, isLandscape } = layoutFor({ width, height, insets });
@@ -120,13 +124,44 @@ function AppContent() {
   const [restoreBusy, setRestoreBusy] = useState(false);
   const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
 
+  // Sync i18n language with Settings.language — immediate apply per UX-DR-30
+  // Normalizes pt-BR/en-US etc to pt/en for i18next (supportedLngs)
+  function normalizeLng(raw: string | undefined): 'pt' | 'en' {
+    if (typeof raw === 'string' && raw.startsWith('pt')) return 'pt';
+    if (typeof raw === 'string' && raw.startsWith('en')) return 'en';
+    return 'en';
+  }
+  useEffect(() => {
+    const lng = normalizeLng(settings.language);
+    if (i18n.language !== lng) void i18n.changeLanguage(lng);
+  }, [settings.language]);
+
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
     // instead of blocking launch; `ready` only gates on hydration (never hangs).
     void preloadAssets();
     let cancelled = false;
     (async () => {
-      const loadedSettings = await loadSettingsFromStorage();
+      let loadedSettings = await loadSettingsFromStorage();
+      if (cancelled) return;
+      // If no persisted language, pick up device locale via expo-localization (spec 5.4)
+      try {
+        const { hasPersistedLanguage } = await import('./src/services/storage/settingsStore.ts');
+        const hasLang = await hasPersistedLanguage();
+        if (!hasLang) {
+          const deviceLng = getDeviceLanguage();
+          if (deviceLng !== loadedSettings.language) {
+            loadedSettings = { ...loadedSettings, language: deviceLng };
+          }
+        }
+      } catch {}
+      // Ensure i18n matches the hydrated (or device-derived) language before first render
+      const lng2 = typeof loadedSettings.language === 'string' && loadedSettings.language.startsWith('pt') ? 'pt' : typeof loadedSettings.language === 'string' && loadedSettings.language.startsWith('en') ? 'en' : 'en';
+      if (i18n.language !== lng2) {
+        try {
+          await i18n.changeLanguage(lng2);
+        } catch {}
+      }
       if (cancelled) return;
       // Migrate legacy single-key best to per-lane storage (once, non-destructive).
       await migrateLegacyBest(loadedSettings.laneDefault);
@@ -269,6 +304,18 @@ function AppContent() {
     setSettings(nextSettings);
     void saveSettings(nextSettings);
   }, [settings]);
+
+  const handleLanguageChange = useCallback(
+    (lng: 'pt' | 'en') => {
+      if (lng !== 'pt' && lng !== 'en') return;
+      if (lng === settings.language) return;
+      const nextSettings: Settings = { ...settings, language: lng };
+      setSettings(nextSettings);
+      void saveSettings(nextSettings);
+      void i18n.changeLanguage(lng);
+    },
+    [settings],
+  );
 
   const doMove = useCallback(
     (dir: Direction) => {
@@ -771,6 +818,8 @@ function AppContent() {
           onJogar={handleJogar}
           onRestorePurchases={handleRestorePurchases}
           restoreBusy={restoreBusy}
+          language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
+          onLanguageChange={handleLanguageChange}
         />
         <StatusBar style="auto" />
       </View>
@@ -832,21 +881,21 @@ function AppContent() {
         {showStuckBanner ? <StuckBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, stuck: true }))} /> : null}
         {/* 3.3 Reward prompt for undo (between-turn, never during animation or gameOver) — suppressed when hasNoAds (unlimited owners rewind immediately) */}
         {activeLaneId === 'accelerated' && showUndoPrompt && !gameOver && !hasNoAds ? (
-          <RewardPrompt title="Desfazer último movimento?" onAd={handleUndoAd} onIap={handleUndoPurchase} onCancel={handleUndoCancel} />
+          <RewardPrompt title={t('reward.undo')} onAd={handleUndoAd} onIap={handleUndoPurchase} onCancel={handleUndoCancel} />
         ) : null}
         {/* 4.4 Undo 3-pack purchase prompt — only Accelerated when undo exhausted but history exists, not hasNoAds */}
         {activeLaneId === 'accelerated' && !canUndoDerived && undoHistory.length > 0 && !hasNoAds && !showUndoPrompt && !gameOver ? (
-          <RewardPrompt title="Sem desfazer — comprar 3?" onAd={() => {}} onIap={handleUndoPurchase} onCancel={() => {}} />
+          <RewardPrompt title={t('reward.noUndo')} onAd={() => {}} onIap={handleUndoPurchase} onCancel={() => {}} />
         ) : null}
         {/* 4.3 Hint 5-pack purchase prompt — only Accelerated when hints exhausted (no canHint) AND board has pair, Clean never mounts */}
         {activeLaneId === 'accelerated' && !canHintDerived && hintBudget.remaining === 0 && hintHighlight === null && !gameOver && findMergeablePair(game.board) !== null ? (
-          <RewardPrompt title="Sem dicas — comprar 5?" onAd={() => {}} onIap={handleHintPurchase} onCancel={() => {}} />
+          <RewardPrompt title={t('reward.noHint')} onAd={() => {}} onIap={handleHintPurchase} onCancel={() => {}} />
         ) : null}
         {tutorialState && isTutorialActive(tutorialState) ? (
           <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
         ) : null}
-        <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel="Pistas">
-          <Text style={styles.menuLabel}>Pistas</Text>
+        <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel={t('laneSelect.pistas')}>
+          <Text style={styles.menuLabel}>{t('laneSelect.pistas')}</Text>
         </Pressable>
         <Text style={styles.stats}>
           {stats

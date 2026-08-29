@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
 
@@ -9,6 +11,7 @@ export interface ToneScreenProps {
 }
 
 export function ToneScreen({ insets, onDismiss }: ToneScreenProps) {
+  const { t } = useTranslation();
   const onDismissRef = useRef(onDismiss);
   onDismissRef.current = onDismiss;
   const [voiceOverActive, setVoiceOverActive] = useState(false);
@@ -106,8 +109,8 @@ export function ToneScreen({ insets, onDismiss }: ToneScreenProps) {
       onPress={() => onDismissRef.current()}
       style={[styles.root, { paddingTop: topPad, paddingBottom: bottomPad, paddingLeft: leftPad, paddingRight: rightPad }]}
       accessibilityRole="button"
-      accessibilityLabel="Pular"
-      accessibilityHint="Tocar para continuar"
+      accessibilityLabel={t('tone.skipA11y')}
+      accessibilityHint={t('tone.skipHint')}
       testID="tone-screen-pressable"
     >
       <View style={styles.center} pointerEvents="none">
@@ -115,7 +118,7 @@ export function ToneScreen({ insets, onDismiss }: ToneScreenProps) {
           <View style={styles.tile} />
         </View>
         <Text style={styles.copy} accessibilityRole="text">
-          controle sobre o caos{/* TODO 5.4: t('tone.line') */}
+          {t('tone.line')}
         </Text>
       </View>
     </Pressable>

@@ -3,6 +3,8 @@ export interface TutorialCompleted {
   accelerated: boolean;
 }
 
+export type SupportedLanguage = 'pt' | 'en';
+
 export interface Settings {
   theme: string;
   reducedMotion: boolean;
@@ -55,7 +57,7 @@ export function loadSettings(raw: string): Settings {
   return {
     theme: typeof parsed.theme === 'string' ? parsed.theme : DEFAULT_SETTINGS.theme,
     reducedMotion: typeof parsed.reducedMotion === 'boolean' ? parsed.reducedMotion : DEFAULT_SETTINGS.reducedMotion,
-    language: typeof parsed.language === 'string' ? parsed.language : DEFAULT_SETTINGS.language,
+    language: typeof (parsed as Record<string, unknown>).language === 'string' ? ((parsed as Record<string, unknown>).language as string) : DEFAULT_SETTINGS.language,
     laneDefault: isValidLaneIndex(parsed.laneDefault) ? parsed.laneDefault : DEFAULT_SETTINGS.laneDefault,
     tutorialCompleted: parseTutorialCompleted((parsed as Record<string, unknown>).tutorialCompleted),
     hasSeenToneScreen:

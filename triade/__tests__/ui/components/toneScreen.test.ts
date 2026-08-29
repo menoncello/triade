@@ -17,6 +17,8 @@ async function renderTone(props: any): Promise<TestRenderer.ReactTestRenderer> {
 }
 
 test('[P0] ToneScreen renders dark slate, tile and copy with a11y', async () => {
+  const { i18n } = await import('../../../src/i18n/index.ts');
+  await i18n.changeLanguage('pt');
   const renderer = await renderTone({ insets, onDismiss: () => {} });
   const json = JSON.stringify(renderer.toJSON());
   assert.ok(json.includes('#1a1d23'), 'root must be dark slate #1a1d23');

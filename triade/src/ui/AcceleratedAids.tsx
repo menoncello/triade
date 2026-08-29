@@ -1,14 +1,16 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { HIT_TARGET } from './PauseButton';
 
 export function CeilingBanner({ onDismiss }: { onDismiss: () => void }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.banner} accessibilityLabel="indicador de teto">
       <View style={styles.bannerAccent} />
       <View style={styles.bannerContent}>
-        <Text style={styles.bannerText}>Teto aberto — peças maiores podem surgir.</Text>
-        {/* TODO 5.4: t('accelerated.ceilingHint') */}
-        <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel="Dispensar">
+        <Text style={styles.bannerText}>{t('accelerated.ceilingHint')}</Text>
+        <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel={t('accelerated.dismiss')}>
           <Text style={styles.dismissLabel}>×</Text>
         </Pressable>
       </View>
@@ -17,13 +19,13 @@ export function CeilingBanner({ onDismiss }: { onDismiss: () => void }) {
 }
 
 export function StuckBanner({ onDismiss }: { onDismiss: () => void }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.banner} accessibilityLabel="aviso de travamento">
       <View style={styles.bannerAccent} />
       <View style={styles.bannerContent}>
-        <Text style={styles.bannerText}>Pouco espaço — procure fusões.</Text>
-        {/* TODO 5.4: t('accelerated.stuckHint') */}
-        <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel="Dispensar">
+        <Text style={styles.bannerText}>{t('accelerated.stuckHint')}</Text>
+        <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel={t('accelerated.dismiss')}>
           <Text style={styles.dismissLabel}>×</Text>
         </Pressable>
       </View>
@@ -42,19 +44,20 @@ export function RewardPrompt({
   onIap: () => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.prompt} accessibilityLabel={title}>
       <Text style={styles.promptTitle}>{title}</Text>
       <View style={styles.promptRow}>
-        <Pressable onPress={onAd} style={styles.adBtn} accessibilityRole="button" accessibilityLabel="Ver anúncio">
-          <Text style={styles.adLabel}>Ver anúncio</Text>
+        <Pressable onPress={onAd} style={styles.adBtn} accessibilityRole="button" accessibilityLabel={t('reward.ad')}>
+          <Text style={styles.adLabel}>{t('reward.ad')}</Text>
         </Pressable>
-        <Pressable onPress={onIap} style={styles.iapBtn} accessibilityRole="button" accessibilityLabel="Comprar">
-          <Text style={styles.iapLabel}>Comprar</Text>
+        <Pressable onPress={onIap} style={styles.iapBtn} accessibilityRole="button" accessibilityLabel={t('reward.iap')}>
+          <Text style={styles.iapLabel}>{t('reward.iap')}</Text>
         </Pressable>
       </View>
-      <Pressable onPress={onCancel} style={styles.cancelBtn} accessibilityRole="button" accessibilityLabel="Cancelar">
-        <Text style={styles.cancelLabel}>Cancelar</Text>
+      <Pressable onPress={onCancel} style={styles.cancelBtn} accessibilityRole="button" accessibilityLabel={t('reward.cancel')}>
+        <Text style={styles.cancelLabel}>{t('reward.cancel')}</Text>
       </Pressable>
     </View>
   );

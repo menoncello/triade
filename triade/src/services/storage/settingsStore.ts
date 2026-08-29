@@ -176,6 +176,15 @@ function getField(store: { getString(key: string): string | undefined }, key: st
   }
 }
 
+export async function hasPersistedLanguage(): Promise<boolean> {
+  try {
+    const store = await mmkv();
+    return store.getString(STORAGE_KEYS.language) !== undefined;
+  } catch {
+    return false;
+  }
+}
+
 export async function loadSettingsFromStorage(): Promise<Settings> {
   try {
     const store = await mmkv();

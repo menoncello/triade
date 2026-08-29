@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert';
 import React, { act } from 'react';
 import TestRenderer from 'react-test-renderer';
+import { i18n } from '../../../src/i18n/index.ts';
 
 // Story 6.1 — GameOverOverlay presentational chrome (T2 thin-view)
 // `triade/src/ui/GameOverOverlay.tsx` does not exist yet — red-phase scaffolds
@@ -70,6 +71,7 @@ function baseProps(overrides: Partial<OverlayProps> = {}): OverlayProps {
 }
 
 async function renderOverlay(props: Partial<OverlayProps> = {}): Promise<TestRenderer.ReactTestRenderer> {
+  await i18n.changeLanguage('pt');
   const { GameOverOverlay } = await import(SPEC);
   const merged = baseProps(props);
   let renderer: TestRenderer.ReactTestRenderer;
