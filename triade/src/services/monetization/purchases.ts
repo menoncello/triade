@@ -1,4 +1,11 @@
-import { HINT_5_PACK_PRODUCT_ID, ENTITLEMENT_HINT_5 } from './purchaseConfig.ts';
+import {
+  HINT_5_PACK_PRODUCT_ID,
+  UNDO_3_PACK_PRODUCT_ID,
+  NO_ADS_UNLIMITED_PRODUCT_ID,
+  ENTITLEMENT_HINT_5,
+  ENTITLEMENT_UNDO_3,
+  ENTITLEMENT_NO_ADS,
+} from './purchaseConfig.ts';
 import { getEntitlements, setEntitlements, mergeEntitlements } from '../storage/entitlements.ts';
 import type { Entitlements } from '../storage/entitlements.ts';
 
@@ -6,6 +13,8 @@ export type PurchasesResult = { granted: boolean; error?: string };
 
 export type PurchasesGateway = {
   purchaseHintPack(): Promise<PurchasesResult>;
+  purchaseUndoPack(): Promise<PurchasesResult>;
+  purchaseNoAds(): Promise<PurchasesResult>;
   restorePurchases(): Promise<{ entitlements: Entitlements }>;
 };
 
@@ -76,6 +85,134 @@ export function createPurchasesGateway(): PurchasesGateway {
         return { granted: true };
       } catch (e) {
         console.warn('[purchases] purchaseHintPack unexpected error:', String((e as Error)?.message ?? e));
+        return { granted: false, error: String((e as Error)?.message ?? e) };
+      } finally {
+        busy = false;
+      }
+    },
+
+    async purchaseUndoPack(): Promise<PurchasesResult> {
+      if (busy) return { granted: false, error: 'busy' };
+      busy = true;
+      try {
+        let Purchases: unknown;
+        try {
+          // @ts-ignore — optional native module, not installed in CI host
+          const mod = await import('react-native-purchases');
+          Purchases = (mod as Record<string, unknown>).default ?? (mod as Record<string, unknown>).Purchases ?? mod;
+        } catch (e) {
+          console.warn('[purchases] purchaseUndoPack import failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: String((e as Error)?.message ?? e) };
+        }
+        const purchasesObj = Purchases as Record<string, unknown>;
+        const hasPurchaseStoreProduct = typeof purchasesObj.purchaseStoreProduct === 'function';
+        const hasPurchasePackage = typeof purchasesObj.purchasePackage === 'function';
+        const hasGetOfferings = typeof purchasesObj.getOfferings === 'function';
+        if (!hasPurchaseStoreProduct && !hasPurchasePackage) {
+          console.warn('[purchases] purchaseUndoPack unavailable: no purchase method');
+          return { granted: false, error: 'Purchases API unavailable' };
+        }
+        try {
+          if (hasPurchaseStoreProduct) {
+            await (purchasesObj.purchaseStoreProduct as (id: string) => Promise<unknown>)(UNDO_3_PACK_PRODUCT_ID);
+          } else if (hasGetOfferings && hasPurchasePackage) {
+            const offerings = await (purchasesObj.getOfferings as () => Promise<{ current?: { availablePackages?: Array<{ product: { identifier: string } }> } }> )();
+            const pkg = offerings?.current?.availablePackages?.find((p) => p.product.identifier === UNDO_3_PACK_PRODUCT_ID);
+            if (pkg) {
+              await (purchasesObj.purchasePackage as (pkg: unknown) => Promise<unknown>)(pkg);
+            } else {
+              console.warn('[purchases] purchaseUndoPack package not found for', UNDO_3_PACK_PRODUCT_ID);
+              return { granted: false, error: 'package not found' };
+            }
+          } else {
+            return { granted: false, error: 'Purchases API unavailable' };
+          }
+        } catch (e) {
+          console.warn('[purchases] purchaseUndoPack failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: String((e as Error)?.message ?? e) };
+        }
+        try {
+          const offline = await getEntitlements();
+          const remote: Entitlements = { [ENTITLEMENT_UNDO_3]: true };
+          const merged = mergeEntitlements(offline, remote);
+          merged[ENTITLEMENT_UNDO_3] = true;
+          await setEntitlements(merged);
+          const verify = await getEntitlements();
+          if (!verify[ENTITLEMENT_UNDO_3]) {
+            console.warn('[purchases] entitlement verify failed after set');
+            return { granted: false, error: 'persist_failed' };
+          }
+        } catch (e) {
+          console.warn('[purchases] setEntitlements failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: 'persist_failed' };
+        }
+        return { granted: true };
+      } catch (e) {
+        console.warn('[purchases] purchaseUndoPack unexpected error:', String((e as Error)?.message ?? e));
+        return { granted: false, error: String((e as Error)?.message ?? e) };
+      } finally {
+        busy = false;
+      }
+    },
+
+    async purchaseNoAds(): Promise<PurchasesResult> {
+      if (busy) return { granted: false, error: 'busy' };
+      busy = true;
+      try {
+        let Purchases: unknown;
+        try {
+          // @ts-ignore — optional native module, not installed in CI host
+          const mod = await import('react-native-purchases');
+          Purchases = (mod as Record<string, unknown>).default ?? (mod as Record<string, unknown>).Purchases ?? mod;
+        } catch (e) {
+          console.warn('[purchases] purchaseNoAds import failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: String((e as Error)?.message ?? e) };
+        }
+        const purchasesObj = Purchases as Record<string, unknown>;
+        const hasPurchaseStoreProduct = typeof purchasesObj.purchaseStoreProduct === 'function';
+        const hasPurchasePackage = typeof purchasesObj.purchasePackage === 'function';
+        const hasGetOfferings = typeof purchasesObj.getOfferings === 'function';
+        if (!hasPurchaseStoreProduct && !hasPurchasePackage) {
+          console.warn('[purchases] purchaseNoAds unavailable: no purchase method');
+          return { granted: false, error: 'Purchases API unavailable' };
+        }
+        try {
+          if (hasPurchaseStoreProduct) {
+            await (purchasesObj.purchaseStoreProduct as (id: string) => Promise<unknown>)(NO_ADS_UNLIMITED_PRODUCT_ID);
+          } else if (hasGetOfferings && hasPurchasePackage) {
+            const offerings = await (purchasesObj.getOfferings as () => Promise<{ current?: { availablePackages?: Array<{ product: { identifier: string } }> } }> )();
+            const pkg = offerings?.current?.availablePackages?.find((p) => p.product.identifier === NO_ADS_UNLIMITED_PRODUCT_ID);
+            if (pkg) {
+              await (purchasesObj.purchasePackage as (pkg: unknown) => Promise<unknown>)(pkg);
+            } else {
+              console.warn('[purchases] purchaseNoAds package not found for', NO_ADS_UNLIMITED_PRODUCT_ID);
+              return { granted: false, error: 'package not found' };
+            }
+          } else {
+            return { granted: false, error: 'Purchases API unavailable' };
+          }
+        } catch (e) {
+          console.warn('[purchases] purchaseNoAds failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: String((e as Error)?.message ?? e) };
+        }
+        try {
+          const offline = await getEntitlements();
+          const remote: Entitlements = { [ENTITLEMENT_NO_ADS]: true };
+          const merged = mergeEntitlements(offline, remote);
+          merged[ENTITLEMENT_NO_ADS] = true;
+          await setEntitlements(merged);
+          const verify = await getEntitlements();
+          if (!verify[ENTITLEMENT_NO_ADS]) {
+            console.warn('[purchases] entitlement verify failed after set');
+            return { granted: false, error: 'persist_failed' };
+          }
+        } catch (e) {
+          console.warn('[purchases] setEntitlements failed:', String((e as Error)?.message ?? e));
+          return { granted: false, error: 'persist_failed' };
+        }
+        return { granted: true };
+      } catch (e) {
+        console.warn('[purchases] purchaseNoAds unexpected error:', String((e as Error)?.message ?? e));
         return { granted: false, error: String((e as Error)?.message ?? e) };
       } finally {
         busy = false;

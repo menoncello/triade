@@ -52,6 +52,8 @@ import {
   cancelUndo as orchestratorCancelUndo,
   requestHint as orchestratorRequestHint,
   purchaseHintPack as orchestratorPurchaseHintPack,
+  purchaseUndoPack as orchestratorPurchaseUndoPack,
+  applyNoAds as orchestratorApplyNoAds,
   consumeContinueAd as orchestratorConsumeContinueAd,
   consumeContinueIap as orchestratorConsumeContinueIap,
   canUndoForState as orchestratorCanUndoForState,
@@ -63,6 +65,9 @@ import { CeilingBanner, StuckBanner, RewardPrompt } from './src/ui/AcceleratedAi
 import { createRewardedAdGateway } from './src/services/monetization/rewardedAds.ts';
 import { rewardedContinueUnitId } from './src/services/monetization/adsConfig.ts';
 import { createPurchasesGateway } from './src/services/monetization/purchases.ts';
+import { ENTITLEMENT_NO_ADS } from './src/services/monetization/purchaseConfig.ts';
+import { getEntitlements } from './src/services/storage/entitlements.ts';
+import type { Entitlements } from './src/services/storage/entitlements.ts';
 
 export default function App() {
   return (
@@ -107,6 +112,7 @@ function AppContent() {
   const [hintHighlight, setHintHighlight] = useState<[[number, number], [number, number]] | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
+  const [entitlements, setEntitlements] = useState<Entitlements>({});
 
   useEffect(() => {
     // NFR-3: preload is fire-and-forget — a stalled preload degrades to defaults
@@ -127,6 +133,18 @@ function AppContent() {
       setMatch(initialScore(byLane[activeLane].best));
       setSettings(loadedSettings);
       setSelectedLaneIndex(loadedSettings.laneDefault);
+      // Hydrate entitlements (SecureStore authoritative offline, ADR-02) — No Ads unlimited re-derived
+      try {
+        const ent = await getEntitlements();
+        if (!cancelled) {
+          setEntitlements(ent);
+          if (ent[ENTITLEMENT_NO_ADS]) {
+            setUndoBudget((prev) => (prev.unlimited ? prev : { ...prev, unlimited: true }));
+          }
+        }
+      } catch {
+        // ignore
+      }
       setReady(true);
     })();
     return () => {
@@ -153,13 +171,16 @@ function AppContent() {
 
   const resetAssistance = useCallback(() => {
     setUndoHistory([]);
-    setUndoBudget(initialUndoBudget());
+    // Per-match udno budget dies with match (ADR-02) — re-derive unlimited from entitlements
+    const base = initialUndoBudget();
+    if (entitlements[ENTITLEMENT_NO_ADS]) base.unlimited = true;
+    setUndoBudget(base);
     setHintBudget(initialHintBudget(5));
     setContinueBudget(initialContinueBudget());
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
-  }, []);
+  }, [entitlements]);
 
   const applyLaneSelection = useCallback(
     (index: number) => {
@@ -238,19 +259,49 @@ function AppContent() {
     setMatchStats(initialStats(s.board));
     busyRef.current = false;
     setUndoHistory([]);
-    setUndoBudget(initialUndoBudget());
+    const base = initialUndoBudget();
+    if (entitlements[ENTITLEMENT_NO_ADS]) base.unlimited = true;
+    setUndoBudget(base);
     setHintBudget(initialHintBudget(5));
     setContinueBudget(initialContinueBudget());
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
-  }, [persistedBestByLane, selectedLaneIndex]);
+  }, [persistedBestByLane, selectedLaneIndex, entitlements]);
 
   // 3.3 Accelerated assistance handlers — gated by LaneProfile
   const activeLaneIdForHandlers = laneFromIndex(selectedLaneIndex).id;
   const activeProfile = profileForLaneId(activeLaneIdForHandlers);
+  const hasNoAds = entitlements[ENTITLEMENT_NO_ADS] === true;
 
   const handleUndoRequest = useCallback(() => {
+    // No Ads + Unlimited suppresses prompt — direct rewind without ad
+    if (hasNoAds && activeProfile.canUndo) {
+      if (busyRef.current) return;
+      if (undoHistory.length <= 0) return;
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const res = orchestratorConfirmUndoAd(tmp, activeProfile);
+      if (!res.ok || !res.snapshot) return;
+      const snap = res.snapshot;
+      setUndoHistory(res.state.undoHistory);
+      setUndoBudget(res.state.undoBudget);
+      setHintHighlight(res.state.hintHighlight);
+      setShowUndoPrompt(res.state.showUndoPrompt);
+      setGame(snap.game);
+      setMatch(snap.match);
+      setMatchStats(snap.matchStats);
+      setMoveResult(null);
+      busyRef.current = false;
+      return;
+    }
     const tmp: OrchestratorState = {
       undoHistory,
       undoBudget,
@@ -263,7 +314,7 @@ function AppContent() {
     const res = orchestratorRequestUndo(tmp, activeProfile, busyRef.current);
     if (!res.ok) return;
     setShowUndoPrompt(true);
-  }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
+  }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt, hasNoAds]);
 
   const handleUndoAd = useCallback(async () => {
     if (adBusyRef.current) return;
@@ -380,12 +431,123 @@ function AppContent() {
         if (!Number.isSafeInteger(next) || next > 999) return { remaining: 999 };
         return { remaining: next };
       });
+      try {
+        const ent = await getEntitlements();
+        setEntitlements(ent);
+      } catch {
+        // ignore
+      }
     } finally {
       purchaseBusyRef.current = false;
     }
   }, [activeProfile]);
 
+  const handleUndoPurchase = useCallback(async () => {
+    if (purchaseBusyRef.current || adBusyRef.current) return;
+    if (!activeProfile.canUndo) return;
+    purchaseBusyRef.current = true;
+    try {
+      const maybeMock = (globalThis as unknown as { __triadePurchasesMock?: { purchaseUndoPack: () => Promise<{ granted: boolean }>; purchaseNoAds?: () => Promise<{ granted: boolean }> } })
+        .__triadePurchasesMock;
+      let granted = false;
+      if (maybeMock?.purchaseUndoPack) {
+        const res = await maybeMock.purchaseUndoPack();
+        granted = res.granted;
+      } else {
+        const gateway = createPurchasesGateway();
+        const res = await gateway.purchaseUndoPack();
+        granted = res.granted;
+      }
+      if (!granted) return;
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const nextState = orchestratorPurchaseUndoPack(tmp, activeProfile);
+      setUndoBudget(nextState.undoBudget);
+      try {
+        const ent = await getEntitlements();
+        setEntitlements(ent);
+      } catch {
+        // ignore
+      }
+    } finally {
+      purchaseBusyRef.current = false;
+    }
+  }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
+
+  const handleNoAdsPurchase = useCallback(async () => {
+    if (purchaseBusyRef.current || adBusyRef.current) return;
+    if (!activeProfile.canUndo) return;
+    purchaseBusyRef.current = true;
+    try {
+      const maybeMock = (globalThis as unknown as { __triadePurchasesMock?: { purchaseNoAds: () => Promise<{ granted: boolean }>; purchaseUndoPack?: () => Promise<{ granted: boolean }> } })
+        .__triadePurchasesMock;
+      let granted = false;
+      if (maybeMock?.purchaseNoAds) {
+        const res = await maybeMock.purchaseNoAds();
+        granted = res.granted;
+      } else {
+        const gateway = createPurchasesGateway();
+        const res = await gateway.purchaseNoAds();
+        granted = res.granted;
+      }
+      if (!granted) return;
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const nextState = orchestratorApplyNoAds(tmp, activeProfile);
+      setUndoBudget(nextState.undoBudget);
+      try {
+        const ent = await getEntitlements();
+        setEntitlements(ent);
+      } catch {
+        // ignore
+      }
+      setShowUndoPrompt(false);
+    } finally {
+      purchaseBusyRef.current = false;
+    }
+  }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
+
   const handleContinueAd = useCallback(async () => {
+    // No Ads owners: immediate continue without ad
+    if (hasNoAds && activeProfile.canContinue) {
+      const tmp: OrchestratorState = {
+        undoHistory,
+        undoBudget,
+        hintBudget,
+        continueBudget,
+        hintHighlight,
+        bannerDismissed,
+        showUndoPrompt,
+      };
+      const res = orchestratorConsumeContinueAd(tmp, activeProfile);
+      if (!res.ok) return;
+      if (res.snapshot) {
+        setUndoHistory(res.state.undoHistory);
+        setGame(res.snapshot.game);
+        setMatch(res.snapshot.match);
+        setMatchStats(res.snapshot.matchStats);
+        setMoveResult(null);
+      }
+      setContinueBudget(res.state.continueBudget);
+      setHintHighlight(res.state.hintHighlight);
+      setShowUndoPrompt(res.state.showUndoPrompt);
+      busyRef.current = false;
+      return;
+    }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
     if (!activeProfile.allowAds || !activeProfile.canContinue) return;
@@ -425,7 +587,7 @@ function AppContent() {
     } finally {
       adBusyRef.current = false;
     }
-  }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
+  }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt, hasNoAds]);
 
   const handleContinueIap = useCallback(() => {
     const tmp: OrchestratorState = {
@@ -563,9 +725,13 @@ function AppContent() {
         {/* 3.3 Accelerated learning aids — contextual dismissible prompt-banners, never in Clean */}
         {showCeilingBanner ? <CeilingBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, ceiling: true }))} /> : null}
         {showStuckBanner ? <StuckBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, stuck: true }))} /> : null}
-        {/* 3.3 Reward prompt for undo (between-turn, never during animation or gameOver) */}
-        {activeLaneId === 'accelerated' && showUndoPrompt && !gameOver ? (
-          <RewardPrompt title="Desfazer último movimento?" onAd={handleUndoAd} onIap={handleUndoIap} onCancel={handleUndoCancel} />
+        {/* 3.3 Reward prompt for undo (between-turn, never during animation or gameOver) — suppressed when hasNoAds (unlimited owners rewind immediately) */}
+        {activeLaneId === 'accelerated' && showUndoPrompt && !gameOver && !hasNoAds ? (
+          <RewardPrompt title="Desfazer último movimento?" onAd={handleUndoAd} onIap={handleUndoPurchase} onCancel={handleUndoCancel} />
+        ) : null}
+        {/* 4.4 Undo 3-pack purchase prompt — only Accelerated when undo exhausted but history exists, not hasNoAds */}
+        {activeLaneId === 'accelerated' && !canUndoDerived && undoHistory.length > 0 && !hasNoAds && !showUndoPrompt && !gameOver ? (
+          <RewardPrompt title="Sem desfazer — comprar 3?" onAd={() => {}} onIap={handleUndoPurchase} onCancel={() => {}} />
         ) : null}
         {/* 4.3 Hint 5-pack purchase prompt — only Accelerated when hints exhausted (no canHint) AND board has pair, Clean never mounts */}
         {activeLaneId === 'accelerated' && !canHintDerived && hintBudget.remaining === 0 && hintHighlight === null && !gameOver && findMergeablePair(game.board) !== null ? (
