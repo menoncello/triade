@@ -217,6 +217,8 @@ function AppContent() {
       } else {
         // No active match: sync HUD best to the newly selected lane's persisted best
         setMatch(initialScore(persistedBestByLane[nextLaneId]));
+        // 5.3 per-match banners die with match — reset even without active match so new lane's contextual help can appear
+        setBannerDismissed({ ceiling: false, stuck: false });
         // Prepare tutorial for the newly selected lane if not yet completed
         if (!settings.tutorialCompleted[nextLaneId]) {
           setTutorialState(createTutorialState(nextLaneId));
