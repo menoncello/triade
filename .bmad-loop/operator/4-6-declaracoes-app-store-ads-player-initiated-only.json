@@ -1,0 +1,13 @@
+{
+  "actions": [
+    "Create App Store Connect In-App Purchase products triade_hint_5_pack (Type: Consumable, Price: US$0.99 / R$4.90, Reference Name: Hint 5-pack), triade_undo_3_pack (Type: Consumable, Price: US$0.99 / R$4.90), and triade_no_ads_unlimited (Type: Non-Consumable, Price: US$2.99 / R$14.90) and associate them with the Tr\u00edade app bundle",
+    "Configure RevenueCat dashboard: create Products triade_hint_5_pack / triade_undo_3_pack / triade_no_ads_unlimited, link to App Store products, create Entitlements triade_hint_5 / triade_undo_3 / triade_no_ads, and add all three to current Offering/Package",
+    "Configure AdMob placements in AdMob and App Store Connect: ensure Rewarded placements for undo (1 per game) and continue (1 per game over) use player-initiated between-games inventory only, verify no interstitial/banner/app-open units are registered, and declare ad placements in App Store Connect App Privacy / Advertising declarations",
+    "Set RevenueCat API keys in Expo env EXPO_PUBLIC_REVENUECAT_IOS_API_KEY / EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY and production AdMob unit overrides EXPO_PUBLIC_ADMOB_REWARDED_UNDO / EXPO_PUBLIC_ADMOB_REWARDED_CONTINUE if replacing test IDs, then rebuild and validate purchases and rewarded ads on a physical iOS device via sandbox/TestFlight",
+    "Verify before submission that Epic 10 privacy compliance is complete: GDPR consent mode + ATT prompt (10.4) and public privacy policy URL live in App Store Connect metadata (10.5) \u2014 this story depends on them per triade/docs/app-store-declarations.md"
+  ],
+  "parked_at": "2026-08-28",
+  "run_id": "20260828-170559-0bdf",
+  "spec_file": "_bmad-output/implementation-artifacts/spec-4-6-declaracoes-app-store-ads-player-initiated-only.md",
+  "story_key": "4-6-declaracoes-app-store-ads-player-initiated-only"
+}
