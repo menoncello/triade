@@ -73,6 +73,7 @@ import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12Me
 import type { TutorialState } from './src/game/tutorial.ts';
 import { ToneScreen } from './src/ui/ToneScreen.tsx';
 import { triggerHapticsForTrace } from './src/feel/haptics.ts';
+import { triggerSfxForTrace, triggerSfxForSpawn, triggerSfxForGameOver } from './src/feel/sfx.ts';
 import { nextSessionBest } from './src/feel/bulletTime.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
@@ -380,6 +381,25 @@ function AppContent() {
         // Best-effort, never throws, never blocks move dispatch.
         try {
           triggerHapticsForTrace(result.trace);
+        } catch {}
+        // 8-6 SFX — coupled with haptics, scaled by same tier (FR-30: Reduced Motion keeps sound)
+        // Thin swappable observer via expo-audio; never blocks move dispatch.
+        try {
+          triggerSfxForTrace(result.trace);
+        } catch {}
+        try {
+          // Spawn thock on every effective move that spawns (trace spawn entry)
+          if (result.moved) {
+            const spawnEntry = result.trace.find((e: any) => e.spawned);
+            if (spawnEntry && Number.isFinite(spawnEntry.value)) {
+              triggerSfxForSpawn(spawnEntry.value);
+            }
+          }
+        } catch {}
+        try {
+          if (result.moved && isGameOver(result.board)) {
+            triggerSfxForGameOver();
+          }
         } catch {}
       }
     },

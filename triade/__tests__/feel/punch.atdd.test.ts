@@ -259,11 +259,14 @@ describe('ATDD 8-2 — P1 high (integration / wiring)', () => {
     // Bursts only when !reducedMotion
     assert.ok(gb.includes('if (!reducedMotion)'), 'burst creation gated by !reducedMotion');
     assert.ok(gb.includes('preset.particleBurst > 0'), 'burst gated on particleBurst > 0');
-    // App wiring passes settings.reducedMotion into GameBoard
+    // App wiring passes settings.reducedMotion into GameBoard and GameOverOverlay (S8.5 fix)
     const app = fs.readFileSync(path.resolve('App.tsx'), 'utf8');
     assert.ok(app.includes('reducedMotion={settings.reducedMotion}'), 'App passes settings.reducedMotion into GameBoard');
-    // GameOverOverlay keeps literal false per Epic 9 gate
-    assert.ok(app.includes('GameOverOverlay') && app.includes('reducedMotion={false}'), 'GameOverOverlay keeps reducedMotion={false} literal');
+    // GameOverOverlay must NOT keep literal false — S8.5 fixed wiring to settings.reducedMotion
+    assert.ok(
+      app.includes('GameOverOverlay') && !/GameOverOverlay[^]*reducedMotion=\{false\}/.test(app),
+      'GameOverOverlay must not be hardcoded false — wiring is settings.reducedMotion',
+    );
   });
 
   it('[P1-05] R-002 early-input orphan safeguard — burst timer cleanup on unmount (EXPECTED RED)', () => {
