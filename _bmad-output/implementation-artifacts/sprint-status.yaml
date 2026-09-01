@@ -101,12 +101,12 @@ development_status:
   epic-5-retrospective: optional
 
   epic-8: backlog
-  8-1-haptics-escalados-por-valor-de-merge: backlog
-  8-2-punch-visual-overshoot-flash-e-particulas: backlog
-  8-3-screen-shake-direcional: backlog
-  8-4-bullet-time-no-novo-session-best-merge: backlog
-  8-5-reduced-motion-como-preset: backlog
-  8-6-sfx-minimos-haptics-acoplados: backlog
+  8-1-haptics: backlog
+  8-2-punch-visual: backlog
+  8-3-screen-shake: backlog
+  8-4-bullet-time: backlog
+  8-5-reduced-motion: backlog
+  8-6-sfx-haptics: backlog
   epic-8-retrospective: optional
 
   epic-9: backlog
