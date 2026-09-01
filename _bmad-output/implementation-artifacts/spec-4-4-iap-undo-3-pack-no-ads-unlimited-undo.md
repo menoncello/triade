@@ -2,7 +2,7 @@
 title: '4.4 IAP Undo 3-pack + No Ads + Unlimited Undo'
 type: 'feature'
 created: '2026-08-28'
-status: 'awaiting-operator'
+status: 'done'
 review_loop_iteration: 0
 followup_review_recommended: false
 baseline_revision: '2cbed929ab5093116fc5257fe44fa0aeb529e4d6'
