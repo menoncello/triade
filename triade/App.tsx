@@ -73,6 +73,7 @@ import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12Me
 import type { TutorialState } from './src/game/tutorial.ts';
 import { ToneScreen } from './src/ui/ToneScreen.tsx';
 import { triggerHapticsForTrace } from './src/feel/haptics.ts';
+import { nextSessionBest } from './src/feel/bulletTime.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +90,7 @@ export default function App() {
 
 type Screen = 'tone' | 'laneSelect' | 'playing';
 
-type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats };
+type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; sessionBestMerge?: number };
 
 function AppContent() {
   const { t } = useTranslation();
@@ -114,6 +115,7 @@ function AppContent() {
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
   const [matchStats, setMatchStats] = useState<MatchStats>(() => initialStats(game.board));
+  const [sessionBestMerge, setSessionBestMerge] = useState<number>(0);
   // 3.3 Accelerated per-match budgets (memory, die with match per ADR-02)
   const [undoHistory, setUndoHistory] = useState<Snapshot[]>([]);
   const [undoBudget, setUndoBudget] = useState<UndoBudget>(() => initialUndoBudget());
@@ -236,9 +238,11 @@ function AppContent() {
       const needsReset = hasActiveMatch;
       if (index === selectedLaneIndex && !needsReset) return;
       const nextLaneId: LaneId = laneFromIndex(index).id as LaneId;
+      // S8.4 lane switch resets sessionBestMerge (new session) and clears direction
+      lastDirectionRef.current = null;
+      setSessionBestMerge(0);
       // Changing lane always starts a new game (FR-11, D-008) — best is lane-scoped
       if (needsReset) {
-        lastDirectionRef.current = null;
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
@@ -325,12 +329,14 @@ function AppContent() {
       // S8.3 capture swipe direction synchronously before move() for directional shake
       lastDirectionRef.current = dir;
       // Capture snapshot before move for undo history (only if effective)
-      const snapshot: Snapshot = { game, match, matchStats };
+      const snapshot: Snapshot = { game, match, matchStats, sessionBestMerge };
       const result = move(game, dir, rngRef.current);
       setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
       setMatchStats((prev) => applyMoveStats(prev, result.board, result));
+      // S8.4 sessionBestMerge — use functional update to avoid stale closure on rapid moves
+      setSessionBestMerge((prev) => nextSessionBest(result.trace, prev));
       if (result.moved) {
         // T3.4 in-flight gate: an effective move animates; block further swipes
         // until the input gate re-opens (~30% of the animation, via GameBoard's
@@ -377,12 +383,13 @@ function AppContent() {
         } catch {}
       }
     },
-    [game, match, matchStats, tutorialState, settings],
+    [game, match, matchStats, sessionBestMerge, tutorialState, settings],
   );
 
   const handleRestart = useCallback(() => {
     // S8.3 clear last swipe direction on new game — board shake resets
     lastDirectionRef.current = null;
+    setSessionBestMerge(0);
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
@@ -431,6 +438,7 @@ function AppContent() {
       setGame(snap.game);
       setMatch(snap.match);
       setMatchStats(snap.matchStats);
+      setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
       busyRef.current = false;
       return;
@@ -483,6 +491,7 @@ function AppContent() {
       setGame(snap.game);
       setMatch(snap.match);
       setMatchStats(snap.matchStats);
+      setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
       busyRef.current = false;
     } finally {
@@ -513,6 +522,7 @@ function AppContent() {
     setGame(snap.game);
     setMatch(snap.match);
     setMatchStats(snap.matchStats);
+    setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
     setMoveResult(null);
     busyRef.current = false;
   }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
@@ -655,32 +665,7 @@ function AppContent() {
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(async () => {
-    // No Ads owners: immediate continue without ad
-    if (hasNoAds && activeProfile.canContinue) {
-      const tmp: OrchestratorState = {
-        undoHistory,
-        undoBudget,
-        hintBudget,
-        continueBudget,
-        hintHighlight,
-        bannerDismissed,
-        showUndoPrompt,
-      };
-      const res = orchestratorConsumeContinueAd(tmp, activeProfile);
-      if (!res.ok) return;
-      if (res.snapshot) {
-        setUndoHistory(res.state.undoHistory);
-        setGame(res.snapshot.game);
-        setMatch(res.snapshot.match);
-        setMatchStats(res.snapshot.matchStats);
-        setMoveResult(null);
-      }
-      setContinueBudget(res.state.continueBudget);
-      setHintHighlight(res.state.hintHighlight);
-      setShowUndoPrompt(res.state.showUndoPrompt);
-      busyRef.current = false;
-      return;
-    }
+    if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); busyRef.current = false; return; }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
     if (!activeProfile.allowAds || !activeProfile.canContinue) return;
@@ -711,6 +696,7 @@ function AppContent() {
         setGame(res.snapshot.game);
         setMatch(res.snapshot.match);
         setMatchStats(res.snapshot.matchStats);
+        setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0);
         setMoveResult(null);
       }
       setContinueBudget(res.state.continueBudget);
@@ -739,6 +725,7 @@ function AppContent() {
       setGame(res.snapshot.game);
       setMatch(res.snapshot.match);
       setMatchStats(res.snapshot.matchStats);
+      setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0);
       setMoveResult(null);
     }
     setContinueBudget(res.state.continueBudget);
@@ -891,6 +878,7 @@ function AppContent() {
               moveResult={moveResult}
               width={boardSize}
               reducedMotion={settings.reducedMotion}
+              sessionBestMerge={sessionBestMerge}
               onMoveSettled={onMoveSettled}
               hintHighlight={hintHighlight}
               direction={lastDirectionRef.current ?? undefined}

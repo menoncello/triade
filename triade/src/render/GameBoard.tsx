@@ -8,6 +8,7 @@ import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
 import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
 import { presetFor } from '../feel/feel.ts';
 import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
+import { BULLET_TIME_MS, shouldTriggerBulletTime } from '../feel/bulletTime.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
@@ -288,12 +289,13 @@ export interface GameBoardProps {
   moveResult: MoveResult | null;
   width: number;
   reducedMotion?: boolean;
+  sessionBestMerge?: number;
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
   direction?: Direction;
 }
 
-export function GameBoard({ board, moveResult, width, reducedMotion = false, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   // S8.3 screen shake — imperative worklet on board container only (never chrome)
   const shakeX = useSharedValue(0);
@@ -301,13 +303,19 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
   const shakeStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeX.value }, { translateY: shakeY.value }],
   }));
+  // S8.4 bullet-time flash — imperative worklet on board only (never chrome), ~200ms datum
+  const bulletFlash = useSharedValue(0);
+  const bulletFlashStyle = useAnimatedStyle(() => ({
+    opacity: bulletFlash.value,
+  }));
   // Cancel shake immediately if Reduced Motion is enabled mid-animation (FR-30, UX-DR-16)
   useEffect(() => {
     if (reducedMotion) {
       shakeX.value = withTiming(0, { duration: 20 });
       shakeY.value = withTiming(0, { duration: 20 });
+      bulletFlash.value = withTiming(0, { duration: 20 });
     }
-  }, [reducedMotion, shakeX, shakeY]);
+  }, [reducedMotion, shakeX, shakeY, bulletFlash]);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
@@ -459,6 +467,19 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
         shakeY.value = withTiming(0, { duration: 20 });
       }
     }
+    // S8.4 bullet time — rarity-gated flash on new session-best, ~200ms, board only
+    // Never throws on invalid trace; Reduced Motion suppresses; NOOP never triggers
+    try {
+      const safeBest = Number.isFinite(sessionBestMerge) ? (sessionBestMerge as number) : 0;
+      if (moveResult.moved && !reducedMotion && shouldTriggerBulletTime(moveResult.trace, safeBest, !!reducedMotion)) {
+        bulletFlash.value = withSequence(
+          withTiming(0.45, { duration: 60 }),
+          withTiming(0, { duration: BULLET_TIME_MS - 60 }),
+        );
+      }
+    } catch {
+      // never throw
+    }
     // Re-arm the input-release timer for this move: a noop (empty plan)
     // animates nothing, so it must not touch the gate. An effective move opens
     // the gate after ~30% of the animation; a new swipe then re-plans and tiles
@@ -470,7 +491,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan, direction, reducedMotion, shakeX, shakeY]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
@@ -508,6 +529,22 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
           ))}
         </Canvas>
       </Animated.View>
+      {/* S8.4 bullet-time flash overlay — board only, ~200ms, suppressed under Reduced Motion */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width,
+            height: width,
+            borderRadius: 14,
+            backgroundColor: '#fff7e0',
+          },
+          bulletFlashStyle,
+        ]}
+      />
       {/* Imperative particle bursts — worklets in src/feel layer mounted from board (S8.2) */}
       {bursts.map((b) => (
         <BurstView key={b.id} x={b.x} y={b.y} count={b.count} />

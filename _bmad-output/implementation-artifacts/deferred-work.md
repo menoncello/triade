@@ -213,3 +213,17 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md`
   summary: Board shake 5-8px at edges clipped by parent View overflow hidden
   evidence: triade/src/render/GameBoard.tsx:472 parent View style width/height width plus App.tsx boardWrap overflow hidden clips translateX/Y 5-8px at board edges; shakeChrome guard via structure (Animated.View wraps Canvas only) is correct but visual clipping at container boundary is not asserted — shake.test.ts pure helpers only, no integration assertion for clipping
+
+## Deferred from: code review of story 8-4-bullet-time (2026-09-01 — gds-code-review, 2 layers)
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md`
+  summary: BulletTime spawned undefined gap — trace entry without spawned field misclassified as merge
+  evidence: triade/src/feel/bulletTime.ts:9-18 filter `!entry.spawned` treats missing undefined as merge; engine today sets spawned:false explicitly but future schema change would false-trigger bullet flash; should be `spawned !== true` per canMerge contract
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md`
+  summary: BulletTime value <3 not filtered — 0 or negative finite pollutes sessionBestMerge
+  evidence: triade/src/feel/bulletTime.ts:9-18 only guards Number.isFinite, no value>=3 clamp; sentinel 0 would set sessionBest to 0 then first real 3 re-triggers incorrectly; engine never emits <3 today but defensive guard missing
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md`
+  summary: GameBoard width unvalidated for bullet flash overlay — NaN width propagates to overlay style
+  evidence: triade/src/render/GameBoard.tsx:298,529 overlay uses width directly; Math.max for cell protects but Canvas/Animated.View receives NaN style on degenerate window; early-return guard would prevent RN warning, not reachable via layoutFor finite inputs
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md`
+  summary: doMove identity invalidates on every sessionBestMerge change — gesture stability claim weakened
+  evidence: triade/App.tsx:386 doMove deps include sessionBestMerge (functional update mitigates race but still invalidates closure identity every new best); comment at App.tsx claims stable gesture created once — no longer stable, deferred ref-optimization audit as with shake

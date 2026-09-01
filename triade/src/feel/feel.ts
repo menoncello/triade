@@ -79,6 +79,8 @@ export function allPresetValues(): readonly number[] {
   return ALL_TIERS;
 }
 
+// Bullet time uses fixed 200ms datum (BULLET_TIME_MS in src/feel/bulletTime.ts),
+// not per-preset tuning — S8.4 single timing on merge event; gating via shouldTriggerBulletTime.
 // Reduced Motion preset is a preset, not a flag (UX-DR-16, FR-30).
 // Haptics stay, other effects are cut/smoothed. See story 8.5 for full gating.
 const REDUCED_PRESET: FeelPreset = Object.freeze({
