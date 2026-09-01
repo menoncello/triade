@@ -1,5 +1,5 @@
 # generated: 2026-08-28 14:30
-# last_updated: 2026-08-28 14:30 (sprint planning refresh — Epics 1,2,7,6 closed; Epic 3 next; 22/55 stories done including orphan Epic 12)
+# last_updated: 2026-09-01 16:20 (revenuecat+appstore MCP — 4-3,4-4,4-6 operator done via automation; Epic 4 closed; 37/55 stories done)
 # project: 3-clone
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-28 14:30
-last_updated: 2026-08-28 14:30 (sprint planning refresh — Epics 1,2,7,6 closed; Epic 3 next; 22/55 stories done including orphan Epic 12)
+last_updated: 2026-09-01 16:20 (revenuecat+appstore MCP — 4-3,4-4,4-6 operator done via automation; Epic 4 closed; 37/55 stories done)
 
 project: 3-clone
 project_key: NOKEY
@@ -84,13 +84,13 @@ development_status:
   3-5-contrato-lane-wall-no-orquestrador: done
   epic-3-retrospective: optional
 
-  epic-4: backlog
+  epic-4: done
   4-1-rewarded-ad-undo-1-free-per-game: done
   4-2-rewarded-ad-death-continue-1-use-per-game-over: done
-  4-3-iap-hint-5-pack: awaiting-operator
-  4-4-iap-undo-3-pack-no-ads-unlimited-undo: awaiting-operator
+  4-3-iap-hint-5-pack: done
+  4-4-iap-undo-3-pack-no-ads-unlimited-undo: done
   4-5-entitlements-restore-com-precedencia-offline: done
-  4-6-declaracoes-app-store-ads-player-initiated-only: awaiting-operator
+  4-6-declaracoes-app-store-ads-player-initiated-only: done
   epic-4-retrospective: optional
 
   epic-5: backlog

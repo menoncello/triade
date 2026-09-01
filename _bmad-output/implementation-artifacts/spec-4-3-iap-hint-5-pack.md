@@ -2,7 +2,7 @@
 title: '4.3 IAP Hint 5-pack'
 type: 'feature'
 created: '2026-08-28'
-status: 'awaiting-operator'
+status: 'done'
 review_loop_iteration: 0
 baseline_revision: '149da731c67b346cf2b8c4ffefc8bfd384af7b8a'
 final_revision: '0bebef7a1f85690e55310cee38e6b59ecfdfaf65'

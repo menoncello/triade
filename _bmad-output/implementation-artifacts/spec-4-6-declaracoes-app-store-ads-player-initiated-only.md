@@ -2,7 +2,7 @@
 title: '4.6 Declaracoes App Store + ads player-initiated only'
 type: 'feature'
 created: '2026-08-28'
-status: 'awaiting-operator'
+status: 'done'
 review_loop_iteration: 0
 followup_review_recommended: false
 context: []
