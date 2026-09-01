@@ -100,24 +100,26 @@ test('[P0] AC1/AC4 — landscape wiring reuses the same previewFor output (compa
 // F-4 (test-review 7.2): AC3 "shown in both Clean and Accelerated lanes" (FR-45)
 // was single-lane by scope guard. Pin the two-lane fan-out through the real
 // previewFor seam: each lane reads its own pre-resolved pending without re-rolling.
-test('[P0] AC1/AC3/F-4 — two distinct lane previews render through previewFor wiring', () => {
-  const renderer = renderWired(
-    { value: 3, displayRoll: 0.1 },
-    {
-      previews: {
-        clean: previewFor({ value: 3, displayRoll: 0.1 }),
-        accelerated: previewFor({ value: 12, displayRoll: 0.9 }),
-      },
-    }
-  );
-  const t = allText(renderer);
-  assert.ok(hasToken(t, 'Clean'), 'Clean lane label must be present (FR-45)');
-  assert.ok(hasToken(t, 'Accelerated'), 'Accelerated lane label must be present (FR-45)');
-  assert.ok(hasToken(t, '3'), 'Clean lane shows its own exact value via previewFor');
-  assert.ok(t.some((p) => p.includes('/')), 'Accelerated lane shows a joined range via previewFor');
+// 3.2: Hud now displays only activeLaneId preview — fan-out prop kept, rendering gated.
+test('[P0] AC1/AC3/F-4 — two distinct lane previews render through previewFor wiring (activeLaneId gate)', () => {
+  const cleanPrev = previewFor({ value: 3, displayRoll: 0.1 });
+  const accPrev = previewFor({ value: 12, displayRoll: 0.9 });
+
+  const rClean = renderWired({ value: 3, displayRoll: 0.1 }, { previews: { clean: cleanPrev, accelerated: accPrev }, activeLaneId: 'clean' });
+  const tClean = allText(rClean);
+  assert.ok(hasToken(tClean, 'Clean'), 'Clean lane label must be present when activeLaneId=clean (FR-45)');
+  assert.ok(!hasToken(tClean, 'Accelerated'), 'Accelerated must NOT be present when activeLaneId=clean');
+  assert.ok(hasToken(tClean, '3'), 'Clean lane shows its own exact value via previewFor');
+  assert.ok(!tClean.some((p) => p.includes('/')), 'Clean exact must not show joined range');
+
+  const rAcc = renderWired({ value: 3, displayRoll: 0.1 }, { previews: { clean: cleanPrev, accelerated: accPrev }, activeLaneId: 'accelerated' });
+  const tAcc = allText(rAcc);
+  assert.ok(hasToken(tAcc, 'Accelerated'), 'Accelerated lane label must be present when activeLaneId=accelerated (FR-45)');
+  assert.ok(!hasToken(tAcc, 'Clean'), 'Clean must NOT be present when activeLaneId=accelerated');
+  assert.ok(tAcc.some((p) => p.includes('/')), 'Accelerated lane shows a joined range via previewFor');
   assert.ok(
-    hasStyle(renderer, { width: 76, height: 76 }),
-    'portrait lane boxes must keep the 76x76 AC4 chrome (both lanes)'
+    hasStyle(rAcc, { width: 76, height: 76 }),
+    'portrait lane boxes must keep the 76x76 AC4 chrome'
   );
 });
 

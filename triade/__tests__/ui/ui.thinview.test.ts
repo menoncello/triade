@@ -36,6 +36,9 @@ function isAllowedViewImport(specifier: string): boolean {
     lower === 'react' ||
     lower === 'react-native' ||
     lower.startsWith('react-native/') ||
+    lower === 'react-i18next' ||
+    lower === 'i18next' ||
+    lower.includes('/i18n') ||
     isSameDirImport(lower)
   );
 }

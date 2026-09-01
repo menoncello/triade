@@ -1,0 +1,67 @@
+{
+  "tutorial": {
+    "merge12": "Junte 1 e 2 para fazer 3 — deslize eles juntos",
+    "merge12_followup": "De novo — 1+2 vira 3",
+    "oneCell": "Agora mova uma peça uma casa",
+    "skip": "Pular",
+    "skipA11y": "Pular tutorial"
+  },
+  "tone": {
+    "line": "controle sobre o caos",
+    "skipA11y": "Pular",
+    "skipHint": "Tocar para continuar"
+  },
+  "lane": {
+    "clean": {
+      "label": "Pura",
+      "tone": "Score puro, sem ajuda."
+    },
+    "accelerated": {
+      "label": "Iniciante",
+      "subtitle": "Com ajuda",
+      "tone": "Com ajuda quando precisar."
+    }
+  },
+  "accelerated": {
+    "ceilingHint": "Teto aberto — peças maiores podem surgir.",
+    "stuckHint": "Pouco espaço — procure fusões.",
+    "dismiss": "Dispensar"
+  },
+  "gameOver": {
+    "score": "Pontuação",
+    "best": "Recorde",
+    "maxTile": "Maior peça",
+    "merges": "Fusões",
+    "longestStreak": "Maior sequência",
+    "restart": "Jogar de novo",
+    "continueTitle": "Continuar?",
+    "continueAd": "Ver anúncio",
+    "continueIap": "Comprar",
+    "cancel": "Cancelar",
+    "newRecord": "Novo recorde"
+  },
+  "laneSelect": {
+    "title": "Tríade",
+    "subtitle": "Escolha sua pista",
+    "play": "Jogar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "switchWarning": "Mudar de pista inicia um novo jogo. Continuar?",
+    "footerNote": "Mudar de pista inicia um novo jogo",
+    "restore": "Restaurar compras",
+    "restoring": "Restaurando…",
+    "pistas": "Pistas"
+  },
+  "reward": {
+    "undo": "Desfazer último movimento?",
+    "noUndo": "Sem desfazer — comprar 3?",
+    "noHint": "Sem dicas — comprar 5?",
+    "ad": "Ver anúncio",
+    "iap": "Comprar",
+    "cancel": "Cancelar"
+  },
+  "common": {
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
+  }
+}

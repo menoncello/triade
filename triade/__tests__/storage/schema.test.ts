@@ -9,11 +9,13 @@ interface Settings {
   reducedMotion: boolean;
   language: string;
   laneDefault: number;
+  tutorialCompleted: { clean: boolean; accelerated: boolean };
+  hasSeenToneScreen: boolean;
 }
 
 const SCHEMA_SPEC = '../../src/services/storage/schema.ts';
 
-const SETTINGS_KEYS = ['theme', 'reducedMotion', 'language', 'laneDefault'];
+const SETTINGS_KEYS = ['theme', 'reducedMotion', 'language', 'laneDefault', 'tutorialCompleted', 'hasSeenToneScreen'];
 
 function expectFullDefaults(result: Settings, defaults: Settings): void {
   assert.deepStrictEqual(result, defaults, `expected full default fallback, got ${JSON.stringify(result)}`);
@@ -126,7 +128,9 @@ test('[P0] serializeSettings/loadSettings round-trip preserves a full settings o
     theme: 'light',
     reducedMotion: true,
     language: 'pt-BR',
-    laneDefault: 1
+    laneDefault: 1,
+    tutorialCompleted: { clean: true, accelerated: false },
+    hasSeenToneScreen: false
   };
   const raw = serializeSettings(settings);
   assert.strictEqual(typeof raw, 'string', 'serializeSettings returns a string');
@@ -138,10 +142,12 @@ test('[P0] DEFAULT_SETTINGS exposes exactly the settings keys with sane defaults
   assert.deepStrictEqual(
     Object.keys(DEFAULT_SETTINGS).sort(),
     [...SETTINGS_KEYS].sort(),
-    'DEFAULT_SETTINGS must expose exactly theme, reducedMotion, language, laneDefault'
+    'DEFAULT_SETTINGS must expose exactly theme, reducedMotion, language, laneDefault, tutorialCompleted, hasSeenToneScreen'
   );
   assert.strictEqual(DEFAULT_SETTINGS.theme, 'dark', 'canonical default theme is dark');
   assert.strictEqual(DEFAULT_SETTINGS.reducedMotion, false, 'reduced motion is off by default');
   assert.strictEqual(DEFAULT_SETTINGS.language, 'en', 'default language is en');
   assert.strictEqual(DEFAULT_SETTINGS.laneDefault, 0, 'default lane is lane 0');
+  assert.deepStrictEqual(DEFAULT_SETTINGS.tutorialCompleted, { clean: false, accelerated: false }, 'tutorialCompleted defaults to both false');
+  assert.strictEqual((DEFAULT_SETTINGS as any).hasSeenToneScreen, false, 'hasSeenToneScreen defaults false');
 });

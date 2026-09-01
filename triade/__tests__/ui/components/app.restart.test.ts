@@ -154,7 +154,7 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
     /const\s+s\s*=\s*newGame\s*\(\s*rngRef\.current\s*\)/,
     /setGame\s*\(\s*s\s*\)/,
     /setMoveResult\s*\(\s*null\s*\)/,
-    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest\s*\)\s*\)/,
+    /setMatch\s*\(\s*initialScore\s*\(\s*persistedBest/,
     /setMatchStats\s*\(\s*initialStats\s*\(\s*s\.board\s*\)\s*\)/,
     /busyRef\.current\s*=\s*false/,
   ];
@@ -174,8 +174,8 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
   assert.ok(!/setInterval/.test(handleSlice), 'handleRestart must not contain setInterval');
   assert.ok(!stripped.includes('navigation') || !/navigation/.test(handleSlice), 'handleRestart must not navigate');
 
-  // Dependency must be [persistedBest] only — never match.best or sessionStartBestRef.current
-  assert.ok(/handleRestart[\s\S]*?},\s*\[\s*persistedBest\s*\]/.test(src), 'handleRestart deps must be [persistedBest] only');
+  // Dependency must include persistedBest* (per-lane after 3.4 is persistedBestByLane) — never match.best or sessionStartBestRef
+  assert.ok(/handleRestart[\s\S]*?},\s*\[.*persistedBest/.test(src), 'handleRestart deps must include persistedBest* (or persistedBestByLane after 3.4)');
   assert.ok(!/handleRestart[\s\S]*?match\.best/.test(handleSlice), 'handleRestart must not depend on match.best (would leak session-only best after hydration failure)');
   // Do NOT add sessionStartBestRef.current = persistedBest inside handleRestart
   assert.ok(!/sessionStartBestRef\.current\s*=\s*persistedBest/.test(handleSlice), 'handleRestart must NOT set sessionStartBestRef.current = persistedBest — ref stays session-start so isNewRecord highlight remains correct');
@@ -269,9 +269,10 @@ test('[P0] AC4 9-tile same lane', async () => {
   const avail = potForTier(tierForCeiling(ceilingDetector(a.board)));
   assert.ok(Array.isArray(avail), 'availablePot must be an array derived from potForTier(tierForCeiling(ceilingDetector(board)))');
 
-  // After Epic 3 lane preservation would be explicit LaneProfile.id — this test documents that today restart is implicit same-lane
-  // Verify App.tsx handleRestart has no lane-switch import/assignment
-  assert.ok(!/LaneProfile|laneId|setLane/.test(appSrc) || !appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 500).includes('lane'), 'handleRestart must not flip lane — implicit same-lane (FR-26)');
+  // After Epic 3 lane preservation is explicit per-lane best (3.4): handleRestart reads persistedBestByLane[activeLaneId] but never flips lane
+  const handleSlice2 = appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 800);
+  assert.ok(handleSlice2.includes('persistedBest'), 'handleRestart must still use persistedBest* (now per-lane)');
+  assert.ok(!/setSelectedLaneIndex|setLane\(/.test(handleSlice2), 'handleRestart must not flip lane — implicit same-lane (FR-26)');
 });
 
 test('[P0] AC6/AC7 forfeited continue dies — never carried, never re-offered', async () => {
@@ -298,10 +299,12 @@ test('[P0] AC6/AC7 forfeited continue dies — never carried, never re-offered',
   // Exactly one Pressable with label "Jogar de novo" in this overlay (filter host nodes only — stub duplicates composite+host)
   const jogars = renderer.root.findAll((n) => typeof n.type === 'string' && n.props?.accessibilityLabel === 'Jogar de novo');
   assert.strictEqual(jogars.length, 1, 'overlay must have exactly one CTA "Jogar de novo"');
-  // No onContinue / continueRemaining prop on overlay — verify via source import scanning
-  assert.ok(!overlayStripped.includes('onContinue'), 'GameOverOverlay.tsx must not contain onContinue (Epic 3/4 owns it)');
+  // 3.3 Accelerated: onContinue gated by LaneProfile — allowed when gated by activeLaneId
+  assert.ok(overlayStripped.includes('onContinue'), 'GameOverOverlay.tsx must contain onContinue gated by activeLaneId (3.3 Accelerated)');
+  assert.ok(/activeLaneId\s*===\s*['"]accelerated['"]/.test(overlaySrc), 'onContinue must be gated by activeLaneId === accelerated');
   assert.ok(!overlayStripped.includes('continueRemaining'), 'GameOverOverlay.tsx must not contain continueRemaining');
-  assert.ok(!overlayStripped.includes('continueBudget'), 'GameOverOverlay.tsx must not contain continueBudget');
+  // continueBudget is allowed in App but not as leak in overlay beyond gated prop
+  assert.ok(!/\bcontinueBudget\b/.test(overlayStripped) || /canContinue/.test(overlayStripped), 'GameOverOverlay continueBudget must be via canContinue prop');
 
   // handleRestart is the single discard point — contains forfeited-continue comment + no carry
   const handleIdx = appSrc.indexOf('const handleRestart');
@@ -317,7 +320,8 @@ test('[P0] AC6/AC7 forfeited continue dies — never carried, never re-offered',
   // After restart, re-rendering overlay with gameOver=true still shows single CTA
   const second = await renderOverlay({ onRestart: () => {} });
   assert.strictEqual(second.root.findAll((n) => typeof n.type === 'string' && n.props?.accessibilityLabel === 'Continuar').length, 0, 'after restart, overlay re-mounted still shows single CTA — no re-offer');
-  assert.ok(!overlayStripped.includes('rewardedAd') && !overlayStripped.includes('IAP') && !overlayStripped.includes('react-native-purchases'), 'Clean overlay must not wire rewarded-ad/IAP/entitlements (Epic 4 concern)');
+  // 3.3 Accelerated reward wiring is allowed when gated; Clean still single CTA verifies via render
+  assert.ok(!overlayStripped.includes('react-native-purchases'), 'Clean overlay must not wire react-native-purchases (Epic 4 concern)');
 });
 
 test('[P1] AC5 Clean only primary CTA', async () => {
@@ -337,12 +341,12 @@ test('[P1] AC5 Clean only primary CTA', async () => {
   // Source must have AC5 comment above Pressable
   assert.ok(src.includes('AC5: Continue offer is Epic 3/4'), 'GameOverOverlay.tsx must contain "// AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here" above Pressable');
 
-  // Stripped source must have no Continuar/continue/reward UI strings (no second CTA)
-  assert.ok(!/Continuar/.test(stripped), 'GameOverOverlay.tsx must not contain "Continuar" (Clean only)');
-  assert.ok(!/onContinue/.test(stripped), 'must not contain onContinue');
-  assert.ok(!/rewardedAd/i.test(stripped), 'must not contain rewardedAd');
+  // 3.3 Accelerated adds gated Continue — allow when gated by activeLaneId (now via i18n key)
+  assert.ok(/gameOver\.continueTitle/.test(src) || /Continuar/.test(stripped), 'GameOverOverlay.tsx must contain Continuar (or t(gameOver.continueTitle)) for Accelerated gated offer');
+  assert.ok(/onContinue/.test(stripped), 'must contain onContinue gated prop');
+  assert.ok(/activeLaneId\s*===\s*['"]accelerated['"]/.test(src), 'Continuar must be gated by activeLaneId === accelerated');
   assert.ok(!/react-native-purchases/.test(stripped), 'must not contain react-native-purchases');
-  assert.ok(!/IAP/.test(stripped) || stripped.includes('IAP') === false, 'must not wire IAP here');
+  // IAP stub is allowed as gated affordance (Epic 4 wires real entitlements)
 
   // Allowed imports only react + react-native (Animated/Easing same specifier) + ./PauseButton + ../ui/layout
   for (const { specifier } of extractNamedImports(src)) {

@@ -1,0 +1,67 @@
+{
+  "tutorial": {
+    "merge12": "Join 1 and 2 to make 3 — swipe them together",
+    "merge12_followup": "Again — 1+2 makes 3",
+    "oneCell": "Now move a piece one cell",
+    "skip": "Skip",
+    "skipA11y": "Skip tutorial"
+  },
+  "tone": {
+    "line": "control over chaos",
+    "skipA11y": "Skip",
+    "skipHint": "Tap to continue"
+  },
+  "lane": {
+    "clean": {
+      "label": "Clean",
+      "tone": "Pure score, no help."
+    },
+    "accelerated": {
+      "label": "Beginner",
+      "subtitle": "With help",
+      "tone": "Help when you need it."
+    }
+  },
+  "accelerated": {
+    "ceilingHint": "Ceiling open — bigger pieces may appear.",
+    "stuckHint": "Low space — look for merges.",
+    "dismiss": "Dismiss"
+  },
+  "gameOver": {
+    "score": "Score",
+    "best": "Best",
+    "maxTile": "Max tile",
+    "merges": "Merges",
+    "longestStreak": "Longest streak",
+    "restart": "Play again",
+    "continueTitle": "Continue?",
+    "continueAd": "Watch ad",
+    "continueIap": "Buy",
+    "cancel": "Cancel",
+    "newRecord": "New record"
+  },
+  "laneSelect": {
+    "title": "Tríade",
+    "subtitle": "Choose your lane",
+    "play": "Play",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "switchWarning": "Switching lanes starts a new game. Continue?",
+    "footerNote": "Switching lanes starts a new game",
+    "restore": "Restore purchases",
+    "restoring": "Restoring…",
+    "pistas": "Lanes"
+  },
+  "reward": {
+    "undo": "Undo last move?",
+    "noUndo": "No undos — buy 3?",
+    "noHint": "No hints — buy 5?",
+    "ad": "Watch ad",
+    "iap": "Buy",
+    "cancel": "Cancel"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  }
+}

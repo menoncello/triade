@@ -1,0 +1,12 @@
+{
+  "actions": [
+    "Create App Store Connect In-App Purchase products triade_undo_3_pack (Type: Consumable, Price: US$0.99 / R$4.90, Reference Name: Undo 3-pack) and triade_no_ads_unlimited (Type: Non-Consumable, Price: US$2.99 / R$14.90, Reference Name: No Ads + Unlimited Undo) and associate them with the Tr\u00edade app bundle",
+    "Configure RevenueCat dashboard: create Products triade_undo_3_pack and triade_no_ads_unlimited, link to App Store products, create Entitlements triade_undo_3 and triade_no_ads, and add both products to current Offering/Package",
+    "Set RevenueCat API keys in Expo env: EXPO_PUBLIC_REVENUECAT_IOS_API_KEY and EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY (or EXPO_PUBLIC_PURCHASES_UNDO_3 / EXPO_PUBLIC_PURCHASES_NO_ADS if overriding product IDs) and redeploy build",
+    "Validate purchases on a physical iOS device via sandbox/TestFlight: buy Undo 3-pack in Accelerated lane, verify iapRemaining increments by 3 and entitlement persists via restore; buy No Ads + Unlimited, verify undo becomes immediate without ad prompt and continue ad prompt suppressed; verify Clean lane never shows purchase prompts"
+  ],
+  "parked_at": "2026-08-28",
+  "run_id": "20260828-170559-0bdf",
+  "spec_file": "_bmad-output/implementation-artifacts/spec-4-4-iap-undo-3-pack-no-ads-unlimited-undo.md",
+  "story_key": "4-4-iap-undo-3-pack-no-ads-unlimited-undo"
+}

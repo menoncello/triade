@@ -1,7 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import '../i18n/index.ts';
 import { HIT_TARGET } from './PauseButton';
 import { SAFE_MARGIN } from './layout';
+
+type LaneId = 'clean' | 'accelerated';
 
 export interface GameOverOverlayProps {
   stats: { score: number; best: number; maxTile: number; merges: number; longestStreak: number };
@@ -11,17 +15,38 @@ export interface GameOverOverlayProps {
   // T2 fix: insets is required (like Hud.tsx:15 `insets: EdgeInsets`) — App.tsx sempre passa `insets={insets}`.
   // Mantido fallback defensivo `insets?.top ?? 0` para chamadas `as any` / testes bare sem insets (gameOverOverlay.test.ts:252).
   insets: { top: number; bottom: number; left: number; right: number };
+  // 3.2 Clean lane: no continue/ad/hint — activeLaneId gates any future continue slot.
+  activeLaneId?: LaneId;
+  // 3.3 Accelerated death-continue (discreet offer, once per game-over)
+  canContinue?: boolean;
+  onContinueAd?: () => void;
+  onContinueIap?: () => void;
+  onContinueCancel?: () => void;
 }
 
-export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, insets }: GameOverOverlayProps) {
+export function GameOverOverlay({
+  stats,
+  isNewRecord,
+  onRestart,
+  reducedMotion,
+  insets,
+  activeLaneId,
+  canContinue,
+  onContinueAd,
+  onContinueIap,
+  onContinueCancel,
+}: GameOverOverlayProps) {
+  const { t } = useTranslation();
   const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
   const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
   const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
   const padRight = (insets?.right ?? 0) + SAFE_MARGIN;
+  // 3.2 Clean lane: no continue/ad/hint — see LaneProfile. Invalid → clean fallback.
+  // activeLaneId is reserved for the future Accelerated continue slot (profile.canContinue); Clean stays single CTA.
 
   const a11yLabel =
     `Game over. Score ${stats.score}, best ${stats.best}, max tile ${stats.maxTile}, merges ${stats.merges}, longest streak ${stats.longestStreak}` +
-    (isNewRecord ? ' Novo recorde' : '');
+    (isNewRecord ? ` ${t('gameOver.newRecord')}` : '');
 
   const scrimOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
   const contentOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
@@ -66,41 +91,68 @@ export function GameOverOverlay({ stats, isNewRecord, onRestart, reducedMotion, 
         <View style={styles.content}>
           <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
             <View style={styles.row}>
-              <Text style={styles.label}>Pontuação</Text>
-              {/* TODO 5.4: t('gameOver.score') */}
+              <Text style={styles.label}>{t('gameOver.score')}</Text>
               <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Recorde</Text>
-              {/* TODO 5.4: t('gameOver.best') */}
+              <Text style={styles.label}>{t('gameOver.best')}</Text>
               <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Maior peça</Text>
-              {/* TODO 5.4: t('gameOver.maxTile') */}
+              <Text style={styles.label}>{t('gameOver.maxTile')}</Text>
               <Text style={styles.value}>{String(stats.maxTile)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Fusões</Text>
-              {/* TODO 5.4: t('gameOver.merges') */}
+              <Text style={styles.label}>{t('gameOver.merges')}</Text>
               <Text style={styles.value}>{String(stats.merges)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Maior sequência</Text>
-              {/* TODO 5.4: t('gameOver.longestStreak') */}
+              <Text style={styles.label}>{t('gameOver.longestStreak')}</Text>
               <Text style={styles.value}>{String(stats.longestStreak)}</Text>
             </View>
           </View>
           {/* AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here */}
+          {/* 3.2 Clean lane: no continue/ad/hint — see LaneProfile */}
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Jogar de novo"
+            accessibilityLabel={t('gameOver.restart')}
             onPress={onRestart}
             style={styles.cta}
           >
-            <Text style={styles.ctaLabel}>Jogar de novo</Text>
-            {/* TODO 5.4: t('gameOver.restart') */}
+            <Text style={styles.ctaLabel}>{t('gameOver.restart')}</Text>
           </Pressable>
+          {/* 3.3 Accelerated death-continue — discreet, once per game-over, ad first + IAP alternative + Cancel */}
+          {activeLaneId === 'accelerated' && canContinue ? (
+            <View style={styles.continueWrap} accessibilityLabel={t('gameOver.continueTitle')}>
+              <Text style={styles.continueTitle}>{t('gameOver.continueTitle')}</Text>
+              <View style={styles.continueRow}>
+                <Pressable
+                  onPress={onContinueAd}
+                  style={styles.continueAd}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('gameOver.continueAd')}
+                >
+                  <Text style={styles.continueAdLabel}>{t('gameOver.continueAd')}</Text>
+                </Pressable>
+                <Pressable
+                  onPress={onContinueIap}
+                  style={styles.continueIap}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('gameOver.continueIap')}
+                >
+                  <Text style={styles.continueIapLabel}>{t('gameOver.continueIap')}</Text>
+                </Pressable>
+              </View>
+              <Pressable
+                onPress={onContinueCancel}
+                style={styles.continueCancel}
+                accessibilityRole="button"
+                accessibilityLabel={t('gameOver.cancel')}
+              >
+                <Text style={styles.continueCancelLabel}>{t('gameOver.cancel')}</Text>
+              </Pressable>
+            </View>
+          ) : null}
         </View>
       </Animated.View>
     </Animated.View>
@@ -166,5 +218,62 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
+  },
+  continueWrap: {
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e7e4de',
+    paddingTop: 12,
+    gap: 8,
+  },
+  continueTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1a1d23',
+    textAlign: 'center',
+  },
+  continueRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  continueAd: {
+    flex: 1,
+    minHeight: HIT_TARGET,
+    backgroundColor: '#E8A33D',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueAdLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1C1206',
+  },
+  continueIap: {
+    flex: 1,
+    minHeight: HIT_TARGET,
+    backgroundColor: '#1a1d23',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueIapLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  continueCancel: {
+    minHeight: HIT_TARGET,
+    borderWidth: 1,
+    borderColor: '#e7e4de',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  continueCancelLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#1a1d23',
   },
 });

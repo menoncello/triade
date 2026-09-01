@@ -42,7 +42,7 @@ test('[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(g
   assert.ok(/insets=\{insets\}/.test(src), 'App.tsx must pass insets={insets} to GameOverOverlay (SAFE_MARGIN padding)');
   assert.ok(/stats=\{\{\s*score:\s*match\.score/.test(src), 'GameOverOverlay stats.score must come from match.score (lane-scoped via matchScore)');
   assert.ok(/maxTile:\s*matchStats\.maxTile/.test(src), 'maxTile must come from matchStats (ceilingDetector layered)');
-  assert.ok(/isNewRecord\s*\(\s*sessionStartBestRef\.current/.test(src), 'isNewRecord must be gated on sessionStartBestRef.current, not current.best');
+  assert.ok(/isNewRecord\s*\(\s*sessionStartBest/.test(src), 'isNewRecord must be gated on sessionStartBest*Ref.current (per-lane after 3.4), not current.best');
   // availablePot once per render after if(!ready) and shared by both lanes
   assert.ok(/availablePot\s*=\s*potForTier\s*\(\s*tierForCeiling\s*\(\s*ceilingDetector\s*\(\s*game\.board\s*\)\s*\)/.test(src), 'availablePot must be potForTier(tierForCeiling(ceilingDetector(game.board))) once per render');
   const afterReadyIdx = src.indexOf('if (!ready)');
@@ -60,7 +60,7 @@ test('[P0] AC4/T3 handleRestart deadlock defense: App.tsx resets game + match + 
   const src = readFileSync(join(here, '../../../App.tsx'), 'utf8');
   assert.ok(/const\s+handleRestart\s*=\s*useCallback/.test(src), 'handleRestart must be useCallback');
   assert.ok(/newGame\s*\(\s*rngRef\.current\s*\)/.test(src), 'handleRestart must call newGame(rngRef.current) (injectable rng, no Math.random)');
-  assert.ok(/setMatch\s*\(\s*initialScore\s*\(\s*persistedBest\s*\)/.test(src), 'handleRestart must reset match via initialScore(persistedBest) (lane-scoped)');
+  assert.ok(/setMatch\s*\(\s*initialScore\s*\(\s*persistedBest/.test(src), 'handleRestart must reset match via initialScore(persistedBest*) (lane-scoped after 3.4)');
   assert.ok(/setMatchStats\s*\(\s*initialStats\s*\(/.test(src), 'handleRestart must reset matchStats via initialStats(s.board)');
   assert.ok(/busyRef\.current\s*=\s*false/.test(src), 'handleRestart must set busyRef.current=false (deadlock defense Df5)');
   // Both handleRestart and onMoveSettled must release the gate

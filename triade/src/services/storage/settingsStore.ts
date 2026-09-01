@@ -3,14 +3,27 @@ import type { Settings } from './schema.ts';
 
 export const STORAGE_KEYS = {
   best: '@triade/best',
+  bestClean: '@triade/best:clean',
+  bestAssisted: '@triade/best:assisted',
   theme: '@triade/theme',
   reducedMotion: '@triade/reducedMotion',
   language: '@triade/language',
-  laneDefault: '@triade/laneDefault'
+  laneDefault: '@triade/laneDefault',
+  tutorialCompleted: '@triade/tutorialCompleted',
+  hasSeenToneScreen: '@triade/hasSeenToneScreen'
 } as const;
+
+export type LaneId = 'clean' | 'accelerated';
+export type LeaderboardId = 'clean' | 'assisted';
 
 export interface HydratedState {
   best: number;
+  settings: Settings;
+}
+
+export interface HydratedStateByLane {
+  bestByLane: Record<LaneId, number>;
+  okByLane: Record<LaneId, boolean>;
   settings: Settings;
 }
 
@@ -70,6 +83,15 @@ export function parseBest(raw: string | undefined): BestLoadResult {
   return { best: 0, ok: false };
 }
 
+// Lane-scoped key routing — the ONLY mapping from lane to storage key (Lane Wall).
+export function bestKeyForLane(laneId: LaneId): string {
+  return laneId === 'accelerated' ? STORAGE_KEYS.bestAssisted : STORAGE_KEYS.bestClean;
+}
+
+export function bestKeyForLeaderboard(leaderboard: LeaderboardId): string {
+  return leaderboard === 'assisted' ? STORAGE_KEYS.bestAssisted : STORAGE_KEYS.bestClean;
+}
+
 // ok=false means the read degraded (native failure or unparseable stored value):
 // the caller must NOT persist during the session, or a new score would overwrite
 // the real record with a smaller one. undefined (never played) is a valid read.
@@ -93,6 +115,57 @@ export async function saveBest(best: number): Promise<boolean> {
   }
 }
 
+export async function loadBestForLane(laneId: LaneId): Promise<BestLoadResult> {
+  try {
+    const store = await mmkv();
+    return parseBest(store.getString(bestKeyForLane(laneId)));
+  } catch {
+    return { best: 0, ok: false };
+  }
+}
+
+export async function saveBestForLane(laneId: LaneId, best: number): Promise<boolean> {
+  try {
+    const store = await mmkv();
+    store.set(bestKeyForLane(laneId), String(best));
+    return true;
+  } catch (err) {
+    console.error('[storage] saveBestForLane failed:', err);
+    return false;
+  }
+}
+
+export async function loadAllBests(): Promise<Record<LaneId, BestLoadResult>> {
+  try {
+    const store = await mmkv();
+    return {
+      clean: parseBest(store.getString(STORAGE_KEYS.bestClean)),
+      accelerated: parseBest(store.getString(STORAGE_KEYS.bestAssisted)),
+    };
+  } catch {
+    return { clean: { best: 0, ok: false }, accelerated: { best: 0, ok: false } };
+  }
+}
+
+// Migration for legacy single-key installs: if no per-lane keys exist and legacy
+// holds a valid best, seed the lane indicated by laneDefaultIndex (the user's
+// preferred lane). Returns true when a migration write happened.
+export async function migrateLegacyBest(laneDefaultIndex: number): Promise<boolean> {
+  try {
+    const store = await mmkv();
+    const hasClean = store.getString(STORAGE_KEYS.bestClean) !== undefined;
+    const hasAssisted = store.getString(STORAGE_KEYS.bestAssisted) !== undefined;
+    if (hasClean || hasAssisted) return false;
+    const legacy = parseBest(store.getString(STORAGE_KEYS.best));
+    if (!legacy.ok || legacy.best === 0) return false;
+    const targetLane: LaneId = laneDefaultIndex === 1 ? 'accelerated' : 'clean';
+    store.set(bestKeyForLane(targetLane), String(legacy.best));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function getField(store: { getString(key: string): string | undefined }, key: string): unknown {
   const raw = store.getString(key);
   if (raw === undefined) return undefined;
@@ -103,6 +176,15 @@ function getField(store: { getString(key: string): string | undefined }, key: st
   }
 }
 
+export async function hasPersistedLanguage(): Promise<boolean> {
+  try {
+    const store = await mmkv();
+    return store.getString(STORAGE_KEYS.language) !== undefined;
+  } catch {
+    return false;
+  }
+}
+
 export async function loadSettingsFromStorage(): Promise<Settings> {
   try {
     const store = await mmkv();
@@ -110,11 +192,15 @@ export async function loadSettingsFromStorage(): Promise<Settings> {
     const reducedMotion = getField(store, STORAGE_KEYS.reducedMotion);
     const language = getField(store, STORAGE_KEYS.language);
     const laneDefault = getField(store, STORAGE_KEYS.laneDefault);
+    const tutorialCompleted = getField(store, STORAGE_KEYS.tutorialCompleted);
+    const hasSeenToneScreen = getField(store, STORAGE_KEYS.hasSeenToneScreen);
     const partial = {
       ...(theme !== undefined ? { theme } : {}),
       ...(reducedMotion !== undefined ? { reducedMotion } : {}),
       ...(language !== undefined ? { language } : {}),
-      ...(laneDefault !== undefined ? { laneDefault } : {})
+      ...(laneDefault !== undefined ? { laneDefault } : {}),
+      ...(tutorialCompleted !== undefined ? { tutorialCompleted } : {}),
+      ...(hasSeenToneScreen !== undefined ? { hasSeenToneScreen } : {})
     };
     return loadSettings(JSON.stringify(partial));
   } catch {
@@ -136,7 +222,9 @@ export async function saveSettings(settings: Settings): Promise<void> {
     [STORAGE_KEYS.theme, JSON.stringify(settings.theme)],
     [STORAGE_KEYS.reducedMotion, JSON.stringify(settings.reducedMotion)],
     [STORAGE_KEYS.language, JSON.stringify(settings.language)],
-    [STORAGE_KEYS.laneDefault, JSON.stringify(settings.laneDefault)]
+    [STORAGE_KEYS.laneDefault, JSON.stringify(settings.laneDefault)],
+    [STORAGE_KEYS.tutorialCompleted, JSON.stringify(settings.tutorialCompleted)],
+    [STORAGE_KEYS.hasSeenToneScreen, JSON.stringify(settings.hasSeenToneScreen)]
   ];
   for (const [key, value] of writes) {
     try {
@@ -150,4 +238,13 @@ export async function saveSettings(settings: Settings): Promise<void> {
 export async function load(): Promise<HydratedState> {
   const [bestResult, settings] = await Promise.all([loadBest(), loadSettingsFromStorage()]);
   return { best: bestResult.best, settings };
+}
+
+export async function loadByLane(): Promise<HydratedStateByLane> {
+  const [byLane, settings] = await Promise.all([loadAllBests(), loadSettingsFromStorage()]);
+  return {
+    bestByLane: { clean: byLane.clean.best, accelerated: byLane.accelerated.best },
+    okByLane: { clean: byLane.clean.ok, accelerated: byLane.accelerated.ok },
+    settings,
+  };
 }
