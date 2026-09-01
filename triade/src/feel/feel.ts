@@ -81,8 +81,9 @@ export function allPresetValues(): readonly number[] {
 
 // Bullet time uses fixed 200ms datum (BULLET_TIME_MS in src/feel/bulletTime.ts),
 // not per-preset tuning — S8.4 single timing on merge event; gating via shouldTriggerBulletTime.
-// Reduced Motion preset is a preset, not a flag (UX-DR-16, FR-30).
+// FR-30: Reduced Motion is a preset, not a flag (UX-DR-16, ADR-04).
 // Haptics stay, other effects are cut/smoothed. See story 8.5 for full gating.
+// Reduced preset is the sanctioned 60 FPS emergency fallback — benchmark sweeps both profiles.
 const REDUCED_PRESET: FeelPreset = Object.freeze({
   haptic: 'light', // placeholder — callers keep original haptic; this preset gates visual only
   shakeMs: 0,
@@ -93,7 +94,12 @@ const REDUCED_PRESET: FeelPreset = Object.freeze({
 } as const);
 
 export function reducedPresetFor(value: number): FeelPreset {
-  // Haptic is preserved from the full preset — Reduced Motion keeps haptics+sound (FR-30).
-  const full = presetFor(value);
-  return { ...REDUCED_PRESET, haptic: full.haptic };
+  // FR-30: Reduced Motion keeps haptics+sound — haptic is preserved from the full preset.
+  // Never throws on non-finite; visuals are zeroed so the preset is flat.
+  try {
+    const full = presetFor(value);
+    return { ...REDUCED_PRESET, haptic: full.haptic };
+  } catch {
+    return { ...REDUCED_PRESET, haptic: 'light' as HapticStyle };
+  }
 }

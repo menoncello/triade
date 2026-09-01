@@ -190,8 +190,8 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
   const potIdx = src.indexOf('availablePot = potForTier');
   assert.ok(readyIdx !== -1 && potIdx > readyIdx, 'availablePot must be computed after if(!ready) guard');
 
-  // reducedMotion literal stays until 9-4
-  assert.ok(/reducedMotion=\{false\}/.test(src), 'App.tsx must keep reducedMotion={false} literal until 9-4');
+  // 8-5 reducedMotion wiring — soft fade respects settings
+  assert.ok(/reducedMotion=\{settings\.reducedMotion\}/.test(src), 'App.tsx must thread reducedMotion={settings.reducedMotion} to GameOverOverlay (8-5)');
 
   // Monetization wall (ADR-02): no monetization imports
   for (const bad of ['react-native-purchases', 'react-native-google-mobile-ads', 'expo-haptics', 'expo-audio', 'expo-secure-store']) {
@@ -375,8 +375,8 @@ test('[P1] AC5 Clean only primary CTA', async () => {
   // Wrapper layout: inner Animated.View width 100% maxWidth 420 alignSelf center
   assert.ok(src.includes("width: '100%'") && src.includes('maxWidth: 420') && /alignSelf:\s*['"]center['"]/.test(src), 'inner Animated.View wrapper must be width 100% maxWidth 420 alignSelf center (6.2 patch)');
 
-  // Keep reducedMotion={false} literal pin in App (passed to overlay)
-  assert.ok(/reducedMotion=\{false\}/.test(appSrc), 'App.tsx must keep reducedMotion={false} literal until 9-4');
+  // 8-5 reducedMotion wiring — soft fade respects settings.reducedMotion
+  assert.ok(/reducedMotion=\{settings\.reducedMotion\}/.test(appSrc), 'App.tsx must thread reducedMotion={settings.reducedMotion} to GameOverOverlay (8-5)');
   // Overlay still receives insets required + fallback
   assert.ok(/insets:\s*\{/.test(src), 'GameOverOverlay props must require insets: {top,bottom,left,right}');
 });

@@ -926,7 +926,7 @@ function AppContent() {
           }}
           isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score)}
           onRestart={handleRestart}
-          reducedMotion={false}
+          reducedMotion={settings.reducedMotion}
           insets={insets}
           activeLaneId={activeLaneId}
           canContinue={canContinueDerived}

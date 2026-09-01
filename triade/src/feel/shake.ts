@@ -1,7 +1,7 @@
-// Screen shake helpers — pure, no RN imports (S8.3, UX-DR-16)
-// Data-driven: wraps presetFor/reducedPresetFor, capped ≤8, never throws.
+// Screen shake helpers — pure, no RN imports (S8.3, UX-DR-16, S8.5)
+// FR-30: Reduced Motion is a preset, not a flag — delegate to reducedPresetFor when gated.
 
-import { presetFor } from './feel.ts';
+import { presetFor, reducedPresetFor } from './feel.ts';
 import type { Direction, TraceEntry } from '../engine/core/types.ts';
 
 export const SHAKE_CAP = 8;
@@ -17,7 +17,7 @@ function clampShake(v: number): number {
 
 export function shakeMsFor(value: number, reducedMotion: boolean): number {
   try {
-    if (reducedMotion) return 0;
+    if (reducedMotion) return reducedPresetFor(value).shakeMs;
     const raw = presetFor(value).shakeMs;
     if (!Number.isFinite(raw)) return 0;
     return Math.min(raw, SHAKE_CAP);

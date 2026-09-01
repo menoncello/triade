@@ -1,5 +1,6 @@
 // Haptics gateway — thin observer over expo-haptics (S8.1, UX-DR-16)
-// Best-effort, never throws, never blocks gameplay; haptics stay under Reduced Motion.
+// FR-30: haptics stay under Reduced Motion — never gate on reducedMotion.
+// Best-effort, never throws, never blocks gameplay.
 
 import { presetFor } from './feel.ts';
 import type { TraceEntry } from '../engine/core/types.ts';

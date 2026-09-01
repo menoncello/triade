@@ -38,7 +38,7 @@ test('[P0] AC1/AC4 App wiring: App.tsx renders GameOverOverlay when isGameOver(g
   assert.ok(/isGameOver\s*\(\s*game\.board\s*\)/.test(clean), 'App.tsx must evaluate isGameOver(game.board) (committed snapshot, not moveResult.board)');
   assert.ok(/GameOverOverlay/.test(src), 'App.tsx must import and render GameOverOverlay');
   assert.ok(/gameOver\s*\?\s*\(\s*<GameOverOverlay/.test(src), 'App.tsx must conditionally render GameOverOverlay when gameOver');
-  assert.ok(/reducedMotion=\{false\}/.test(src), 'App.tsx must thread reducedMotion={false} literal until Epic 9 (forward-compat)');
+  assert.ok(/reducedMotion=\{settings\.reducedMotion\}/.test(src), 'App.tsx must thread reducedMotion={settings.reducedMotion} to GameOverOverlay (8-5 Reduced Motion gate)');
   assert.ok(/insets=\{insets\}/.test(src), 'App.tsx must pass insets={insets} to GameOverOverlay (SAFE_MARGIN padding)');
   assert.ok(/stats=\{\{\s*score:\s*match\.score/.test(src), 'GameOverOverlay stats.score must come from match.score (lane-scoped via matchScore)');
   assert.ok(/maxTile:\s*matchStats\.maxTile/.test(src), 'maxTile must come from matchStats (ceilingDetector layered)');
