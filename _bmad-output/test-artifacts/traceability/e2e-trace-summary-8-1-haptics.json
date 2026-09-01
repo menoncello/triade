@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-01T00:00:00Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "1a24dc0 (feat 8-1 scaled haptics via FeelPreset; 3 ahead of origin/main)",
+  "target": {
+    "type": "story",
+    "id": "8-1",
+    "label": "8-1 Haptics — scaled haptics via FeelPreset (Epic 8, S8.1)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo (TEA Master Test Architect)",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-1-haptics.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-1-haptics.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-1-haptics.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/haptics.ts",
+      "triade/App.tsx"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree": {
+    "delta_commit": "1a24dc0",
+    "uncommitted": "_bmad-output/implementation-artifacts/spec-8-1-haptics.md (final_revision 16257f1->1a24dc0) + sprint-status.yaml (timestamp) — metadata only, orchestrator-owned board not written",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01)",
+    "feel_files": "triade/src/feel/feel.ts (91 LOC) + triade/src/feel/haptics.ts (55 LOC) + triade/App.tsx:75,368-373 observer + triade/__tests__/feel/feel.test.ts (12) + triade/__tests__/feel/haptics.atdd.test.ts (15)",
+    "full_suite": "721 tests, 719 pass / 2 fail (expected RED: P1-03 R-001 dedup 2!==1, P2-06 R-006 dep missing), 22 suites, 5216ms, tsc --noEmit clean"
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "pct": 100 },
+      "P1": { "total": 1, "covered": 1, "pct": 100 },
+      "P2": { "total": 1, "covered": 1, "pct": 100 },
+      "P3": { "total": 0, "covered": 0, "pct": 100 }
+    },
+    "by_level": {
+      "e2e": { "tests": 0, "criteria_covered": 0 },
+      "api": { "tests": 0, "criteria_covered": 0 },
+      "component": { "tests": 0, "criteria_covered": 0 },
+      "unit": { "tests": 27, "criteria_covered": 6 },
+      "other": { "tests": 0, "criteria_covered": 0 }
+    }
+  },
+  "tests": {
+    "files": 2,
+    "cases": 27,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0,
+    "passed_scoped": 25,
+    "failed_scoped": 2,
+    "full_suite": { "total": 721, "passed": 719, "failed": 2, "skipped": 0 }
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 1,
+    "medium_open": 1,
+    "low_open": 0,
+    "details": [
+      { "id": "R-001", "score": 6, "priority": "P1", "status": "EXPECTED RED waived — tutorial dedup", "test": "haptics.atdd.test.ts:170 P1-03 2!==1" },
+      { "id": "R-006", "score": 4, "priority": "P2", "status": "EXPECTED RED waived — expo-haptics dep", "test": "haptics.atdd.test.ts:211 P2-06 missing dep" }
+    ]
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "not_applicable",
+    "error_path_status": "present",
+    "ui_journey_status": "manual_device_lane",
+    "ui_state_status": "not_applicable",
+    "notes": "Pure feel-layer story: no API endpoints, no auth. Negative paths via AC4 NOOP/never-throw sweeps. Happy-path-only gaps 0. E2E is manual real-iPhone lane P1-05 (3/6/12+ + Reduced Motion ON + airplane) — not scaffolded as code by design; pending before verified."
+  },
+  "device_lane": {
+    "id": "P1-05",
+    "type": "manual-e2e",
+    "status": "PENDING",
+    "description": "Real iPhone dev build (SDK 57, no Simulator haptics): trigger merges 3→Light / 6→Medium / 12+→Heavy distinguishable; Reduced Motion ON still Heavy (FR-30); airplane/offline; tutorial climax + 2-3 merge combo",
+    "estimate": "15 min",
+    "owner": "PR author / QA",
+    "signoff": "PR checkbox device haptics smoke: 3/6/12+ + Reduced Motion ON"
+  },
+  "blockers": [
+    { "id": "P1-03", "severity": "high", "reason": "R-001 dedup 2!==1", "test_file": "triade/__tests__/feel/haptics.atdd.test.ts", "test_line": 170, "waived": true },
+    { "id": "P2-06", "severity": "medium", "reason": "R-006 expo-haptics dep missing", "test_file": "triade/__tests__/feel/haptics.atdd.test.ts", "test_line": 211, "waived": true }
+  ],
+  "recommendations": [
+    { "priority": "P1", "action": "Resolve R-001 dedup (suppress vs accept double) and turn P1-03 green before verified", "requirements": ["8.1-AC5"] },
+    { "priority": "P2", "action": "Resolve R-006 dep (expo install or rationale + telemetry) and turn P2-06 green before verified", "requirements": ["8.1-AC6"] },
+    { "priority": "P1", "action": "Run 15-min real-iPhone device smoke P1-05 before verified", "requirements": [] },
+    { "priority": "P2", "action": "Keep engine byte-identical + grep scattered-literals CI gates for 8.2-8.6", "requirements": ["8.1-AC6"] }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-1-haptics.md",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-8-1-haptics.json",
+    "gate_decision_path": "_bmad-output/test-artifacts/traceability/gate-decision-8-1-haptics.json",
+    "test_design_path": "_bmad-output/test-artifacts/test-design-epic-8-1-haptics.md",
+    "atdd_checklist_path": "_bmad-output/test-artifacts/atdd-checklist-8-1-haptics.md",
+    "automation_summary_path": "_bmad-output/test-artifacts/automation-summary.md",
+    "spec_path": "_bmad-output/implementation-artifacts/spec-8-1-haptics.md"
+  },
+  "gate_status": "CONCERNS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET (coverage) / CONCERNS (pass 75% waived)",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "CONCERNS",
+    "overall_pass_scoped": "92.6% (25/27 waived)",
+    "overall_pass_full_suite": "99.72% (719/721)"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-01T00:00:00Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "8-1",
+    "label": "8-1 Haptics — scaled haptics via FeelPreset (Epic 8, S8.1)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 coverage 100% (4/4 FULL) and P0 pass 100% (19/19) — AC1 scaled mapping 3/6/12+, AC2 data-not-code frozen identity, AC3 FR-30 Reduced Motion keeps haptics, AC4 NOOP never-throws all GREEN. Overall coverage 100% (6/6) above 80% minimum. P1 coverage 100% (1/1) but P1 pass 75% (3/4): [P1-03] R-001 tutorial 1+2→3 climax fires 2 Light (tutorial+feel) vs expected dedup to 1 — documented residual risk in spec-8-1-haptics.md Residual risks, requires product decision (dedup guard vs accepted double) before verified. P2 pass 75% (3/4): [P2-06] R-006 expo-haptics missing from package.json (relies on bundledNativeModules + // @ts-ignore + catch — EAS pruning risk) also documented residual. Device smoke P1-05 (real iPhone manual lane 3/6/12+ + Reduced Motion ON + airplane) is manual pre-merge lane, not yet run — pending. Story is code-complete on delta 1a24dc0 with enhanced monitoring acceptable; not FAIL because no P0 blockers, engine byte-identical, and failing tests are expected-red waivers with expiry at 8-2.",
+  "p0_status": "MET",
+  "p1_status": "CONCERNS",
+  "overall_status": "CONCERNS",
+  "critical_open": 0,
+  "thresholds": {
+    "p0_coverage_required": 100,
+    "p0_coverage_actual": 100,
+    "p0_pass_required": 100,
+    "p0_pass_actual": 100,
+    "p1_coverage_target": 90,
+    "p1_coverage_actual": 100,
+    "p1_pass_target": 90,
+    "p1_pass_actual": 75,
+    "overall_coverage_minimum": 80,
+    "overall_coverage_actual": 100,
+    "overall_pass_actual_scoped": 92.6,
+    "overall_pass_actual_full_suite": 99.72
+  },
+  "evidence": {
+    "working_tree_delta": "1a24dc0 (3 ahead of origin/main) — triade/src/feel/feel.ts + triade/src/feel/haptics.ts + triade/App.tsx:368-373 observer + triade/__tests__/feel/feel.test.ts; uncommitted metadata only (spec final_revision + sprint-status.yaml)",
+    "full_suite": "721 tests, 719 pass / 2 fail (expected RED) — duration 5216ms, 22 suites, tsc --noEmit clean, engine diff empty",
+    "scoped_surface": "27 mapped 8-1 tests: 25 pass / 2 fail (P1-03 R-001 dedup 2!==1, P2-06 R-006 expo-haptics missing) — both EXPECTED RED with waiver",
+    "host_verification": "cd triade && npm test -- __tests__/feel/haptics.atdd.test.ts => 13 pass / 2 fail expected; excluding RED patterns => 13 pass / 0 fail + feel.test.ts 12 pass; npx tsc --noEmit clean",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01)",
+    "spec_residual_risks": "spec-8-1-haptics.md Auto Run Result Residual risks: (1) expo-haptics not in package.json — best-effort catch, (2) double Light on tutorial 1+2 climax — cosmetic"
+  },
+  "residual_risks": [
+    {
+      "id": "R-001",
+      "title": "Double Light haptic on tutorial 1+2→3 climax — App.tsx fires tutorial Light and feel Light for same value=3 merge (~0-50ms apart)",
+      "priority": "P1",
+      "score": 6,
+      "probability": "high",
+      "impact": "medium",
+      "status": "EXPECTED RED — waived pending product decision",
+      "test": "triade/__tests__/feel/haptics.atdd.test.ts:170 [P1-03]",
+      "mitigation": "Decide with UX: suppress feel when tutorialState.phase==='merge12' already fired vs accept documented double (2 buzzes) with sign-off. Pin whichever policy via test (currently asserts 1, fails with 2). Verify on real iPhone fresh-install tutorial path.",
+      "remediation_due": "before 8-2 code freeze or explicitly accepted as intentional",
+      "owner": "FE / QA"
+    },
+    {
+      "id": "R-006",
+      "title": "expo-haptics not declared in triade/package.json — relies on Expo bundledNativeModules + dynamic import catch; EAS pruning may ship without Taptic Engine linkage (silent no-op, no Crashlytics signal)",
+      "priority": "P2",
+      "score": 4,
+      "probability": "medium",
+      "impact": "medium",
+      "status": "EXPECTED RED — waived pending dep decision",
+      "test": "triade/__tests__/feel/haptics.atdd.test.ts:211 [P2-06]",
+      "mitigation": "Add expo-haptics explicitly via expo install or document bundledNativeModules rationale + add startup telemetry on import failure (log once) and expo-doctor / bundledNativeModules audit gate.",
+      "remediation_due": "before 8-1 verified / 8-2 review",
+      "owner": "FE lead"
+    }
+  ],
+  "pending_device_lane": {
+    "id": "P1-05",
+    "title": "Device smoke — real iPhone dev build (SDK 57, no Simulator haptics): trigger merges 3→Light / 6→Medium / 12+→Heavy, Reduced Motion ON still buzzes Heavy, airplane mode offline, plus tutorial climax feel check and 2-3 merge combo",
+    "type": "manual-e2e",
+    "status": "PENDING — required before verified",
+    "owner": "PR author / QA",
+    "estimate": "15 min",
+    "signoff": "PR description checkbox 'device haptics smoke: 3/6/12+ + Reduced Motion ON'"
+  },
+  "criteria": {
+    "p0_coverage": 100,
+    "p0_pass_rate": 100,
+    "p1_coverage": 100,
+    "p1_pass_rate": 75,
+    "overall_pass_rate_scoped": 92.6,
+    "overall_pass_rate_full_suite": 99.72,
+    "overall_coverage": 100,
+    "security_issues": 0,
+    "critical_nfrs_fail": 0,
+    "flaky_tests": 0
+  },
+  "blockers": [
+    {
+      "id": "P1-03",
+      "severity": "high",
+      "reason": "R-001 tutorial climax dedup — expects 1 Light but fires 2 (tutorial + feel); first-time user funnel double-tap feel",
+      "test_file": "triade/__tests__/feel/haptics.atdd.test.ts",
+      "test_title": "[P1-03] R-001 tutorial climax dedup — expects 1 Light per 1+2->3 climax (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "8-2 code freeze"
+    },
+    {
+      "id": "P2-06",
+      "severity": "medium",
+      "reason": "R-006 expo-haptics dep missing — EAS pruning risk, silent prod regression hidden by catch",
+      "test_file": "triade/__tests__/feel/haptics.atdd.test.ts",
+      "test_title": "[P2-06] R-006 expo-haptics declared in package.json (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "8-2 review"
+    }
+  ],
+  "recommendations": [
+    { "priority": "P1", "action": "Resolve R-001 dedup decision (code suppress or UX sign-off for double) and turn P1-03 GREEN before verified; include mock-count unit + device feel check." },
+    { "priority": "P2", "action": "Resolve R-006 dep (expo install expo-haptics or documented rationale + telemetry on import failure) and turn P2-06 GREEN; add expo-doctor gate." },
+    { "priority": "P1", "action": "Run 15-min real-iPhone device smoke lane (P1-05) before merge to verified and record PR sign-off." },
+    { "priority": "P2", "action": "Keep engine byte-identical guard (git diff --stat -- triade/src/engine empty) and grep gate for scattered haptic literals outside feel.ts as CI checks for 8.2-8.6." }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-1-haptics.md",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-8-1-haptics.json",
+    "gate_decision_path": "_bmad-output/test-artifacts/traceability/gate-decision-8-1-haptics.json",
+    "test_design_path": "_bmad-output/test-artifacts/test-design-epic-8-1-haptics.md",
+    "atdd_checklist_path": "_bmad-output/test-artifacts/atdd-checklist-8-1-haptics.md",
+    "automation_summary_path": "_bmad-output/test-artifacts/automation-summary.md",
+    "spec_path": "_bmad-output/implementation-artifacts/spec-8-1-haptics.md"
+  }
+}

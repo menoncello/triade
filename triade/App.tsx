@@ -72,6 +72,7 @@ import { TutorialOverlay } from './src/ui/TutorialOverlay.tsx';
 import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12MergeInResult } from './src/game/tutorial.ts';
 import type { TutorialState } from './src/game/tutorial.ts';
 import { ToneScreen } from './src/ui/ToneScreen.tsx';
+import { triggerHapticsForTrace } from './src/feel/haptics.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
 import { useTranslation } from 'react-i18next';
@@ -364,6 +365,12 @@ function AppContent() {
             setTutorialState(next);
           }
         }
+        // 8-1 Haptics — scaled by merge value (FR-30: stays under Reduced Motion)
+        // Observes trace merge entries (from.length===2, spawned===false) and fires via feel gateway.
+        // Best-effort, never throws, never blocks move dispatch.
+        try {
+          triggerHapticsForTrace(result.trace);
+        } catch {}
       }
     },
     [game, match, matchStats, tutorialState, settings],
