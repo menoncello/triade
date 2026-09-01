@@ -6,8 +6,14 @@ lastStep: 'step-05-generate-output'
 nextStep: ''
 lastSaved: '2026-09-01'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-8-1-haptics.md'
+  - '_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md'
   - '_bmad-output/implementation-artifacts/epic-8-context.md'
+  - 'triade/src/feel/feel.ts'
+  - 'triade/src/feel/punch.ts'
+  - 'triade/src/render/GameBoard.tsx'
+  - 'triade/src/render/transitionPlan.ts'
+  - 'triade/__tests__/feel/punch.test.ts'
+  - 'triade/App.tsx'
   - '_bmad/tea/config.yaml'
 ---
 
@@ -25,5 +31,24 @@ Loaded: spec contract (intent/boundaries/I-O matrix, 4 ACs), epic-8 context (fee
 ## Step 4 — Coverage Plan
 P0 7 groups (host unit, already 12 it() passing), P1 5 groups (engine-trace fixtures + App wiring + device smoke), P2 4 checks, P3 2 exploratory. Execution: host in PR (<5 s), one 15-min device pass pre-merge, no nightly needed for 8-1. Estimates ~10–20 h (~1.5–3 d).
 
-## Step 5 — Generate Output
+## Step 5 — Generate Output (8-1)
 Outputs: `_bmad-output/test-artifacts/test-design/test-design-epic-8-1-haptics.md` (canonical) + mirror at `_bmad-output/test-artifacts/test-design-epic-8-1-haptics.md` (workflow.yaml path). Validated against `checklist.md` — host checks green, device smoke flagged as manual waiver.
+
+---
+
+# Test Design Progress — 8-2 Punch Visual (Epic-Level)
+
+## Step 1 — Detect Mode
+Mode: **Epic-Level (Phase 4)**. Trigger: `sprint-status.yaml` exists + `spec-8-2-punch-visual.md` + `epic-8-context.md` provide accepted AC; `ef72635` delta is `src/feel` + `src/render/GameBoard` + `App.tsx` wiring, engine byte-identical. System-level prerequisites (PRD+ADR) not needed for this targeted story design.
+
+## Step 2 — Load Context
+Loaded: spec contract (intent/boundaries/I-O matrix, 7 rows, 5 ACs), epic-8 context (feel model, S8.1–8.6 deps), `triade/src/feel/feel.ts` (extended with `overshootScale` 1.08/1.12/1.15), `triade/src/feel/punch.ts` (47 LOC, 6 pure helpers), `triade/src/render/GameBoard.tsx` (480 LOC, `isMerge`/`reducedMotion`/`BurstView`/`ParticleDot`), `transitionPlan.ts:classify`, `triade/__tests__/feel/punch.test.ts` (8 cases, 105 LOC), `triade/App.tsx` wiring block, `_bmad/tea/config.yaml` (test_artifacts ` _bmad-output/test-artifacts`, test_design_output `_bmad-output/test-artifacts/test-design`). Stack detected: frontend-only (Expo RN 57 + Skia + Reanimated 4 + RNGH, no backend) — knowledge fragments: risk-governance, probability-impact, test-levels-framework, test-priorities-matrix, nfr-criteria (extended).
+
+## Step 3 — Risk and Testability
+10 risks scored (P×I): 3 high (R-001 burst jank PERF 2×3=6, R-002 early-input orphan TECH 2×3=6, R-003 FR-30 gate BUS 2×3=6), 5 medium of score 3–4 (R-004 contract/chrome 2×2=4, R-005 only-glow 1×3=3, R-006 flash over-trigger 2×2=4, R-007 burst accumulation 2×2=4, R-008 overshoot vs early-input 2×2=4), remainder low. Testability: controllability high via `presetFor`/`punchProfileFor` pure + `applyPlan` with engine fixtures; observability partial (Reanimated worklet thin — host can assert `isPunch`/`hasFlash`/`hasGlow` booleans & `bursts` state, not spring timing); reliability good (never-throw, but `setTimeout` burst cleanup needs unmount guard). NFRs: 60 FPS/never-throw/maintainability/FR-30+chrome/offline — each mapped to planned evidence; no new network dep.
+
+## Step 4 — Coverage Plan
+P0 8 groups (host unit, already 8 it() passing — light/medium/heavy/glow/reduced/non-finite/multi-merge/finite-cap), P1 6 groups (engine-trace→isMerge fixtures + chrome guard + overshoot preset mapping + burst scaling/gating + early-input orphan + device smoke 3/6/12+/1536 + Reduced Motion flat + preview chrome), P2 5 checks (cleanup bench static NOOP), P3 3 exploratory (tuning/glow snapshot/clipping). Execution: host in PR (<5 s + <15 min gate), one 15-min device pass pre-merge, no nightly needed for 8-2. Estimates ~5.5–12 h host → ~12–22 h elapsed with device.
+
+## Step 5 — Generate Output (8-2)
+Outputs: `_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md` (canonical, per `test_design_output`) + mirror at `_bmad-output/test-artifacts/test-design-epic-8-2-punch-visual.md` (per `workflow.yaml` `test_design-epic-{epic_num}.md`). Validated against `checklist.md`: risk matrix P×I correct, high ≥6 flagged, mitigation/owner/timeline present, NFR planned evidence without PASS/FAIL, P0/P1/P2/P3 criteria present with priority-not-timing note, execution strategy PR/pre-merge/nightly-not-required, estimates as ranges, quality gates P0 100%/P1 ≥95%, no duplicate merge predicate, single-preset source invariant, entry/exit criteria derived from dependencies/gates.

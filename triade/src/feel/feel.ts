@@ -8,6 +8,7 @@ export interface FeelPreset {
   shakeMs: number;
   particleBurst: number;
   overshootMs: number;
+  overshootScale: number;
   flash: boolean;
 }
 
@@ -21,6 +22,7 @@ const PRESET_LIGHT: FeelPreset = Object.freeze({
   shakeMs: 2,
   particleBurst: 4,
   overshootMs: 80,
+  overshootScale: 1.08,
   flash: false,
 } as const);
 
@@ -29,6 +31,7 @@ const PRESET_MEDIUM: FeelPreset = Object.freeze({
   shakeMs: 2,
   particleBurst: 8,
   overshootMs: 100,
+  overshootScale: 1.12,
   flash: false,
 } as const);
 
@@ -37,6 +40,7 @@ const PRESET_HEAVY: FeelPreset = Object.freeze({
   shakeMs: 5,
   particleBurst: 16,
   overshootMs: 120,
+  overshootScale: 1.15,
   flash: true,
 } as const);
 
@@ -81,6 +85,7 @@ const REDUCED_PRESET: FeelPreset = Object.freeze({
   shakeMs: 0,
   particleBurst: 0,
   overshootMs: 0,
+  overshootScale: 1,
   flash: false,
 } as const);
 

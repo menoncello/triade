@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { Canvas, Group, RoundedRect, Text, matchFont } from '@shopify/react-native-skia';
 import type { SkFont } from '@shopify/react-native-skia';
-import { useDerivedValue, useSharedValue, withDelay, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withSequence, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import type { Board, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
 import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
+import { presetFor } from '../feel/feel.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
@@ -50,6 +51,15 @@ interface TileDescriptor {
   to: [number, number];
   kind: TileKind;
   delay?: number;
+  isMerge?: boolean;
+}
+
+interface Burst {
+  id: string;
+  x: number;
+  y: number;
+  value: number;
+  count: number;
 }
 
 function cellKey(r: number, c: number): string {
@@ -82,6 +92,8 @@ interface AnimatedTileProps {
   kind: TileKind;
   cell: number;
   delay?: number;
+  isMerge?: boolean;
+  reducedMotion?: boolean;
   onVanish: (id: string) => void;
 }
 
@@ -93,6 +105,8 @@ function AnimatedTile({
   kind,
   cell,
   delay = 0,
+  isMerge = false,
+  reducedMotion = false,
   onVanish
 }: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
@@ -101,8 +115,13 @@ function AnimatedTile({
   const y = useSharedValue(fromPos.y);
   const scale = useSharedValue(kind === 'appear' ? 0.5 : 1);
   const opacity = useSharedValue(kind === 'appear' ? 0 : 1);
+  const flashOpacity = useSharedValue(0);
 
   const spring = { damping: 14, stiffness: 260, mass: 0.8 };
+  const isPunch = Boolean(isMerge && !reducedMotion);
+  const punchPreset = isPunch ? presetFor(value) : null;
+  const hasFlash = Boolean(isPunch && punchPreset?.flash);
+  const hasGlow = Boolean(isPunch && value >= 1536);
 
   useEffect(() => {
     if (kind === 'move' || kind === 'vanish') {
@@ -122,10 +141,28 @@ function AnimatedTile({
 
   useEffect(() => {
     if (kind === 'appear') {
-      opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
-      scale.value = withDelay(delay, withSpring(1, spring));
+      if (isPunch && punchPreset) {
+        // Declarative overshoot-and-snap from trace (S8.2) — data-driven scale/duration
+        opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
+        scale.value = withDelay(
+          delay,
+          withSequence(
+            withTiming(punchPreset.overshootScale, { duration: punchPreset.overshootMs }),
+            withSpring(1, spring)
+          )
+        );
+        if (hasFlash) {
+          flashOpacity.value = withDelay(
+            delay,
+            withSequence(withTiming(0.55, { duration: 60 }), withTiming(0, { duration: 140 }))
+          );
+        }
+      } else {
+        opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
+        scale.value = withDelay(delay, withSpring(1, spring));
+      }
     }
-  }, [delay, kind]);
+  }, [delay, kind, isPunch, hasFlash, punchPreset]);
 
   useEffect(() => {
     if (kind === 'vanish') {
@@ -148,6 +185,18 @@ function AnimatedTile({
 
   return (
     <Group transform={translate}>
+      {/* Glow behind tile for 1536+ only — soft outer rect (only glow in system) */}
+      {hasGlow ? (
+        <RoundedRect
+          x={-4}
+          y={-4}
+          width={cell + 8}
+          height={cell + 8}
+          r={CELL_RADIUS + 2}
+          color="#ff8c2f"
+          opacity={0.28}
+        />
+      ) : null}
       <Group transform={scaleTransform} origin={{ x: cell / 2, y: cell / 2 }}>
         <RoundedRect
           x={0}
@@ -158,6 +207,10 @@ function AnimatedTile({
           color={cellColor(value)}
           opacity={opacity}
         />
+        {/* Flash overlay — imperative worklet via shared value, heavy tier only */}
+        {hasFlash ? (
+          <RoundedRect x={0} y={0} width={cell} height={cell} r={CELL_RADIUS} color="#fff7e0" opacity={flashOpacity} />
+        ) : null}
         {font ? (
           <Text
             x={centerX(font, value, cell)}
@@ -173,15 +226,72 @@ function AnimatedTile({
   );
 }
 
+function ParticleDot({ angle, distance, delay }: { angle: number; distance: number; delay: number }) {
+  const tx = useSharedValue(0);
+  const ty = useSharedValue(0);
+  const op = useSharedValue(1);
+  const sc = useSharedValue(1);
+  useEffect(() => {
+    tx.value = withDelay(delay, withTiming(Math.cos(angle) * distance, { duration: 300 }));
+    ty.value = withDelay(delay, withTiming(Math.sin(angle) * distance, { duration: 300 }));
+    op.value = withDelay(delay, withTiming(0, { duration: 340 }));
+    sc.value = withDelay(delay, withTiming(0.2, { duration: 340 }));
+  }, [angle, distance, delay]);
+  const style = useAnimatedStyle(() => ({
+    transform: [{ translateX: tx.value }, { translateY: ty.value }, { scale: sc.value }],
+    opacity: op.value,
+  }));
+  return (
+    <Animated.View
+      // @ts-ignore reanimated style
+      style={[
+        {
+          position: 'absolute',
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: '#fff0c2',
+          borderWidth: 1,
+          borderColor: '#e8a33d',
+          left: -3,
+          top: -3,
+        },
+        style,
+      ]}
+    />
+  );
+}
+
+function BurstView({ x, y, count }: { x: number; y: number; count: number }) {
+  const dots = useMemo(() => {
+    const arr: Array<{ angle: number; distance: number; delay: number }> = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + (i % 2 ? 0.18 : -0.12);
+      const distance = 14 + (i % 3) * 8 + (count > 8 ? 6 : 0);
+      const delay = (i % 4) * 16;
+      arr.push({ angle, distance, delay });
+    }
+    return arr;
+  }, [count]);
+  return (
+    <View style={{ position: 'absolute', left: x, top: y, width: 0, height: 0 }} pointerEvents="none">
+      {dots.map((d, i) => (
+        <ParticleDot key={i} angle={d.angle} distance={d.distance} delay={d.delay} />
+      ))}
+    </View>
+  );
+}
+
 export interface GameBoardProps {
   board: Board;
   moveResult: MoveResult | null;
   width: number;
+  reducedMotion?: boolean;
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
 }
 
-export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlight }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, reducedMotion = false, onMoveSettled, hintHighlight }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
@@ -215,6 +325,8 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
     };
   }, []);
 
+  const [bursts, setBursts] = useState<Burst[]>([]);
+
   const applyPlan = useCallback(
     (plan: TileTransition[]) => {
       if (plan.length === 0) return;
@@ -226,6 +338,7 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
       for (const t of prev) {
         if (t.kind === 'vanish') next.push(t);
       }
+      const newBursts: Burst[] = [];
       for (let i = 0; i < plan.length; i++) {
         const tr = plan[i];
         if (tr.type === 'spawn') {
@@ -238,7 +351,21 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
           // vanish on its own SLIDE_MS schedule instead of lingering extra ms.
           if (a) next.push({ ...a, from: a.to, to: tr.to, kind: 'vanish', delay: 0 });
           if (b) next.push({ ...b, from: b.to, to: tr.to, kind: 'vanish', delay: 0 });
-          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS });
+          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS, isMerge: true });
+          // Imperative particle burst — only when not reducedMotion; scaled by preset (4/8/16)
+          if (!reducedMotion) {
+            const preset = presetFor(tr.value);
+            if (preset.particleBurst > 0) {
+              const p = pixel(tr.to, cell);
+              newBursts.push({
+                id: `b${idPool[i]}`,
+                x: p.x + cell / 2,
+                y: p.y + cell / 2,
+                value: tr.value,
+                count: preset.particleBurst,
+              });
+            }
+          }
         } else {
           const src = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
           if (src) {
@@ -256,8 +383,15 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
       }
       tilesRef.current = next;
       setTilesState(next);
+      if (newBursts.length > 0) {
+        setBursts((prev) => [...prev, ...newBursts]);
+        // Auto-clear bursts after animation window so they don't accumulate
+        setTimeout(() => {
+          setBursts((prev) => prev.filter((b) => !newBursts.some((nb) => nb.id === b.id)));
+        }, 500);
+      }
     },
-    [nextId]
+    [nextId, cell, reducedMotion]
   );
 
   useEffect(() => {
@@ -309,10 +443,16 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
             kind={t.kind}
             cell={cell}
             delay={t.delay}
+            isMerge={t.isMerge}
+            reducedMotion={reducedMotion}
             onVanish={onVanish}
           />
         ))}
       </Canvas>
+      {/* Imperative particle bursts — worklets in src/feel layer mounted from board (S8.2) */}
+      {bursts.map((b) => (
+        <BurstView key={b.id} x={b.x} y={b.y} count={b.count} />
+      ))}
       {hintHighlight
         ? hintHighlight.map(([r, c]) => {
             const pos = pixel([r, c], cell);
