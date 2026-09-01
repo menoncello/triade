@@ -1,0 +1,227 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-3",
+    "label": "8-3 Screen shake — directional shake scaled by FeelPreset (Epic 8, S8.3)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-3-screen-shake.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-3-screen-shake.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/shake.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/render/transitionPlan.ts",
+      "triade/App.tsx",
+      "triade/__tests__/feel/shake.test.ts",
+      "triade/__tests__/feel/shake.atdd.test.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.3-AC1",
+      "title": "Directional screen shake on merge, subtle ~2 on medium 6, stronger ~5 on large 12+ capped 8, along swipe axis left/right→X up/down→Y 130ms 30+40+30+30 decaying (S8.3, UX-DR-16)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-001", "title": "[P0] medium 6 -> shakeMs 2 subtle", "file": "triade/__tests__/feel/shake.test.ts", "line": 13, "level": "unit", "status": "active" },
+        { "id": "8.3-U-002", "title": "[P0] heavy 12+ -> shakeMs 5", "file": "triade/__tests__/feel/shake.test.ts", "line": 19, "level": "unit", "status": "active" },
+        { "id": "8.3-U-003", "title": "[P0] light 3 -> shakeMs 2", "file": "triade/__tests__/feel/shake.test.ts", "line": 26, "level": "unit", "status": "active" },
+        { "id": "8.3-U-008", "title": "[P0] direction vectors left(-1,0)/right(1,0)/up(0,-1)/down(0,1)", "file": "triade/__tests__/feel/shake.test.ts", "line": 106, "level": "unit", "status": "active" },
+        { "id": "8.3-U-009", "title": "[P0] invalid dir -> zero vector safety", "file": "triade/__tests__/feel/shake.test.ts", "line": 113, "level": "unit", "status": "active" },
+        { "id": "8.3-U-011", "title": "[P0] shakeMsFor uses presetFor data (not hardcoded) and capped", "file": "triade/__tests__/feel/shake.test.ts", "line": 141, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-01", "title": "[P0-01] AC subtle shake — medium 6 -> shakeMs 2 (FeelPreset data, not code)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-02", "title": "[P0-02] AC stronger shake — heavy 12+ -> shakeMs 5 (sweep all heavy tiers)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 35, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-07", "title": "[P0-07] AC direction vectors — left/right X, up/down Y with correct sign", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 115, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-08", "title": "[P0-08] AC invalid dir safety — zero vector, never throws", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 122, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-03", "title": "[P1-03] directional axis mapping — left/right only X, up/down only Y", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 201, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.3-AC2",
+      "title": "Data-not-code FeelPreset.shakeMs is single source via presetFor(value) and never exceeds SHAKE_CAP 8 (Math.min(raw, SHAKE_CAP) / Math.min(maxShake, SHAKE_CAP), UX-DR-16)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-004", "title": "[P0] cap 8 enforcement — never exceeds 8 for any tier", "file": "triade/__tests__/feel/shake.test.ts", "line": 31, "level": "unit", "status": "active" },
+        { "id": "8.3-U-011", "title": "[P0] shakeMsFor uses presetFor data (not hardcoded) and capped", "file": "triade/__tests__/feel/shake.test.ts", "line": 141, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-01", "title": "[P0-01] AC subtle shake — medium 6 -> shakeMs 2 (FeelPreset data, not code)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-02", "title": "[P0-02] AC stronger shake — heavy 12+ -> shakeMs 5", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 35, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-03", "title": "[P0-03] AC light 3 + cap enforcement — shakeMs never exceeds 8", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 43, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-09", "title": "[P0-09] AC non-finite never throw + data alignment", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 132, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-03", "title": "[P2-03] cap SHAKE_CAP single source — no hard-coded 8 outside shake.ts", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 307, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-06", "title": "[P2-06] single access point — FeelPreset shakeMs is single source via presetFor", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 345, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.3-AC3",
+      "title": "FR-30 Reduced Motion gates all shake visuals (shakeMsFor 0, maxShakeForTrace 0, shouldShake false, shakeX/Y snapped withTiming(0,20) even mid-animation) while haptics+sound stay (reducedPresetFor preserves haptic)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-005", "title": "[P0] reducedMotion gating — all ->0/false", "file": "triade/__tests__/feel/shake.test.ts", "line": 43, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-04", "title": "[P0-04] AC Reduced Motion gate FR-30 — all ->0/false, haptics stay", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 54, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-04", "title": "[P1-04] Reduced Motion mid-animation snap — useEffect snaps to 0 when reducedMotion toggles", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 222, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.3-AC4",
+      "title": "NOOP / no-merge / slide-only silent — no shake fires and never throws (shouldShake false, maxShake 0, withTiming(0,20) bleed-cancel on moved false or maxShake 0, NaN/Infinity/null/undefined safe)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-006", "title": "[P0] NOOP / empty trace -> no shake", "file": "triade/__tests__/feel/shake.test.ts", "line": 58, "level": "unit", "status": "active" },
+        { "id": "8.3-U-010", "title": "[P0] non-finite values never throw", "file": "triade/__tests__/feel/shake.test.ts", "line": 122, "level": "unit", "status": "active" },
+        { "id": "8.3-U-012", "title": "[P0] shouldShake requires moved-like trace with merge", "file": "triade/__tests__/feel/shake.test.ts", "line": 150, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-05", "title": "[P0-05] AC NOOP / no-merge silent — no shake, never throws", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 72, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-09", "title": "[P0-09] AC non-finite never throw + data alignment", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 132, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-06", "title": "[P1-06] NOOP / slide-only bleed cancel — residual shake cancelled via withTiming(0,20)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 253, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.3-AC5",
+      "title": "Multiple merges in one move — single shake driven by maxShakeForTrace (max shakeMs among merges, not stacked, spawned ignored) + trace→shake contract via real engine trace (from.length===2 && !spawned && finite) + direction wiring (App.lastDirectionRef sync before move + GameBoard axis) + chrome guard (Animated.View wraps Canvas only, never Hud/PreviewCard)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-007", "title": "[P0] multiple merges -> max wins (not stacked)", "file": "triade/__tests__/feel/shake.test.ts", "line": 79, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-06", "title": "[P0-06] AC multiple merges — max wins, not stacked", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 91, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-01", "title": "[P1-01] trace->shake contract via REAL engine trace: merge iff from.length===2 && !spawned", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 152, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-02", "title": "[P1-02] App.lastDirectionRef wiring — direction set before move() and cleared on restart/lane", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 182, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-03", "title": "[P1-03] directional axis mapping — left/right only X, up/down only Y", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 201, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-05", "title": "[P1-05] chrome guard — Animated.View wraps Canvas only, never preview/score", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 236, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P1-06", "title": "[P1-06] NOOP / slide-only bleed cancel — residual shake cancelled via withTiming(0,20)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 253, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.3-AC6",
+      "title": "Boundaries & non-functional: engine byte-identical ADR-01, FeelPreset single access point (no scattered 2/5), never-throw + data-not-code finite scale ≤8, perf micro-bench (10k sweeps <200ms), SHAKE_CAP single source, duplicate predicate allowlist, board edge clipping deferred",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.3-U-010", "title": "[P0] non-finite values never throw", "file": "triade/__tests__/feel/shake.test.ts", "line": 122, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P0-09", "title": "[P0-09] AC non-finite never throw + data alignment", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 132, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-01", "title": "[P2-01] overlapping shake concurrency without cancelAnimation (EXPECTED RED)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 272, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-02", "title": "[P2-02] perf micro-bench — shake helpers host-cheap", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 283, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-03", "title": "[P2-03] cap SHAKE_CAP single source — no hard-coded 8 outside shake.ts", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 307, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-04", "title": "[P2-04] engine purity + duplicate predicate allowlist", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 320, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-05", "title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 331, "level": "unit", "status": "active" },
+        { "id": "8.3-ATDD-P2-06", "title": "[P2-06] single access point — FeelPreset shakeMs is single source via presetFor", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 345, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 1, "covered": 1, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure feel+render story: no API endpoints, no auth surfaces, no UI journey E2E in host automation (Skia+Reanimated worklets + Taptic require real iPhone). Negative paths covered via P0-08/P0-09 non-finite/invalid dir, P0-05 NOOP/empty, P1-04 Reduced Motion mid-flight, P1-06 NOOP/slide bleed-cancel, and AC3 FR-30 independence. Happy-path-only gaps: 0 — every I/O row (medium 2 / heavy 5 / cap 8 / Reduced Motion / NOOP / multi-merge max / direction / chrome) has boundary+error. E2E-equivalent P1-07 device smoke (real iPhone 6 subtle 2px / 12+ 5px / cap 8 along left/right X up/down Y + Reduced Motion ON flat + NOOP + chrome + rapid-overlap + airplane) is manual pre-merge lane, not scaffolded as code by design (see test-design Execution Order > Device gate). Heuristics all present => 0 gaps."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 2,
+      "cases": 33,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 33, "criteria_covered": 6 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "8.3-U-001", "file": "triade/__tests__/feel/shake.test.ts", "line": 13, "title": "[P0] medium 6 -> shakeMs 2 subtle", "level": "unit", "status": "active" },
+      { "id": "8.3-U-002", "file": "triade/__tests__/feel/shake.test.ts", "line": 19, "title": "[P0] heavy 12+ -> shakeMs 5", "level": "unit", "status": "active" },
+      { "id": "8.3-U-003", "file": "triade/__tests__/feel/shake.test.ts", "line": 26, "title": "[P0] light 3 -> shakeMs 2", "level": "unit", "status": "active" },
+      { "id": "8.3-U-004", "file": "triade/__tests__/feel/shake.test.ts", "line": 31, "title": "[P0] cap 8 enforcement — never exceeds 8 for any tier", "level": "unit", "status": "active" },
+      { "id": "8.3-U-005", "file": "triade/__tests__/feel/shake.test.ts", "line": 43, "title": "[P0] reducedMotion gating — all ->0/false", "level": "unit", "status": "active" },
+      { "id": "8.3-U-006", "file": "triade/__tests__/feel/shake.test.ts", "line": 58, "title": "[P0] NOOP / empty trace -> no shake", "level": "unit", "status": "active" },
+      { "id": "8.3-U-007", "file": "triade/__tests__/feel/shake.test.ts", "line": 79, "title": "[P0] multiple merges -> max wins (not stacked)", "level": "unit", "status": "active" },
+      { "id": "8.3-U-008", "file": "triade/__tests__/feel/shake.test.ts", "line": 106, "title": "[P0] direction vectors left(-1,0)/right(1,0)/up(0,-1)/down(0,1)", "level": "unit", "status": "active" },
+      { "id": "8.3-U-009", "file": "triade/__tests__/feel/shake.test.ts", "line": 113, "title": "[P0] invalid dir -> zero vector safety", "level": "unit", "status": "active" },
+      { "id": "8.3-U-010", "file": "triade/__tests__/feel/shake.test.ts", "line": 122, "title": "[P0] non-finite values never throw", "level": "unit", "status": "active" },
+      { "id": "8.3-U-011", "file": "triade/__tests__/feel/shake.test.ts", "line": 141, "title": "[P0] shakeMsFor uses presetFor data (not hardcoded) and capped", "level": "unit", "status": "active" },
+      { "id": "8.3-U-012", "file": "triade/__tests__/feel/shake.test.ts", "line": 150, "title": "[P0] shouldShake requires moved-like trace with merge", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-01", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 27, "title": "[P0-01] AC subtle shake — medium 6 -> shakeMs 2 (FeelPreset data, not code)", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-02", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 35, "title": "[P0-02] AC stronger shake — heavy 12+ -> shakeMs 5 (sweep all heavy tiers)", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-03", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 43, "title": "[P0-03] AC light 3 + cap enforcement — shakeMs never exceeds 8", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-04", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 54, "title": "[P0-04] AC Reduced Motion gate FR-30 — all ->0/false, haptics stay", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-05", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 72, "title": "[P0-05] AC NOOP / no-merge silent — no shake, never throws", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-06", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 91, "title": "[P0-06] AC multiple merges — max wins, not stacked", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-07", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 115, "title": "[P0-07] AC direction vectors — left/right X, up/down Y with correct sign", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-08", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 122, "title": "[P0-08] AC invalid dir safety — zero vector, never throws", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P0-09", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 132, "title": "[P0-09] AC non-finite never throw + data alignment", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-01", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 152, "title": "[P1-01] trace->shake contract via REAL engine trace: merge iff from.length===2 && !spawned", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-02", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 182, "title": "[P1-02] App.lastDirectionRef wiring — direction set before move() and cleared on restart/lane", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-03", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 201, "title": "[P1-03] directional axis mapping — left/right only X, up/down only Y", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-04", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 222, "title": "[P1-04] Reduced Motion mid-animation snap — useEffect snaps to 0 when reducedMotion toggles", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-05", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 236, "title": "[P1-05] chrome guard — Animated.View wraps Canvas only, never preview/score", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P1-06", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 253, "title": "[P1-06] NOOP / slide-only bleed cancel — residual shake cancelled via withTiming(0,20)", "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-01", "title": "[P2-01] overlapping shake concurrency without cancelAnimation (EXPECTED RED)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 272, "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-02", "title": "[P2-02] perf micro-bench — shake helpers host-cheap", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 283, "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-03", "title": "[P2-03] cap SHAKE_CAP single source — no hard-coded 8 outside shake.ts", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 307, "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-04", "title": "[P2-04] engine purity + duplicate predicate allowlist", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 320, "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-05", "title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED)", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 331, "level": "unit", "status": "active" },
+      { "id": "8.3-ATDD-P2-06", "title": "[P2-06] single access point — FeelPreset shakeMs is single source via presetFor", "file": "triade/__tests__/feel/shake.atdd.test.ts", "line": 345, "level": "unit", "status": "active" }
+    ]
+  },
+  "working_tree": {
+    "delta_commit": "721bf3a",
+    "description": "feat(8-3): directional screen shake scaled by FeelPreset (S8.3) — 1 commit ahead of e4629cd (baseline). Production delta: triade/src/feel/shake.ts (new 81 LOC, 5 pure helpers + SHAKE_CAP=8) + triade/src/feel/feel.ts (verified shakeMs 2/2/5 capped ≤8) + triade/src/render/GameBoard.tsx (+101 −21, direction prop, shakeX/Y shared values + Animated.View wrapper board only, withSequence 30+40+30+30=130ms on swipe axis, withTiming(0,20) bleed-cancel, useEffect snap mid-flight) + triade/App.tsx (+7, lastDirectionRef sync before move() + clear on restart/lane). No engine edits, no transitionPlan change.",
+    "uncommitted_stat": "M spec-8-3-screen-shake.md (final_revision 9e93453->721bf3a), M sprint-status.yaml (8-3 backlog->done), M automation-summary.md, M test-design-progress.md — all metadata-only; untracked: shake.atdd.test.ts (21) + test-design/atdd-checklist 8-3 (both part of delta assessment). Production files committed at 721bf3a.",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01 verified)",
+    "full_suite": "782 tests, 776 pass / 6 fail (expected RED) — 6 = 2 carry-over 8-1 (P1-03 2!==1 tutorial dedup, P2-06 expo-haptics missing) + 2 carry-over 8-2 (P1-05/P2-01 burst timer leak) + 2 new 8-3 (P2-01 cancelAnimation, P2-05 edge clipping) — same root causes as spec-8-3 Residual risks / deferred-work.md. Scoped 8-3 surface 33 cases: 31 pass / 2 fail (both P2 expected RED with waiver). tsc --noEmit clean."
+  },
+  "recommendations": [
+    { "priority": "HIGH", "action": "Fix overlapping shake concurrency (R-001 score 6) — import cancelAnimation from react-native-reanimated and call cancelAnimation(shakeX)/cancelAnimation(shakeY) before each new withSequence in GameBoard moveResult effect (one-line). Re-run P2-01 until GREEN and verify rapid-swipe combo video (heavy 12 then medium 6 within 90ms) shows no truncated overlap/jank.", "requirements": ["8.3-AC6"] },
+    { "priority": "MEDIUM", "action": "Product decision on board edge clipping (R-007 score 4) — add BOARD_PADDING+SHAKE_CAP 8px bleed margin or set App boardWrap overflow:visible with safe margin, or accept clipping as cosmetic with UX sign-off and update P2-05 to passing. Capture device screenshot at board corners heavy 5px.", "requirements": ["8.3-AC6"] },
+    { "priority": "MEDIUM", "action": "Run /bmad:tea:test-review to assess test quality for shake.test.ts + shake.atdd.test.ts", "requirements": [] },
+    { "priority": "LOW", "action": "Carry-over 8-1/8-2 waivers (R-001 tutorial 2!==1, R-006 expo-haptics, R-002/R-007 burst leak) remain waived until before 8-2 freeze / 8-3 review — do not re-introduce for 8-3", "requirements": [] }
+  ],
+  "tempCoverageMatrixPath": "/tmp/tea-trace-coverage-matrix-2026-09-01.json"
+}

@@ -6,13 +6,13 @@ lastStep: 'step-05-generate-output'
 nextStep: ''
 lastSaved: '2026-09-01'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md'
+  - '_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md'
   - '_bmad-output/implementation-artifacts/epic-8-context.md'
   - 'triade/src/feel/feel.ts'
-  - 'triade/src/feel/punch.ts'
+  - 'triade/src/feel/shake.ts'
   - 'triade/src/render/GameBoard.tsx'
   - 'triade/src/render/transitionPlan.ts'
-  - 'triade/__tests__/feel/punch.test.ts'
+  - 'triade/__tests__/feel/shake.test.ts'
   - 'triade/App.tsx'
   - '_bmad/tea/config.yaml'
 ---
@@ -52,3 +52,22 @@ P0 8 groups (host unit, already 8 it() passing — light/medium/heavy/glow/reduc
 
 ## Step 5 — Generate Output (8-2)
 Outputs: `_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md` (canonical, per `test_design_output`) + mirror at `_bmad-output/test-artifacts/test-design-epic-8-2-punch-visual.md` (per `workflow.yaml` `test_design-epic-{epic_num}.md`). Validated against `checklist.md`: risk matrix P×I correct, high ≥6 flagged, mitigation/owner/timeline present, NFR planned evidence without PASS/FAIL, P0/P1/P2/P3 criteria present with priority-not-timing note, execution strategy PR/pre-merge/nightly-not-required, estimates as ranges, quality gates P0 100%/P1 ≥95%, no duplicate merge predicate, single-preset source invariant, entry/exit criteria derived from dependencies/gates.
+
+---
+
+# Test Design Progress — 8-3 Screen Shake (Epic-Level)
+
+## Step 1 — Detect Mode
+Mode: **Epic-Level (Phase 4)**. Trigger: `sprint-status.yaml` exists + `spec-8-3-screen-shake.md` + `epic-8-context.md` provide accepted AC; `721bf3a` delta is `triade/src/feel/shake.ts` + `triade/src/render/GameBoard.tsx` directional shake + `App.tsx` `lastDirectionRef` wiring, engine byte-identical. System-level prerequisites (PRD+ADR) not needed for this targeted story design. Working tree diff is metadata-only (`spec` final_revision + `sprint-status.yaml` 8-3 backlog→done); assessed delta is `HEAD` commit `721bf3a` vs baseline `e4629cd`.
+
+## Step 2 — Load Context
+Loaded: spec contract (intent/boundaries/I-O matrix 8 rows, 6 ACs), epic-8 context (feel model, S8.1–8.6 deps), `triade/src/feel/feel.ts` (97 LOC, shakeMs 2/2/5 cap 8 + REDUCED 0), `triade/src/feel/shake.ts` (81 LOC, 5 pure helpers + SHAKE_CAP, Number.isFinite + try/catch never-throw), `triade/src/render/GameBoard.tsx` (539 LOC, `direction` prop, `shakeX/Y` + `Animated.View` wrapper, `withSequence` 130 ms on swipe axis, bleed-cancel 20 ms, mid-animation `reducedMotion` snap), `transitionPlan.ts:classify`, `triade/__tests__/feel/shake.test.ts` (12 cases, 158 LOC, 757 pass / 4 expected RED from punch ATDD), `triade/App.tsx` wiring block (`lastDirectionRef` sync set before `move()` + clear on restart/lane), `_bmad/tea/config.yaml` (test_artifacts `_bmad-output/test-artifacts`, test_design_output `_bmad-output/test-artifacts/test-design`). Stack detected: frontend-only (Expo RN 57 + Skia + Reanimated 4 + RNGH, no backend) — knowledge fragments: risk-governance, probability-impact, test-levels-framework, test-priorities-matrix, nfr-criteria (extended).
+
+## Step 3 — Risk and Testability
+10 risks scored (P×I): 3 high (R-001 overlap jank PERF 2×3=6, R-002 FR-30 gate BUS 2×3=6, R-003 direction wiring TECH 2×3=6), 5 medium score 3–4 (R-004 contract/chrome 2×2=4, R-005 NOOP bleed 1×3=3, R-006 cap divergence 1×3=3, R-007 clipping 2×2=4, R-008 max-wins 1×2=2 as medium), 2 low (R-009 non-finite fallback 1×1=1, R-010 reducedPresetFor identity 1×2=2). Testability: controllability high via `shakeMsFor`/`maxShakeForTrace`/`directionVector` pure + `maxShakeForTrace` host-inspectable; observability partial (Reanimated withSequence thin — host can assert amplitude/axis + bleed-cancel branch, not timing physics); reliability good (never-throw + Number.isFinite guards + try/catch). NFRs: 60 FPS/never-throw/maintainability/FR-30+chrome+cap/offline — each mapped to planned evidence; no new network dep. Deferred-work entries (overlap without cancelAnimation, overflow clipping) captured as R-001/R-007.
+
+## Step 4 — Coverage Plan
+P0 9 groups (host unit, already 12 it() passing — subtle 2 / heavy 5 / light 2 / cap 8 / Reduced Motion / NOOP/empty/spawn-only / multiple merges max / direction vectors / invalid dir / non-finite + presetFor alignment), P1 7 groups (engine-trace→maxShake fixtures + App lastDirectionRef sync/clear + axis mapping X/Y isolation + mid-flight Reduced Motion snap + chrome guard + bleed cancel + device smoke left/right X / up/down Y + Reduced Motion flat + preview chrome + NOOP), P2 6 checks (overlap timing artefact, bench, cap SHAKE_CAP scan, engine purity + predicate allowlist, clipping visual, NOOP complement), P3 3 exploratory (tuning rank 2/5/8, clip/chrome snapshot, rapid axis switch). Execution: host in PR (<5 s + <15 min gate), one 15-min device pass pre-merge, no nightly needed for 8-3. Estimates ~6–14 h host → ~11–23 h elapsed with device.
+
+## Step 5 — Generate Output (8-3)
+Outputs: `_bmad-output/test-artifacts/test-design/test-design-epic-8-3-screen-shake.md` (canonical, per `test_design_output`) + mirror at `_bmad-output/test-artifacts/test-design-epic-8-3-screen-shake.md` (per `workflow.yaml` `test_design-epic-{epic_num}.md`). Validated against `checklist.md`: risk matrix P×I correct, high ≥6 flagged, mitigation/owner/timeline present, NFR planned evidence without PASS/FAIL, P0/P1/P2/P3 criteria present with priority-not-timing note, execution strategy PR/pre-merge/nightly-not-required, estimates as ranges, quality gates P0 100%/P1 ≥95%, no duplicate merge predicate (3 sanctioned sites), single-preset + single-cap (SHAKE_CAP) invariant, entry/exit criteria derived from dependencies/gates, trace contract & chrome rule pinned.

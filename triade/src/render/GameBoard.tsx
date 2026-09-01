@@ -3,10 +3,11 @@ import { Platform, View } from 'react-native';
 import { Canvas, Group, RoundedRect, Text, matchFont } from '@shopify/react-native-skia';
 import type { SkFont } from '@shopify/react-native-skia';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withSequence, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
-import type { Board, MoveResult } from '../engine/core/index.ts';
+import type { Board, Direction, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
 import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
 import { presetFor } from '../feel/feel.ts';
+import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
@@ -289,10 +290,24 @@ export interface GameBoardProps {
   reducedMotion?: boolean;
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
+  direction?: Direction;
 }
 
-export function GameBoard({ board, moveResult, width, reducedMotion = false, onMoveSettled, hintHighlight }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, reducedMotion = false, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
+  // S8.3 screen shake — imperative worklet on board container only (never chrome)
+  const shakeX = useSharedValue(0);
+  const shakeY = useSharedValue(0);
+  const shakeStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shakeX.value }, { translateY: shakeY.value }],
+  }));
+  // Cancel shake immediately if Reduced Motion is enabled mid-animation (FR-30, UX-DR-16)
+  useEffect(() => {
+    if (reducedMotion) {
+      shakeX.value = withTiming(0, { duration: 20 });
+      shakeY.value = withTiming(0, { duration: 20 });
+    }
+  }, [reducedMotion, shakeX, shakeY]);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
@@ -402,6 +417,48 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
     const plan = planTileTransitions(prevBoardRef.current, moveResult);
     applyPlan(plan);
     prevBoardRef.current = board;
+    // S8.3 directional screen shake — data-driven from FeelPreset.shakeMs, capped ≤SHAKE_CAP,
+    // disabled under Reduced Motion, silent on NOOP/no-merge, board only.
+    if (moveResult.moved && !reducedMotion && direction) {
+      const maxShake = maxShakeForTrace(moveResult.trace, reducedMotion);
+      const amplitude = Math.min(maxShake, SHAKE_CAP);
+      if (amplitude > 0) {
+        const vec = directionVector(direction);
+        // Only drive the axis matching swipe direction; invalid dir -> zero vector -> no shake
+        if (vec.x !== 0) {
+          shakeX.value = withSequence(
+            withTiming(amplitude * vec.x, { duration: 30 }),
+            withTiming(-amplitude * 0.6 * vec.x, { duration: 40 }),
+            withTiming(amplitude * 0.3 * vec.x, { duration: 30 }),
+            withTiming(0, { duration: 30 }),
+          );
+          shakeY.value = withTiming(0, { duration: 130 });
+        } else if (vec.y !== 0) {
+          shakeY.value = withSequence(
+            withTiming(amplitude * vec.y, { duration: 30 }),
+            withTiming(-amplitude * 0.6 * vec.y, { duration: 40 }),
+            withTiming(amplitude * 0.3 * vec.y, { duration: 30 }),
+            withTiming(0, { duration: 30 }),
+          );
+          shakeX.value = withTiming(0, { duration: 130 });
+        } else {
+          // Invalid direction — suppress shake
+          shakeX.value = withTiming(0, { duration: 20 });
+          shakeY.value = withTiming(0, { duration: 20 });
+        }
+      } else {
+        // Effective move but no merge (slide-only) — cancel any prior shake so it doesn't bleed
+        shakeX.value = withTiming(0, { duration: 20 });
+        shakeY.value = withTiming(0, { duration: 20 });
+      }
+    } else {
+      // NOOP, Reduced Motion, or missing direction — cancel any residual shake
+      // (covers slide-only after merge, NOOP moves, and mid-shake Reduced Motion toggle)
+      if (shakeX.value !== 0 || shakeY.value !== 0) {
+        shakeX.value = withTiming(0, { duration: 20 });
+        shakeY.value = withTiming(0, { duration: 20 });
+      }
+    }
     // Re-arm the input-release timer for this move: a noop (empty plan)
     // animates nothing, so it must not touch the gate. An effective move opens
     // the gate after ~30% of the animation; a new swipe then re-plans and tiles
@@ -413,7 +470,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, shakeX, shakeY]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
@@ -431,24 +488,26 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, onM
 
   return (
     <View style={{ width, height: width }}>
-      <Canvas style={{ width, height: width }}>
-        <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
-        {ordered.map((t) => (
-          <AnimatedTile
-            key={t.id}
-            id={t.id}
-            value={t.value}
-            from={t.from}
-            to={t.to}
-            kind={t.kind}
-            cell={cell}
-            delay={t.delay}
-            isMerge={t.isMerge}
-            reducedMotion={reducedMotion}
-            onVanish={onVanish}
-          />
-        ))}
-      </Canvas>
+      <Animated.View style={shakeStyle}>
+        <Canvas style={{ width, height: width }}>
+          <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
+          {ordered.map((t) => (
+            <AnimatedTile
+              key={t.id}
+              id={t.id}
+              value={t.value}
+              from={t.from}
+              to={t.to}
+              kind={t.kind}
+              cell={cell}
+              delay={t.delay}
+              isMerge={t.isMerge}
+              reducedMotion={reducedMotion}
+              onVanish={onVanish}
+            />
+          ))}
+        </Canvas>
+      </Animated.View>
       {/* Imperative particle bursts — worklets in src/feel layer mounted from board (S8.2) */}
       {bursts.map((b) => (
         <BurstView key={b.id} x={b.x} y={b.y} count={b.count} />

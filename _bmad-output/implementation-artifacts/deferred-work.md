@@ -205,3 +205,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-3-accelerated-lane-com-assistencia.md`
   summary: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
   evidence: triade/App.tsx handleUndoIap synthesizes iapRemaining when freeUsed && !unlimited && iapRemaining===0; Epic 4 will wire real iapRemaining/unlimited from RevenueCat + SecureStore entitlements, 3.3 keeps IAP stub without SDK imports per boundary
+
+## Deferred from: code review of story 8-3-screen-shake (2026-09-01 — gds-code-review, 2 layers)
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md`
+  summary: Rapid second swipe before first shake 130ms completes overwrites withSequence without cancelAnimation — truncated overlap/jank
+  evidence: triade/src/render/GameBoard.tsx:298-303,415-460 shakeX/Y withSequence 30+40+30+30=130ms but EARLY_INPUT_MS 84ms re-opens gate at 90ms; second withSequence call overwrites without cancelAnimation; multiple merges max wins requirement assumes single shake, not concurrent shake overlap
+- source_spec: `_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md`
+  summary: Board shake 5-8px at edges clipped by parent View overflow hidden
+  evidence: triade/src/render/GameBoard.tsx:472 parent View style width/height width plus App.tsx boardWrap overflow hidden clips translateX/Y 5-8px at board edges; shakeChrome guard via structure (Animated.View wraps Canvas only) is correct but visual clipping at container boundary is not asserted — shake.test.ts pure helpers only, no integration assertion for clipping

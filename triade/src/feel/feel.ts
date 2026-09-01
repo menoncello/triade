@@ -17,6 +17,7 @@ export interface FeelPreset {
 //   3 -> light, 6 -> medium, 12+ -> heavy
 // Other fields carry UX-DR-16 defaults so 8.2-8.5 can tune without rework.
 // Values: shakeMs 2/5 capped 8 (UX-DR-16), particle/overshoot/flash scale with value.
+// Defensive: shakeMs values are clamped ≤8 at definition and via helpers (S8.3).
 const PRESET_LIGHT: FeelPreset = Object.freeze({
   haptic: 'light',
   shakeMs: 2,

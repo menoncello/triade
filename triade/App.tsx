@@ -100,6 +100,7 @@ function AppContent() {
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
+  const lastDirectionRef = useRef<Direction | null>(null);
   const adBusyRef = useRef(false);
   const purchaseBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
@@ -237,6 +238,7 @@ function AppContent() {
       const nextLaneId: LaneId = laneFromIndex(index).id as LaneId;
       // Changing lane always starts a new game (FR-11, D-008) — best is lane-scoped
       if (needsReset) {
+        lastDirectionRef.current = null;
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
@@ -320,6 +322,8 @@ function AppContent() {
 
   const doMove = useCallback(
     (dir: Direction) => {
+      // S8.3 capture swipe direction synchronously before move() for directional shake
+      lastDirectionRef.current = dir;
       // Capture snapshot before move for undo history (only if effective)
       const snapshot: Snapshot = { game, match, matchStats };
       const result = move(game, dir, rngRef.current);
@@ -377,6 +381,8 @@ function AppContent() {
   );
 
   const handleRestart = useCallback(() => {
+    // S8.3 clear last swipe direction on new game — board shake resets
+    lastDirectionRef.current = null;
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
@@ -887,6 +893,7 @@ function AppContent() {
               reducedMotion={settings.reducedMotion}
               onMoveSettled={onMoveSettled}
               hintHighlight={hintHighlight}
+              direction={lastDirectionRef.current ?? undefined}
             />
           </GestureDetector>
         </View>
