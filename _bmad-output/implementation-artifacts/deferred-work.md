@@ -367,7 +367,9 @@ resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a51
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)"), 2026-09-01
 location: triade/src/engine/config/spawnConfig.ts:1-5
 reason: Sem validação em runtime dos pesos em `spawnConfig` — edição futura dos pesos degrada silenciosamente (pot absorve excesso de probabilidade, NaN/negativo envenena as comparações e tudo vira pot); a invariante `FIXED_WEIGHTS[1]+FIXED_WEIGHTS[2] === 1-POT_WEIGHT` é guardada apenas pelo teste de soma com epsilon (`triade/src/engine/config/spawnConfig.ts:1-5`, `triade/src/engine/core/spawn.ts:11-16`). Por design do spec: 2.4 (`weightedPicker`) re-normalizará e nunca confiará na soma exata.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-spawn-weight-validation
+resolution-undo: db8b509b25e0f2fd8dd80bcce2cf84a075893e248b709d25fcaea88061d0b93b 2026-09-02 7374617475733a206f70656e
 
 ### DW-47: `Readonly<Record<1|2, number>>` é somente compile-time; o objeto é mutável em runtime (sem `Object.freeze`) (`triade/src/engine/config/spawnConfig.ts:3`). Hardening trivial; revisitar quando 2.5 tornar `spawnConfig` configurável.
 

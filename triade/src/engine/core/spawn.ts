@@ -1,9 +1,20 @@
 import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
-import { FIXED_WEIGHTS, POT_WEIGHT } from '../config/spawnConfig.ts';
+import { FIXED_WEIGHTS, POT_WEIGHT, validateSpawnConfig } from '../config/spawnConfig.ts';
 import type { CeilingTier } from './ceiling.ts';
 import { tierForCeiling } from './ceiling.ts';
 import { potForTier } from './pot.ts';
 import { potWeights, normalizeTo, weightedPicker } from './weights.ts';
+
+// Caller-side runtime guard (DW-46): wire validateSpawnConfig at engine init so
+// a drifted FIXED_WEIGHTS/POT_WEIGHT fails fast even if spawnConfig's self-check
+// is tree-shaken or bypassed via alternate entry point. Single invocation at
+// module evaluation; not per-draw. Spec 2.4: weightedPicker re-normalizes but
+// never asserts the sum — this invariant check closes the silent-degradation gap
+// (pot absorbtion / NaN poisoning → last-index collapse).
+const _spawnWeightValidation = validateSpawnConfig();
+if (!_spawnWeightValidation.ok) {
+  throw new Error(`[spawn] invalid spawn weights: ${_spawnWeightValidation.errors.join('; ')}`);
+}
 
 // Combined single-roll pick (promised by 2.4's AC "the combined distribution is
 // picked by a weightedPicker that always re-normalizes" and 2.5's dev note

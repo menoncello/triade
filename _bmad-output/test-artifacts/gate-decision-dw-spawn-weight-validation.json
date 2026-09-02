@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T13:00:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-spawn-weight-validation",
+    "label": "dw-spawn-weight-validation — runtime guard for spawn weight invariants (DW-46)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (7/7), P1 coverage is 100% (target 90%, minimum 80%), overall 100% (minimum 80%). All 3 high risks R-001..R-003 mitigated: R-001 silent pot-share warp 0.85 vs 0.8 hidden by weightedPicker re-normalization now fail-fast via spawnConfig.ts:134-136 [spawnConfig] + spawn.ts:14-16 [spawn] throw within 1e-9; R-002 NaN/Infinity/zero/negative collapse to pot last-index now finite gate at spawnConfig.ts:52-53,112 before acc+=NaN loop; R-003 init-throw tensions engine-never-throws is scoped to init only (validateSpawnConfig stays pure for explicit caller doesNotThrow 10 rejections). No per-draw overhead (weights.ts 0, spawn.ts only top-level), no Math.random direct in guard, config single source POT_WEIGHT 0.2 + FIXED_WEIGHTS {1:0.4,2:0.4} sum 0.8 exact, tsc both configs clean, host gate 910 pass / 10 expected RED deferred feel + 208 skipped, ledger dw-46 db8b509b25e0f2fd8dd80bcce2cf84a075893e248b709d25fcaea88061d0b93b done 2026-09-02 + 7374617475733a206f70656e tail, sprint-status.yaml untouched. De-skipped ATDD 23 pass + gateway 8 + umbrella 10 + triade 12 + spawn-config 7 confirms RED→GREEN. NFR PASS: Performance PASS (<0.5 ms cold single validateSpawnConfig ~0.02 ms, 0 per-draw), Security PASS (no auth/PII/deps), Reliability PASS (init fail-fast only + explicit pure + distribution byte-identical 40/40/20), Maintainability PASS (single source spawnConfig.ts 1-26 + Object.freeze 2 + core/index re-export). No blockers.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "nfr_status": "PASS",
+  "nfr_assessment_path": "_bmad-output/test-artifacts/nfr-assessment-dw-spawn-weight-validation.md",
+  "categories": {
+    "performance": "PASS",
+    "security": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS",
+    "scalability": "PASS",
+    "compliance": "PASS",
+    "offline": "PASS"
+  },
+  "adr_score": "28/29",
+  "concerns": 1,
+  "blockers": false,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-spawn-weight-validation.md",
+    "nfr_report_path": "_bmad-output/test-artifacts/nfr-assessment-dw-spawn-weight-validation.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

@@ -1,0 +1,1043 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T13:00:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-spawn-weight-validation",
+    "label": "dw-spawn-weight-validation — runtime guard for spawn weight invariants (DW-46)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/test-design-dw-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-spawn-weight-validation.md",
+      "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+      "triade/__tests__/engine/spawn-config.test.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/weights.ts",
+      "triade/src/engine/core/index.ts",
+      "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/spawn-weight-validation-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-46",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "0326993",
+    "head": "f1aeb98",
+    "head_message": "feat(engine): runtime guard for spawn weight invariants (DW-46)",
+    "working_tree_diff_vs_head": "metadata-only: _bmad-output/implementation-artifacts/deferred-work.md DW-46 open→done 2026-09-02 + resolution: resolved by sweep bundle dw-spawn-weight-validation + resolution-undo: db8b509b25e0f2fd8dd80bcce2cf84a075893e248b709d25fcaea88061d0b93b 2026-09-02 7374617475733a206f70656e + _bmad-output/test-artifacts/automation-summary.md; production triade/src/engine diff empty vs HEAD (guard already at 0326993→f1aeb98); sprint-status.yaml untouched (git diff -- empty, orchestrator-owned)",
+    "production_delta_files": [
+      "triade/src/engine/config/spawnConfig.ts:127-137 self-check throw [spawnConfig] invalid shipped weights",
+      "triade/src/engine/core/spawn.ts:2,8-17 caller guard throw [spawn] invalid spawn weights"
+    ],
+    "sprint_status_touched": false,
+    "deferred_work_ledger": "DW-46 done 2026-09-02 db8b509b25e0f2fd8dd80bcce2cf84a075893e248b709d25fcaea88061d0b93b + 7374617475733a206f70656e (rg db8b509b 1 hit, rg 7374617475733a206f70656e 1 hit)"
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "shipped defaults accepted — validateSpawnConfig() → {ok:true} and import spawnConfig/spawn never throw",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01-triade",
+          "title": "[P0-01] shipped defaults accepted — validateSpawnConfig() → {ok:true} and imports never throw",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 18,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-unit",
+          "title": "[P0-01] shipped defaults accepted — validateSpawnConfig() → {ok:true} and import spawnConfig/spawn never throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 14,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "[API-P0-01] gateway shipped defaults — validateSpawnConfig() → {ok:true} and imports never throw",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 14,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-79",
+          "title": "[P0] validateSpawnConfig() returns {ok:true} on shipped defaults",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 79,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "fixed-sum drift beyond epsilon fails fast — {1:0.45,2:0.4} sum 0.85 vs 0.8 within 1e-9 → throw + ok:false",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02-triade",
+          "title": "[P0-02] fixed-sum drift beyond epsilon fails fast — {1:0.45,2:0.4} sum 0.85 vs 0.8 within 1e-9 → ok:false + actionable error",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 27,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-unit",
+          "title": "[P0-02] fixed-sum drift beyond epsilon fails fast — {1:0.45,2:0.4} sum 0.85 vs 0.8 within 1e-9 → throw + ok:false",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 20,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "[API-P0-02] gateway fixed-sum drift 0.85 vs 0.8 beyond 1e-9 → ok:false + actionable message",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 23,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "NaN / Infinity / negative / zero fail fast — FIXED_WEIGHTS[1]=NaN|Infinity|0|-0.25 → ok:false + init throw",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03-triade",
+          "title": "[P0-03] NaN/Infinity/negative/zero fail fast — FIXED_WEIGHTS[1]=NaN|Infinity|0|-0.25 → ok:false",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-unit",
+          "title": "[P0-03] NaN/Infinity/negative/zero fail fast — FIXED_WEIGHTS[1]=NaN|Infinity|0|-0.25 → ok:false",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 31,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "[API-P0-03] gateway NaN/Infinity/zero/negative → ok:false finite gate before weightedPicker collapse",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 38,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-85",
+          "title": "rejection matrix NaN/zero/negative/Infinity 4-case",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 85,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "explicit validator purity — validateSpawnConfig(invalidExplicit) never throws, → {ok:false,errors:string[]}",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04-triade",
+          "title": "[P0-04] explicit validator purity — validateSpawnConfig(invalidExplicit) never throws",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 56,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-unit",
+          "title": "[P0-04] explicit validator purity — validateSpawnConfig(invalidExplicit) never throws",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 36,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "[API-P0-04] gateway explicit validator purity — never throws, always {ok:false,errors:string[]}",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 46,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-104",
+          "title": "explicit doesNotThrow 10 rejections",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 104,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "distribution byte-identical — pickCombined 40/40/20 across tiers before/after guard",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05-triade",
+          "title": "[P0-05] distribution byte-identical — shipped defaults keep 40/40/20 single-roll",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 85,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-unit",
+          "title": "[P0-05] distribution byte-identical — pickCombined 40/40/20 across tiers before/after guard",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "[API-P0-05] gateway distribution byte-identical — 40/40/20 bands via pickCombined re-normalize",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 58,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "Object.freeze hardening — POT_CURVE and FIXED_WEIGHTS frozen",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06-triade",
+          "title": "[P0-06] Object.freeze hardening — POT_CURVE and FIXED_WEIGHTS frozen",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 97,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-unit",
+          "title": "[P0-06] Object.freeze hardening — POT_CURVE and FIXED_WEIGHTS frozen",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 47,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-umbrella",
+          "title": "[E2E-P3-02] umbrella freeze 2 hits — POT_CURVE + FIXED_WEIGHTS Object.freeze",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 56,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-144",
+          "title": "[P0] Object.freeze hardening isFrozen + TypeError",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 144,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "guard wired at module init (not per-draw) — spawnConfig 1 + spawn 1 + weights 0",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07-triade",
+          "title": "[P0-07] guard wired at module init (not per-draw) — spawnConfig 1 + spawn 1 + weights 0",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 103,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-unit",
+          "title": "[P0-07] guard wired at module init (not per-draw) — spawnConfig 1 + spawn 1 + weights 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 55,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-gateway",
+          "title": "[API-P0-06] gateway guard wired at init (not per-draw) — spawnConfig 1 + spawn 1 + weights 0",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 66,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-umbrella",
+          "title": "[E2E-P2-06] umbrella no per-draw validateSpawnConfig in weightedPicker hot path",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "epsilon within <1e-9 accepted — fixedSum 0.8+4.9e-10 → ok:true",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01-triade",
+          "title": "[P1-01] epsilon within <1e-9 accepted — 0.8+4.9e-10 → ok:true",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 118,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-unit",
+          "title": "[P1-01] epsilon within <1e-9 accepted — fixedSum 0.8+4.9e-10 → ok:true",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 63,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "[API-P1-01] gateway epsilon within <1e-9 accepted — 0.8+4.9e-10 → ok:true",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 76,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "epsilon beyond 1e-9 rejected — 0.8000000011 vs 0.8 diff 1.1e-9 → ok:false",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-triade",
+          "title": "[P1-02] epsilon beyond 1e-9 rejected — 0.8000000011 vs 0.8 diff 1.1e-9 → ok:false",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 126,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] epsilon beyond 1e-9 rejected — 0.8000000011 vs 0.8 diff 1.1e-9 → ok:false",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 68,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "[API-P1-02] gateway epsilon beyond >1e-9 rejected — 0.8000000011 vs 0.8 → ok:false",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 80,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "extra fixedWeights key — {1:0.4,2:0.4,3:0.5} → ok:false",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-triade",
+          "title": "[P1-03] extra fixedWeights key — {1:0.4,2:0.4,3:0.5} → ok:false",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 133,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] extra fixedWeights key — {1:0.4,2:0.4,3:0.5} → ok:false",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 74,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "[API-P1-03] extra fixed key",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 84,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-97-extra",
+          "title": "extra fixedWeights key",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 97,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "tree-shake alternate entry point — core/index.ts re-export still forces spawnConfig evaluation",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-triade",
+          "title": "[P1-04] tree-shake alternate entry point — core/index.ts re-export still forces spawnConfig evaluation",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 140,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] tree-shake alternate entry point — core/index.ts re-export still forces spawnConfig evaluation",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 79,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-umbrella",
+          "title": "[E2E] alternate entry point",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 14,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "error message actionable — throw contains FIXED_WEIGHTS sum, expected 0.8, epsilon 1e-9 and prefix [spawnConfig]/[spawn]",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-triade",
+          "title": "[P1-05] error message actionable — contains FIXED_WEIGHTS sum, expected 0.8, epsilon 1e-9 and prefix [spawnConfig]/[spawn]",
+          "file": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+          "line": 147,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] error message actionable — contains FIXED_WEIGHTS sum, expected 0.8, epsilon 1e-9 and prefix [spawnConfig]/[spawn]",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 83,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-gateway",
+          "title": "[API] error message actionable",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "no per-draw overhead — validateSpawnConfig never inside pickCombined/resolveSpawn/weightedPicker/spawnTile bodies",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] no per-draw overhead — validateSpawnConfig only at top-level not inside pickCombined/weightedPicker",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 91,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "[API-P1-06] no per-draw overhead",
+          "file": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+          "line": 96,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-06-umbrella",
+          "title": "[E2E-P2-06] umbrella no per-draw validateSpawnConfig in weightedPicker hot path",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-07",
+      "description": "no Math.random in engine guard path — spawnConfig 0 direct, spawn DI only",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07-unit",
+          "title": "[P1-07] no Math.random in engine guard path — spawnConfig 0 direct, spawn DI only",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 100,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-07-umbrella",
+          "title": "[E2E] no Math.random direct in guard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 44,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-08",
+      "description": "config-driven purity — weights.ts keys off spawnConfig, core/index re-exports POT_CURVE+validateSpawnConfig",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-08-unit",
+          "title": "[P1-08] config-driven purity — weights.ts keys off spawnConfig, core/index re-exports POT_CURVE+validateSpawnConfig",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 105,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-08-umbrella",
+          "title": "[E2E] config-driven purity",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 50,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-173",
+          "title": "[P1] config-driven purity",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 173,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "ledger resolution-undo 64-hex + tail status: open hex",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] ledger resolution-undo 64-hex + tail status: open hex",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 114,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "title": "[E2E-P2-01] umbrella ledger 64-hex + tail status: open hex",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 14,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "sprint-status.yaml untouched",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-unit",
+          "title": "[P2-02] sprint-status.yaml untouched",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 119,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-umbrella",
+          "title": "[E2E-P2-02] umbrella sprint-status.yaml untouched — git diff empty",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 20,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "single access point — POT_WEIGHT/FIXED_WEIGHTS defined once at spawnConfig.ts not inlined",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] single access point — POT_WEIGHT/FIXED_WEIGHTS defined once at spawnConfig.ts not inlined",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 124,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "[E2E-P2-03] umbrella single source — POT_WEIGHT/FIXED_WEIGHTS defined once at spawnConfig.ts not inlined",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 26,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "contract unchanged — validateSpawnConfig return shape ok:true/ok:false+errors:string[]",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] contract unchanged — validateSpawnConfig return shape ok:true/ok:false+errors:string[]",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 133,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "title": "[E2E-P2-04] umbrella contract unchanged — validateSpawnConfig return shape ok:true/ok:false+errors",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 32,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-05",
+      "description": "POT_CURVE effective monotonic fallback still green",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05-unit",
+          "title": "[P2-05] POT_CURVE effective monotonic fallback still green",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 140,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-05-umbrella",
+          "title": "[E2E-P2-05] umbrella POT_CURVE effective monotonic fallback still green",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "spawn-config-124",
+          "title": "gapped 192 accepted vs 48 broken effective curve",
+          "file": "triade/__tests__/engine/spawn-config.test.ts",
+          "line": 124,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "no new production dependencies",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] no new production dependencies",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 148,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-umbrella",
+          "title": "[E2E-P3-01] umbrella no new production dependencies",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 50,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "Object mutability via Object.freeze scanner parity — POT_CURVE/FIXED_WEIGHTS still Object.freeze not just Readonly",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] Object mutability via Object.freeze scanner parity — POT_CURVE/FIXED_WEIGHTS still Object.freeze not just Readonly",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 153,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "title": "[E2E-P3-02] umbrella freeze 2 hits — POT_CURVE + FIXED_WEIGHTS Object.freeze",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 56,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "cold-start bench <0.5 ms init",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] cold-start bench <0.5 ms init (exploratory)",
+          "file": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+          "line": 158,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-03-umbrella",
+          "title": "[E2E-P3-03] umbrella bench <0.5 ms init — single validateSpawnConfig cold-path",
+          "file": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+          "line": 62,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "summary": {
+    "total": 23,
+    "full": 23,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 7,
+        "full": 7,
+        "pct": 100
+      },
+      "P1": {
+        "total": 8,
+        "full": 8,
+        "pct": 100
+      },
+      "P2": {
+        "total": 5,
+        "full": 5,
+        "pct": 100
+      },
+      "P3": {
+        "total": 3,
+        "full": 3,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure engine validateSpawnConfig — negative-path is finite/≤0/extra-key/drift beyond 1e-9 + NaN/Infinity poisoning; all present via P0-03/04, P1-03, P0-02)",
+    "error_path": "present (drift 0.85, NaN/Infinity/zero/negative 4-case, extra key 3, within vs beyond epsilon 4.9e-10 vs 1.1e-9, empty curve, gapped 192 vs broken 48)",
+    "ui_journey": "not_applicable (RN Skia Canvas + RNGH host unit, not Playwright DOM — host umbrella scans cover journey)",
+    "ui_state": "not_applicable"
+  },
+  "quality": {
+    "passing_tests": 37,
+    "total_tests": 60,
+    "active_triade_atdd": 12,
+    "active_spawn_config": 7,
+    "active_gateway": 8,
+    "active_umbrella": 10,
+    "dormant_unit_atdd": 23,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-spawn-weight-validation.md",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/spawn-weight-validation-fixtures.ts",
+    "gateway": "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+    "atdd_triade": "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+    "atdd_unit": "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+    "spec": "_bmad-output/implementation-artifacts/spec-spawn-weight-validation.md",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-spawn-weight-validation.md",
+    "test_design_mirror": "_bmad-output/test-artifacts/test-design-dw-spawn-weight-validation.md",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary.md"
+  }
+}
