@@ -182,7 +182,9 @@ resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10)"), 2026-09-01
 location: n/a
 reason: `matchScore.applyMove` has no guard on `result.score` — a NaN poisons both score and best; `moved:false` with score>0 would inflate. Engine contract guarantees finite ≥0 scores and noop scores 0; defensive guard only.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-defensive-guards
+resolution-undo: f115c8c241dd41f30a9433e5c90c8ba9eeaa2b0475b8319fc8a6df9dc2edea18 2026-09-02 7374617475733a206f70656e
 
 ### DW-25: Parity `spawnTile` only cross-checks the non-full-board path; the spawn-nothing branch (full board) is covered by the absolute unit test `game.test.ts:198`, not parity.
 
@@ -225,7 +227,9 @@ resolution: CLOSED by story 1.6 (2026-08-18): replaced harness with RNGH Gesture
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13)"), 2026-09-01
 location: triade/src/render/transitionPlan.ts:21-26
 reason: `classify` dereferences `entry.from[0]` unguarded (`triade/src/render/transitionPlan.ts:21-26`) — engine contract guarantees non-empty `from` for non-spawn entries; defensive hardening only.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-defensive-guards
+resolution-undo: f115c8c241dd41f30a9433e5c90c8ba9eeaa2b0475b8319fc8a6df9dc2edea18 2026-09-02 7374617475733a206f70656e
 
 ### DW-31: Purity scan blind spots — `PURITY_FILES` is a hand-maintained explicit list (a new pure file in `src/render` silently escapes the ADR-01/05 scan until edited); `FORBIDDEN_PREFIXES` misses a hypothetical bare `reanimated`/`skia` import (`triade/__tests__/engine/engine.purity.test.ts:12-16`). Current files are covered; maintenance hardening only.
 
@@ -509,7 +513,9 @@ resolution: CLOSED 2026-08-26 (trace 6.1 fix): rn-stub exports useWindowDimensio
 origin: migrated from legacy ledger ("Deferred from: third-pass review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: triade/src/engine/core/game.ts:53
 reason: Malformed-GameState hardening: an effective move throws TypeError if `state.pendingSpawn` is undefined (violates engine-never-throws); a noop degrades `{...undefined}` to `{}`, silently dropping both required fields; and an unvalidated `pendingSpawn.value` (NaN/non-ladder) is placed onto the board where `ceilingDetector` ignores it invisibly (triade/src/engine/core/game.ts:53,69, triade/src/engine/core/spawn.ts:61-72). Trust-the-input class — malformed GameState is outside the valid API domain; same posture as the 2026-08-22 malformed-rng deferral.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-defensive-guards
+resolution-undo: f115c8c241dd41f30a9433e5c90c8ba9eeaa2b0475b8319fc8a6df9dc2edea18 2026-09-02 7374617475733a206f70656e
 
 ### DW-66: Scanner regex-literal handling: `stripCommentsAndStrings` treats regex literals as plain code, so a quote/apostrophe inside a regex (e.g. `/it's/`) flips the state machine into string mode and blanks all subsequent real source until the next quote — producing false NEGATIVES in the ui.norolls structural guard. Documented as a known limitation in the helper, but the blast radius is mode-desync swallowing real code, not mere pass-through. No such pattern exists in any currently scanned view/service file; proper fix requires division-vs-regex disambiguation (real lexer work) — revisit if scanned sources ever adopt regex literals with quote characters (triade/test-utils/helpers.ts).
 

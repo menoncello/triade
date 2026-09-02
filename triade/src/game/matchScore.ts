@@ -10,7 +10,10 @@ export function initialScore(best: number): MatchScore {
 }
 
 export function applyMove(current: MatchScore, result: MoveResult): MatchScore {
-  const score = current.score + result.score;
+  const raw = result.score;
+  const sanitized = typeof raw === 'number' && Number.isFinite(raw) && raw >= 0 ? raw : 0;
+  const effective = result.moved ? sanitized : 0;
+  const score = current.score + effective;
   return { score, best: Math.max(current.best, score) };
 }
 
