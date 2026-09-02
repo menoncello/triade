@@ -34,9 +34,31 @@ export function sfxKindForValue(_value: number): SfxKind {
 }
 
 // Default fire-and-forget player — dynamic import so test envs without native module stay green.
+// Guard with requireOptionalNativeModule so Expo Go / JS-only envs never attempt to load the native JS bundle
+// that would throw "Cannot find native module 'ExpoAudio'" at import time (would surface as LogBox Uncaught).
 let audioModulePromise: Promise<any> | null = null;
+let audioAvailabilityChecked = false;
+let audioAvailable: boolean | null = null;
+function isExpoAudioAvailable(): boolean {
+  if (audioAvailabilityChecked && audioAvailable !== null) return audioAvailable;
+  audioAvailabilityChecked = true;
+  try {
+    // expo-modules-core is always present (transitive via expo), use optional require to avoid throw
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { requireOptionalNativeModule } = require('expo-modules-core') as {
+      requireOptionalNativeModule: (name: string) => unknown;
+    };
+    audioAvailable = !!requireOptionalNativeModule('ExpoAudio');
+    return audioAvailable;
+  } catch {
+    // test env or missing core — treat as unavailable, keep gateway as no-op
+    audioAvailable = false;
+    return false;
+  }
+}
 function getAudioModule(): Promise<any> | null {
   try {
+    if (!isExpoAudioAvailable()) return null;
     if (!audioModulePromise) {
       // @ts-ignore expo-audio optional — SDK 57 pinned, may not be installed in test env
       audioModulePromise = import('expo-audio').catch(() => null);
@@ -54,11 +76,10 @@ async function playViaExpoAudio(kind: SfxKind, volume: number): Promise<void> {
     const mod: any = await modPromise;
     if (!mod) return;
     // SDK 57 expo-audio: createAudioPlayer(source, options) or AudioPlayer
-    // We have no bundled wav yet — use a no-op source when unavailable.
-    // The call still exercises the module path without throwing.
+    // SFX WAVs são sintéticos cálidos gerados via tools/gen-thock.py — obrigatórios para Metro bundling (não opcionais);
+    // o try/catch aqui degrada apenas quando expo-audio falta (test host), e if (!source) return evita throw.
     const vol = Math.max(0, Math.min(1, Number.isFinite(volume) ? volume : 0.45));
-    // If module exposes createAudioPlayer, create a one-shot player for the kind.
-    // Placeholder: asset requires are optional — when missing, just resolve.
+    // Se expo-audio expõe createAudioPlayer, cria one-shot player por kind — literal require é proposital para bundling determinístico (NFR-6 offline).
     let source: any = null;
     try {
       if (kind === 'merge') source = require('../../assets/sfx/merge.wav');

@@ -960,16 +960,18 @@ function AppContent() {
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
           <GestureDetector gesture={panGesture}>
-            <GameBoard
-              board={game.board}
-              moveResult={moveResult}
-              width={boardSize}
-              reducedMotion={settings.reducedMotion}
-              sessionBestMerge={sessionBestMerge}
-              onMoveSettled={onMoveSettled}
-              hintHighlight={hintHighlight}
-              direction={lastDirectionRef.current ?? undefined}
-            />
+            <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
+              <GameBoard
+                board={game.board}
+                moveResult={moveResult}
+                width={boardSize}
+                reducedMotion={settings.reducedMotion}
+                sessionBestMerge={sessionBestMerge}
+                onMoveSettled={onMoveSettled}
+                hintHighlight={hintHighlight}
+                direction={lastDirectionRef.current ?? undefined}
+              />
+            </View>
           </GestureDetector>
         </View>
         {/* 3.3 Accelerated learning aids — contextual dismissible prompt-banners, never in Clean */}

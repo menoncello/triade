@@ -99,12 +99,12 @@ test('ONE_CELL: [3,_,3,_] swipe left -> [3,3,_,_] (each moves one cell, no merge
   assert.deepStrictEqual(res.board[0], [3, 3, null, 1]);
 });
 
-test('ONE_CELL: [_,3,_,3] swipe left -> [3,3,_,_] (fully compact)', () => {
+test('ONE_CELL: [_,3,_,3] swipe left -> [3,null,3,_] (each moves one cell)', () => {
   const board = staticBoard([null, 3, null, 3]);
   const res = game.move(gameState(board), 'left', rngOf(0, 0, 0.5));
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 0);
-  assert.deepStrictEqual(res.board[0], [3, 3, null, 1]);
+  assert.deepStrictEqual(res.board[0], [3, null, 3, 1]);
 });
 
 test('ONE_CELL right: [3,3,3,_] swipe right -> [_,3,3,3] (no merge, space at wall)', () => {
@@ -175,17 +175,17 @@ test('move down mirrors the up rules on columns: [2,1,3,6] col swipe down -> [1,
   assert.strictEqual(res.board[3][0], 6);
 });
 
-test('move down fully compacts: [3,_,_,3] col swipe down -> [_,_,3,3], no merge', () => {
+test('move down one-cell: [3,_,_,3] col swipe down -> [_,3,_,3], no merge', () => {
   const board = emptyBoard();
   board[0][0] = 3;
   board[3][0] = 3;
   const res = game.move(gameState(board), 'down', rngOf(0, 0, 0.5));
   assert.strictEqual(res.moved, true);
   assert.strictEqual(res.score, 0);
-  assert.strictEqual(res.board[2][0], 3);
+  assert.strictEqual(res.board[1][0], 3);
   assert.strictEqual(res.board[3][0], 3);
   assert.strictEqual(res.board[0][0], 1);
-  assert.strictEqual(res.board[1][0], null);
+  assert.strictEqual(res.board[2][0], null);
 });
 
 test('trace: down merge records both sources in column order', () => {
