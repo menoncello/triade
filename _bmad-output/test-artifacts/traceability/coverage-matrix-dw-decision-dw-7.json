@@ -1,0 +1,1312 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T19:15:14.159611+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-decision-dw-7",
+    "label": "dw-decision-dw-7 — DW-7 Status bar legibility — force dark style in landscape on light background"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-dw-7-status-bar-dark-landscape.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-7-status-bar-dark-landscape.md",
+      "_bmad-output/test-artifacts/test-design-dw-7-status-bar-dark-landscape.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-decision-dw-7.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-7-status-bar-dark-landscape.md",
+      "triade/src/ui/statusBar.ts",
+      "triade/__tests__/ui/statusBar.test.ts",
+      "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+      "triade/App.tsx",
+      "triade/src/ui/useSyncedLayout.ts",
+      "triade/src/ui/layout.ts",
+      "triade/src/ui/orientation.ts",
+      "triade/app.json",
+      "_bmad-output/test-artifacts/automation-summary-dw-decision-dw-7.md",
+      "_bmad-output/test-artifacts/automation-summary-dw-7-status-bar-dark-landscape.md",
+      "_bmad-output/test-artifacts/fixtures/dw-7-status-bar-dark-landscape-fixtures.ts",
+      "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "fb6df274fc961fea37dea271311a02c136fb6890 -> working-tree dw-decision-dw-7 (HEAD 5588155b0b174f9ebd3b3bfcec7804117bb2ab23)",
+    "head": "5588155 (5588155b0b174f9ebd3b3bfcec7804117bb2ab23)",
+    "working_tree_ledger": "DW-7 open->done 2026-09-02 + decision: 2026-09-02 Force dark status bar + resolution: resolved by sweep bundle dw-decision-dw-7 + resolution-undo: 0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422 2026-09-02 7374617475733a206f70656e (rg 1 hit, sprint-status.yaml untouched — orchestrator-owned, git diff -- sprint-status.yaml empty)",
+    "production_files": [
+      "triade/src/ui/statusBar.ts:1-5 NEW 5 LOC pure helper export type StatusBarStyle='auto'|'dark'; export function statusBarStyle(isLandscape:boolean):StatusBarStyle { return isLandscape ? 'dark' : 'auto'; } — zero imports, deterministic, never-throw, O(1) <1ms, 10k×<50ms",
+      "triade/__tests__/ui/statusBar.test.ts:1-16 NEW 3 node:test probes (false->auto, true->dark, purity f(f)===f(f)) — all 3 pass at 5588155, fleet 917/0",
+      "triade/App.tsx:32,877,886,906,1025 import { statusBarStyle } from './src/ui/statusBar.ts' (1 import) + 4× <StatusBar style={statusBarStyle(isLandscape)} /> replacing bare style=\"auto\" in !ready/ tone/ laneSelect/ playing branches; isLandscape from useSyncedLayout() at AppContent top-level, no new hook",
+      "triade/src/ui/useSyncedLayout.ts:14-60 byte-identical DEFAULT_DEBOUNCE_MS 32 coalesce, pendingRef+timerRef setTimeout(32), lastValidLayoutRef hold, effectiveLayout guard, bandTop getBandTop — not retuned (DW-6 govern)",
+      "triade/src/ui/layout.ts:37-42 byte-identical isLandscape(width,height) width>height pure, layoutFor 96/48 bands, availWidth/Height -2*SAFE_MARGIN -bandHeight, Math.max clamp then BOARD_SIZE_FLOOR 216, getBandTop top+16+bandHeight",
+      "triade/src/ui/orientation.ts:1-10 byte-identical isLandscape single source width>height",
+      "triade/app.json:12 no statusBar key — component prop is source of truth (rg statusBar 0, userInterfaceStyle automatic not dark)",
+      "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts:1-276 NEW 18 RED-phase scaffolds it.skip host node:test (8 P0 +6 P1+4 P2+2 P3) — dormant but green when activated",
+      "triade/test-utils/rn-stub.ts:92 StatusBar () => null stub — helper tests stay pure (no mount)",
+      "_bmad-output/test-artifacts/fixtures/dw-7-status-bar-dark-landscape-fixtures.ts 280 LOC deterministic host fixtures + _bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts 11 pass (P0 6+P1 4+hygiene 1) + _bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts 8-9 pass (P2 5+P3 3) + _bmad-output/test-artifacts/tests/unit/dw-7-status-bar-dark-landscape.atdd.test.ts 18 dormant mirror"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-dw-7-status-bar-dark-landscape.md status: done baseline fb6df27 -> final 5588155, intent/boundaries/I-O matrix 5 rows + 4 tasks 4 ACs + Auto Run Result 917/0 + tsc clean + grep 4× statusBarStyle",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC-1 Portrait any device — isLandscape=false on any screen renders StatusBar style=\"auto\" (portrait unchanged, helper statusBarStyle(false)==='auto')",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01-statusBar-active",
+          "title": "statusBarStyle — returns auto in portrait (isLandscape=false)",
+          "file": "triade/__tests__/ui/statusBar.test.ts",
+          "line": 6,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-atdd",
+          "title": "[P0-01] statusBarStyle(false) returns auto — portrait unchanged",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 54,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-gw",
+          "title": "[P0-GW-01] helper false->auto portrait unchanged (AC-1)",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 14,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC-2 Landscape non-notch light UI — isLandscape=true on #fff renders StatusBar style=\"dark\" (dark text/icons, helper statusBarStyle(true)==='dark')",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02-statusBar-active",
+          "title": "statusBarStyle — returns dark in landscape (isLandscape=true)",
+          "file": "triade/__tests__/ui/statusBar.test.ts",
+          "line": 9,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-atdd",
+          "title": "[P0-02] statusBarStyle(true) returns dark — landscape on #fff",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 61,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-gw",
+          "title": "[P0-GW-02] helper true->dark landscape on #fff (AC-2)",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 19,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "Helper pure and deterministic both branches — statusBarStyle(false)===statusBarStyle(false) and true deterministic, no useColorScheme/useState",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03-statusBar-active",
+          "title": "statusBarStyle — is pure and deterministic",
+          "file": "triade/__tests__/ui/statusBar.test.ts",
+          "line": 12,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-atdd",
+          "title": "[P0-03] helper pure and deterministic both branches (idempotent)",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 68,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-gw",
+          "title": "[P0-GW-03] helper pure both branches + no useColorScheme",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 25,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC-6 No bare style=\"auto\" — App.tsx replaces all 4 StatusBar mounts with statusBarStyle(isLandscape) (StatusBar 4, statusBarStyle(isLandscape) 4, bare 0, style={...} 4)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04-atdd",
+          "title": "[P0-04] App.tsx replaces all 4 StatusBar mounts with statusBarStyle(isLandscape)",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 76,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-gw",
+          "title": "[P0-GW-04] App.tsx 4-branch propagation StatusBar 4 vs helper 4 + bare 0",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 34,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-umbrella",
+          "title": "[P2-E2E-02] SCAN StatusBar mounts vs helper calls parity: 4 mounts -> 4 calls",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 28,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "App.tsx imports statusBarStyle helper once from src/ui/statusBar — single import line, total statusBarStyle hits 5 (1 import specifier +4 calls)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05-atdd",
+          "title": "[P0-05] App.tsx imports statusBarStyle helper once from src/ui/statusBar",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 90,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-gw",
+          "title": "[P0-GW-05] App.tsx single import { statusBarStyle } from src/ui/statusBar",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 42,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "Helper file declares StatusBarStyle='auto'|'dark' type and exports statusBarStyle(isLandscape:boolean) signature with ternary isLandscape ?",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06-atdd",
+          "title": "[P0-06] helper file declares StatusBarStyle = auto|dark and exports statusBarStyle signature",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 99,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-gw",
+          "title": "[P0-GW-06] helper type literal StatusBarStyle auto|dark + signature",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 51,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "App.tsx container backgroundColor stays #fff light premise — single #fff, no useColorScheme, no Theme, spec Never background darkening",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07-atdd",
+          "title": "[P0-07] App.tsx container backgroundColor stays #fff",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 110,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-gw",
+          "title": "[P0-GW-07] container #fff 1 + useColorScheme 0 + Theme 0",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 59,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-08",
+      "description": "AC-5 Existing statusBar.test.ts 3 probes still hold — false->auto, true->dark, purity still green, fleet 917/0 gate proves no regression",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08-atdd",
+          "title": "[P0-08] existing statusBar.test.ts 3 probes still hold",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 120,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-08-statusBar-active",
+          "title": "statusBarStyle — 3 probes regression anchor",
+          "file": "triade/__tests__/ui/statusBar.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-gw",
+          "title": "[P0-GW-08] legacy statusBar.test.ts 3 it() still pass",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 67,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "Helper file has no RN/expo import — pure TS (zero from 'expo, from 'react-native, expo-status-bar, import), 5 LOC testable without RN",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01-atdd",
+          "title": "[P1-01] helper file has no RN/expo import — pure TS",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 138,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-gw",
+          "title": "[P1-GW-09] helper has zero RN/expo imports — pure TS",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 76,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "App.tsx isLandscape comes from useSyncedLayout single source (useSyncedLayout 3 hits specifier+path+call, no inline w>h re-derivation), layout isLandscape(w>h) canonical",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-atdd",
+          "title": "[P1-02] App.tsx isLandscape comes from useSyncedLayout single source",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 146,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-gw",
+          "title": "[P1-GW-10] isLandscape via useSyncedLayout 3 + orientation canonical",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 84,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "AC-4 Rotation flip deterministic auto<->dark on isLandscape flip — false->auto, true->dark, back false->auto, no retained state (immediate next render)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-atdd",
+          "title": "[P1-03] rotation flip deterministic: auto <-> dark on isLandscape flip",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 156,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-gw",
+          "title": "[P1-GW-11] rotation flip auto<->dark deterministic helper",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 92,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "DEFAULT_DEBOUNCE_MS 32 debounce unchanged — 2 hits const+param default, debounceMs param = DEFAULT_DEBOUNCE_MS, effectiveLayout.isLandscape, stability DW-6 govern not retuned",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-atdd",
+          "title": "[P1-04] DEFAULT_DEBOUNCE_MS 32 debounce unchanged",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 172,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-gw",
+          "title": "[P1-04-gw] DEFAULT_DEBOUNCE_MS 32 literal 2 hits + param default",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 100,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-umbrella",
+          "title": "[P2-E2E-05] isLandscape single source + DEFAULT 32 + app.json 0",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 62,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "app.json has zero statusBar/style override — statusBar key 0, userInterfaceStyle not dark (component prop is source of truth, no native override)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-atdd",
+          "title": "[P1-05] app.json has zero statusBar/style override",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 182,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-umbrella",
+          "title": "[P2-E2E-05b] app.json zero statusBar key",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 70,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "layoutFor / orientation single source still pure — orientation width>height, layout isLandscape(width,height) delegate, no duplicate export function in layout.ts",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-atdd",
+          "title": "[P1-06] layoutFor / orientation single source still pure",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 192,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-umbrella",
+          "title": "[P2-E2E-05c] layout/orientation pure isLandscape w>h",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 78,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "SCAN single-source helper: 1 export function +1 export type + single #fff invariant + helper lines 3-10 tiny scope",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-atdd",
+          "title": "[P2-01] SCAN single-source helper: statusBar.ts 1 def + 1 type + single #fff invariant",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 205,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "title": "[P2-E2E-01] SCAN single-source helper: 1 def + 1 type + single #fff invariant",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 12,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "SCAN StatusBar mounts vs helper calls parity: 4 StatusBar mounts <-> 4 statusBarStyle(isLandscape) calls + single import from './src/ui/statusBar'",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-atdd",
+          "title": "[P2-02] SCAN StatusBar mounts vs helper calls parity: 4 mounts <-> 4 calls",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 214,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-umbrella",
+          "title": "[P2-E2E-02] StatusBar 4 vs helper 4 parity + single import",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 28,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "SCAN engine/feel isolation — layout LANDSCAPE 48 / PORTRAIT 96 unchanged, no useWindowDimensions in layout, no FROZEN/Theme/useColorScheme, no Skia/Reanimated/engine imports",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-atdd",
+          "title": "[P2-03] SCAN engine/feel isolation: no engine/feel/layout geometry change",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 224,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "[P2-E2E-03] engine/feel isolation + layout geometry 48/96",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "AC-7 Ledger + ownership — deferred-work.md DW-7 done 2026-09-02 + resolution-undo 0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422 64-hex 1 hit + Force dark status bar + resolved by sweep bundle dw-decision-dw-7 + sprint-status.yaml untouched",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-atdd",
+          "title": "[P2-04] ledger DW-7 done + resolution-undo 0fca7499 64-hex + decision prefix + sprint-status untouched",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 234,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "title": "[P2-E2E-04] ledger DW-7 done 0fca7499 64-hex + decision + sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 48,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "Exploratory notch still dark — landscape with non-zero left inset still forces dark (I-O notch row, helper background-agnostic)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-atdd",
+          "title": "[P3-01] exploratory notch still dark: non-zero left inset + landscape still forces dark",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 250,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-umbrella",
+          "title": "[P3-E2E-06] exploratory notch still dark true->dark",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 72,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "Hygiene — helper never throws on coercible boolean, rejects typo style=\"light\" 0, O(1) 10k×<50ms, finite literals auto/dark, no Skia/Reanimated/engine/monetization imports",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-atdd",
+          "title": "[P3-02] hygiene: helper never throws on coercible boolean, rejects typo light, O(1) <50ms",
+          "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+          "line": 257,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "title": "[P3-E2E-07] hygiene never-throw + finite + typo light 0 + 10k <50ms + no Skia/engine",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+          "line": 82,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-gw",
+          "title": "[P3-HY] hygiene 10k <50ms O(1) + no light typo",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+          "line": 108,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "full": 20,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 8,
+        "full": 8,
+        "pct": 100
+      },
+      "P1": {
+        "total": 6,
+        "full": 6,
+        "pct": 100
+      },
+      "P2": {
+        "total": 4,
+        "full": 4,
+        "pct": 100
+      },
+      "P3": {
+        "total": 2,
+        "full": 2,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": [],
+    "partial": [],
+    "unit_only": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_gaps": 0,
+    "happy_path_only_gaps": 0,
+    "ui_journey_gaps": 0,
+    "ui_state_gaps": 0,
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "quality": {
+    "blockers": [],
+    "warnings": [],
+    "info": []
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-decision-dw-7.md"
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 47,
+      "skipped_cases": 20,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "unit": {
+          "tests": 23,
+          "criteria_covered": 20
+        },
+        "api": {
+          "tests": 11,
+          "criteria_covered": 11
+        },
+        "e2e": {
+          "tests": 8,
+          "criteria_covered": 8
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-01-statusBar-active",
+        "title": "statusBarStyle — returns auto in portrait (isLandscape=false)",
+        "file": "triade/__tests__/ui/statusBar.test.ts",
+        "line": 6,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-01-atdd",
+        "title": "[P0-01] statusBarStyle(false) returns auto — portrait unchanged",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 54,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-gw",
+        "title": "[P0-GW-01] helper false->auto portrait unchanged (AC-1)",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 14,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-02-statusBar-active",
+        "title": "statusBarStyle — returns dark in landscape (isLandscape=true)",
+        "file": "triade/__tests__/ui/statusBar.test.ts",
+        "line": 9,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-02-atdd",
+        "title": "[P0-02] statusBarStyle(true) returns dark — landscape on #fff",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 61,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-02-gw",
+        "title": "[P0-GW-02] helper true->dark landscape on #fff (AC-2)",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 19,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-03-statusBar-active",
+        "title": "statusBarStyle — is pure and deterministic",
+        "file": "triade/__tests__/ui/statusBar.test.ts",
+        "line": 12,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-03-atdd",
+        "title": "[P0-03] helper pure and deterministic both branches (idempotent)",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 68,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-gw",
+        "title": "[P0-GW-03] helper pure both branches + no useColorScheme",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 25,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-04-atdd",
+        "title": "[P0-04] App.tsx replaces all 4 StatusBar mounts with statusBarStyle(isLandscape)",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 76,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-04-gw",
+        "title": "[P0-GW-04] App.tsx 4-branch propagation StatusBar 4 vs helper 4 + bare 0",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 34,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-04-umbrella",
+        "title": "[P2-E2E-02] SCAN StatusBar mounts vs helper calls parity: 4 mounts -> 4 calls",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 28,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P0-05-atdd",
+        "title": "[P0-05] App.tsx imports statusBarStyle helper once from src/ui/statusBar",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 90,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-05-gw",
+        "title": "[P0-GW-05] App.tsx single import { statusBarStyle } from src/ui/statusBar",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 42,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-atdd",
+        "title": "[P0-06] helper file declares StatusBarStyle = auto|dark and exports statusBarStyle signature",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 99,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-gw",
+        "title": "[P0-GW-06] helper type literal StatusBarStyle auto|dark + signature",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 51,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-07-atdd",
+        "title": "[P0-07] App.tsx container backgroundColor stays #fff",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 110,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-gw",
+        "title": "[P0-GW-07] container #fff 1 + useColorScheme 0 + Theme 0",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 59,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-atdd",
+        "title": "[P0-08] existing statusBar.test.ts 3 probes still hold",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 120,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-statusBar-active",
+        "title": "statusBarStyle — 3 probes regression anchor",
+        "file": "triade/__tests__/ui/statusBar.test.ts",
+        "line": 1,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-gw",
+        "title": "[P0-GW-08] legacy statusBar.test.ts 3 it() still pass",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 67,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-atdd",
+        "title": "[P1-01] helper file has no RN/expo import — pure TS",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 138,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-01-gw",
+        "title": "[P1-GW-09] helper has zero RN/expo imports — pure TS",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 76,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-02-atdd",
+        "title": "[P1-02] App.tsx isLandscape comes from useSyncedLayout single source",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 146,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-gw",
+        "title": "[P1-GW-10] isLandscape via useSyncedLayout 3 + orientation canonical",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 84,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-atdd",
+        "title": "[P1-03] rotation flip deterministic: auto <-> dark on isLandscape flip",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 156,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-gw",
+        "title": "[P1-GW-11] rotation flip auto<->dark deterministic helper",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 92,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-04-atdd",
+        "title": "[P1-04] DEFAULT_DEBOUNCE_MS 32 debounce unchanged",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 172,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-gw",
+        "title": "[P1-04-gw] DEFAULT_DEBOUNCE_MS 32 literal 2 hits + param default",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 100,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-04-umbrella",
+        "title": "[P2-E2E-05] isLandscape single source + DEFAULT 32 + app.json 0",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 62,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P1-05-atdd",
+        "title": "[P1-05] app.json has zero statusBar/style override",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 182,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-05-umbrella",
+        "title": "[P2-E2E-05b] app.json zero statusBar key",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 70,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P1-06-atdd",
+        "title": "[P1-06] layoutFor / orientation single source still pure",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 192,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-06-umbrella",
+        "title": "[P2-E2E-05c] layout/orientation pure isLandscape w>h",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 78,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-01-atdd",
+        "title": "[P2-01] SCAN single-source helper: statusBar.ts 1 def + 1 type + single #fff invariant",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 205,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-01-umbrella",
+        "title": "[P2-E2E-01] SCAN single-source helper: 1 def + 1 type + single #fff invariant",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 12,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-02-atdd",
+        "title": "[P2-02] SCAN StatusBar mounts vs helper calls parity: 4 mounts <-> 4 calls",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 214,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-02-umbrella",
+        "title": "[P2-E2E-02] StatusBar 4 vs helper 4 parity + single import",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 28,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-03-atdd",
+        "title": "[P2-03] SCAN engine/feel isolation: no engine/feel/layout geometry change",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 224,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-03-umbrella",
+        "title": "[P2-E2E-03] engine/feel isolation + layout geometry 48/96",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 38,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-04-atdd",
+        "title": "[P2-04] ledger DW-7 done + resolution-undo 0fca7499 64-hex + decision prefix + sprint-status untouched",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 234,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-04-umbrella",
+        "title": "[P2-E2E-04] ledger DW-7 done 0fca7499 64-hex + decision + sprint-status untouched",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 48,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-01-atdd",
+        "title": "[P3-01] exploratory notch still dark: non-zero left inset + landscape still forces dark",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 250,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-01-umbrella",
+        "title": "[P3-E2E-06] exploratory notch still dark true->dark",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 72,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-02-atdd",
+        "title": "[P3-02] hygiene: helper never throws on coercible boolean, rejects typo light, O(1) <50ms",
+        "file": "triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts",
+        "line": 257,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-02-umbrella",
+        "title": "[P3-E2E-07] hygiene never-throw + finite + typo light 0 + 10k <50ms + no Skia/engine",
+        "file": "_bmad-output/test-artifacts/tests/e2e/dw-7-status-bar-dark-landscape.umbrella.spec.ts",
+        "line": 82,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-02-gw",
+        "title": "[P3-HY] hygiene 10k <50ms O(1) + no light typo",
+        "file": "_bmad-output/test-artifacts/tests/api/dw-7-status-bar-dark-landscape.gateway.spec.ts",
+        "line": 108,
+        "level": "api",
+        "status": "active"
+      }
+    ]
+  },
+  "coverage_statistics": {
+    "total_requirements": 20,
+    "fully_covered": 20,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality — all 20 DW-7 criteria FULL, no blocker, keep single-guard invariants (StatusBar 4, statusBarStyle(isLandscape) 4, bare auto 0, #fff 1, DEFAULT 32) via rg allowlists",
+      "requirements": []
+    },
+    {
+      "priority": "LOW",
+      "action": "DW-7 manual validation gate per ledger: non-notch landscape on #fff light band simulator rotation Cmd+arrow — dark icons legible, portrait auto unchanged; automated prop logic already gated via 11 gateway + 8 umbrella + 3 statusBar unit (917/0 fleet)",
+      "requirements": [
+        "P0-02",
+        "P2-03",
+        "P3-01"
+      ]
+    }
+  ]
+}

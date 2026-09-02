@@ -29,6 +29,7 @@ import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
 import { useSyncedLayout } from './src/ui/useSyncedLayout.ts';
+import { statusBarStyle } from './src/ui/statusBar.ts';
 import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
 import { handleGestureEnd } from './src/ui/gesture.ts';
 import { Hud } from './src/ui/Hud';
@@ -873,7 +874,7 @@ function AppContent() {
     return (
       <View style={styles.container}>
         <Text style={styles.stats}>preloading bundled assets…</Text>
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -882,7 +883,7 @@ function AppContent() {
     return (
       <View style={styles.container}>
         <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -902,7 +903,7 @@ function AppContent() {
           language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
           onLanguageChange={handleLanguageChange}
         />
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -1021,7 +1022,7 @@ function AppContent() {
           onContinueCancel={handleContinueCancel}
         />
       ) : null}
-      <StatusBar style="auto" />
+      <StatusBar style={statusBarStyle(isLandscape)} />
     </View>
   );
 }

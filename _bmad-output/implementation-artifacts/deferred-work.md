@@ -56,7 +56,9 @@ decision: 2026-09-02 Add initialMetrics plus synced hook — Provide SafeAreaPro
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: n/a
 reason: Status bar legibility / band-under-status-bar on non-notch landscape (light UI + `StatusBar style="auto"`). Manual validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-7
+resolution-undo: 0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Force dark status bar — Set StatusBar style dark on landscape light backgrounds and verify contrast on device.
 
 ### DW-8: Preview placeholder Views aren't a11y-hidden (`accessible={false}`), and the raw score lacks a thousands separator vs the mockup's "3.240" (`triade/src/ui/Hud.tsx:26,48`). Out of scope — preview data is Epic 7, a11y is Epic 9.
