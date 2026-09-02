@@ -1,0 +1,1638 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T08:25:52.154312+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-line-compaction",
+    "label": "dw-engine-line-compaction — line shift compaction + 4x4 guard hardening"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-line-compaction.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-line-compaction.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-line-compaction.md",
+      "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/types.ts",
+      "triade/src/engine/core/rules.ts",
+      "triade/__tests__/engine/line.test.ts",
+      "triade/__tests__/engine/line-moved.unit.test.ts",
+      "triade/__tests__/engine/line-compaction.regression.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/__tests__/render/transitionPlan.test.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-line-compaction-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-20/DW-74",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-01",
+      "description": "AC multi-gap wall compaction (DW-74) — [null,null,null,2]→[2,null,null,null] from [[0,3]] moved true + [null,2,null,4]→[2,4,null,null] + [null,null,3,null]→[3,null,null,null] + all-null stays empty",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "title": "[P0] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 52,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-02",
+          "title": "[P0] DW-74 double gap two tiles",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 63,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-03",
+          "title": "[P0] 3-gap single tile",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 72,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04",
+          "title": "[P0] all-null stays empty",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 77,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-atdd",
+          "title": "[P0-01] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 35,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (21 gateway + 6 umbrella pass, 11 regression pass when activated)"
+        },
+        {
+          "id": "P0-02-atdd",
+          "title": "[P0-02] double gap two tiles",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 45,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P0-03-atdd",
+          "title": "[P0-03] 3-gap single tile",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 55,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P0-04-atdd",
+          "title": "[P0-04] all-null stays empty",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 60,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-01",
+          "title": "[P1][E2E-01] wall-compaction pipeline end-to-end (4-dir wall + trace wall fidelity)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 167,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "REG-74-01",
+          "title": "DW-74 regression: [null,null,null,2] wall compaction",
+          "file": "triade/__tests__/engine/line-compaction.regression.test.ts",
+          "line": 12,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-02",
+      "description": "AC gap-non-merge preserved — [3,null,3,null]→[3,3,null,null] score 0 (shift uses wall target, merge uses immediate dest=i-1 only)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "title": "[P0] gap-non-merge preserved: [3,null,3,null] -> [3,3,null,null] score 0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 84,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-atdd",
+          "title": "[P0-05] preserve gap-non-merge: [3,null,3,null] -> [3,3,null,null] score 0",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 67,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-02-gap",
+          "title": "[P1][E2E-02] gap-non-merge + cascade preserved end-to-end (merge-once contract)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 232,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "LINE-91",
+          "title": "shiftLine shifts a lone tile toward the wall without merging",
+          "file": "triade/__tests__/engine/line.test.ts",
+          "line": 91,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-03",
+      "description": "AC cascade block preserved — [3,3,3,3]→[6,3,3,null] score 6 (merge-once sequential; not [6,6,null,null] score 12)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "title": "[P0] cascade block preserved: [3,3,3,3] -> [6,3,3,null] score 6",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 92,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-atdd",
+          "title": "[P0-06] preserve cascade block: [3,3,3,3] -> [6,3,3,null] score 6",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 75,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-02-cascade",
+          "title": "[P1][E2E-02] gap-non-merge + cascade preserved end-to-end",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 232,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "LINE-82",
+          "title": "shiftLine blocks cascade: [3,3,3,3] -> [6,3,3,null], score 6",
+          "file": "triade/__tests__/engine/line.test.ts",
+          "line": 82,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-04",
+      "description": "AC short/empty guard (DW-20) — shiftLine([]) len0 moved false + shiftLine([{v:1}]) len1 + [null,3].slice(0,2)→[3,null] + boardFromLines([line],left) short + movementLines([[1]] as Board,left) pads to 4x4 via board[r]?.[c] ?? null",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07",
+          "title": "[P0] guard empty line: shiftLine([]) length 0 moved false no throw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 101,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-08",
+          "title": "[P0] guard single element: shiftLine([{v:1}]) length 1",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 113,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-09",
+          "title": "[P0] guard movementLines short board pads",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 125,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01",
+          "title": "[P1] guard 2-elem gap: refLine(null,3).slice(0,2) -> [3,null]",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 145,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-02",
+          "title": "[P1] guard boardFromLines short",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 156,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-atdd",
+          "title": "[P0-07] DW-20 guard empty line: shiftLine([])",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 85,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P0-08-atdd",
+          "title": "[P0-08] DW-20 guard single element",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 96,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P1-01-atdd",
+          "title": "[P1-01] DW-20 guard 2-elem gap",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 108,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P1-02-atdd",
+          "title": "[P1-02] DW-20 guard boardFromLines short",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 117,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P1-03-atdd",
+          "title": "[P1-03] DW-20 guard movementLines short board",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 128,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-03",
+          "title": "[P1][E2E-03] short/empty guard hardening end-to-end (never-throw)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 250,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "REG-DW20-empty",
+          "title": "DW-20 regression: shiftLine handles empty line without crash",
+          "file": "triade/__tests__/engine/line-compaction.regression.test.ts",
+          "line": 44,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-05",
+      "description": "AC pipeline wall invariant (game/transition) — 4-dir PIPELINE left/right/up/down wall via movementLines→shiftLine→boardFromLines + game.move ONE_CELL [_,3,_,3] left → [3,3,_,_] fully compact + down [3,_,_,3]→[_,_,3,3] + transitionPlan slide left to [0,0] from [[0,2]] / right to [0,3] / down to [3,1] + trace from wall fidelity [[0,3]] at wall",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "PIPELINE",
+          "title": "[P1] PIPELINE 4-dir left/right/up/down full board matches pre-spawn wall compaction",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 167,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "GAME-WALL",
+          "title": "[P1] game.move wall expectations: ONE_CELL [_,3,_,3] left fully compact + down wall mirrors left",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 214,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "TRANS-WALL",
+          "title": "[P1] transitionPlan wall slide: left to [0,0], right to [0,3], down to [3,1]",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 234,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "TRACE-FIDELITY",
+          "title": "[P1] trace wall fidelity: single shift from [[r,c]] at wall and moved boolean",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 270,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-atdd",
+          "title": "[P1-04] PIPELINE 4-dir left/right/up/down",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 143,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P1-05-atdd",
+          "title": "[P1-05] game.move wall expectations",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 184,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P1-06-atdd",
+          "title": "[P1-06] transitionPlan wall slide",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 209,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-01-pipeline",
+          "title": "[P1][E2E-01] wall-compaction pipeline end-to-end (4-dir wall + trace wall fidelity)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 167,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "GAME-32",
+          "title": "ONE_CELL: [_,3,_,3] swipe left -> [3,3,_,_] (fully compact)",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 97,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "TRANS-PLAN-LEFT",
+          "title": "planTileTransitions: slide left maps the moving tile from source to dest",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 19,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-06",
+      "description": "AC single-wall-scan / single-guard / single-GRID_SIZE invariants — exactly 1 while(target>0 && out[target-1].v===null) + exactly 1 canMerge(out[dest].v (not target) + 1 out[target].v=t.v vs 1 out[dest].v=merged + shiftLine body n=line.length + for i<n + dest bounds and 0 GRID_SIZE + movementLines board[r]?.[c] ?? null ×2 + boardFromLines lines.length/row.length + if(!row)/if(!item) + GRID_SIZE=4 single definition + ledger DW-20/74 done 2026-09-02 with 64-hex resolution-undo + sprint-status.yaml untouched + hygiene no spawn/feel/monetization leakage + O(1) bench <50ms 10k",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "title": "[P2] SCAN single wall-scan site: while(target > 0 && out[target-1].v===null) ==1",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 295,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-02",
+          "title": "[P2] SCAN shiftLine length guard: const n=line.length + for i<n + dest bounds, 0 GRID_SIZE in body",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 301,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-03",
+          "title": "[P2] SCAN shift vs merge site separation",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 310,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-04",
+          "title": "[P2] SCAN boardFromLines guards + movementLines optional chaining",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 318,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-05",
+          "title": "[P2] hygiene — engine scope stays pure, no spawn/feel/monetization leakage, wall scan O(1) <1ms",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 331,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "TSC",
+          "title": "[P1] tsc both configs clean and GRID_SIZE=4 invariant",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+          "line": 281,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-atdd",
+          "title": "[P2-01] SCAN single wall-scan site",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 255,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P2-02-atdd",
+          "title": "[P2-02] SCAN shiftLine length guard",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 261,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P2-03-atdd",
+          "title": "[P2-03] SCAN shift vs merge site separation",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 271,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P2-04-atdd",
+          "title": "[P2-04] SCAN boardFromLines guards + movementLines optional chaining",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 281,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "E2E-04-ledger",
+          "title": "[P1][E2E-04] ledger DW-20/DW-74 done with resolution-undo 64-hex, sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 281,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "E2E-05-scan",
+          "title": "[P2][E2E-05] static allowlists — single-wall-scan/GRID_SIZE/predicate + guard ordering",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 292,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "E2E-06-residual",
+          "title": "[P3][E2E-06] residual ragged beyond [[1]] + O(1) bench + no scope leakage",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+          "line": 313,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-01-atdd",
+          "title": "[P3-01] exploratory — boardFromLines ragged row length beyond [[1]]",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 296,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        },
+        {
+          "id": "P3-02-atdd",
+          "title": "[P3-02] hygiene — line scope stays pure, O(1) bench",
+          "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+          "line": 308,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 7,
+      "cases": 55,
+      "skipped_cases": 20,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 8,
+          "criteria_covered": 6
+        },
+        "api": {
+          "tests": 21,
+          "criteria_covered": 6
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 26,
+          "criteria_covered": 6
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-01",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 52,
+        "title": "[P0] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-02",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 63,
+        "title": "[P0] DW-74 double gap two tiles",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-03",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 72,
+        "title": "[P0] 3-gap single tile",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-04",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 77,
+        "title": "[P0] all-null stays empty",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-01-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 35,
+        "title": "[P0-01] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (21 gateway + 6 umbrella pass, 11 regression pass when activated)"
+      },
+      {
+        "id": "P0-02-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 45,
+        "title": "[P0-02] double gap two tiles",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P0-03-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 55,
+        "title": "[P0-03] 3-gap single tile",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P0-04-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 60,
+        "title": "[P0-04] all-null stays empty",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 167,
+        "title": "[P1][E2E-01] wall-compaction pipeline end-to-end (4-dir wall + trace wall fidelity)",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "REG-74-01",
+        "file": "triade/__tests__/engine/line-compaction.regression.test.ts",
+        "line": 12,
+        "title": "DW-74 regression: [null,null,null,2] wall compaction",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-05",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 84,
+        "title": "[P0] gap-non-merge preserved: [3,null,3,null] -> [3,3,null,null] score 0",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-05-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 67,
+        "title": "[P0-05] preserve gap-non-merge: [3,null,3,null] -> [3,3,null,null] score 0",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-02-gap",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 232,
+        "title": "[P1][E2E-02] gap-non-merge + cascade preserved end-to-end (merge-once contract)",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "LINE-91",
+        "file": "triade/__tests__/engine/line.test.ts",
+        "line": 91,
+        "title": "shiftLine shifts a lone tile toward the wall without merging",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-06",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 92,
+        "title": "[P0] cascade block preserved: [3,3,3,3] -> [6,3,3,null] score 6",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-06-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 75,
+        "title": "[P0-06] preserve cascade block: [3,3,3,3] -> [6,3,3,null] score 6",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-02-cascade",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 232,
+        "title": "[P1][E2E-02] gap-non-merge + cascade preserved end-to-end",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "LINE-82",
+        "file": "triade/__tests__/engine/line.test.ts",
+        "line": 82,
+        "title": "shiftLine blocks cascade: [3,3,3,3] -> [6,3,3,null], score 6",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-07",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 101,
+        "title": "[P0] guard empty line: shiftLine([]) length 0 moved false no throw",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-08",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 113,
+        "title": "[P0] guard single element: shiftLine([{v:1}]) length 1",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-09",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 125,
+        "title": "[P0] guard movementLines short board pads",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-01",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 145,
+        "title": "[P1] guard 2-elem gap: refLine(null,3).slice(0,2) -> [3,null]",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-02",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 156,
+        "title": "[P1] guard boardFromLines short",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-07-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 85,
+        "title": "[P0-07] DW-20 guard empty line: shiftLine([])",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P0-08-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 96,
+        "title": "[P0-08] DW-20 guard single element",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P1-01-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 108,
+        "title": "[P1-01] DW-20 guard 2-elem gap",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P1-02-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 117,
+        "title": "[P1-02] DW-20 guard boardFromLines short",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P1-03-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 128,
+        "title": "[P1-03] DW-20 guard movementLines short board",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 250,
+        "title": "[P1][E2E-03] short/empty guard hardening end-to-end (never-throw)",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "REG-DW20-empty",
+        "file": "triade/__tests__/engine/line-compaction.regression.test.ts",
+        "line": 44,
+        "title": "DW-20 regression: shiftLine handles empty line without crash",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "PIPELINE",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 167,
+        "title": "[P1] PIPELINE 4-dir left/right/up/down full board matches pre-spawn wall compaction",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "GAME-WALL",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 214,
+        "title": "[P1] game.move wall expectations: ONE_CELL [_,3,_,3] left fully compact + down wall mirrors left",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "TRANS-WALL",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 234,
+        "title": "[P1] transitionPlan wall slide: left to [0,0], right to [0,3], down to [3,1]",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "TRACE-FIDELITY",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 270,
+        "title": "[P1] trace wall fidelity: single shift from [[r,c]] at wall and moved boolean",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-04-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 143,
+        "title": "[P1-04] PIPELINE 4-dir left/right/up/down",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P1-05-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 184,
+        "title": "[P1-05] game.move wall expectations",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P1-06-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 209,
+        "title": "[P1-06] transitionPlan wall slide",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-01-pipeline",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 167,
+        "title": "[P1][E2E-01] wall-compaction pipeline end-to-end (4-dir wall + trace wall fidelity)",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "GAME-32",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 97,
+        "title": "ONE_CELL: [_,3,_,3] swipe left -> [3,3,_,_] (fully compact)",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "TRANS-PLAN-LEFT",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 19,
+        "title": "planTileTransitions: slide left maps the moving tile from source to dest",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-01",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 295,
+        "title": "[P2] SCAN single wall-scan site: while(target > 0 && out[target-1].v===null) ==1",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-02",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 301,
+        "title": "[P2] SCAN shiftLine length guard: const n=line.length + for i<n + dest bounds, 0 GRID_SIZE in body",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-03",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 310,
+        "title": "[P2] SCAN shift vs merge site separation",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-04",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 318,
+        "title": "[P2] SCAN boardFromLines guards + movementLines optional chaining",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-05",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 331,
+        "title": "[P2] hygiene — engine scope stays pure, no spawn/feel/monetization leakage, wall scan O(1) <1ms",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "TSC",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts",
+        "line": 281,
+        "title": "[P1] tsc both configs clean and GRID_SIZE=4 invariant",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-01-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 255,
+        "title": "[P2-01] SCAN single wall-scan site",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P2-02-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 261,
+        "title": "[P2-02] SCAN shiftLine length guard",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P2-03-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 271,
+        "title": "[P2-03] SCAN shift vs merge site separation",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P2-04-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 281,
+        "title": "[P2-04] SCAN boardFromLines guards + movementLines optional chaining",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "E2E-04-ledger",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 281,
+        "title": "[P1][E2E-04] ledger DW-20/DW-74 done with resolution-undo 64-hex, sprint-status untouched",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-05-scan",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 292,
+        "title": "[P2][E2E-05] static allowlists — single-wall-scan/GRID_SIZE/predicate + guard ordering",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-06-residual",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts",
+        "line": 313,
+        "title": "[P3][E2E-06] residual ragged beyond [[1]] + O(1) bench + no scope leakage",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P3-01-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 296,
+        "title": "[P3-01] exploratory — boardFromLines ragged row length beyond [[1]]",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      },
+      {
+        "id": "P3-02-atdd",
+        "file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "line": 308,
+        "title": "[P3-02] hygiene — line scope stays pure, O(1) bench",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "P0-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (21 gateway + 6 umbrella pass, 11 regression pass when activated)",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-01] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true"
+      },
+      {
+        "id": "P0-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-02] double gap two tiles"
+      },
+      {
+        "id": "P0-03-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-03] 3-gap single tile"
+      },
+      {
+        "id": "P0-04-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-04] all-null stays empty"
+      },
+      {
+        "id": "P0-05-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-05] preserve gap-non-merge: [3,null,3,null] -> [3,3,null,null] score 0"
+      },
+      {
+        "id": "P0-06-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-06] preserve cascade block: [3,3,3,3] -> [6,3,3,null] score 6"
+      },
+      {
+        "id": "P0-07-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-07] DW-20 guard empty line: shiftLine([])"
+      },
+      {
+        "id": "P0-08-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P0-08] DW-20 guard single element"
+      },
+      {
+        "id": "P1-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-01] DW-20 guard 2-elem gap"
+      },
+      {
+        "id": "P1-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-02] DW-20 guard boardFromLines short"
+      },
+      {
+        "id": "P1-03-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-03] DW-20 guard movementLines short board"
+      },
+      {
+        "id": "P1-04-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-04] PIPELINE 4-dir left/right/up/down"
+      },
+      {
+        "id": "P1-05-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-05] game.move wall expectations"
+      },
+      {
+        "id": "P1-06-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P1-06] transitionPlan wall slide"
+      },
+      {
+        "id": "P2-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single wall-scan site"
+      },
+      {
+        "id": "P2-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P2-02] SCAN shiftLine length guard"
+      },
+      {
+        "id": "P2-03-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P2-03] SCAN shift vs merge site separation"
+      },
+      {
+        "id": "P2-04-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P2-04] SCAN boardFromLines guards + movementLines optional chaining"
+      },
+      {
+        "id": "P3-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P3-01] exploratory — boardFromLines ragged row length beyond [[1]]"
+      },
+      {
+        "id": "P3-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip",
+        "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+        "test_title": "[P3-02] hygiene — line scope stays pure, O(1) bench"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "P0-01-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (21 gateway + 6 umbrella pass, 11 regression pass when activated)",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-01] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true"
+    },
+    {
+      "id": "P0-02-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-02] double gap two tiles"
+    },
+    {
+      "id": "P0-03-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-03] 3-gap single tile"
+    },
+    {
+      "id": "P0-04-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-04] all-null stays empty"
+    },
+    {
+      "id": "P0-05-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-05] preserve gap-non-merge: [3,null,3,null] -> [3,3,null,null] score 0"
+    },
+    {
+      "id": "P0-06-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-06] preserve cascade block: [3,3,3,3] -> [6,3,3,null] score 6"
+    },
+    {
+      "id": "P0-07-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-07] DW-20 guard empty line: shiftLine([])"
+    },
+    {
+      "id": "P0-08-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P0-08] DW-20 guard single element"
+    },
+    {
+      "id": "P1-01-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-01] DW-20 guard 2-elem gap"
+    },
+    {
+      "id": "P1-02-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-02] DW-20 guard boardFromLines short"
+    },
+    {
+      "id": "P1-03-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-03] DW-20 guard movementLines short board"
+    },
+    {
+      "id": "P1-04-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-04] PIPELINE 4-dir left/right/up/down"
+    },
+    {
+      "id": "P1-05-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-05] game.move wall expectations"
+    },
+    {
+      "id": "P1-06-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P1-06] transitionPlan wall slide"
+    },
+    {
+      "id": "P2-01-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P2-01] SCAN single wall-scan site"
+    },
+    {
+      "id": "P2-02-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P2-02] SCAN shiftLine length guard"
+    },
+    {
+      "id": "P2-03-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P2-03] SCAN shift vs merge site separation"
+    },
+    {
+      "id": "P2-04-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P2-04] SCAN boardFromLines guards + movementLines optional chaining"
+    },
+    {
+      "id": "P3-01-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P3-01] exploratory — boardFromLines ragged row length beyond [[1]]"
+    },
+    {
+      "id": "P3-02-atdd",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip",
+      "test_file": "triade/__tests__/engine/line-compaction.atdd.test.ts",
+      "test_title": "[P3-02] hygiene — line scope stays pure, O(1) bench"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ]
+}

@@ -150,7 +150,9 @@ resolution: already resolved: triade/src/engine/core/spawn.ts:40 len<=0 return 0
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: shiftLine/move/boardFromLines assume 4x4 and crash on shorter input
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-line-compaction
+resolution-undo: 26a75af183b8ffbe96535a58ff2c6ec6f12a3a000117765a9f94e84b21702c64 2026-09-02 7374617475733a206f70656e
 
 ### DW-21: Noop moves return a full trace of stationary tiles
 
@@ -562,7 +564,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: line.ts:46-64
 reason: Compactação single-pass falha para linhas com múltiplos gaps (`[null,null,null,2]` → `[null,null,2,null]` em vez de `[2,null,null,null]`) em `shiftLine` loop `dest=i-1` — pre-existing em `line.ts:46-64`, não causado por 12.1 (só `moved` adicionado); exposição limitada porque board é sempre compactado por direção.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-line-compaction
+resolution-undo: 26a75af183b8ffbe96535a58ff2c6ec6f12a3a000117765a9f94e84b21702c64 2026-09-02 7374617475733a206f70656e
 
 ### DW-75: `spawnTile` muta `board` in-place (já listado em 2026-08-25, re-confirmado) — `move()` passa board fresco de `boardFromLines`, aliases não vazam hoje.
 

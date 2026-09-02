@@ -22,7 +22,7 @@ test('planTileTransitions: slide left maps the moving tile from source to dest',
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
-    { type: 'slide', value: 2, to: [0, 1], from: [[0, 2]] },
+    { type: 'slide', value: 2, to: [0, 0], from: [[0, 2]] },
     { type: 'spawn', value: 1, to: [0, 3], from: [] }
   ]);
 });
@@ -33,7 +33,7 @@ test('planTileTransitions: slide right maps the moving tile from source to dest'
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
-    { type: 'slide', value: 2, to: [0, 2], from: [[0, 1]] },
+    { type: 'slide', value: 2, to: [0, 3], from: [[0, 1]] },
     { type: 'spawn', value: 1, to: [0, 0], from: [] }
   ]);
 });
@@ -55,7 +55,7 @@ test('planTileTransitions: slide down maps the moving tile from source to dest',
   assert.strictEqual(result.moved, true);
   const plan = planTileTransitions(board, result);
   assert.deepStrictEqual(plan, [
-    { type: 'slide', value: 9, to: [1, 1], from: [[0, 1]] },
+    { type: 'slide', value: 9, to: [3, 1], from: [[0, 1]] },
     { type: 'spawn', value: 1, to: [0, 1], from: [] }
   ]);
 });

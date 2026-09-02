@@ -95,7 +95,7 @@ describe('ATDD dw-purity-and-weight-doc-hardening — P0 critical (spec AC)', ()
     assert.match(potTestSrc, /\[3, 6, 12, 24, 48, 96, 192, 384\]/, 'FR7_LADDER tier-7 ladder present');
     // Structural invariants: doubling + length = tier+1 + >=3
     const { potForTier } = game as unknown as { potForTier: (t: number) => number[] };
-    for (let t = 0; t < potSrc.includes('potForTier') ? 12 : 0; t++) {
+    for (let t = 0; t < (potSrc.includes('potForTier') ? 12 : 0); t++) {
       const pot = potForTier(t);
       assert.equal(pot.length, t + 1, `tier ${t} length`);
       for (const v of pot) assert.ok(v >= 3, `tier ${t} value >=3`);
