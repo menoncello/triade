@@ -511,7 +511,8 @@ resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd
 origin: migrated from legacy ledger ("Deferred from: traceability gate of story 7-2-preview-card-no-hud-60-40-nas-duas-pistas (2026-08-25)"), 2026-09-01
 location: triade/src/ui/Hud.tsx
 reason: two-lane preview (both lanes show a preview card): IMPLEMENTED (HUD fan-out, 2026-08-24) — `Hud` now takes `previews: { clean, accelerated }` and fans the lane-agnostic `previewFor(game.pendingSpawn)` into two labeled `PreviewCard`s (Clean / Accelerated) in portrait & landscape (`triade/src/ui/Hud.tsx`). Both lanes currently show the same pre-resolved preview; per-lane board differentiation (distinct `pendingSpawn` per lane) remains Epic 3 — no Hud rework needed, just feed distinct `previews` when Epic 3 builds two-lane boards. Traced as `7.2-AC3` in `traceability-matrix-7-2.md`.
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/ui/Hud.tsx:14 and 46-68 previews fan-out implemented — Hud takes previews {clean,accelerated} and renders two LanePreviews (Clean/Accelerated) in portrait & landscape
 
 ### DW-68: `contiguousWindowContaining` returns `[value]` for any out-of-ladder value, which `PreviewCard` renders identically to an `exact` (single-element range shows as plain `"99"`) — the defensive "range" is indistinguishable from exact in the UI. Content/ambiguity semantics ("always contains truth", N3) are owned by Story 7.3 — deferred.
 
