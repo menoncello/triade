@@ -1,12 +1,13 @@
 {
   "phase": "PHASE_1_COMPLETE",
-  "generated_at": "2026-09-02T00:00:00.000Z",
+  "generated_at": "2026-09-02T11:57:30.814055+00:00",
   "trace_target": {
     "type": "story",
-    "id": "dw-preview-pot-ladder-hygiene",
-    "label": "dw-preview-pot-ladder-hygiene — tighten weight floor, dedupe state reconstruction, assert tier-0 ceiling exception"
+    "id": "dw-engine-parity-hardening",
+    "label": "dw-engine-parity-hardening \u2014 spawn-nothing / blind-spot / multi-move / ladder-ceiling chain (DW-25, DW-26, DW-34, DW-103)"
   },
   "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
   "allow_gate": true,
   "coverage_basis": "acceptance_criteria",
   "summary_confidence": "high",
@@ -14,291 +15,911 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-preview-pot-ladder-hygiene.md",
-      "_bmad-output/test-artifacts/test-design-dw-preview-pot-ladder-hygiene.md",
-      "_bmad-output/test-artifacts/atdd-checklist-dw-preview-pot-ladder-hygiene.md",
+      "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-parity-hardening.md",
+      "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+      "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/src/engine/core/spawn.ts",
       "triade/src/engine/core/game.ts",
-      "triade/src/engine/core/index.ts",
+      "triade/src/engine/core/ceiling.ts",
+      "triade/src/engine/core/pot.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/src/game/matchStats.ts",
+      "triade/src/game/matchScore.ts",
       "triade/test-utils/helpers.ts",
-      "triade/__tests__/engine/weights.test.ts",
-      "triade/__tests__/engine/adaptive-spawn-integration.test.ts"
+      "triade/src/utils/mulberry32.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-parity-hardening-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-25,26,34,103",
+      "_bmad-output/test-artifacts/automation-summary.md"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
   },
+  "working_tree_delta": {
+    "baseline": "398a06d",
+    "head": "73f1b73 (commit 8f62b44 on main, working-tree HEAD 73f1b73)",
+    "production_files": [
+      "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts:1-223 (DW-26 header + DW-25 5 spawn-nothing + DW-34 5 replay)",
+      "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts:1-129 (DW-103 12-ceiling ladder + wiring + isNewRecord)",
+      "triade/__tests__/engine/game.test.ts:1 header doc DW-26",
+      "triade/src/engine/* byte-identical (spawn.ts:72-96 cloneBoard + game.ts:41-105 3/0/20 draws + ceiling.ts:5-50 + pot.ts:6-9 unchanged)"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md (6 I-O rows, 5 ACs)",
+    "sprint_status_touched": false
+  },
   "requirements": [
     {
-      "id": "AC-01",
-      "title": "Weight floor tightened — weights.test.ts dual gate sigmaBound 5σ≈0.0063 + ±1% at N=100k tier 1,5 (was >N*0.1 dead)",
+      "id": "P0-01",
+      "description": "DW-25 spawn-nothing omitted candidates full board \u2192 nulls, 0 draws, clone!==input, board unchanged",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-01", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 41, "title": "[P0-01] AC weights dual gate — pot share within sigmaBound 5σ + ±1% (not >N*0.1)", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-dual-gate", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 61, "title": "[P0] AC weights dual gate — pot share within sigmaBound 5σ≈0.0063 + ±1% (not >N*0.1) DW-61 R-001", "level": "api", "status": "active" },
-        { "id": "weights-dual-gate", "file": "triade/__tests__/engine/weights.test.ts", "line": 139, "title": "statistical sampling: within-pot frequencies match halving-decay (dual gate 5σ + ±1%)", "level": "unit", "status": "active" },
-        { "id": "E2E-05-sigma", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 258, "title": "[P2] E2E-05 sigma budget + pot ladder hygiene — 5σ≈0.0063 doc + purity + halving", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-01-triade",
+          "title": "[P0-01] DW-25 omitted candidates full \u2192 nulls 0 draws clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 64,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "[P0-API-01] DW-25 omitted candidates full \u2192 nulls 0 draws clone",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-unit",
+          "title": "[P0-01] DW-25 omitted candidates full board \u2192 nulls, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
-      "id": "AC-02",
-      "title": "stateFromResult single definition — trivial destructure board+pending ref shared, re-exported via index.ts + helpers.ts seam",
+      "id": "P0-02",
+      "description": "DW-25 spawn-nothing provided [] pool full board \u2192 nulls, 0 draws, clone",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-02", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 70, "title": "[P0-02] AC stateFromResult single definition — trivial destructure, board ref shared", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-single-def", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 93, "title": "[P0] AC stateFromResult single definition — trivial destructure, board+pending ref shared DW-62 R-002/R-004", "level": "api", "status": "active" },
-        { "id": "P2-API-3site", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 235, "title": "[P2] SCAN single-helper 3-site definition allowlist", "level": "api", "status": "active" },
-        { "id": "E2E-01-wiring", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 182, "title": "[P1] E2E-01 helper wiring through engine — re-export seam + runSeededSession + draw-budget", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-02-triade",
+          "title": "[P0-02] DW-25 provided [] pool full \u2192 nulls 0 draws clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 77,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "[P0-API-02] DW-25 provided [] pool full \u2192 nulls 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-unit",
+          "title": "[P0-02] DW-25 provided [] pool full",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
-      "id": "AC-03",
-      "title": "Tier-0 ceiling-ordering exception — pot 3 exceeds tiny ceiling 0/1/2 (2000 draws each, sawThree && sawExceeding, domain v===1||2||3, harmless)",
+      "id": "P0-03",
+      "description": "DW-25 spawn-nothing occupied [[0,0],[1,1],[2,2]] full board \u2192 nulls, 0 draws (pool filter board[r][c]===null)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-03", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 97, "title": "[P0-03] AC tier-0 ceiling-ordering exception — pot 3 exceeds tiny ceiling 0/1/2 (harmless)", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-tier0", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 109, "title": "[P0] AC tier-0 ceiling-ordering exception — pot 3 exceeds tiny ceiling 0/1/2 (2000 draws each) DW-63 R-003", "level": "api", "status": "active" },
-        { "id": "tier0-exception", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 289, "title": "[P1] tier-0 ceiling-ordering exception: pot value 3 legitimately exceeds tiny ceiling 0/1/2", "level": "unit", "status": "active" },
-        { "id": "E2E-02-ceiling", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 200, "title": "[P1] E2E-02 ceiling ordering — tier-0 exception observed + tier>=1 invariant holds", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-03-triade",
+          "title": "[P0-03] DW-25 occupied [[0,0]] full \u2192 nulls 0 draws",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 89,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "[P0-API-03] DW-25 occupied [[0,0],[1,1],[2,2]] full \u2192 nulls",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-unit",
+          "title": "[P0-03] DW-25 occupied candidates",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
-      "id": "AC-04A",
-      "title": "Rewind shape via helper — move(stateFromResult(r1)) deepEqual move(manual literal) moved:true, board/pending refs shared",
+      "id": "P0-04",
+      "description": "DW-25 control non-full board with 1 empty still places with 1 draw (branch not vacuous)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-04", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 119, "title": "[P0-04] AC rewind shape via helper — stateFromResult determines next move identically", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-rewind", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 131, "title": "[P0] AC rewind shape via helper — stateFromResult determines next move identically DW-62 R-004", "level": "api", "status": "active" },
-        { "id": "rewind-shape", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 286, "title": "[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result", "level": "unit", "status": "active" }
+        {
+          "id": "P0-04-triade",
+          "title": "[P0-04] DW-25 control non-full 1 empty \u2192 1 draw clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 101,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "[P0-API-04] DW-25 control non-full 1 empty \u2192 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-unit",
+          "title": "[P0-04] DW-25 control non-full",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
-      "id": "AC-04B",
-      "title": "9-site dedup — zero ad-hoc board: result.board / board: res.board outside game.ts:93 definition (App, GameE2ETestFixture, helpers 2×, 5 smoke suites, bulletTime, adaptive)",
+      "id": "P0-05",
+      "description": "DW-26 shared-bug blind spot header doc + mitigation game.test.ts:198 absolute oracle",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-05", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 135, "title": "[P0-05] AC 9-site dedup — zero ad-hoc board: result.board literal outside definition", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-dedup", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 142, "title": "[P0] AC 9-site dedup — zero ad-hoc board: result.board outside game.ts DW-62 R-002", "level": "api", "status": "active" },
-        { "id": "E2E-04-allowlist", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 static allowlists — 3-site helper + no old floor + tier-0 scan + ledger", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-05-triade",
+          "title": "[P0-05] DW-26 header shared-bug blind spot + mitigation",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "[P0-API-05] DW-26 blind-spot header 4\u00d7 rg gates",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-unit",
+          "title": "[P0-05] DW-26 header doc",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-oracle",
+          "title": "game.test.ts:198 spawnTile full-board\u2192nulls absolute",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "level": "unit",
+          "status": "active"
+        }
       ]
     },
     {
-      "id": "AC-04C",
-      "title": "Engine + preview byte-identical except additive helper — git diff --stat -- triade/src/engine game.ts +4 / index.ts 1, preview empty, full suite 858 unchanged",
+      "id": "P0-06",
+      "description": "DW-34 multi-move identical seed 42 \u00d710 left/up/right/down + left/left/up/down/right/up deepEqual boards/scores/cumulative/pendingSpawn",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-06", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 155, "title": "[P0-06] AC engine + preview byte-identical except additive helper", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-byte", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 155, "title": "[P0] AC engine + preview byte-identical except additive helper", "level": "api", "status": "active" },
-        { "id": "E2E-03-sweep", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 226, "title": "[P1] E2E-03 full integration sweep — 5 smoke suites green + engine+preview byte-identical + 858", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-06-triade",
+          "title": "[P0-06] DW-34 seed 42 \u00d710 identical",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 143,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "[P0-API-06] DW-34 seed 42\u00d710 identical",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-unit",
+          "title": "[P0-06] DW-34 seed 42 \u00d710 identical",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
-      "id": "AC-04D",
-      "title": "Smoke/integration still green via helper — 200-move host session 4×4 bounded, 5 smoke+integration+feel suites deduped via stateFromResult",
+      "id": "P0-07",
+      "description": "DW-34 diverge brake seed 1 vs 2 \u00d75 anyDiffer true (proves suite would catch drift)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
-        { "id": "P0-07", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 165, "title": "[P0-07] AC smoke/integration still green via helper (engine→helper path)", "level": "unit", "status": "skipped" },
-        { "id": "P0-API-smoke", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 163, "title": "[P0] AC smoke/integration still green via helper (engine→helper path) DW-62", "level": "api", "status": "active" },
-        { "id": "engine-smoke", "file": "triade/__tests__/engine/engine.smoke.test.ts", "line": 48, "title": "SMOKE: core loop executes — 500 deterministic moves never crash", "level": "unit", "status": "active" },
-        { "id": "render-smoke", "file": "triade/__tests__/render/render.smoke.test.ts", "line": 39, "title": "SMOKE: render critical path — 500 deterministic moves never leak", "level": "unit", "status": "active" },
-        { "id": "session-integration", "file": "triade/__tests__/integration/session.integration.test.ts", "line": 48, "title": "integration: matchScore accumulates across a full session of moves", "level": "unit", "status": "active" },
-        { "id": "E2E-03-smoke", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 226, "title": "[P1] E2E-03 full integration sweep — 5 smoke suites green + engine+preview byte-identical + 858", "level": "e2e", "status": "active" }
+        {
+          "id": "P0-07-triade",
+          "title": "[P0-07] DW-34 seed 1 vs 2 diverge true",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 156,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-gateway",
+          "title": "[P0-API-07] DW-34 seed 1 vs 2 diverge",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-unit",
+          "title": "[P0-07] DW-34 diverge brake",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-08",
+      "description": "DW-34 full-game 20260808 \u00d720 left/up/right/down*5 deterministic finite\u22650",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08-triade",
+          "title": "[P0-08] DW-34 20260808\u00d720 deterministic",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 172,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-gateway",
+          "title": "[P0-API-08] DW-34 20260808\u00d720 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-08-unit",
+          "title": "[P0-08] DW-34 20260808\u00d720 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-09",
+      "description": "DW-103 ladder chain 12 ceilings 0..3072 \u2192 tiers 0\u00d75,1..7 \u2192 pots [[3]..[3\u00d78]] hand-computed literals",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-09-triade",
+          "title": "[P0-09] DW-103 ladder 12 ceilings literal pots",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 37,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-09-umb",
+          "title": "[P0-UMB-01] DW-103 ladder 12 ceilings",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-09-unit",
+          "title": "[P0-09] DW-103 ladder 12 ceilings",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-10",
+      "description": "DW-103 App wiring availablePot = potForTier(tierForCeiling(ceilingDetector(game.board))) once + thin-view overlay no ladder imports",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-10-triade",
+          "title": "[P0-10] DW-103 App wiring pin",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 69,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-10-umb",
+          "title": "[P0-UMB-02] App wiring thin-view + availablePot pipeline",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-10-unit",
+          "title": "[P0-10] DW-103 App wiring",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-11",
+      "description": "DW-103 isNewRecord(sessionStartBest,score) gating strict + anti-leak handleRestart never writes sessionStartBest*Ref.current + runtime 0,0 false/0,1 true",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-11-triade",
+          "title": "[P0-11] DW-103 isNewRecord sessionStart gating",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 82,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-11-umb",
+          "title": "[P0-UMB-03] isNewRecord sessionStart gating + anti-leak",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-11-unit",
+          "title": "[P0-11] DW-103 isNewRecord sessionStart",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P1-01",
-      "title": "Draw-budget preservation — move 3 draws [0,0.9,0.5] / newGame 20 draws …18×0.5,0.9,0.25 deepEqual exact after helper (0 draws)",
+      "description": "DW-25 hygiene sweep 4-case full omit / full [] / full [[0,0]] / full [[0,1],[0,2]] each clone+deepEquals+0 draws",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
-        { "id": "P1-01", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 182, "title": "[P1-01] AC draw-budget preservation — move 3 draws / newGame 20 draws still exact after helper", "level": "unit", "status": "skipped" },
-        { "id": "P1-API-budget", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 180, "title": "[P1] AC draw-budget preservation — move 3 draws / newGame 20 draws still exact after helper R-006", "level": "api", "status": "active" },
-        { "id": "draw-3-20", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 68, "title": "AC4 effective 3 draws / newGame 20 draws exact spyRng deepEqual", "level": "unit", "status": "active" },
-        { "id": "E2E-01-budget", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 182, "title": "[P1] E2E-01 helper wiring through engine — re-export seam + runSeededSession + draw-budget", "level": "e2e", "status": "active" }
+        {
+          "id": "P1-01-triade",
+          "title": "[P1-01] DW-25 hygiene 4-case",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 117,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "[P1-API-01] DW-25 hygiene 4-case",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-unit",
+          "title": "[P1-01] DW-25 hygiene 4-case",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P1-02",
-      "title": "helpers.ts re-export seam — helpersStateFromResult === game.stateFromResult (===, single seam helpers.ts:216)",
+      "description": "DW-34 draw-budget effective 3 draws / noop 0 via spyRng exact + rngOf() throw-on-exhaust",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
-        { "id": "P1-02", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 198, "title": "[P1-02] AC helpers.ts re-export seam — import from helpers equals engine helper", "level": "unit", "status": "skipped" },
-        { "id": "P1-API-seam", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 194, "title": "[P1] AC helpers.ts re-export seam — helpers equals engine helper (===) R-005", "level": "api", "status": "active" },
-        { "id": "E2E-01-seam", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 182, "title": "[P1] E2E-01 helper wiring through engine — re-export seam", "level": "e2e", "status": "active" }
+        {
+          "id": "P1-02-triade",
+          "title": "[P1-02] DW-34 draw-budget 3/0",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 183,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "[P1-API-02] DW-34 draw 3/0 rngOf throw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] DW-34 draw-budget 3/0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P1-03",
-      "title": "runSeededSession determinism via helper — runSeededSession(1234,60) deepEqual snapshots/spawnValues, tiers via preSpawnBoardOf correct",
+      "description": "DW-34 50 seeded moves 0xc31 \u00d750 cumulative+finalBoard deepEqual (Math.random 0)",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
-        { "id": "P1-03", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 206, "title": "[P1-03] AC runSeededSession determinism via helper — snapshots/tiers still correct", "level": "unit", "status": "skipped" },
-        { "id": "P1-API-determinism", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 201, "title": "[P1] AC runSeededSession determinism via helper — snapshots/tiers still correct R-004/R-006", "level": "api", "status": "active" },
-        { "id": "determinism-1234", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 279, "title": "determinism: identical seed reproduces the identical { board, pendingSpawn } sequence", "level": "unit", "status": "active" },
-        { "id": "E2E-01-determinism", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 182, "title": "[P1] E2E-01 helper wiring — determinism", "level": "e2e", "status": "active" }
+        {
+          "id": "P1-03-triade",
+          "title": "[P1-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "[P1-API-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P1-04",
-      "title": "Ceiling ordering companion tier>=1 v<=ceiling holds (2000 draws each 48/96/192/384/768/1536, isValidSpawnValue)",
+      "description": "Absolute oracle game.test.ts 32 companion including game.test.ts:198 full-board nulls stays green",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
-        { "id": "P1-04", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 218, "title": "[P1-04] AC ceiling ordering companion tier>=1 v<=ceiling holds (2000 draws each 48..1536)", "level": "unit", "status": "skipped" },
-        { "id": "P1-API-companion", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 211, "title": "[P1] AC ceiling ordering companion tier>=1 v<=ceiling holds (2000 draws each 48..1536) R-003", "level": "api", "status": "active" },
-        { "id": "tier-gte1", "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts", "line": 319, "title": "ceiling ordering: resolveSpawn never returns a value above its ceiling (tier >= 1)", "level": "unit", "status": "active" },
-        { "id": "E2E-02-companion", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 200, "title": "[P1] E2E-02 ceiling ordering — tier>=1 companion", "level": "e2e", "status": "active" }
+        {
+          "id": "P1-04-oracle",
+          "title": "game.test.ts 32 pass including :198 full-board",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] absolute oracle 32 companion green",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P1-05",
-      "title": "No old floor — rg gate potSamples > N * 0.1 ==0 plus sigmaBound(POT_WEIGHT,N) + ±1% backstop present + single definition pin",
+      "description": "DW-103 no celebration beyond isNewRecord number highlight (confetti/celebrat/lottie/reward absent)",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
-        { "id": "P1-05", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 230, "title": "[P1-05] AC no old floor — rg gate for >N*0.1 plus allowlists", "level": "unit", "status": "skipped" },
-        { "id": "P1-API-nofloor", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 222, "title": "[P1] AC no old floor — rg gate for >N*0.1 plus allowlists R-001/R-002", "level": "api", "status": "active" },
-        { "id": "E2E-04-nofloor", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 static allowlists — no old floor", "level": "e2e", "status": "active" }
+        {
+          "id": "P1-05-triade",
+          "title": "[P1-05] DW-103 no celebration beyond isNewRecord",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 105,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-05-umb",
+          "title": "[P1-UMB-01] no celebration beyond isNewRecord",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] DW-103 no celebration",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-06",
+      "description": "DW-103 matchStats monotonic maxTile via initialStats\u2192ceilingDetector\u2192applyMoveStats never deflates 96\u21923\u219296",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-triade",
+          "title": "[P1-06] DW-103 matchStats monotonic",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 115,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-06-umb",
+          "title": "[P1-UMB-02] matchStats monotonic",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] DW-103 matchStats monotonic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-07",
+      "description": "Deterministic helper hygiene mulberry32/rngOf/spyRng only, no Math.random in parity suites",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07-gateway",
+          "title": "[P1-07] helper mulberry32 only no Math.random",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-07-umb",
+          "title": "[P1-UMB-03] Math.random 0 in parity suites",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-07-unit",
+          "title": "[P1-07] helper mulberry32 only",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-08",
+      "description": "Thin-view + stripCommentsAndStrings seam hygiene App ladder single pipeline",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-08-triade",
+          "title": "[P1-08] thin-view strip seam",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 69,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-08-umb",
+          "title": "[P1-UMB-04] thin-view strip seam",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-08-unit",
+          "title": "[P1-08] thin-view strip",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P2-01",
-      "title": "Single-helper 3-site definition allowlist — game.ts 1 def + index.ts 1 re-export + helpers.ts 1 seam (3 definition/re-export sites) + 9 consumers",
+      "description": "Ledger resolution-undo 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 4 hits done 2026-09-02",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
-        { "id": "P2-01", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 239, "title": "[P2-01] SCAN single-helper 3-site definition allowlist (game.ts + index.ts + helpers.ts)", "level": "unit", "status": "skipped" },
-        { "id": "P2-API-3site", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 235, "title": "[P2] SCAN single-helper 3-site definition allowlist (game.ts + index.ts + helpers.ts) R-002/R-005", "level": "api", "status": "active" },
-        { "id": "E2E-04-3site", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 static allowlists — 3-site helper", "level": "e2e", "status": "active" }
+        {
+          "id": "P2-01-gateway",
+          "title": "[P2-API-01] ledger 043844070ab 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-umb",
+          "title": "[P2-UMB-01] ledger 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] ledger 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P2-02",
-      "title": "sigmaBound budget doc — comment mentions 5σ≈0.0063 vs ±1% absolute + helpers.ts z=5 documented",
+      "description": "No Math.random in new suites (ui.norolls analogue) 0 hits both parity files",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
-        { "id": "P2-02", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 247, "title": "[P2-02] SCAN sigmaBound budget doc — comment mentions 5σ≈0.0063 vs ±1% absolute", "level": "unit", "status": "skipped" },
-        { "id": "P2-API-sigmadoc", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 244, "title": "[P2] SCAN sigmaBound budget doc — comment mentions 5σ≈0.0063 vs ±1% absolute R-001", "level": "api", "status": "active" },
-        { "id": "E2E-05-doc", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 258, "title": "[P2] E2E-05 sigma budget + pot ladder hygiene — 5σ≈0.0063 doc + purity + halving", "level": "e2e", "status": "active" }
+        {
+          "id": "P2-02-unit-a",
+          "title": "[P2-02] no Math.random suite A",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-unit-b",
+          "title": "[P2-02] no Math.random suite B",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-gateway",
+          "title": "[P2-02] no Math.random 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P2-03",
-      "title": "Tier-0 domain scan — only game.ts doc + adaptive copy reference tier-0 (game.ts:64-69 doc, potForTier(0)=[3] single-source via pot.ts)",
+      "description": "Single-definition invariants availablePot=1 hit GRID_SIZE=1 POT_BASE_VALUE=2",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
-        { "id": "P2-03", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 256, "title": "[P2-03] SCAN tier-0 domain scan — only game.ts doc + adaptive copy reference tier-0", "level": "unit", "status": "skipped" },
-        { "id": "P2-API-tier0scan", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 254, "title": "[P2] SCAN tier-0 domain scan — only game.ts doc + adaptive copy reference tier-0 R-003/R-008", "level": "api", "status": "active" },
-        { "id": "E2E-04-tier0doc", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 static allowlists — tier-0 scan", "level": "e2e", "status": "active" }
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] single-definition invariants",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umb",
+          "title": "[P2-UMB-02] single-definition invariants",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P2-04",
-      "title": "bulletTime.atdd import path — engine helper direct (not helpers exclusive) from '../../src/engine/core/index.ts'",
+      "description": "Empty-board 0 vs null edge boardWithMax(null||0)\u2192emptyBoard\u2192ceiling 0",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
-        { "id": "P2-04", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 265, "title": "[P2-04] SCAN bulletTime.atdd import path — engine helper direct (not helpers exclusive)", "level": "unit", "status": "skipped" },
-        { "id": "P2-API-bullet", "file": "_bmad-output/test-artifacts/tests/api/preview-pot-ladder-hygiene.gateway.spec.ts", "line": 261, "title": "[P2] SCAN bulletTime.atdd import path — engine helper direct (not helpers exclusive) R-005", "level": "api", "status": "active" },
-        { "id": "E2E-04-bullet", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 bulletTime wiring", "level": "e2e", "status": "active" }
+        {
+          "id": "P2-04-triade",
+          "title": "[P2-04] empty-board 0 edge",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 29,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] empty-board 0 edge",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-05",
+      "description": "Candidate pool empty-filter hygiene candidates.filter + board[r][c]===null + GRID_SIZE bounds",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05-unit",
+          "title": "[P2-05] pool GRID_SIZE bounds",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-05-src",
+          "title": "spawn.ts candidates.filter + GRID_SIZE",
+          "file": "triade/src/engine/core/spawn.ts",
+          "line": 72,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-06",
+      "description": "Hand-computed 12-case literal table [[3],\u2026[3\u00d78]] not recomputed oracle (circular-oracle guard)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-06-triade",
+          "title": "[P2-06] literal 12-case table",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 37,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-06-unit",
+          "title": "[P2-06] literal 12-case",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-07",
+      "description": "sprint-status.yaml ownership git diff empty (orchestrator-owned never write/revert)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-07-unit",
+          "title": "[P2-07] sprint-status.yaml diff empty",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-07-umb",
+          "title": "[P2-UMB-03] sprint-status.yaml diff empty",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P3-01",
-      "title": "Stray literal exploratory — rg board: result.board / board: res.board outside game.ts is 0 / ==1 definition",
+      "description": "Cross-cutting absent Board role grid a11y dev-build frame bench rewarded-ads absent",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
-        { "id": "P3-01", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 273, "title": "[P3-01] SCAN stray literal exploratory — board: res.board / board: result.board outside game.ts is 0", "level": "unit", "status": "skipped" },
-        { "id": "E2E-04-literal", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 239, "title": "[P2] E2E-04 literal variant stray check", "level": "e2e", "status": "active" }
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] cross-cutting absent",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P3-02",
-      "title": "BENCH stateFromResult O(1) 10k× <80ms (median <0.05 ms, no cloneBoard/JSON regression)",
+      "description": "BENCH 50\u00d7 replay <30 ms wall-clock O(1) <0.1ms per move",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
-        { "id": "P3-02", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 278, "title": "[P3-02] BENCH stateFromResult O(1) 10k× median <0.05 ms (no clone regression)", "level": "unit", "status": "skipped" },
-        { "id": "P3-E2E-bench", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 271, "title": "[P3] E2E-06 bench hygiene + scope guard — O(1) <80ms + no cross-cutting", "level": "e2e", "status": "active" }
+        {
+          "id": "P3-02-triade",
+          "title": "[P3-02] BENCH 50\u00d7<30 ms",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] BENCH 50\u00d7<30 ms",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     },
     {
       "id": "P3-03",
-      "title": "Cross-cutting absent — no music/RevenueCat/AdMob in helper/engine seam (scope hygiene)",
+      "description": "potForTier cap 30 overflow 48*2^30 \u219231 entries still finite not Infinity",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
-        { "id": "P3-03", "file": "triade/__tests__/engine/preview-pot-ladder-hygiene.atdd.test.ts", "line": 292, "title": "[P3-03] SCAN cross-cutting absent — no music/RevenueCat/AdMob in helper/engine seam", "level": "unit", "status": "skipped" },
-        { "id": "P3-E2E-scope", "file": "_bmad-output/test-artifacts/tests/e2e/preview-pot-ladder-hygiene.umbrella.spec.ts", "line": 271, "title": "[P3] E2E-06 scope guard", "level": "e2e", "status": "active" }
+        {
+          "id": "P3-03-triade",
+          "title": "[P3-03] pot cap 30 overflow",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 105,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] pot cap 30 overflow",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
       ]
     }
   ],
-  "coverage_statistics": {
-    "total_requirements": 19,
-    "fully_covered": 19,
-    "partially_covered": 0,
-    "uncovered": 0,
-    "overall_coverage_percentage": 100,
-    "priority_breakdown": {
-      "P0": { "total": 7, "covered": 7, "percentage": 100 },
-      "P1": { "total": 5, "covered": 5, "percentage": 100 },
-      "P2": { "total": 4, "covered": 4, "percentage": 100 },
-      "P3": { "total": 3, "covered": 3, "percentage": 100 }
-    }
-  },
-  "gap_analysis": {
-    "critical_gaps": [],
-    "high_gaps": [],
-    "medium_gaps": [],
-    "low_gaps": [],
-    "partial_coverage_items": [],
-    "unit_only_items": []
-  },
-  "coverage_heuristics": {
-    "endpoint_gaps": [],
-    "auth_negative_path_gaps": [],
-    "happy_path_only_gaps": [],
-    "ui_journey_gaps": [],
-    "ui_state_gaps": [],
-    "counts": {
-      "endpoints_without_tests": 0,
-      "auth_missing_negative_paths": 0,
-      "happy_path_only_criteria": 0,
-      "ui_journeys_without_e2e": 0,
-      "ui_states_missing_coverage": 0
-    }
-  },
-  "test_inventory": {
-    "summary": {
-      "files": 12,
-      "cases": 67,
-      "skipped_cases": 19,
-      "fixme_cases": 0,
-      "pending_cases": 0,
-      "by_level": {
-        "e2e": { "tests": 6, "criteria_covered": 19 },
-        "api": { "tests": 16, "criteria_covered": 13 },
-        "component": { "tests": 0, "criteria_covered": 0 },
-        "unit": { "tests": 45, "criteria_covered": 19 },
-        "other": { "tests": 0, "criteria_covered": 0 }
+  "summary": {
+    "total": 29,
+    "full": 29,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 11,
+        "full": 11,
+        "pct": 100
+      },
+      "P1": {
+        "total": 8,
+        "full": 8,
+        "pct": 100
+      },
+      "P2": {
+        "total": 7,
+        "full": 7,
+        "pct": 100
+      },
+      "P3": {
+        "total": 3,
+        "full": 3,
+        "pct": 100
       }
-    },
-    "tests": [],
-    "blockers": []
+    }
   },
-  "blockers": [],
-  "recommendations": [
-    { "priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": [] },
-    { "priority": "MEDIUM", "action": "Activate ATDD scaffolds it.skip → it for defense-in-depth (19 dormant)", "requirements": ["AC-01", "AC-02", "AC-03", "AC-04A", "AC-04B", "AC-04C", "AC-04D", "P1-01", "P1-02", "P1-03", "P1-04", "P1-05", "P2-01", "P2-02", "P2-03", "P2-04", "P3-01", "P3-02", "P3-03"] }
-  ]
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure engine determinism, no auth; negative-path is never-throw NaN/Infinity/-5 + empty-pool + occupied pool)",
+    "error_path": "present (all malformed inputs pinned: full-board omitted/[]/occupied, rngOf throw-on-exhaust, displayRoll bounds, empty-board null)",
+    "ui_journey": "not_applicable (pure TS engine, no DOM journey \u2014 umbrella journeys are host parity + ladder pipeline)",
+    "ui_state": "not_applicable"
+  },
+  "quality": {
+    "active_gateway": 12,
+    "active_umbrella": 10,
+    "active_triade": 15,
+    "dormant_atdd": 51,
+    "existing_game": 32,
+    "passing_tests": 47,
+    "total_tests": 98,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-engine-parity-hardening.md",
+    "atdd": "_bmad-output/test-artifacts/atdd-checklist-dw-engine-parity-hardening.md",
+    "gateway": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+    "unit_combined": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/engine-parity-hardening-fixtures.ts",
+    "triade_parity": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+    "triade_ladder": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-parity-hardening.md",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary.md"
+  }
 }

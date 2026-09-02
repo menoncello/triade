@@ -191,14 +191,18 @@ resolution-undo: f115c8c241dd41f30a9433e5c90c8ba9eeaa2b0475b8319fc8a6df9dc2edea1
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10)"), 2026-09-01
 location: game.test.ts:198
 reason: Parity `spawnTile` only cross-checks the non-full-board path; the spawn-nothing branch (full board) is covered by the absolute unit test `game.test.ts:198`, not parity.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-parity-hardening
+resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 2026-09-02 7374617475733a206f70656e
 
 ### DW-26: 13 parity move scenarios assert only TS===web, never an absolute outcome — inherent shared-bug blind spot. Mitigated by absolute-assertion unit suite (`game.test.ts`); header comment documents the limitation.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10)"), 2026-09-01
 location: game.test.ts
 reason: 13 parity move scenarios assert only TS===web, never an absolute outcome — inherent shared-bug blind spot. Mitigated by absolute-assertion unit suite (`game.test.ts`); header comment documents the limitation.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-parity-hardening
+resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 2026-09-02 7374617475733a206f70656e
 
 ### DW-27: AC-4 no-leak automated coverage stops at the planner (`resultingTiles` oracle); `GameBoard` reconcile/remove is manual-only — project rule: Skia animation is manual validation; the leak itself is fixed by the merge-ghost patch.
 
@@ -258,7 +262,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10, re-review)"), 2026-09-01
 location: n/a
 reason: Parity suite has no multi-move / full-game seeded differential — sequence-level divergences (spawn-position loops, repeated-move score accumulation) are invisible. Deferred; unit suite + parity matrix cover the I/O matrix.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-parity-hardening
+resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 2026-09-02 7374617475733a206f70656e
 
 ### DW-35: Gate/timer state machine has zero automated coverage and the `moved ⟺ plan.length>0` invariant is unenforced across `App`/`GameBoard` (`triade/App.tsx:84-90`, `triade/src/render/GameBoard.tsx:258-268`): if the engine ever reports `moved:true` with an empty `transitionPlan` (or a React bailout skips the effect), `busyRef` stays true forever and every subsequent swipe is dropped. Current code is deadlock-free; the risk is future-regression-only. Suggest a regression test when the test harness gains the ability to drive the App/GameBoard gate state machine. Deferred — gesture/animation behavior is manual-validation domain per project rule.
 
@@ -807,7 +813,9 @@ decision: 2026-09-02 Bundle overlay carriers — Fix GameOverOverlay carriers in
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Ladder ceiling não pinado end-to-end: novo teste varia só `stats.maxTile` prop (thin-view correto), não cadeia `ceilingDetector→tierForCeiling→potForTier`; `isNewRecord(match.best,…)` leak via alias não Runtime-pinado. Thin-view é intencional per spec; cadeia é `engine.purity`/`preview-invariant`.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-parity-hardening
+resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 2026-09-02 7374617475733a206f70656e
 
 ### DW-104: Per-lane best tracking still global — `match.best`/`persistedBest` not yet scoped per lane (belongs to 3.4 leaderboards)
 

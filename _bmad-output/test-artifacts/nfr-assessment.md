@@ -4,13 +4,13 @@ lastStep: 'step-05-generate-report'
 lastSaved: '2026-09-02'
 workflowType: 'testarch-nfr-assess'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-preview-boundary-hygiene.md'
-  - '_bmad-output/test-artifacts/test-design-dw-preview-boundary-hygiene.md'
-  - 'triade/src/game/preview.ts'
-  - 'triade/App.tsx'
+  - '_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md'
+  - '_bmad-output/test-artifacts/test-design-dw-engine-parity-hardening.md'
+  - 'triade/__tests__/engine/engine.parity-hardening.atdd.test.ts'
+  - 'triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts'
 ---
 
-# NFR Evidence Audit - dw-preview-boundary-hygiene (aggregate pointer)
+# NFR Evidence Audit - dw-engine-parity-hardening (aggregate pointer)
 
-See bundle audit: `_bmad-output/test-artifacts/nfr-assessment-dw-preview-boundary-hygiene.md` — Overall PASS.
+See bundle audit: `_bmad-output/test-artifacts/nfr-assessment-dw-engine-parity-hardening.md` — Overall PASS.
 

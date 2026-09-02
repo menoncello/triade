@@ -1,3 +1,8 @@
+// Absolute oracle for engine behavior — see also
+// `engine.parity-hardening.atdd.test.ts` header (DW-26): parity suites that
+// assert TS===web (or TS self-differential) have an inherent shared-bug blind
+// spot. This file asserts concrete expected boards/scores/traces so a bug
+// shared by both parity sides still fails here. Keep in sync with parity.
 import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
