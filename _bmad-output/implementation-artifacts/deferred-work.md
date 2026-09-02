@@ -734,7 +734,9 @@ resolution: CLOSED 2026-08-27 (fix commit): timing/spring now value.setValue(con
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:104
 reason: Forfeited-continue vacuous (comment-only discard) — `triade/App.tsx:104` `// AC6/7 forfeited continue dies` sem state para descartar; futuro `continueCredit/reviveCount` burla `!continueBudget` — vacuous hoje (Clean single-lane) mas pin frágil — deferred, low.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-forfeited-continue-rng-reseed
+resolution-undo: 41838b7d5d1cd4d3eab8fc2b81bcbe63090ee4682d07e1b39bb448e0c2be82f6 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Implement forfeitedContinue state — Add explicit forfeitedContinue flag that dies on continue attempt.
 
 ### DW-87: Persist race + degraded hydration discards live best — `triade/App.tsx:75-82 + 103-110` `initialScore(persistedBest)` `[persistedBest]` only; `saveBest` async vs restart pode perder record; `hydrationOkRef=false` zera best — trade-off spec para não vazar `match.best` — deferred, medium.
@@ -793,7 +795,9 @@ decision: 2026-09-02 Clamp insets to finite >=0 — Add clamp for insets top/bot
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:40
 reason: RNG determinism discontinuity never reseeded — `triade/App.tsx:40` `mulberry32(20260808)` único — deferred, low.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-forfeited-continue-rng-reseed
+resolution-undo: 41838b7d5d1cd4d3eab8fc2b81bcbe63090ee4682d07e1b39bb448e0c2be82f6 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Reseed RNG per game — Reseed rngRef on each newGame with Date.now or increment.
 
 ### DW-94: AvailablePot fan-out stale com deflate — `triade/App.tsx:152` + `preview.ts:55-65` — FR-43 edge — deferred, low.

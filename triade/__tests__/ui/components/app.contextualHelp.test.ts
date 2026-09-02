@@ -73,7 +73,7 @@ test('[P0] App.tsx bannerDismissed per-match reset in resetAssistance, handleRes
 
   // handleRestart resets
   const restartIdx = src.indexOf('const handleRestart');
-  const restartSlice = src.slice(restartIdx, restartIdx + 900);
+  const restartSlice = src.slice(restartIdx, restartIdx + 1300);
   assert.ok(/setBannerDismissed\s*\(\s*\{\s*ceiling:\s*false/.test(restartSlice), 'handleRestart must reset bannerDismissed (per-match die-with-match)');
 
   // applyLaneSelection resets even without active match (5.3 patch)

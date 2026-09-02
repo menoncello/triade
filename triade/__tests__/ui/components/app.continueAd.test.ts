@@ -49,7 +49,7 @@ test('App wiring: rewarded continue only in Accelerated gameOver, ad success rew
   assert.match(src, /rewardedContinueUnitId/);
   assert.match(src, /handleContinueAd/);
   const contIdx = src.indexOf('handleContinueAd');
-  const slice = src.slice(contIdx, contIdx + 1500);
+  const slice = src.slice(contIdx, contIdx + 2200);
   assert.ok(slice.includes('granted'), 'handleContinueAd must check granted');
   assert.ok(slice.includes('orchestratorConsumeContinueAd'), 'on granted must call orchestratorConsumeContinueAd');
   assert.ok(slice.includes('adBusyRef'), 'must guard adBusyRef');

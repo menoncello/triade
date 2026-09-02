@@ -19,7 +19,7 @@ inputDocuments:
   - 'triade/__tests__/ui/components/app.continueAd.test.ts'
   - 'triade/__tests__/ui/components/app.contextualHelp.test.ts'
   - '_bmad/tea/config.yaml'
-outputFile: '_bmad-output/test-artifacts/automation-summary.md'
+outputFile: '_bmad-output/test-artifacts/automation-summary-dw-forfeited-continue-rng-reseed.md'
 test_artifacts: '_bmad-output/test-artifacts'
 ---
 

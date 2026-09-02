@@ -100,6 +100,7 @@ function AppContent() {
   const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
+  const rngSeedRef = useRef(20260808);
   const busyRef = useRef(false);
   const restartSeqRef = useRef(0);
   const gestureStartSeqRef = useRef(0);
@@ -124,6 +125,8 @@ function AppContent() {
   const [undoBudget, setUndoBudget] = useState<UndoBudget>(() => initialUndoBudget());
   const [hintBudget, setHintBudget] = useState<HintBudget>(() => initialHintBudget(5));
   const [continueBudget, setContinueBudget] = useState<ContinueBudget>(() => initialContinueBudget());
+  // DW-86: forfeitedContinue — set on game-over, dies on continue attempt / new game
+  const [forfeitedContinue, setForfeitedContinue] = useState(false);
   const [hintHighlight, setHintHighlight] = useState<[[number, number], [number, number]] | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
@@ -231,6 +234,8 @@ function AppContent() {
     setUndoBudget(base);
     setHintBudget(initialHintBudget(5));
     setContinueBudget(initialContinueBudget());
+    // DW-86: forfeitedContinue dies with match
+    setForfeitedContinue(false);
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
@@ -252,6 +257,9 @@ function AppContent() {
           clearTimeout(fallbackBusyTimerRef.current);
           fallbackBusyTimerRef.current = null;
         }
+        // DW-93: RNG reseed — incrementing seed per newGame
+        rngSeedRef.current += 1;
+        rngRef.current = mulberry32(rngSeedRef.current);
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
@@ -432,7 +440,11 @@ function AppContent() {
     // S8.3 clear last swipe direction on new game — board shake resets
     lastDirectionRef.current = null;
     setSessionBestMerge(0);
+    // DW-93: RNG reseed — incrementing seed per newGame
+    rngSeedRef.current += 1;
+    rngRef.current = mulberry32(rngSeedRef.current);
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
+    // DW-86: forfeitedContinue — set on game-over, dies on continue attempt / new game
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
     setGame(s);
@@ -449,6 +461,8 @@ function AppContent() {
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
+    // DW-86: forfeitedContinue dies with new game (never carried)
+    setForfeitedContinue(false);
     restartSeqRef.current += 1;
     if (fallbackBusyTimerRef.current) {
       clearTimeout(fallbackBusyTimerRef.current);
@@ -724,6 +738,8 @@ function AppContent() {
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(async () => {
+    // DW-86: forfeitedContinue dies on any continue attempt
+    setForfeitedContinue(false);
     if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); if (fallbackBusyTimerRef.current) { clearTimeout(fallbackBusyTimerRef.current); fallbackBusyTimerRef.current = null; } busyRef.current = false; return; }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
@@ -761,6 +777,8 @@ function AppContent() {
       setContinueBudget(res.state.continueBudget);
       setHintHighlight(res.state.hintHighlight);
       setShowUndoPrompt(res.state.showUndoPrompt);
+      // DW-86: forfeitedContinue dies on continue attempt
+      setForfeitedContinue(false);
       if (fallbackBusyTimerRef.current) {
         clearTimeout(fallbackBusyTimerRef.current);
         fallbackBusyTimerRef.current = null;
@@ -772,6 +790,8 @@ function AppContent() {
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt, hasNoAds]);
 
   const handleContinueIap = useCallback(() => {
+    // DW-86: forfeitedContinue dies on any continue attempt
+    setForfeitedContinue(false);
     const tmp: OrchestratorState = {
       undoHistory,
       undoBudget,
@@ -794,6 +814,8 @@ function AppContent() {
     setContinueBudget(res.state.continueBudget);
     setHintHighlight(res.state.hintHighlight);
     setShowUndoPrompt(res.state.showUndoPrompt);
+    // DW-86: forfeitedContinue dies on continue attempt
+    setForfeitedContinue(false);
     if (fallbackBusyTimerRef.current) {
       clearTimeout(fallbackBusyTimerRef.current);
       fallbackBusyTimerRef.current = null;
@@ -935,6 +957,13 @@ function AppContent() {
   const canUndoDerived = orchestratorCanUndoForState(tmpForGates, profile);
   const canHintDerived = orchestratorCanHintForState(tmpForGates, game.board, profile);
   const canContinueDerived = orchestratorCanContinueForState(tmpForGates, profile);
+
+  // DW-86: forfeitedContinue — set on game-over when a continue was available, dies on continue/new game
+  useEffect(() => {
+    if (gameOver && canContinueDerived && !forfeitedContinue) {
+      setForfeitedContinue(true);
+    }
+  }, [gameOver, canContinueDerived, forfeitedContinue]);
 
   return (
     <View style={styles.container}>
