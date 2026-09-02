@@ -616,21 +616,27 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-4-invariante-preview-nunca-altera-o-spawn (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: preview.ts:80
 reason: ULP no boundary 0.6 — `preview.ts:80` `if (roll < 0.6)` pode flipar por 1 ULP (`0.5999999999999999` vs `0.6000000000000001` ou `0.6 - EPSILON/2` que arredonda para 0.6), quebrando invariante 60/40 por um double representável; teste atual pinna `0.599` exact / `0.6` range mas não EPSILON. Pre-existing, tolerância float do spec; engine assume `
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-preview-boundary-hygiene
+resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b1 2026-09-02 7374617475733a206f70656e
 
 ### DW-79: Fallback além do ladder (ex. `value=192` além de 96) não contém a verdade — `FULL_POT_LADDER` congela até 96; `nearestLadderIndex(192)` clamp em 96 retorna `FULL.slice(5,8)=[24,48,96]` sem 192; preview mente quando `POT_CURVE` estende além de 96. Pre-existing, limite do ladder; inalcançável com `POT_CURVE` atual.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-4-invariante-preview-nunca-altera-o-spawn (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Fallback além do ladder (ex. `value=192` além de 96) não contém a verdade — `FULL_POT_LADDER` congela até 96; `nearestLadderIndex(192)` clamp em 96 retorna `FULL.slice(5,8)=[24,48,96]` sem 192; preview mente quando `POT_CURVE` estende além de 96. Pre-existing, limite do ladder; inalcançável com `POT_CURVE` atual.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-preview-boundary-hygiene
+resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b1 2026-09-02 7374617475733a206f70656e
 
 ### DW-80: Mutable pot slices — `ambiguousRange` retorna `availablePotValues.slice(idx, idx+len)` mutável; caller pode `push(99)` corromper janela em cache/memo. Só `RANGE_1_2` é `Object.freeze`; demais janelas não pinam imutabilidade. Higiene React-memo de baixa prioridade.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-4-invariante-preview-nunca-altera-o-spawn (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Mutable pot slices — `ambiguousRange` retorna `availablePotValues.slice(idx, idx+len)` mutável; caller pode `push(99)` corromper janela em cache/memo. Só `RANGE_1_2` é `Object.freeze`; demais janelas não pinam imutabilidade. Higiene React-memo de baixa prioridade.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-preview-boundary-hygiene
+resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b1 2026-09-02 7374617475733a206f70656e
 
 ### DW-81: Board shallow ref — `gameState` guarda `board` por referência e `boardFromLines` não deep-freeze linhas; `result.board[0][0]=999` pode vazar para snapshot anterior se caller retiver referência de linha. Testes só mutam `pendingSpawn` em isolamento; `engine.purity` cobre board em outra suíte. Pre-existing desde 1-1.
 
@@ -661,7 +667,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-1-overlay-de-game-over-com-stats-imediatos (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: triade/src/game/preview.ts:53
 reason: Ledger pré-existente ainda aberto (ULP 0.6 no boundary 0.6, fallback além do ladder 192>96, mutable pot slices `slice()` sem freeze, board shallow ref `gameState` por referência) — `triade/src/game/preview.ts:53,62,80` + `triade/src/engine/core/game.ts:88` permanecem latentes, não causados por 6.1 (`git diff --stat -- triade/src/game/preview.ts` vazio, `triade/src/engine` vazio). Já deferido em 7-4, não reabrir aqui.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-preview-boundary-hygiene
+resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b1 2026-09-02 7374617475733a206f70656e
 
 ### DW-85: Stub Animated incompleto — `Animated.timing` em `triade/test-utils/rn-stub.ts:34` não avança `_value` (timing `start` apenas chama `cb` sem `setValue`), então teste de `reducedMotion=false` não valida progressão; em produção `react-native` anima corretamente. Test-tooling only, não é regressão de produção; eventual melhoria do stub pode simular `setValue(toValue)` no `timing` para gate mais fiel.
 
@@ -732,7 +740,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:152
 reason: AvailablePot fan-out stale com deflate — `triade/App.tsx:152` + `preview.ts:55-65` — FR-43 edge — deferred, low.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-preview-boundary-hygiene
+resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b1 2026-09-02 7374617475733a206f70656e
 
 ### DW-95: Navigation/hardware-back não bloqueado — `triade/src/ui/GameOverOverlay.tsx:56-64` + `triade/App.tsx:184` — não bloqueia `BackHandler` — deferred, medium (Epic 3/4).
 

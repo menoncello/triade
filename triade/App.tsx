@@ -845,7 +845,10 @@ function AppContent() {
   }
 
   // FR-43 "only 3 available" semantics: the spawnable pot set is driven by the
-  // live board ceiling, computed once per render and shared by both lane previews.
+  // live board ceiling — DW-94 deflate hygiene: recomputed every render from
+  // `game.board` (after `ready` guard) and shared by both lane previews so a
+  // pending rolled at a higher tier fans out through preview's defensive fallback
+  // when the board deflates (availablePot shrinks). Never memoized stale.
   const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   const gameOver = isGameOver(game.board);

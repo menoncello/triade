@@ -1,0 +1,1071 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-preview-boundary-hygiene",
+    "label": "dw-preview-boundary-hygiene — ULP 60/40 epsilon, beyond-ladder 192 truth, frozen slices, deflate fan-out (DW-78/79/80/84/94)"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-preview-boundary-hygiene.md",
+      "_bmad-output/test-artifacts/test-design-dw-preview-boundary-hygiene.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-preview-boundary-hygiene.md",
+      "triade/src/game/preview.ts",
+      "triade/App.tsx",
+      "triade/src/engine/config/spawnConfig.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "title": "AC ULP epsilon-stabilized 60/40 — 0.6-EPSILON/2 → range (and 0.599 exact / 0.6 range pinned) DW-78 R-001",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 56,
+          "title": "[P0-01] AC ULP epsilon-stabilized 60/40: 0.6-EPSILON/2 → range (and 0.599 exact / 0.6 range pinned)",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 62,
+          "title": "[P0] AC ULP epsilon-stabilized 60/40: 0.6-EPSILON/2 → range + 0.599 exact / 0.6 range pins DW-78 R-001",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "title": "[E2E-01 P1] ULP-stable 60/40 HUD preview never flickers by one double (DW-78 R-001)",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "invariant-ULP",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 76,
+          "title": "ULP boundary 0.599 exact / 0.6 range pins",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-02",
+      "title": "AC beyond-ladder truth 192 — range includes 192 frozen ≤3 not lying [24,48,96] DW-79 R-002",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 75,
+          "title": "[P0-02] AC beyond-ladder truth 192: range includes 192, length≤3, frozen, not lying [24,48,96]",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 87,
+          "title": "[P0] AC beyond-ladder truth 192: range includes 192 frozen ≤3 not lying [24,48,96] DW-79 R-002",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 87,
+          "title": "[E2E-02 P1] beyond-ladder truth HUD never lies [24,48,96] without 192 truth-tail (DW-79 R-002)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-03",
+      "title": "AC frozen slice identity — values frozen, push(99) throws or frozen and second call uncorrupted DW-80 R-003",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 95,
+          "title": "[P0-03] AC frozen slice identity: values frozen, push(99) throws or frozen and second call uncorrupted",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 113,
+          "title": "[P0] AC frozen slice identity: values frozen, push(99) throws or frozen and second call uncorrupted DW-80 R-003",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 116,
+          "title": "[E2E-03 P1] frozen slice HUD never loses memo identity on push(99) or RANGE_1_2 reuse (DW-80 R-003)",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "invariant-frozen",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 132,
+          "title": "RANGE_1_2 frozen identity + memo hygiene",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-04",
+      "title": "AC RANGE_1_2 frozen identity — value 1 and 2 return same frozen [1,2] instance",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 127,
+          "title": "[P0-04] AC RANGE_1_2 frozen identity: value 1 and 2 return same frozen [1,2] instance",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 142,
+          "title": "[P0] AC RANGE_1_2 frozen identity: value 1 and 2 return same frozen [1,2] instance DW-80",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 116,
+          "title": "[E2E-03 P1] frozen slice HUD never loses memo identity on push(99) or RANGE_1_2 reuse (DW-80 R-003)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-05",
+      "title": "AC deflate truth — pending 6 with availablePot [3] → [3,6,12] contiguous frozen truthy DW-94 R-004",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 143,
+          "title": "[P0-05] AC deflate truth: pending 6 with availablePot [3] → [3,6,12] contiguous frozen truthy",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 158,
+          "title": "[P0] AC deflate truth: pending 6 with availablePot [3] → [3,6,12] contiguous frozen truthy DW-94 R-004",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 156,
+          "title": "[E2E-04 P1] deflate fan-out HUD stays truthful when board shrinks [3] while pending was rolled at higher tier (DW-94 R-004)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-06",
+      "title": "AC App wiring — availablePot live every render after ready, shared to both lanes DW-94",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 160,
+          "title": "[P0-06] AC App wiring: availablePot live every render after ready, shared to both lanes",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 181,
+          "title": "[P0] AC App wiring: availablePot live every render after ready, shared to both lanes DW-94",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 156,
+          "title": "[E2E-04 P1] deflate fan-out HUD stays truthful when board shrinks [3] while pending was rolled at higher tier (DW-94 R-004)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-07",
+      "title": "AC engine byte-identical — preview hygiene changed only preview.ts + App.tsx orchestrator",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 170,
+          "title": "[P0-07] AC engine byte-identical: preview hygiene changed only preview.ts + App.tsx orchestrator",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 191,
+          "title": "[P0] AC engine byte-identical: preview hygiene never imports engine roll symbols, no Math.random",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-08",
+      "title": "AC existing boundary pins still green — 0.599 exact / 0.6 range window includes 12 + 99 tail + 1,2→[1,2] / 3→[3] + purity",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 186,
+          "title": "[P0-08] AC existing boundary pins still green: 0.599 exact / 0.6 range window includes 12 + 99 tail + 1,2→[1,2] / 3→[3]",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-08-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 202,
+          "title": "[P0] AC existing boundary pins still green: 0.599 exact / 0.6 range window includes 12 + 99 tail + 1,2→[1,2] / 3→[3] + purity",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "preview-legacy",
+          "file": "triade/__tests__/game/preview.test.ts",
+          "line": 29,
+          "title": "preview 0.599/0.6 + 99 tail + RANGE_1_2 + purity",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "preview-invariant-legacy",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 26,
+          "title": "structural invariants N3 + NaN/Infinity sweeps",
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-01",
+      "title": "Contiguity & ordering sweep — every value 1..96,192 × avail [3]/POT/singletons yields range containing truth sorted ≤3 contiguous",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 211,
+          "title": "[P1-01] Contiguity & ordering sweep: every value 1..96,192 × avail [3]/POT/singletons yields range containing truth sorted ≤3 contiguous",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 226,
+          "title": "[P1-01] Contiguity & ordering sweep: every value 1..96,192 × avail [3]/POT/singletons yields range containing truth sorted ≤3 contiguous",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-02",
+      "title": "Math.log2 validity filter — 192 truth-tail vs 100 generic tail",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 234,
+          "title": "[P1-02] Math.log2 validity filter: 192 truth-tail vs 100 generic tail",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 246,
+          "title": "[P1-02] Math.log2 validity filter: 192 truth-tail vs 100 generic tail",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-03",
+      "title": "RANGE_1_2 reuse & WINDOW_MAX cap — value 1|2 same frozen instance and every window len ≤3",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 253,
+          "title": "[P1-03] RANGE_1_2 reuse & WINDOW_MAX cap: value 1|2 same frozen instance and every window len ≤3",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 266,
+          "title": "[P1-03] RANGE_1_2 reuse & WINDOW_MAX cap: value 1|2 same frozen instance and every window len ≤3",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-04",
+      "title": "NaN/Infinity defensive — NaN→exact 0, range fallback [1,2,3] frozen never throws",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 267,
+          "title": "[P1-04] NaN/Infinity defensive: NaN→exact 0, range fallback [1,2,3] frozen never throws",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 279,
+          "title": "[P1-04] NaN/Infinity defensive: NaN→exact 0, range fallback [1,2,3] frozen never throws",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-05",
+      "title": "Ladder single-source — FULL_POT_LADDER derived from POT_CURVE + fixed [1,2] prefix, PREVIEW_EXACT_BOUNDARY single 0.6",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 289,
+          "title": "[P1-05] Ladder single-source: FULL_POT_LADDER derived from POT_CURVE + fixed [1,2] prefix, PREVIEW_EXACT_BOUNDARY single 0.6",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 303,
+          "title": "[P1-05] Ladder single-source: FULL_POT_LADDER derived from POT_CURVE + fixed [1,2] prefix, PREVIEW_EXACT_BOUNDARY single 0.6",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-06",
+      "title": "availablePot live wiring — App.tsx potForTier(tierForCeiling(ceilingDetector(board))) live and shared",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 304,
+          "title": "[P1-06] availablePot live wiring: App.tsx potForTier(tierForCeiling(ceilingDetector(board))) live and shared",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 318,
+          "title": "[P1-06] availablePot live wiring: App.tsx potForTier(tierForCeiling(ceilingDetector(board))) live and shared",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P1-07",
+      "title": "N3 law structural — no Math.random / weightedPicker / pickIndex / rng import in preview.ts",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 312,
+          "title": "[P1-07] N3 law structural: no Math.random / weightedPicker / pickIndex / rng import in preview.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-07-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 324,
+          "title": "[P1-07] N3 law structural: no Math.random / weightedPicker / pickIndex / rng import in preview.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-01",
+      "title": "Single-constant / single-freeze allowlists — PREVIEW_EXACT_BOUNDARY==1 def, WINDOW_MAX==1 def, Object.freeze ≥4, POT_BASE_VALUE==2, 0.6 literal==1",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 328,
+          "title": "[P2-01] Single-constant / single-freeze allowlists: PREVIEW_EXACT_BOUNDARY==1 def, WINDOW_MAX==1 def, Object.freeze ≥4, POT_BASE_VALUE==2 (import+ratio)",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 338,
+          "title": "[P2-01] Single-constant / single-freeze allowlists: PREVIEW_EXACT_BOUNDARY==1 def, WINDOW_MAX==1 def, Object.freeze ≥4, POT_BASE_VALUE==2 (import+ratio)",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 183,
+          "title": "[E2E-05 P2] static allowlists + ledger closed end-to-end (single constants, 4+ freezes, DW-78/79/80/84/94 done, sprint-status untouched R-005,R-007)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-02",
+      "title": "Math.log2 doc & ratio guard — value/POT_BASE_VALUE power-of-two check only place",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 344,
+          "title": "[P2-02] Math.log2 doc & ratio guard: value/POT_BASE_VALUE power-of-two check only place",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 350,
+          "title": "[P2-02] Math.log2 doc & ratio guard: value/POT_BASE_VALUE power-of-two check only place",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-03",
+      "title": "N3 preview law no-engine-roll scan — preview.ts never imports roll symbols, engine never imports preview",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 353,
+          "title": "[P2-03] N3 preview law no-engine-roll scan: preview.ts never imports roll symbols, engine never imports preview",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 358,
+          "title": "[P2-03] N3 preview law no-engine-roll scan: preview.ts never imports roll symbols, engine never imports preview",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-04",
+      "title": "Ledger resolution-undo — DW-78/79/80/84/94 open→done each with 64-hex deb5edf9…",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 363,
+          "title": "[P2-04] Ledger resolution-undo: DW-78/79/80/84/94 open→done each with 64-hex deb5edf9…",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-04-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 367,
+          "title": "[P2-04] Ledger resolution-undo: DW-78/79/80/84/94 open→done each with 64-hex deb5edf9…",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 183,
+          "title": "[E2E-05 P2] static allowlists + ledger closed end-to-end (single constants, 4+ freezes, DW-78/79/80/84/94 done, sprint-status untouched R-005,R-007)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P3-01",
+      "title": "Exploratory ULP bare-scan — rg \"roll < 0.6\" outside EPSILON guard is 0",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 380,
+          "title": "[P3-01] Exploratory ULP bare-scan: rg \"roll < 0.6\" outside EPSILON guard is 0",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 385,
+          "title": "[P3-01] Exploratory ULP bare-scan: rg \"roll < 0.6\" outside EPSILON guard is 0",
+          "level": "api",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P3-02",
+      "title": "BENCH previewFor O(1) 10k× median <0.05 ms (no clone regression)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 388,
+          "title": "[P3-02] BENCH previewFor O(1) 10k× median <0.05 ms (no clone regression)",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-02-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 390,
+          "title": "[P3-02] BENCH previewFor O(1) 10k× median <0.05 ms (no clone regression)",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 210,
+          "title": "[E2E-06 P3] bench O(1) + scope stays pure (no spawn/feel/layout/monetization drift R-010)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P3-03",
+      "title": "Cross-cutting absent — no music/RevenueCat/AdMob in preview/App seam (scope hygiene)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03",
+          "file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+          "line": 400,
+          "title": "[P3-03] Cross-cutting absent: no music/RevenueCat/AdMob in preview/App seam",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-03-gateway",
+          "file": "_bmad-output/test-artifacts/tests/api/preview-boundary-hygiene.gateway.spec.ts",
+          "line": 396,
+          "title": "[P3-03] Cross-cutting absent: no music/RevenueCat/AdMob in preview/App seam",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P3-03-umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/preview-boundary-hygiene.umbrella.spec.ts",
+          "line": 210,
+          "title": "[E2E-06 P3] bench O(1) + scope stays pure (no spawn/feel/layout/monetization drift R-010)",
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 22,
+    "fully_covered": 22,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 7,
+        "covered": 7,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 5,
+      "cases": 58,
+      "skipped_cases": 22,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 10,
+          "criteria_covered": 22
+        },
+        "api": {
+          "tests": 22,
+          "criteria_covered": 22
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 26,
+          "criteria_covered": 22
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [],
+    "blockers": [
+      {
+        "id": "P0-01",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-01] AC ULP epsilon-stabilized 60/40: 0.6-EPSILON/2 → range (and 0.599 exact / 0.6 range pinned)"
+      },
+      {
+        "id": "P0-02",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-02] AC beyond-ladder truth 192: range includes 192, length≤3, frozen, not lying [24,48,96]"
+      },
+      {
+        "id": "P0-03",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-03] AC frozen slice identity: values frozen, push(99) throws or frozen and second call uncorrupted"
+      },
+      {
+        "id": "P0-04",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-04] AC RANGE_1_2 frozen identity: value 1 and 2 return same frozen [1,2] instance"
+      },
+      {
+        "id": "P0-05",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-05] AC deflate truth: pending 6 with availablePot [3] → [3,6,12] contiguous frozen truthy"
+      },
+      {
+        "id": "P0-06",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-06] AC App wiring: availablePot live every render after ready, shared to both lanes"
+      },
+      {
+        "id": "P0-07",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-07] AC engine byte-identical: preview hygiene changed only preview.ts + App.tsx orchestrator"
+      },
+      {
+        "id": "P0-08",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P0-08] AC existing boundary pins still green: 0.599 exact / 0.6 range window includes 12 + 99 tail + 1,2→[1,2] / 3→[3]"
+      },
+      {
+        "id": "P1-01",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-01] Contiguity & ordering sweep: every value 1..96,192 × avail [3]/POT/singletons yields range containing truth sorted ≤3 contiguous"
+      },
+      {
+        "id": "P1-02",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-02] Math.log2 validity filter: 192 truth-tail vs 100 generic tail"
+      },
+      {
+        "id": "P1-03",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-03] RANGE_1_2 reuse & WINDOW_MAX cap: value 1|2 same frozen instance and every window len ≤3"
+      },
+      {
+        "id": "P1-04",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-04] NaN/Infinity defensive: NaN→exact 0, range fallback [1,2,3] frozen never throws"
+      },
+      {
+        "id": "P1-05",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-05] Ladder single-source: FULL_POT_LADDER derived from POT_CURVE + fixed [1,2] prefix, PREVIEW_EXACT_BOUNDARY single 0.6"
+      },
+      {
+        "id": "P1-06",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-06] availablePot live wiring: App.tsx potForTier(tierForCeiling(ceilingDetector(board))) live and shared"
+      },
+      {
+        "id": "P1-07",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P1-07] N3 law structural: no Math.random / weightedPicker / pickIndex / rng import in preview.ts"
+      },
+      {
+        "id": "P2-01",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P2-01] Single-constant / single-freeze allowlists: PREVIEW_EXACT_BOUNDARY==1 def, WINDOW_MAX==1 def, Object.freeze ≥4, POT_BASE_VALUE==2 (import+ratio)"
+      },
+      {
+        "id": "P2-02",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P2-02] Math.log2 doc & ratio guard: value/POT_BASE_VALUE power-of-two check only place"
+      },
+      {
+        "id": "P2-03",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P2-03] N3 preview law no-engine-roll scan: preview.ts never imports roll symbols, engine never imports preview"
+      },
+      {
+        "id": "P2-04",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P2-04] Ledger resolution-undo: DW-78/79/80/84/94 open→done each with 64-hex deb5edf9…"
+      },
+      {
+        "id": "P3-01",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P3-01] Exploratory ULP bare-scan: rg \"roll < 0.6\" outside EPSILON guard is 0"
+      },
+      {
+        "id": "P3-02",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P3-02] BENCH previewFor O(1) 10k× median <0.05 ms (no clone regression)"
+      },
+      {
+        "id": "P3-03",
+        "severity": "medium",
+        "reason": "Test marked skipped during trace collection",
+        "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+        "test_title": "[P3-03] Cross-cutting absent: no music/RevenueCat/AdMob in preview/App seam"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "P0-01",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-01] AC ULP epsilon-stabilized 60/40: 0.6-EPSILON/2 → range (and 0.599 exact / 0.6 range pinned)"
+    },
+    {
+      "id": "P0-02",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-02] AC beyond-ladder truth 192: range includes 192, length≤3, frozen, not lying [24,48,96]"
+    },
+    {
+      "id": "P0-03",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-03] AC frozen slice identity: values frozen, push(99) throws or frozen and second call uncorrupted"
+    },
+    {
+      "id": "P0-04",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-04] AC RANGE_1_2 frozen identity: value 1 and 2 return same frozen [1,2] instance"
+    },
+    {
+      "id": "P0-05",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-05] AC deflate truth: pending 6 with availablePot [3] → [3,6,12] contiguous frozen truthy"
+    },
+    {
+      "id": "P0-06",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-06] AC App wiring: availablePot live every render after ready, shared to both lanes"
+    },
+    {
+      "id": "P0-07",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-07] AC engine byte-identical: preview hygiene changed only preview.ts + App.tsx orchestrator"
+    },
+    {
+      "id": "P0-08",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P0-08] AC existing boundary pins still green: 0.599 exact / 0.6 range window includes 12 + 99 tail + 1,2→[1,2] / 3→[3]"
+    },
+    {
+      "id": "P1-01",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-01] Contiguity & ordering sweep: every value 1..96,192 × avail [3]/POT/singletons yields range containing truth sorted ≤3 contiguous"
+    },
+    {
+      "id": "P1-02",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-02] Math.log2 validity filter: 192 truth-tail vs 100 generic tail"
+    },
+    {
+      "id": "P1-03",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-03] RANGE_1_2 reuse & WINDOW_MAX cap: value 1|2 same frozen instance and every window len ≤3"
+    },
+    {
+      "id": "P1-04",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-04] NaN/Infinity defensive: NaN→exact 0, range fallback [1,2,3] frozen never throws"
+    },
+    {
+      "id": "P1-05",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-05] Ladder single-source: FULL_POT_LADDER derived from POT_CURVE + fixed [1,2] prefix, PREVIEW_EXACT_BOUNDARY single 0.6"
+    },
+    {
+      "id": "P1-06",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-06] availablePot live wiring: App.tsx potForTier(tierForCeiling(ceilingDetector(board))) live and shared"
+    },
+    {
+      "id": "P1-07",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P1-07] N3 law structural: no Math.random / weightedPicker / pickIndex / rng import in preview.ts"
+    },
+    {
+      "id": "P2-01",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P2-01] Single-constant / single-freeze allowlists: PREVIEW_EXACT_BOUNDARY==1 def, WINDOW_MAX==1 def, Object.freeze ≥4, POT_BASE_VALUE==2 (import+ratio)"
+    },
+    {
+      "id": "P2-02",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P2-02] Math.log2 doc & ratio guard: value/POT_BASE_VALUE power-of-two check only place"
+    },
+    {
+      "id": "P2-03",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P2-03] N3 preview law no-engine-roll scan: preview.ts never imports roll symbols, engine never imports preview"
+    },
+    {
+      "id": "P2-04",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P2-04] Ledger resolution-undo: DW-78/79/80/84/94 open→done each with 64-hex deb5edf9…"
+    },
+    {
+      "id": "P3-01",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P3-01] Exploratory ULP bare-scan: rg \"roll < 0.6\" outside EPSILON guard is 0"
+    },
+    {
+      "id": "P3-02",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P3-02] BENCH previewFor O(1) 10k× median <0.05 ms (no clone regression)"
+    },
+    {
+      "id": "P3-03",
+      "severity": "medium",
+      "reason": "Test marked skipped during trace collection",
+      "test_file": "triade/__tests__/game/preview-boundary-hygiene.atdd.test.ts",
+      "test_title": "[P3-03] Cross-cutting absent: no music/RevenueCat/AdMob in preview/App seam"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ]
+}
