@@ -62,42 +62,6 @@
     "label": "Validate width finite fallback 1",
     "resolution": ""
   },
-  "DW-37": {
-    "answered_at": "2026-09-02",
-    "bundle_name": "",
-    "effect": "build",
-    "intent": "Add cell-change effect retargeting x/y shared values for rest/vanish/move tiles to new pixel grid.",
-    "key": "1",
-    "label": "Retarget all kinds on cell change",
-    "resolution": ""
-  },
-  "DW-56": {
-    "answered_at": "2026-09-02",
-    "bundle_name": "",
-    "effect": "build",
-    "intent": "Clamp roll with Math.min and replace NaN displayRoll with 0.5 fallback.",
-    "key": "1",
-    "label": "Clamp roll and validate displayRoll",
-    "resolution": ""
-  },
-  "DW-6": {
-    "answered_at": "2026-09-02",
-    "bundle_name": "",
-    "effect": "build",
-    "intent": "Provide SafeAreaProvider initialMetrics and synced insets effect that debounces rotation so board never flashes to 0; verify on simulator landscape rotation.",
-    "key": "1",
-    "label": "Add initialMetrics plus synced hook",
-    "resolution": ""
-  },
-  "DW-7": {
-    "answered_at": "2026-09-02",
-    "bundle_name": "",
-    "effect": "build",
-    "intent": "Set StatusBar style dark on landscape light backgrounds and verify contrast on device.",
-    "key": "1",
-    "label": "Force dark status bar",
-    "resolution": ""
-  },
   "DW-77": {
     "answered_at": "2026-09-02",
     "bundle_name": "",
