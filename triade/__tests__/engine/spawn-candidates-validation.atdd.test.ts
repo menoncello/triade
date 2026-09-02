@@ -113,11 +113,11 @@ describe('ATDD dw-engine-spawn-candidates-validation — P0 critical (single-sou
   it.skip('[P0-03] missing column [1] (no c) → filtered via length<2 → empty pool 0 draws if no other valid (spec row 3, R-001)', () => {
     const board = emptyBoard();
     const spy = spyRng(0.5);
-    const res = spawnTile(board, 42, spy, [[1] as unknown as Array<[number, number]>]);
+    const res = spawnTile(board, 42, spy, [[1]] as unknown as Array<[number, number]>);
     assert.strictEqual(spy.calls.length, 0, '[1] filtered → 0 draws');
     assert.strictEqual(res.cell, null);
     assert.strictEqual(res.value, null);
-    assert.doesNotThrow(() => spawnTile(emptyBoard(), 42, spyRng(0.5), [[1] as unknown as Array<[number, number]>]));
+    assert.doesNotThrow(() => spawnTile(emptyBoard(), 42, spyRng(0.5), [[1]] as unknown as Array<[number, number]>));
 
     // [1] mixed with valid → valid kept 1 draw
     const b2 = boardWith([[null, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
@@ -130,22 +130,22 @@ describe('ATDD dw-engine-spawn-candidates-validation — P0 critical (single-sou
   it.skip('[P0-04] non-number type ["a","b"] → filtered via typeof guard, no throw (spec row 4, R-001)', () => {
     const board = emptyBoard();
     const spy = spyRng(0.5);
-    const res = spawnTile(board, 42, spy, [['a', 'b'] as unknown as Array<[number, number]>]);
+    const res = spawnTile(board, 42, spy, [['a', 'b']] as unknown as Array<[number, number]>);
     assert.strictEqual(spy.calls.length, 0, 'non-number filtered → 0 draws');
     assert.strictEqual(res.cell, null);
-    assert.doesNotThrow(() => spawnTile(emptyBoard(), 42, spyRng(0.5), [['a', 'b'] as unknown as Array<[number, number]>]));
+    assert.doesNotThrow(() => spawnTile(emptyBoard(), 42, spyRng(0.5), [['a', 'b']] as unknown as Array<[number, number]>));
 
     // non-number mixed with valid → valid kept
     const b2 = boardWith([[null, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
     const spy2 = spyRng(0);
-    const res2 = spawnTile(b2, 42, spy2, [['a', 'b'] as unknown as Array<[number, number]>, [0, 0]]);
+    const res2 = spawnTile(b2, 42, spy2, [['a', 'b'], [0, 0]] as unknown as Array<[number, number]>);
     assert.strictEqual(spy2.calls.length, 1);
     assert.deepStrictEqual(res2.cell, [0, 0]);
 
     // ["a",0] filtered as well
     const b3 = boardWith([[null, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
     const spy3 = spyRng(0);
-    const res3 = spawnTile(b3, 42, spy3, [['a', 0] as unknown as Array<[number, number]>, [0, 0]]);
+    const res3 = spawnTile(b3, 42, spy3, [['a', 0], [0, 0]] as unknown as Array<[number, number]>);
     assert.deepStrictEqual(res3.cell, [0, 0]);
   });
 
@@ -277,7 +277,7 @@ describe('ATDD dw-engine-spawn-candidates-validation — P0 critical (single-sou
     const boardOcc = boardWith([[1, 2, 3, null], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
     // [0,0] occupied, [0.5,0] float → pool []
     const spyFloat = spyRng(0.5);
-    const resFloat = spawnTile(boardOcc, 42, spyFloat, [[0.5, 0] as unknown as Array<[number, number]>, [0, 0]]);
+    const resFloat = spawnTile(boardOcc, 42, spyFloat, [[0.5, 0], [0, 0]] as unknown as Array<[number, number]>);
     assert.strictEqual(spyFloat.calls.length, 0, 'float+occupied → 0 draws');
     assert.strictEqual(resFloat.cell, null);
 
@@ -291,7 +291,7 @@ describe('ATDD dw-engine-spawn-candidates-validation — P0 critical (single-sou
     // [1.1,1] float mixed with valid
     const board2 = boardWith([[null, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
     const spyF2 = spyRng(0);
-    const resF2 = spawnTile(board2, 42, spyF2, [[1.1, 1] as unknown as Array<[number, number]>, [0, 0]]);
+    const resF2 = spawnTile(board2, 42, spyF2, [[1.1, 1], [0, 0]] as unknown as Array<[number, number]>);
     assert.deepStrictEqual(resF2.cell, [0, 0]);
     assert.strictEqual(spyF2.calls.length, 1);
   });
