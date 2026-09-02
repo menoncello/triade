@@ -216,7 +216,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13)"), 2026-09-01
 location: GameBoard.tsx:171-175
 reason: `moveResult === null` after a previous non-null leaves tile state stale in `GameBoard.tsx:171-175` — unreachable today (App never resets); latent for the future new-game/reset path.
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/render/GameBoard.tsx:449-465 rebuildTilesFromBoard on moveResult null after non-null plus settle timer clear — stale tile state after App reset is now rebuilt, verified in current tree
 
 ### DW-29: Temp harness `doMove` stale board closure drops rapid same-frame moves (`triade/App.tsx:20-27`) — temporary code replaced by real input in story 1.6.
 
