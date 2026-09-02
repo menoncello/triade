@@ -50,8 +50,11 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
   }
   const built = boardFromLines(shifted.map((s) => s.line), dir);
   let effectiveBoard = built.board;
-  const trace = built.trace;
+  let trace = built.trace;
   const moved = !boardsEqual(state.board, effectiveBoard);
+  // DW-21: noop must not leak a full stationary trace — only meaningful
+  // transitions are traceable; when nothing moved, emit an empty trace.
+  if (!moved) trace = [];
   let pendingSpawn: PendingSpawn;
   if (moved) {
     // Directional spawn (Story 12.1): only lines that actually changed during

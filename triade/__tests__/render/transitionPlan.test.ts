@@ -105,11 +105,11 @@ test('planTileTransitions: stationary tiles become hold transitions in a partial
   ]);
 });
 
-test('planTileTransitions: noop move (moved:false) yields an empty plan even though trace has entries', () => {
+test('planTileTransitions: noop move (moved:false) yields an empty plan and empty trace (DW-21)', () => {
   const board = boardOf([2, 3, 6, 12], [3, 6, 12, 24], [3, 6, 12, 24], [3, 6, 12, 24]);
   const result = game.move(gameState(board), 'left', rngOf(0, 0, 0.5));
   assert.strictEqual(result.moved, false);
-  assert.ok(result.trace.length > 0, 'trace still describes the stationary board');
+  assert.strictEqual(result.trace.length, 0, 'DW-21: noop trace must be empty');
   assert.deepStrictEqual(planTileTransitions(board, result), []);
 });
 

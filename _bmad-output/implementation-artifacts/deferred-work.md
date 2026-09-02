@@ -159,14 +159,18 @@ resolution-undo: 26a75af183b8ffbe96535a58ff2c6ec6f12a3a000117765a9f94e84b21702c6
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: Noop moves return a full trace of stationary tiles
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-trace-merge-guards
+resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b 2026-09-02 7374617475733a206f70656e
 
 ### DW-22: mergeValue ignores its second operand outside the canMerge guard
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: mergeValue ignores its second operand outside the canMerge guard
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-trace-merge-guards
+resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b 2026-09-02 7374617475733a206f70656e
 
 ### DW-23: spawnTile mutates its input board and returns the same reference
 

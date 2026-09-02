@@ -373,8 +373,8 @@ test('[P0] AC4 timing — previewFor consumes 0 draws by construction; effective
   assert.strictEqual(noopRes.moved, false);
   assert.strictEqual(noopSpy.calls.length, 0, 'noop must consume 0 draws');
   assert.strictEqual(noopRes.trace.filter((e) => e.spawned).length, 0, 'noop must produce no spawned entry');
-  // Trace stays length 16 for full board (stationary trace), not 0
-  assert.strictEqual(noopRes.trace.length, 16, 'noop trace stays length 16 (stationary), not 0');
+  // DW-21: noop trace is now empty — only meaningful transitions are emitted
+  assert.strictEqual(noopRes.trace.length, 0, 'noop trace must be empty (no stationary entries)');
 });
 
 // T1e — Structural separation pin (AC5)
