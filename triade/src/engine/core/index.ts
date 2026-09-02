@@ -1,5 +1,5 @@
-export { GRID_SIZE } from './types.ts';
-export type { Board, Cell, Direction, GameState, MoveResult, PendingSpawn, Rng, SpawnResult, TraceEntry } from './types.ts';
+export { GRID_SIZE, DEFAULT_BOARD_CONFIG, validateGridSize, validateBoardConfig, resolveGridSize } from './types.ts';
+export type { BoardConfig, Board, Cell, Direction, GameState, MoveResult, PendingSpawn, Rng, SpawnResult, TraceEntry } from './types.ts';
 export { canMerge, mergeValue } from './rules.ts';
 export { emptyBoard, boardsEqual } from './board.ts';
 export { movementLines, shiftLine, boardFromLines } from './line.ts';

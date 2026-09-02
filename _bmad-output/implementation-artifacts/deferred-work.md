@@ -655,7 +655,9 @@ decision: 2026-09-02 Close as duplicate of DW-71 — Close DW-76 and track via D
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: line.ts
 reason: Acoplamento `GRID_SIZE` fixo 4x4 (`line.ts` assume 4, `helpers.ts:15` `SIZE=4`) — contrato `Board` é fixo, não configurável por nível.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-grid-size-configurable
+resolution-undo: 0f53c41ea45ace614fe7900fb3fc0274670d9e52485d44085e37cfcd167ada1f 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Make configurable — Introduce BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/{line,spawn,types}.ts and triade/test-utils/helpers.ts with validation and migrate tests to use the param, enabling level-specific sizes.
 decision: 2026-09-02 Make configurable — Introduce a BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/line.ts, spawn.ts, types.ts and triade/test-utils/helpers.ts so levels can specify size; add validation and migrate tests.
 

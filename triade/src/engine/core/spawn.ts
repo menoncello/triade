@@ -1,4 +1,4 @@
-import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
+import { GRID_SIZE, resolveGridSize, type Board, type BoardConfig, type Rng, type SpawnResult } from './types.ts';
 import { FIXED_WEIGHTS, POT_WEIGHT, validateSpawnConfig } from '../config/spawnConfig.ts';
 import type { CeilingTier } from './ceiling.ts';
 import { tierForCeiling } from './ceiling.ts';
@@ -84,14 +84,16 @@ export function spawnTile(
   board: Board,
   value: number,
   rng: Rng = Math.random,
-  candidates?: Array<[number, number]>
+  candidates?: Array<[number, number]>,
+  boardConfig?: number | BoardConfig | null
 ): SpawnResult {
+  const size = resolveGridSize(boardConfig);
   const next = cloneBoard(board);
   if (candidates === undefined) {
     const empty: Array<[number, number]> = [];
-    for (let r = 0; r < GRID_SIZE; r++) {
-      for (let c = 0; c < GRID_SIZE; c++) {
-        if (board[r][c] === null) empty.push([r, c]);
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (board[r]?.[c] === null) empty.push([r, c]);
       }
     }
     if (empty.length === 0) return { board: next, cell: null, value: null };
@@ -113,7 +115,7 @@ export function spawnTile(
     const c = (entry as unknown[])[1];
     if (typeof r !== 'number' || typeof c !== 'number') continue;
     if (!Number.isInteger(r) || !Number.isInteger(c)) continue;
-    if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) continue;
+    if (r < 0 || r >= size || c < 0 || c >= size) continue;
     if (board[r]?.[c] !== null) continue;
     const key = `${r},${c}`;
     if (seen.has(key)) continue;

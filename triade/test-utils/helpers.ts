@@ -1,19 +1,25 @@
 import assert from 'node:assert';
 import {
   ceilingDetector,
+  DEFAULT_BOARD_CONFIG,
   GRID_SIZE,
   isGameOver,
   move,
   movementLines,
   newGame,
+  resolveGridSize,
   shiftLine,
   stateFromResult,
   tierForCeiling,
+  validateBoardConfig,
+  validateGridSize,
 } from '../src/engine/core/index.ts';
-import type { Board, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../src/engine/core/index.ts';
+import type { Board, BoardConfig, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../src/engine/core/index.ts';
 import { resultingTiles, type TileTransition } from '../src/render/transitionPlan.ts';
 
-export const SIZE = 4;
+export const SIZE = GRID_SIZE;
+export { DEFAULT_BOARD_CONFIG, validateBoardConfig, validateGridSize, resolveGridSize };
+export type { BoardConfig };
 
 export function defaultPendingSpawn(): PendingSpawn {
   return { value: 1, displayRoll: 0 };
@@ -33,11 +39,12 @@ export function gameState(board: Board, pendingSpawn: PendingSpawn = defaultPend
   return { board: b, pendingSpawn: { ...pendingSpawn } };
 }
 
-export function emptyBoard(): Board {
+export function emptyBoard(boardConfig?: number | BoardConfig | null): Board {
+  const size = resolveGridSize(boardConfig);
   const b: Board = [];
-  for (let r = 0; r < SIZE; r++) {
+  for (let r = 0; r < size; r++) {
     const row: Array<number | null> = [];
-    for (let c = 0; c < SIZE; c++) row.push(null);
+    for (let c = 0; c < size; c++) row.push(null);
     b.push(row);
   }
   return b;
@@ -76,18 +83,23 @@ export function spyRng(...values: number[]): Rng & { calls: number[] } {
   return Object.assign(rng, { calls });
 }
 
-export function staticBoard(row: Array<number | null>): Board {
-  const b = emptyBoard();
+export function staticBoard(row: Array<number | null>, boardConfig?: number | BoardConfig | null): Board {
+  const size = resolveGridSize(boardConfig);
+  const b = emptyBoard(size);
   b[0] = row.slice();
-  for (let r = 1; r < SIZE; r++) b[r] = [3, 6, 12, 24];
+  for (let r = 1; r < size; r++) b[r] = [3, 6, 12, 24];
   return b;
 }
 
-export function boardWith(matrix: Array<Array<number | null | undefined>>): Board {
-  const b = emptyBoard();
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      if (matrix[r][c] !== null && matrix[r][c] !== undefined) b[r][c] = matrix[r][c] as number;
+export function boardWith(
+  matrix: Array<Array<number | null | undefined>>,
+  boardConfig?: number | BoardConfig | null
+): Board {
+  const size = resolveGridSize(boardConfig);
+  const b = emptyBoard(size);
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      if (matrix[r]?.[c] !== null && matrix[r]?.[c] !== undefined) b[r][c] = matrix[r][c] as number;
     }
   }
   return b;
@@ -97,11 +109,17 @@ function byCell(a: { cell: [number, number] }, b: { cell: [number, number] }): n
   return a.cell[0] - b.cell[0] || a.cell[1] - b.cell[1];
 }
 
-export function occupiedCells(board: Board): Array<{ cell: [number, number]; value: number }> {
+export function occupiedCells(
+  board: Board,
+  boardConfig?: number | BoardConfig | null
+): Array<{ cell: [number, number]; value: number }> {
+  const size = boardConfig != null ? resolveGridSize(boardConfig) : board.length || GRID_SIZE;
+  // Validate when explicit config is given; inferring from board length keeps legacy callers compatible
+  if (boardConfig != null) validateGridSize(size);
   const out: Array<{ cell: [number, number]; value: number }> = [];
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      if (board[r][c] !== null) out.push({ cell: [r, c], value: board[r][c] as number });
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      if (board[r]?.[c] !== null && board[r]?.[c] !== undefined) out.push({ cell: [r, c], value: board[r][c] as number });
     }
   }
   return out.sort(byCell);
@@ -134,17 +152,22 @@ export function sigmaBound(expected: number, n: number, z = 5): number {
 // + shiftLine). Canonical definition: a line moved iff any value changed
 // (orig.some(v !== shifted), matching `line.ts:67`). Used by unit/integration/
 // E2E/smoke suites to avoid 4-file duplication drift — consolidate here.
-export function oppositeEdgeCandidates(board: Board, dir: Direction): Array<[number, number]> {
-  const lines = movementLines(board, dir);
+export function oppositeEdgeCandidates(
+  board: Board,
+  dir: Direction,
+  boardConfig?: number | BoardConfig | null
+): Array<[number, number]> {
+  const size = resolveGridSize(boardConfig ?? board.length ?? GRID_SIZE);
+  const lines = movementLines(board, dir, size);
   const eligible: Array<[number, number]> = [];
   for (let i = 0; i < lines.length; i++) {
     const orig = lines[i].map((c) => c.v);
     const shifted = shiftLine(lines[i]).line.map((s) => s.v);
     const moved = orig.some((v, idx) => v !== shifted[idx]);
     if (!moved) continue;
-    if (dir === 'left') eligible.push([i, GRID_SIZE - 1]);
+    if (dir === 'left') eligible.push([i, size - 1]);
     else if (dir === 'right') eligible.push([i, 0]);
-    else if (dir === 'up') eligible.push([GRID_SIZE - 1, i]);
+    else if (dir === 'up') eligible.push([size - 1, i]);
     else eligible.push([0, i]);
   }
   return eligible;

@@ -1,4 +1,4 @@
-import { GRID_SIZE, type Board, type Direction, type TraceEntry } from './types.ts';
+import { GRID_SIZE, resolveGridSize, type Board, type BoardConfig, type Direction, type TraceEntry } from './types.ts';
 import { canMerge, mergeValue } from './rules.ts';
 import { emptyBoard } from './board.ts';
 
@@ -13,21 +13,22 @@ export interface ShiftedCell {
   from: Array<[number, number]>;
 }
 
-export function movementLines(board: Board, dir: Direction): CellRef[][] {
+export function movementLines(board: Board, dir: Direction, boardConfig?: number | BoardConfig | null): CellRef[][] {
+  const size = resolveGridSize(boardConfig);
   const lines: CellRef[][] = [];
   let r: number;
   let c: number;
   if (dir === 'left' || dir === 'right') {
-    for (r = 0; r < GRID_SIZE; r++) {
+    for (r = 0; r < size; r++) {
       const row: CellRef[] = [];
-      for (c = 0; c < GRID_SIZE; c++) row.push({ v: board[r]?.[c] ?? null, r, c });
+      for (c = 0; c < size; c++) row.push({ v: board[r]?.[c] ?? null, r, c });
       if (dir === 'right') row.reverse();
       lines.push(row);
     }
   } else {
-    for (c = 0; c < GRID_SIZE; c++) {
+    for (c = 0; c < size; c++) {
       const col: CellRef[] = [];
-      for (r = 0; r < GRID_SIZE; r++) col.push({ v: board[r]?.[c] ?? null, r, c });
+      for (r = 0; r < size; r++) col.push({ v: board[r]?.[c] ?? null, r, c });
       if (dir === 'down') col.reverse();
       lines.push(col);
     }
@@ -73,8 +74,13 @@ export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number
 // DW-21: boardFromLines always returns a full placement trace; the noop
 // contract (empty trace) is enforced in game.move after the boardsEqual check
 // so effective-move traces stay meaningful and noop traces stay empty.
-export function boardFromLines(lines: ShiftedCell[][], dir: Direction): { board: Board; trace: TraceEntry[] } {
-  const board = emptyBoard();
+export function boardFromLines(
+  lines: ShiftedCell[][],
+  dir: Direction,
+  boardConfig?: number | BoardConfig | null
+): { board: Board; trace: TraceEntry[] } {
+  const size = resolveGridSize(boardConfig);
+  const board = emptyBoard(size);
   const trace: TraceEntry[] = [];
   for (let i = 0; i < lines.length; i++) {
     const row = lines[i];
@@ -90,12 +96,12 @@ export function boardFromLines(lines: ShiftedCell[][], dir: Direction): { board:
         c = k;
       } else if (dir === 'right') {
         r = i;
-        c = GRID_SIZE - 1 - k;
+        c = size - 1 - k;
       } else if (dir === 'up') {
         r = k;
         c = i;
       } else {
-        r = GRID_SIZE - 1 - k;
+        r = size - 1 - k;
         c = i;
       }
       board[r][c] = item.v;
