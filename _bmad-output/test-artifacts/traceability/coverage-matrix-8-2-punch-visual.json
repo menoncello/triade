@@ -1,0 +1,219 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-2",
+    "label": "8-2 Punch visual — overshoot+flash+particles+1536 glow (Epic 8, S8.2)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/punch.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/render/transitionPlan.ts",
+      "triade/App.tsx",
+      "triade/__tests__/feel/punch.test.ts",
+      "triade/__tests__/feel/punch.atdd.test.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.2-AC1",
+      "title": "Overshoot-and-snap declarative from trace isMerge (3→1.08/80ms, 6→1.12/100ms, 12+→1.15/120ms) — data-driven via presetFor including overshootScale/overshootMs",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-001", "title": "[P0] 3 light punch small (scale 1.08, 4 particles, no flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 7, "level": "unit", "status": "active" },
+        { "id": "8.2-U-002", "title": "[P0] 6 medium punch (scale 1.12, 8 particles, no flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 19, "level": "unit", "status": "active" },
+        { "id": "8.2-U-003", "title": "[P0] 12+ heavy punch (scale 1.15, 16 particles, flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 28, "level": "unit", "status": "active" },
+        { "id": "8.2-U-009", "title": "[P0] all preset values have finite overshootScale 1..1.2", "file": "triade/__tests__/feel/punch.test.ts", "line": 96, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-01", "title": "[P0-01] AC1 small merge 3 -> light punch 1.08/80ms/4 particles/no flash/no glow", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-02", "title": "[P0-02] AC1 medium merge 6 -> medium punch 1.12/100ms/8/no flash", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 46, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-03", "title": "[P0-03] AC1 heavy merge 12+ -> heavy punch 1.15/120ms/16/flash (sweep all heavy tiers)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 59, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-07", "title": "[P0-07] AC multiple merges per move — each scales independently", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 129, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-08", "title": "[P0-08] data-not-code — all preset values have finite overshootScale 1..1.2", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 148, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-03", "title": "[P1-03] overshoot declarative — punchScaleFor/punchDurationFor match presetFor per tier", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 228, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.2-AC2",
+      "title": "Scaled flash + particle burst at merge point as imperative worklets (flash only heavy >=12 true, particles 4/8/16 per tier) gated by reducedMotion",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-001", "title": "[P0] 3 light punch small (scale 1.08, 4 particles, no flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 7, "level": "unit", "status": "active" },
+        { "id": "8.2-U-002", "title": "[P0] 6 medium punch (scale 1.12, 8 particles, no flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 19, "level": "unit", "status": "active" },
+        { "id": "8.2-U-003", "title": "[P0] 12+ heavy punch (scale 1.15, 16 particles, flash)", "file": "triade/__tests__/feel/punch.test.ts", "line": 28, "level": "unit", "status": "active" },
+        { "id": "8.2-U-008", "title": "[P0] multiple merges per move each scale independently", "file": "triade/__tests__/feel/punch.test.ts", "line": 85, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-01", "title": "[P0-01] AC1 small merge 3 -> light punch 1.08/80ms/4 particles/no flash/no glow", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 27, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-02", "title": "[P0-02] AC1 medium merge 6 -> medium punch 1.12/100ms/8/no flash", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 46, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-03", "title": "[P0-03] AC1 heavy merge 12+ -> heavy punch 1.15/120ms/16/flash", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 59, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-07", "title": "[P0-07] AC multiple merges per move — each scales independently", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 129, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-04", "title": "[P1-04] burst scaling & reducedMotion gating", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 246, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.2-AC3",
+      "title": "1536/3072+ incandescent glow is the only glow in system (#ff8c2f 0.28 behind tile, rendered only when isPunch && value>=1536), suppressed under Reduced Motion",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-004", "title": "[P0] glow only for 1536+ (only glow in system)", "file": "triade/__tests__/feel/punch.test.ts", "line": 38, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-04", "title": "[P0-04] AC glow tier — glow only for 1536+ (only glow in system)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 73, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-03", "title": "[P2-03] only-glow static gate — glow exists only behind hasGlow branch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 342, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.2-AC4",
+      "title": "FR-30 / UX-DR-16 — Reduced Motion gates all punch visuals (scale=1,duration=0,flash=false,particles=0,glow=false) while haptics+sound stay (reducedPresetFor(12).haptic==='heavy', overshootScale 1)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-005", "title": "[P0] Reduced Motion gates all visual (FR-30, UX-DR-16)", "file": "triade/__tests__/feel/punch.test.ts", "line": 47, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-05", "title": "[P0-05] AC Reduced Motion gate FR-30 — all visual cut, haptics stay", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 89, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-04", "title": "[P1-04] burst scaling & reducedMotion gating (App wiring settings.reducedMotion)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 246, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.2-AC5",
+      "title": "Punch observability: trace→isMerge contract via real engine trace (from.length===2 && !spawned via transitionPlan.classify), GameBoard isMerge gating, declarative overshoot mapping, chrome guard, NOOP silent and early-input orphan safeguard (R-002 score 6)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-006", "title": "[P0] chrome guard — helper never called for non-merge (NOOP)", "file": "triade/__tests__/feel/punch.test.ts", "line": 67, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-01", "title": "[P1-01] trace->isMerge contract via REAL engine trace: type merge iff from.length===2 && !spawned", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 170, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-02", "title": "[P1-02] chrome guard — spawn tiles never become isMerge/punch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 213, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-03", "title": "[P1-03] overshoot declarative — punchScaleFor/punchDurationFor match presetFor per tier", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 228, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-04", "title": "[P1-04] burst scaling & reducedMotion gating", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 246, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-05", "title": "[P1-05] R-002 early-input orphan safeguard — burst timer cleanup on unmount (EXPECTED RED)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 269, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P1-06", "title": "[P1-06] NOOP silent — moved false never produces punch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 283, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.2-AC6",
+      "title": "Boundaries: engine byte-identical ADR-01, FeelPreset single access point (no scattered 1.08/1.12/1.15), never-throw + data-not-code finite scale ≤1.2, perf micro-bench (130k punchProfileFor <200ms), burst accumulation cleanup R-007",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.2-U-007", "title": "[P0] non-finite / negative values fallback safe (never throw)", "file": "triade/__tests__/feel/punch.test.ts", "line": 77, "level": "unit", "status": "active" },
+        { "id": "8.2-U-009", "title": "[P0] all preset values have finite overshootScale 1..1.2", "file": "triade/__tests__/feel/punch.test.ts", "line": 96, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-06", "title": "[P0-06] edge — non-finite / negative never throw, glow never on NaN", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 114, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P0-08", "title": "[P0-08] data-not-code — all preset values have finite overshootScale 1..1.2", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 148, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-01", "title": "[P2-01] burst accumulation — setTimeout auto-clear filters by id, no orphan accumulation (EXPECTED RED — unmount guard missing)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 314, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-02", "title": "[P2-02] perf micro-bench — punchProfileFor + preset sweep is host-cheap", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 329, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-03", "title": "[P2-03] only-glow static gate — glow exists only behind hasGlow branch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 342, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-04", "title": "[P2-04] engine purity — triade/src/engine byte-identical (no engine edits in 8-2)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 355, "level": "unit", "status": "active" },
+        { "id": "8.2-ATDD-P2-05", "title": "[P2-05] single access point — no scattered overshoot/particle literals outside feel.ts", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 363, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 1, "covered": 1, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure feel+render story: no API endpoints, no auth surfaces, no UI journey E2E in host automation (Skia+Reanimated worklets + Taptic require real iPhone). Negative paths covered via P0-06 non-finite/NAN, P1-06 NOOP/moved false sweeps, and AC4 Reduced Motion independence. Happy-path-only gaps: 0 — every I/O row has boundary+error + chrome guard + NOOP + multi-merge. E2E-equivalent P1-06 device smoke (real iPhone 3/6/12+/1536 + Reduced Motion ON + airplane) is manual pre-merge lane, not scaffolded as code by design (see test-design Execution Order > Device gate). Heuristics all present => 0 gaps."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 2,
+      "cases": 28,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 28, "criteria_covered": 6 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "8.2-U-001", "file": "triade/__tests__/feel/punch.test.ts", "line": 7, "title": "[P0] 3 light punch small (scale 1.08, 4 particles, no flash)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-002", "file": "triade/__tests__/feel/punch.test.ts", "line": 19, "title": "[P0] 6 medium punch (scale 1.12, 8 particles, no flash)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-003", "file": "triade/__tests__/feel/punch.test.ts", "line": 28, "title": "[P0] 12+ heavy punch (scale 1.15, 16 particles, flash)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-004", "file": "triade/__tests__/feel/punch.test.ts", "line": 38, "title": "[P0] glow only for 1536+ (only glow in system)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-005", "file": "triade/__tests__/feel/punch.test.ts", "line": 47, "title": "[P0] Reduced Motion gates all visual (FR-30, UX-DR-16)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-006", "file": "triade/__tests__/feel/punch.test.ts", "line": 67, "title": "[P0] chrome guard — helper never called for non-merge (NOOP)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-007", "file": "triade/__tests__/feel/punch.test.ts", "line": 77, "title": "[P0] non-finite / negative values fallback safe (never throw)", "level": "unit", "status": "active" },
+      { "id": "8.2-U-008", "file": "triade/__tests__/feel/punch.test.ts", "line": 85, "title": "[P0] multiple merges per move each scale independently", "level": "unit", "status": "active" },
+      { "id": "8.2-U-009", "file": "triade/__tests__/feel/punch.test.ts", "line": 96, "title": "[P0] all preset values have finite overshootScale 1..1.2", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-01", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 27, "title": "[P0-01] AC1 small merge 3 -> light punch 1.08/80ms/4 particles/no flash/no glow", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-02", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 46, "title": "[P0-02] AC1 medium merge 6 -> medium punch 1.12/100ms/8/no flash", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-03", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 59, "title": "[P0-03] AC1 heavy merge 12+ -> heavy punch 1.15/120ms/16/flash (sweep all heavy tiers)", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-04", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 73, "title": "[P0-04] AC glow tier — glow only for 1536+ (only glow in system)", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-05", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 89, "title": "[P0-05] AC Reduced Motion gate FR-30 — all visual cut, haptics stay", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-06", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 114, "title": "[P0-06] edge — non-finite / negative never throw, glow never on NaN", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-07", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 129, "title": "[P0-07] AC multiple merges per move — each scales independently", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P0-08", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 148, "title": "[P0-08] data-not-code — all preset values have finite overshootScale 1..1.2", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-01", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 170, "title": "[P1-01] trace->isMerge contract via REAL engine trace: type merge iff from.length===2 && !spawned", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-02", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 213, "title": "[P1-02] chrome guard — spawn tiles never become isMerge/punch", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-03", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 228, "title": "[P1-03] overshoot declarative — punchScaleFor/punchDurationFor match presetFor per tier", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-04", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 246, "title": "[P1-04] burst scaling & reducedMotion gating", "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-05", "title": "[P1-05] R-002 early-input orphan safeguard — burst timer cleanup on unmount (EXPECTED RED)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 269, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P1-06", "title": "[P1-06] NOOP silent — moved false never produces punch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 283, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P2-01", "title": "[P2-01] burst accumulation — setTimeout auto-clear filters by id, no orphan accumulation (EXPECTED RED — unmount guard missing)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 314, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P2-02", "title": "[P2-02] perf micro-bench — punchProfileFor + preset sweep is host-cheap", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 329, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P2-03", "title": "[P2-03] only-glow static gate — glow exists only behind hasGlow branch", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 342, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P2-04", "title": "[P2-04] engine purity — triade/src/engine byte-identical (no engine edits in 8-2)", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 355, "level": "unit", "status": "active" },
+      { "id": "8.2-ATDD-P2-05", "title": "[P2-05] single access point — no scattered overshoot/particle literals outside feel.ts", "file": "triade/__tests__/feel/punch.atdd.test.ts", "line": 363, "level": "unit", "status": "active" }
+    ]
+  },
+  "working_tree": {
+    "delta_commit": "ef72635",
+    "description": "feat(feel): 8-2 punch visual — overshoot+flash+particles+1536 glow (reduced-motion aware) — 4 commits ahead of origin/main. Production delta: triade/src/feel/feel.ts (overshootScale 1.08/1.12/1.15 + REDUCED_PRESET scale 1), triade/src/feel/punch.ts (new 47 LOC, 6 pure helpers), triade/src/render/GameBoard.tsx (reducedMotion prop, isMerge, declarative overshoot withSequence, flashOpacity worklet, hasGlow #ff8c2f 0.28, BurstView/ParticleDot 4/8/16, reducedMotion gating), triade/App.tsx:887 wiring settings.reducedMotion into GameBoard (GameOverOverlay keeps reducedMotion={false} literal). No transitionPlan.ts change (classify already merge), engine byte-identical.",
+    "uncommitted_stat": "M sprint-status.yaml (8-2 backlog->done), M automation-summary.md, M test-design-progress.md (all metadata-only, orchestrator-owned board not written per task constraints); untracked: triade/__tests__/feel/punch.atdd.test.ts (19), _bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md, _bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md. Production files are committed at ef72635.",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01 verified)",
+    "full_suite": "749 tests, 745 pass / 4 fail (expected RED) — 4 failures = 2 pre-existing 8-1 (P1-03 2!==1 tutorial dedup, P2-06 expo-haptics missing) + 2 new 8-2 (P1-05/P2-01 burst timer cleanup — same root cause R-002/R-007). Scoped 8-2 surface 28 cases: 26 pass / 2 fail. tsc --noEmit clean."
+  },
+  "recommendations": [
+    { "priority": "HIGH", "action": "Fix burst timer leak (R-002 score 6 / R-007 score 4) — store burst setTimeout id(s) in a ref (burstTimer(s)Ref) and clear on GameBoard unmount via useEffect cleanup, mirroring settleTimerRef pattern at GameBoard.tsx:321-326. One fix clears both P1-05 and P2-01; verify device rapid-swipe orphan check.", "requirements": ["8.2-AC5", "8.2-AC6"] },
+    { "priority": "MEDIUM", "action": "Run /bmad:tea:test-review to assess test quality for punch.test.ts + punch.atdd.test.ts", "requirements": [] },
+    { "priority": "LOW", "action": "Carry-over 8-1 waivers (R-001 tutorial 2!==1 double Light, R-006 expo-haptics not in package.json) remain waived until before 8-2 freeze / 8-2 review — do not re-introduce for 8-2", "requirements": [] }
+  ],
+  "tempCoverageMatrixPath": "/tmp/tea-trace-coverage-matrix-2026-09-01.json"
+}

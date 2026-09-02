@@ -45,7 +45,7 @@ test('SMOKE: core loop executes — 500 deterministic moves never crash and scor
     assert.ok(score + res.score >= score, 'cumulative score never decreases');
     assert.ok(Array.isArray(res.trace), 'move returns a trace');
     score += res.score;
-    state = { board: res.board, pendingSpawn: res.pendingSpawn };
+    state = game.stateFromResult(res);
     moves++;
     const count = tileCount(state.board);
     assert.ok(count >= 1 && count <= SIZE * SIZE, `after move ${moves} tile count ${count} stays in bounds`);

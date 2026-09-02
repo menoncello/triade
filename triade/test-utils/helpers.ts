@@ -7,6 +7,7 @@ import {
   movementLines,
   newGame,
   shiftLine,
+  stateFromResult,
   tierForCeiling,
 } from '../src/engine/core/index.ts';
 import type { Board, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../src/engine/core/index.ts';
@@ -14,8 +15,22 @@ import { resultingTiles, type TileTransition } from '../src/render/transitionPla
 
 export const SIZE = 4;
 
-export function gameState(board: Board, pendingSpawn: PendingSpawn = { value: 1, displayRoll: 0 }): GameState {
-  return { board, pendingSpawn };
+export function defaultPendingSpawn(): PendingSpawn {
+  return { value: 1, displayRoll: 0 };
+}
+
+function cloneBoard(board: Board): Board {
+  return board.map((row) => [...row]);
+}
+
+function deepFreezeBoard(board: Board): Board {
+  for (const row of board) Object.freeze(row);
+  return Object.freeze(board) as Board;
+}
+
+export function gameState(board: Board, pendingSpawn: PendingSpawn = defaultPendingSpawn()): GameState {
+  const b = deepFreezeBoard(cloneBoard(board));
+  return { board: b, pendingSpawn: { ...pendingSpawn } };
 }
 
 export function emptyBoard(): Board {
@@ -30,9 +45,14 @@ export function emptyBoard(): Board {
 
 export function rngOf(...values: number[]): Rng {
   let i = 0;
+  let draws = 0;
   return () => {
+    if (i >= values.length) {
+      throw new Error(`rngOf exhausted after ${draws} scripted draw(s) — the engine drew more than expected`);
+    }
     const v = values[i++];
-    return v === undefined ? 0.5 : v;
+    draws++;
+    return v;
   };
 }
 
@@ -193,8 +213,8 @@ export function runSeededSession(seed: number, targetSpawns: number) {
     displayRolls.push(res.pendingSpawn.displayRoll);
     n3pairs.push({ promised: lastPending.value, materialized: spawned.value });
     tieredPairs.push({ tier: lastResolvedTier, value: spawned.value });
-    snapshots.push({ board: res.board, pendingSpawn: res.pendingSpawn });
-    state = { board: res.board, pendingSpawn: res.pendingSpawn };
+    snapshots.push(stateFromResult(res));
+    state = stateFromResult(res);
     lastPending = res.pendingSpawn;
     // The NEXT pending was resolved from the post-merge board BEFORE placing
     // the spawn — reconstruct that pre-spawn board to recover its tier.
@@ -203,10 +223,15 @@ export function runSeededSession(seed: number, targetSpawns: number) {
   return { spawnValues, displayRolls, n3pairs, tieredPairs, snapshots };
 }
 
+export { stateFromResult } from '../src/engine/core/index.ts';
+
+// Delegates to the shared comment- and string-aware scanner so that string
+// and regex literals containing `//` or `/*` are not corrupted. Preserves
+// string/template contents intact (only blanks comment bodies) so
+// `extractSpecifiers` / `extractNamedImports` continue to see the real
+// import specifiers.
 export function stripComments(source: string): string {
-  return source
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '');
+  return stripCommentsInternal(source, false);
 }
 
 // Comment- AND string-aware cleaner for static-source guards: blanks comment
@@ -215,9 +240,24 @@ export function stripComments(source: string): string {
 // text once the interpolation's top-level `}` closes), so bare-symbol scans
 // neither false-positive on text inside strings nor false-negative on `//`
 // sequences like URLs that would otherwise swallow trailing code.
-// Length-preserving by design. Known limitation: regex literals are treated
-// as plain code.
+// Length-preserving by design.
+//
+// Known limitation — regex literals: regex literals are treated as plain
+// code (no division-vs-regex disambiguation — that requires a real lexer).
+// A quote/apostrophe inside a regex (e.g. `/it's/` or `/"hi"/`) therefore
+// flips the state machine into string mode and causes it to blank all
+// subsequent real source until the next matching quote is seen. The blast
+// radius is mode-desync swallowing: real code is hidden, producing false
+// NEGATIVES in the `ui.norolls` structural guard rather than mere
+// pass-through of regex contents. No such pattern exists in any currently
+// scanned view/service file; proper fix requires lexer-grade regex
+// detection — revisit if scanned sources ever adopt regex literals with
+// quote characters.
 export function stripCommentsAndStrings(source: string): string {
+  return stripCommentsInternal(source, true);
+}
+
+function stripCommentsInternal(source: string, blankStrings: boolean): string {
   type Mode = 'code' | 'line' | 'block' | 'single' | 'double' | 'template' | 'interp';
   const stack: Array<{ mode: Mode; braces: number }> = [{ mode: 'code', braces: 0 }];
   let out = '';
@@ -246,29 +286,38 @@ export function stripCommentsAndStrings(source: string): string {
       case 'double': {
         const quote = frame.mode === 'single' ? "'" : '"';
         if (ch === '\\') {
-          out += '  ';
+          if (blankStrings) {
+            out += '  ';
+          } else {
+            out += ch;
+            if (next !== undefined) out += next;
+          }
           i++;
         } else if (ch === quote) {
           stack.pop();
           out += ch;
-        } else blank(ch);
+        } else if (blankStrings) blank(ch);
+        else out += ch;
         break;
       }
       case 'template':
         if (ch === '\\') {
-          out += '  ';
+          if (blankStrings) {
+            out += '  ';
+          } else {
+            out += ch;
+            if (next !== undefined) out += next;
+          }
           i++;
         } else if (ch === '`') {
           stack.pop();
           out += ch;
         } else if (ch === '$' && next === '{') {
-          // Interpolation enters as a code-like frame whose top-level `}`
-          // returns here; nested `{}` are counted so object literals inside
-          // don't close it early.
           stack.push({ mode: 'interp', braces: 0 });
           out += '  ';
           i++;
-        } else blank(ch);
+        } else if (blankStrings) blank(ch);
+        else out += ch;
         break;
       case 'interp':
       case 'code': {
@@ -288,7 +337,7 @@ export function stripCommentsAndStrings(source: string): string {
           out += ch;
         } else if (frame.mode === 'interp' && ch === '}') {
           if (frame.braces > 0) frame.braces--;
-          else stack.pop(); // back to the enclosing template
+          else stack.pop();
           out += ch;
         } else out += ch;
         break;

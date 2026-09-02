@@ -1,0 +1,150 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-01T00:00:00Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "8-2",
+    "label": "8-2 Punch visual — overshoot+flash+particles+1536 glow (Epic 8, S8.2)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 coverage 100% (4/4 FULL) and P0 pass 100% (16/16) — AC1 overshoot tiers 3/6/12+ (1.08/80 1.12/100 1.15/120), AC2 flash only heavy + particles 4/8/16, AC3 1536+ only glow #ff8c2f, AC4 FR-30 Reduced Motion gates all visuals while haptics stay all GREEN on working-tree delta ef72635. Overall coverage 100% (6/6) above 80% minimum. P1 coverage 100% (1/1) but P1 pass 83% (5/6): [P1-05] R-002 early-input orphan burst timer leak (GameBoard bare setTimeout(500) without ref/clearTimeout on unmount — score 6) is EXPECTED RED with waiver; P2 pass 80% (4/5) similarly due to [P2-01] R-007 same root cause (second signal). Device smoke P1-06 is covered by host NOOP gate but manual real-iPhone lane (3 subtle / 6 medium / 12+ flash+16 / 1536 glow, Reduced Motion ON flat, airplane/rapid-swipe) is pre-merge lane PENDING. Story is code-complete on delta ef72635 with 2 expected-red waivers; not FAIL because no P0 blocker, engine byte-identical, tsc clean, full suite 745/749 (99.47%) and 8-2 scoped 26/28 (92.9%) pass — enhanced monitoring acceptable, verified blocked until burst cleanup fix.",
+  "p0_status": "MET",
+  "p1_status": "CONCERNS",
+  "overall_status": "CONCERNS",
+  "critical_open": 0,
+  "thresholds": {
+    "p0_coverage_required": 100,
+    "p0_coverage_actual": 100,
+    "p0_pass_required": 100,
+    "p0_pass_actual": 100,
+    "p1_coverage_target": 90,
+    "p1_coverage_actual": 100,
+    "p1_pass_target": 90,
+    "p1_pass_actual": 83.3,
+    "overall_coverage_minimum": 80,
+    "overall_coverage_actual": 100,
+    "overall_pass_actual_scoped": 92.9,
+    "overall_pass_actual_full_suite": 99.47
+  },
+  "evidence": {
+    "working_tree_delta": "ef72635 (4 ahead of origin/main) — triade/src/feel/feel.ts (overshootScale) + triade/src/feel/punch.ts (new 47 LOC, 6 helpers) + triade/src/render/GameBoard.tsx (reducedMotion, isMerge, overshoot/flash/glow/burst) + triade/App.tsx:887 settings.reducedMotion wiring; untracked: punch.atdd.test.ts (19) + test-design/atdd checklist; uncommitted metadata only: sprint-status.yaml (8-2 backlog->done), automation-summary, test-design-progress",
+    "full_suite": "749 tests, 745 pass / 4 fail (expected RED) — 4 = 2 carry-over 8-1 (P1-03 2!==1, P2-06 expo-haptics) + 2 new 8-2 (P1-05/P2-01 burst timer leak same cause) — 26 suites, 4906ms, tsc --noEmit clean, engine diff empty",
+    "scoped_surface": "28 mapped 8-2 tests: 26 pass / 2 fail (P1-05 R-002 burst timer ref, P2-01 R-007 unmount guard — same bare setTimeout) — both EXPECTED RED with waiver expiry before 8-3",
+    "host_verification": "cd triade && npm test -- __tests__/feel/punch.atdd.test.ts => 17 pass / 2 fail expected; excluding RED patterns => 17 pass / 0 fail + punch.test.ts 9 pass; npx tsc --noEmit clean; git diff --stat -- triade/src/engine empty",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01)",
+    "spec_residual_risks": "spec-8-2-punch-visual.md Auto Run Result Residual risks: none new (spec marks 0 patch/defer carry-over from 8-1 R-001/R-006). New residual is R-002/R-007 burst timer leak documented in atdd-checklist as EXPECTED RED until fix."
+  },
+  "residual_risks": [
+    {
+      "id": "R-002",
+      "title": "Early-input retarget orphan — GameBoard burst setTimeout(500) is bare (no ref) so rapid re-plan or unmount leaks orphan bursts at stale pixel(tr.to) or setState on unmounted component",
+      "priority": "P1",
+      "score": 6,
+      "probability": "medium",
+      "impact": "high",
+      "status": "EXPECTED RED — waived pending fix before 8-3",
+      "test": "triade/__tests__/feel/punch.atdd.test.ts:269 [P1-05]",
+      "mitigation": "Store setTimeout id(s) in burstTimer(s)Ref Set<Timeout> and clear on unmount via useEffect return, mirroring settleTimerRef at GameBoard.tsx:321-326; guard setBursts with mounted ref if needed; verify rapid-swipe combo (2-3 sequential merges within 500ms) video shows no off-grid orphans.",
+      "remediation_due": "before 8-3 (shake mutates tilesRef under re-plan) or explicitly waived with comment",
+      "owner": "FE"
+    },
+    {
+      "id": "R-007",
+      "title": "Burst accumulation / unmounted update — same bare setTimeout without unmount guard (filters by id correctly but leaks on unmount)",
+      "priority": "P2",
+      "score": 4,
+      "probability": "medium",
+      "impact": "medium",
+      "status": "EXPECTED RED — same fix as R-002 (second signal)",
+      "test": "triade/__tests__/feel/punch.atdd.test.ts:314 [P2-01]",
+      "mitigation": "Same ref+cleanup as R-002; one code change clears both P1-05 and P2-01.",
+      "remediation_due": "before 8-3",
+      "owner": "FE"
+    },
+    {
+      "id": "R-001",
+      "title": "Carry-over: Burst-driven jank vs 60 FPS budget (16 ParticleDot + overshoot + glow concurrent with Skia Canvas) — device p99 <16.7ms risk",
+      "priority": "P1",
+      "score": 6,
+      "probability": "medium",
+      "impact": "high",
+      "status": "PLANNED — not a RED this trace but pending device benchmark lane before 8-3 (shake adds cost)",
+      "test": "pending device benchmark with useFrameRateBaseline after 2-min play including heavy+glow",
+      "mitigation": "Cap overshootScale≤1.2 + particles∈{0,4,8,16} statically asserted (P0-08 GREEN), use position:absolute/pointerEvents:none no layout thrash, host micro-bench <200ms for 130k calls (P2-02 GREEN); limit to heaviest merge per move if device trace shows jank.",
+      "remediation_due": "before 8-3 device lane",
+      "owner": "FE / QA"
+    },
+    {
+      "id": "R-003",
+      "title": "Carry-over: FR-30 compliance wiring — settings.reducedMotion stale memo or cargo-culting GameOverOverlay literal onto GameBoard or future 8-5 wrapping punch with haptics gate",
+      "priority": "P1",
+      "score": 6,
+      "probability": "medium",
+      "impact": "high",
+      "status": "PLANNED — mitigation is unit sweep + grep gate (P0-05 GREEN + App wiring check P1-04 GREEN)",
+      "test": "triade/__tests__/feel/punch.atdd.test.ts:89 P0-05 + 246 P1-04",
+      "mitigation": "Keep // FR-30: punch gated — haptics stay comment + lint/BAN rule for reducedMotion imports outside punch.ts; review guard in every 8.x PR; device smoke with Reduced Motion ON must stay flat.",
+      "remediation_due": "immediate (add lint rule this story, enforce in 8-5)",
+      "owner": "FE lead"
+    }
+  ],
+  "pending_device_lane": {
+    "id": "P1-06-device",
+    "title": "Device smoke — real iPhone dev build (SDK 57, Skia+Reanimated worklets, no Simulator punch): trigger merges 3→subtle punch, 6→medium, 12+→flash+16 particles, 1536+→glow (only glow) in portrait+landscape; toggle Reduced Motion ON → repeat each: flat (scale=1 no overshoot, no flash/particles/glow) while haptics still felt; preview/score never animate; airplane mode; rapid swipes during burst window → no orphan bursts",
+    "type": "manual-e2e",
+    "status": "PENDING — required before verified",
+    "owner": "PR author / QA",
+    "estimate": "15 min",
+    "signoff": "PR description checkbox 'device punch smoke: 3/6/12+/1536 + Reduced Motion ON flat + rapid-swipe orphan check'"
+  },
+  "criteria": {
+    "p0_coverage": 100,
+    "p0_pass_rate": 100,
+    "p1_coverage": 100,
+    "p1_pass_rate": 83.3,
+    "overall_pass_rate_scoped": 92.9,
+    "overall_pass_rate_full_suite": 99.47,
+    "overall_coverage": 100,
+    "security_issues": 0,
+    "critical_nfrs_fail": 0,
+    "flaky_tests": 0
+  },
+  "blockers": [
+    {
+      "id": "P1-05",
+      "severity": "high",
+      "reason": "R-002 early-input orphan — burst setTimeout not stored in ref nor cleared on unmount (same cause as P2-01)",
+      "test_file": "triade/__tests__/feel/punch.atdd.test.ts",
+      "test_title": "[P1-05] R-002 early-input orphan safeguard — burst timer cleanup on unmount (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "before 8-3 / 8-5 review"
+    },
+    {
+      "id": "P2-01",
+      "severity": "medium",
+      "reason": "R-007 burst accumulation — setTimeout auto-clear filters by id correctly but leaks on unmount (waived with R-002)",
+      "test_file": "triade/__tests__/feel/punch.atdd.test.ts",
+      "test_title": "[P2-01] burst accumulation — setTimeout auto-clear filters by id, no orphan accumulation (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "before 8-3"
+    }
+  ],
+  "recommendations": [
+    { "priority": "P1", "action": "Fix burst timer leak before 8-3: store setTimeout id(s) in ref + clear on unmount (one fix clears P1-05 & P2-01) and re-run punch.atdd.test.ts until 19/19 GREEN; verify rapid-swipe video." },
+    { "priority": "P1", "action": "Run 15-min real-iPhone device smoke (P1-06 in test-design) before merge to verified and record PR sign-off (3/6/12+/1536 portrait+landscape + Reduced Motion ON flat + preview chrome + airplane + rapid-swipe)." },
+    { "priority": "P2", "action": "Resolve carry-over 8-1 waivers (R-001 dedup 2!==1, R-006 expo-haptics dep) before verified/8-2 review; add expo-doctor gate; pin multi-merge policy R-003; reuse feel preset guard rails in 8.3-8.6." },
+    { "priority": "P2", "action": "Keep CI gates: git diff --stat -- triade/src/engine empty (ADR-01) + grep outside feel.ts for 1.08/1.12/1.15 fails + single #ff8c2f inside hasGlow branch + FR-30 lint rule for 8.5." }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-2-punch-visual.md",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-8-2-punch-visual.json",
+    "gate_decision_path": "_bmad-output/test-artifacts/traceability/gate-decision-8-2-punch-visual.json",
+    "test_design_path": "_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md",
+    "atdd_checklist_path": "_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md",
+    "automation_summary_path": "_bmad-output/test-artifacts/automation-summary.md",
+    "spec_path": "_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md"
+  }
+}

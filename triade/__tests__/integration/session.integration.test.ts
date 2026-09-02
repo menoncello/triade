@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { newGame, move } from '../../src/engine/core/index.ts';
+import { newGame, move, stateFromResult } from '../../src/engine/core/index.ts';
 import type { Board, Direction } from '../../src/engine/core/index.ts';
 import { applyMove, initialScore } from '../../src/game/matchScore.ts';
 import { planTileTransitions, resultingTiles } from '../../src/render/transitionPlan.ts';
@@ -45,7 +45,7 @@ test('integration: matchScore accumulates across a full session of moves', () =>
   for (let i = 0; i < 80; i++) {
     const result = move(state, dirs[i % 4], mulberry32(9000 + i));
     if (result.moved) {
-      state = { board: result.board, pendingSpawn: result.pendingSpawn };
+      state = stateFromResult(result);
       match = applyMove(match, result);
     }
   }

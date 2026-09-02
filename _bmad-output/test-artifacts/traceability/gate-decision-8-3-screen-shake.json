@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-01T00:00:00Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "8-3",
+    "label": "8-3 Screen shake — directional shake scaled by FeelPreset (Epic 8, S8.3)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 coverage 100% (4/4 FULL) and P0 pass 100% (21/21 when P2 waivers excluded, 19/19 unique P0-scope) — AC1 directional shake subtle 2 medium 6 stronger 5 heavy capped 8 along swipe axis, AC2 data-not-code presetFor single source, AC3 FR-30 Reduced Motion gates visuals while haptics stay, AC4 NOOP/slide-only silent never-throw all GREEN on working-tree delta 721bf3a. P1 coverage 100% (1/1) and P1 pass 100% (6/6) — trace→shake real engine fixture, App.lastDirectionRef sync before move(), axis mapping left/right X up/down Y, mid-flight Reduced Motion snap, chrome guard board-only, bleed-cancel all GREEN. Overall coverage 100% (6/6) above 80% minimum. P2 pass 66.7% (4/6) due to 2 EXPECTED RED with waiver: [P2-01] R-001 overlapping shake concurrency without cancelAnimation (GameBoard overwrites 130ms withSequence without cancelAnimation when EARLY_INPUT_MS 84ms re-opens gate at 90ms — score 6) and [P2-05] R-007 board edge 5-8px clipped by parent overflow:hidden (score 4) — both deferred-work lows in spec Residual risks. Device smoke P1-07 in test-design (real iPhone 6 subtle / 12+ stronger / cap 8 along X/Y + Reduced Motion ON flat + NOOP + chrome + rapid-overlap + airplane) is manual pre-merge lane PENDING (15 min). Full suite 776/782 (99.23%) and scoped 31/33 (93.9%) above 95%/90% targets but pending device lane + P2 waivers keep gate at CONCERNS, not FAIL, with enhanced monitoring acceptable and verified blocked until waivers cleared.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "CONCERNS",
+  "critical_open": 0,
+  "thresholds": {
+    "p0_coverage_required": 100,
+    "p0_coverage_actual": 100,
+    "p0_pass_required": 100,
+    "p0_pass_actual": 100,
+    "p1_coverage_target": 90,
+    "p1_coverage_actual": 100,
+    "p1_pass_target": 90,
+    "p1_pass_actual": 100,
+    "p2_pass_target": 90,
+    "p2_pass_actual": 66.7,
+    "overall_coverage_minimum": 80,
+    "overall_coverage_actual": 100,
+    "overall_pass_actual_scoped": 93.9,
+    "overall_pass_actual_full_suite": 99.23
+  },
+  "evidence": {
+    "working_tree_delta": "721bf3a (1 ahead of e4629cd) — triade/src/feel/shake.ts (new 81 LOC, 5 helpers + SHAKE_CAP) + feel.ts (verified shakeMs 2/2/5) + GameBoard.tsx (direction prop, shakeX/Y Animated.View board only, 130ms withSequence on axis, bleed-cancel 20ms, mid-flight snap) + App.tsx (lastDirectionRef sync before move() + clear on restart/lane); untracked: shake.atdd.test.ts (21) + test-design/atdd checklist; uncommitted metadata only: spec final_revision + sprint-status backlog->done + automation-summary + test-design-progress",
+    "full_suite": "782 tests, 776 pass / 6 fail (expected RED) — 6 = 2 carry-over 8-1 (P1-03 2!==1 tutorial dedup, P2-06 expo-haptics) + 2 carry-over 8-2 (P1-05/P2-01 burst timer leak) + 2 new 8-3 (P2-01 cancelAnimation, P2-05 edge clipping) — 30 suites, tsc --noEmit clean, engine diff empty",
+    "scoped_surface": "33 mapped 8-3 tests: 31 pass / 2 fail (P2-01 R-001 cancelAnimation missing, P2-05 R-007 edge clipping — both P2 EXPECTED RED with waiver, same causes as spec Residual risks + deferred-work.md)",
+    "host_verification": "cd triade && npm test -- __tests__/feel/shake.test.ts __tests__/feel/shake.atdd.test.ts => 33 tests 31 pass / 2 fail expected; excluding RED patterns => 31 pass / 0 fail + npx tsc --noEmit clean; git diff --stat -- triade/src/engine empty",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01)",
+    "spec_residual_risks": "spec-8-3-screen-shake.md Auto Run Result Residual risks: rapid second swipe at ~90ms overwrites without cancelAnimation (low), board edge 5-8px clipped by overflow:hidden (low), lane switch stale direction (low) — first two are the 2 RED pins. Review Triage patches applied: double cap -> SHAKE_CAP export, bleed-cancel + mid-flight snap, NaN guard."
+  },
+  "residual_risks": [
+    {
+      "id": "R-001",
+      "title": "Overlapping shake concurrency without cancelAnimation — 130ms withSequence overwritten without cancelAnimation when EARLY_INPUT_MS 84ms re-opens gate before shake completes",
+      "priority": "P2",
+      "score": 6,
+      "probability": "medium",
+      "impact": "medium",
+      "status": "EXPECTED RED — waived pending one-line fix before 8-4",
+      "test": "triade/__tests__/feel/shake.atdd.test.ts:272 [P2-01]",
+      "mitigation": "Import cancelAnimation from react-native-reanimated and call cancelAnimation(shakeX); cancelAnimation(shakeY); before new withSequence in GameBoard moveResult effect (exactly like R-002 fix in 8-2). Verify rapid-swipe combo (heavy 12 then medium 6 within 90ms) shows no truncated overlap/jank on device video; p99 stays <16.7ms.",
+      "remediation_due": "before 8-4 (bullet time adds further main-thread cost)",
+      "owner": "FE"
+    },
+    {
+      "id": "R-007",
+      "title": "Board edge clipping by parent overflow:hidden — 5-8px translate at container boundary clipped by View width/height=width + App boardWrap overflow:hidden",
+      "priority": "P2",
+      "score": 4,
+      "probability": "medium",
+      "impact": "low",
+      "status": "EXPECTED RED — waived pending product decision",
+      "test": "triade/__tests__/feel/shake.atdd.test.ts:331 [P2-05]",
+      "mitigation": "Product decision: add BOARD_PADDING+SHAKE_CAP 8px bleed margin or set App boardWrap overflow:visible with safe bleed, or accept clipping as cosmetic with UX sign-off and flip P2-05 to passing. Capture device screenshot heavy 5 at board corners portrait+landscape.",
+      "remediation_due": "before verified / before 8-4",
+      "owner": "FE / UX"
+    },
+    {
+      "id": "R-002",
+      "title": "FR-30 Reduced Motion non-compliance if App wiring regresses (stale settings.reducedMotion memo or lane-switch stale lastDirectionRef, or haptics gated)",
+      "priority": "P1",
+      "score": 6,
+      "probability": "low",
+      "impact": "high",
+      "status": "MITIGATED — P0-04 sweep + P1-04 snap + App wiring gate all GREEN; monitor",
+      "test": "triade/__tests__/feel/shake.atdd.test.ts:54 P0-04 + 222 P1-04",
+      "mitigation": "Keep shake.ts helpers returning 0/false when reducedMotion true for all tiers + GameBoard useEffect snap + App passes settings.reducedMotion + direction; grep gate rg reducedMotion triade/src/feel hits only feel.ts REDUCED_PRESET + shake.ts, never haptics.ts; device smoke Reduce Motion ON flat while haptics felt.",
+      "remediation_due": "immediate (enforce in 8-5 review)",
+      "owner": "FE lead"
+    },
+    {
+      "id": "R-003",
+      "title": "Direction wiring staleness / missing axis (lane switch retains stale dir, case-sensitive LEFT vs left, effect dep missing direction)",
+      "priority": "P1",
+      "score": 6,
+      "probability": "low",
+      "impact": "high",
+      "status": "MITIGATED — directionVector contract + App wiring + axis isolation all GREEN",
+      "test": "triade/__tests__/feel/shake.atdd.test.ts:115 P0-07 + 122 P0-08 + 182 P1-02 + 201 P1-03",
+      "mitigation": "Pin directionVector case-sensitive left/right/up/down only else 0,0; App.doMove sets lastDirectionRef before move() synchronously; GameBoard derives vec and drives only matching axis with else-if; clear on restart/lane; device smoke left/right X vs up/down Y.",
+      "remediation_due": "immediate",
+      "owner": "FE"
+    }
+  ],
+  "pending_device_lane": {
+    "id": "P1-07-device",
+    "title": "Device smoke — real iPhone dev build (SDK 57, Skia+Reanimated worklets, no Simulator): swipe left/right for 6→subtle 2px and 12+→5px capped 8 along X, swipe up/down for Y axis, each in portrait+landscape; toggle Reduced Motion ON → repeat each heavy: flat (no translate) while haptics still felt; NOOP swipe flat; preview card & score never shake; rapid swipes within 130ms window → no freeze; airplane mode still works",
+    "type": "manual-e2e",
+    "status": "PENDING — required before verified",
+    "owner": "PR author / QA",
+    "estimate": "15 min",
+    "signoff": "PR description checkbox 'device shake smoke: left/right X, up/down Y, 6 subtle 12+ stronger cap 8 + Reduced Motion ON flat + NOOP + chrome + rapid-overlap check'"
+  },
+  "criteria": {
+    "p0_coverage": 100,
+    "p0_pass_rate": 100,
+    "p1_coverage": 100,
+    "p1_pass_rate": 100,
+    "p2_pass_rate": 66.7,
+    "overall_pass_rate_scoped": 93.9,
+    "overall_pass_rate_full_suite": 99.23,
+    "overall_coverage": 100,
+    "security_issues": 0,
+    "critical_nfrs_fail": 0,
+    "flaky_tests": 0
+  },
+  "blockers": [
+    {
+      "id": "P2-01",
+      "severity": "medium",
+      "reason": "R-001 overlapping shake concurrency without cancelAnimation — 130ms withSequence overwritten before EARLY_INPUT_MS 84ms re-opens gate (same cause as spec Residual risk 1)",
+      "test_file": "triade/__tests__/feel/shake.atdd.test.ts",
+      "test_title": "[P2-01] overlapping shake concurrency without cancelAnimation (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "before 8-4 (bullet time adds cost)"
+    },
+    {
+      "id": "P2-05",
+      "severity": "low",
+      "reason": "R-007 board edge 5-8px clipped by parent View width/height=width + App boardWrap overflow:hidden with no SHAKE_CAP bleed margin (spec Residual risk 2, deferred low cosmetic)",
+      "test_file": "triade/__tests__/feel/shake.atdd.test.ts",
+      "test_title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED)",
+      "waived": true,
+      "waiver_expiry": "before verified / product decision"
+    }
+  ],
+  "recommendations": [
+    { "priority": "P1", "action": "Fix overlapping concurrency before 8-4: add cancelAnimation(shakeX/Y) before new withSequence in GameBoard and re-run shake.atdd.test.ts:272 until GREEN + device rapid-swipe combo video." },
+    { "priority": "P1", "action": "Run 15-min real-iPhone device smoke P1-07 before verified (6 subtle / 12+ stronger / cap 8 along X/Y portrait+landscape + Reduced Motion ON flat + NOOP + chrome + rapid-overlap + airplane) and record PR sign-off." },
+    { "priority": "P2", "action": "Decide board edge clipping product fix (BOARD_PADDING+SHAKE_CAP or overflow:visible) or accept cosmetic with sign-off and flip P2-05 to GREEN before 8-4." },
+    { "priority": "P2", "action": "Keep CI gates: git diff --stat -- triade/src/engine empty (ADR-01) + grep SHAKE_CAP single source + grep from.length===2 allowlist (engine + feel/shake.ts + transitionPlan.ts) + FR-30 lint for 8-5." }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-3-screen-shake.md",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-8-3-screen-shake.json",
+    "gate_decision_path": "_bmad-output/test-artifacts/traceability/gate-decision-8-3-screen-shake.json",
+    "test_design_path": "_bmad-output/test-artifacts/test-design/test-design-epic-8-3-screen-shake.md",
+    "atdd_checklist_path": "_bmad-output/test-artifacts/atdd-checklist-8-3-screen-shake.md",
+    "automation_summary_path": "_bmad-output/test-artifacts/automation-summary.md",
+    "spec_path": "_bmad-output/implementation-artifacts/spec-8-3-screen-shake.md"
+  }
+}

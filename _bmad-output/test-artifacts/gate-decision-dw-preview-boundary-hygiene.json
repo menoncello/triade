@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T00:00:00.000000+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-preview-boundary-hygiene",
+    "label": "dw-preview-boundary-hygiene — Preview 60/40 ULP, beyond-ladder truth, frozen slices, deflate fan-out (DW-78,79,80,84,94)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "NFR PASS: Performance PASS (30k 6.16ms 0.0002ms/call <0.05ms, 2x per render <1ms, frame <8ms), Security PASS (no auth/PII, pure display, no Math.random, git diff engine empty), Reliability PASS (ULP 0.6-EPSILON/2 range + 192 [48,96,192] frozen includes 192 + NaN/Infinity never-throw + deflate [3,6,12] contiguous + App live fan-out 1+2, 40/40 + 22/22 host, 882/11 unchanged), Maintainability PASS (PREVIEW_EXACT_BOUNDARY 2 WINDOW_MAX 5 Object.freeze 5 POT_BASE_VALUE 2 Math.log2 1 Number.EPSILON 1 availablePot 1+2, both tsc clean, ledger deb5edf9 x10 for DW-78/79/80/84/94), Overall ADR 28/29 PASS. No blockers.",
+  "nfr_status": "PASS",
+  "nfr_assessment_path": "_bmad-output/test-artifacts/nfr-assessment-dw-preview-boundary-hygiene.md",
+  "categories": {
+    "performance": "PASS",
+    "security": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS",
+    "scalability": "PASS",
+    "compliance": "PASS",
+    "offline": "PASS"
+  },
+  "adr_score": "28/29",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "concerns": 1,
+  "blockers": false,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-preview-boundary-hygiene.md",
+    "nfr_report_path": "_bmad-output/test-artifacts/nfr-assessment-dw-preview-boundary-hygiene.md",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

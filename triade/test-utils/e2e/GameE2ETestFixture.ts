@@ -1,4 +1,4 @@
-import { newGame, move, isGameOver } from '../../src/engine/core/index.ts';
+import { newGame, move, isGameOver, stateFromResult } from '../../src/engine/core/index.ts';
 import type { Board, Direction, GameState, MoveResult, PendingSpawn } from '../../src/engine/core/index.ts';
 import { applyMove, initialScore, isNewRecord } from '../../src/game/matchScore.ts';
 import type { MatchScore } from '../../src/game/matchScore.ts';
@@ -71,7 +71,7 @@ export class GameE2ETestFixture {
     if (!this.readyState) throw new Error('fixture not launched');
     if (this.busyRef) return this.lastMoveGuard();
     const result = move(this.state, dir, this.rng);
-    this.state = { board: result.board, pendingSpawn: result.pendingSpawn };
+    this.state = stateFromResult(result);
     this.lastResult = result;
     this.matchState = applyMove(this.matchState, result);
     if (result.moved) this.busyRef = true;

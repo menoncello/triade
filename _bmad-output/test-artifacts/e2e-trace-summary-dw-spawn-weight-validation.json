@@ -1,0 +1,140 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-02T13:00:00+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "f1aeb98",
+  "target": {
+    "type": "story",
+    "id": "dw-spawn-weight-validation",
+    "label": "dw-spawn-weight-validation — runtime guard for spawn weight invariants (DW-46)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/test-design-dw-spawn-weight-validation.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-spawn-weight-validation.md",
+      "triade/__tests__/engine/spawn-weight-guard.atdd.test.ts",
+      "triade/__tests__/engine/spawn-config.test.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/weights.ts",
+      "triade/src/engine/core/index.ts",
+      "_bmad-output/test-artifacts/tests/api/spawn-weight-validation.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/spawn-weight-validation.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/spawn-weight-validation.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/spawn-weight-validation-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-46",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 23,
+      "total": 23,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 7,
+        "covered": 7,
+        "pct": 100
+      },
+      "P1": {
+        "total": 8,
+        "covered": 8,
+        "pct": 100
+      },
+      "P2": {
+        "total": 5,
+        "covered": 5,
+        "pct": 100
+      },
+      "P3": {
+        "total": 3,
+        "covered": 3,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 10,
+        "criteria_covered": 10
+      },
+      "api": {
+        "tests": 8,
+        "criteria_covered": 8
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 42,
+        "criteria_covered": 23
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 5,
+    "cases": 60,
+    "skipped_cases": 23,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-spawn-weight-validation.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

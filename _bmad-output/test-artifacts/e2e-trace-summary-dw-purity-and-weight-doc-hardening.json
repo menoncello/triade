@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-02T02:52:22.855981+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "abd36bcc056b",
+  "target": {
+    "type": "story",
+    "id": "dw-purity-and-weight-doc-hardening",
+    "label": "dw-purity-and-weight-doc-hardening — PURITY_ROOTS fallback for pot.test.ts + σ-budget docs for adaptive-spawn-integration.test.ts"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-purity-and-weight-doc-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-purity-and-weight-doc-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-purity-and-weight-doc-hardening.md",
+      "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+      "triade/__tests__/engine/pot.test.ts",
+      "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+      "triade/__tests__/engine/engine.purity.test.ts",
+      "triade/src/engine/core/pot.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/test-utils/helpers.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-54/DW-57",
+      "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/purity-weight-doc-hardening-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 19,
+      "total": 19,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "pct": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "pct": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      },
+      "P3": {
+        "total": 3,
+        "covered": 3,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 6,
+        "criteria_covered": 19
+      },
+      "api": {
+        "tests": 16,
+        "criteria_covered": 16
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 45,
+        "criteria_covered": 19
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 6,
+    "cases": 48,
+    "skipped_cases": 19,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [
+    {
+      "id": "ATDD-dormant-19",
+      "severity": "medium",
+      "reason": "19 ATDD scaffolds are it.skip dormant (RED-phase) — intentional, activated → 19 pass; not a blocker for this bundle since gateway+umbrella+regression are green",
+      "test_file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+      "test_title": "ATDD dormant 19 skipped"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality (naming, fixture reuse, outlier tsc atdd:98 typed <1 minor)",
+      "requirements": []
+    },
+    {
+      "priority": "LOW",
+      "action": "No fallback-miss E2E auto-move needed — primary-hit path is canonical; bench shows <1ms scan on move (R-004 monitored)",
+      "requirements": [
+        "P3-01",
+        "P3-02"
+      ]
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-purity-and-weight-doc-hardening.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

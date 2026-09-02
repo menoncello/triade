@@ -24,14 +24,38 @@ import {
 // sigmaBound and runSeededSession live in test-utils/helpers.ts (lifted from
 // the former module-local copies so the statistical windows shared with the
 // 7.1 contract suite can't drift apart).
+//
+// DW-57 σ-budget (fixed-seed deterministic tripwires — brittle to seed/rng
+// rotation; no band-math changes, DW-58 hand-computed literal thresholds remain
+// the independent oracle):
+// - AC2 directional tripwire: seed 0xc31, N=5000, exact-match (0 off-edge).
+//   Historical uniformity gate that this replaced was N=15000, ±2% absolute
+//   ≈10σ for uniform p=1/16 (σ=√(p(1-p)/N)≈0.00197 → 0.02/σ≈10.1). Bundle
+//   intent phrase "AC2 ±2% ≈10σ at N=5000" preserved as shorthand for the
+//   headroom the deterministic gate enjoys; treat any future seed rotation as
+//   requiring re-validation of the σ budget.
+// - AC7 session gate: seed 0x26c6, N=10000, aggregate 40/40/20 window ±2%
+//   absolute ≈4.1σ for p=0.4 (σ≈0.00490) and ≈5.0σ for p=0.2 (σ≈0.00400).
+//   Deterministic tripwire — survives only if new seed stays inside that
+//   absolute window. Per-tier conditional frequencies are NOT absolute: they
+//   use sigmaBound 5σ (see helpers.ts) and are decoupled from seed-starvation.
+// - Ceiling-ordering gates: seeds 0x51ce+ceiling (and +0x100 for tier-0
+//   exception), N=2000 per ceiling, exact 0-exceed contract — no tolerance.
+// - DisplayRoll uniformity pin: N=10000 mean ±0.015 ≈5.4σ for uniform[0,1)
+//   (Var=1/12, σ_mean=√(1/12/N)≈0.00289 → 0.015/σ≈5.19). Sigma-scaled gates
+//   (displayRoll, per-tier conditional) are 5σ; absolute gates (aggregate,
+//   AC2) remain 4–10σ per the notes above.
 
 function spyRng(...values: number[]): Rng & { calls: number[] } {
   const calls: number[] = [];
   let i = 0;
   const rng = (): number => {
+    if (i >= values.length) {
+      throw new Error(`spyRng exhausted after ${calls.length} scripted draw(s) — the engine drew more than expected`);
+    }
     const v = values[i++];
-    calls.push(v === undefined ? 0.5 : v);
-    return calls[calls.length - 1];
+    calls.push(v);
+    return v;
   };
   return Object.assign(rng, { calls });
 }
@@ -162,6 +186,11 @@ test('[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the oppo
   // rightmost column of the moved row. Every effective move must spawn there,
   // never elsewhere and never in an unchanged line. A regression back to
   // board-wide uniform spawn (or any off-edge placement) fails loudly.
+  // DW-57 σ-budget: fixed seed 0xc31, N=5000, exact 0 off-edge contract.
+  // Historical AC2 uniformity gate was N=15000, ±2% absolute ≈10σ for p=1/16
+  // (σ≈0.00197); current directional gate is deterministic — the "≈10σ at
+  // N=5000" bundle phrase denotes equivalent headroom if reinterpreted as a
+  // frequency gate. Brittle to any future seed rotation or rng switch.
   const N = 5000;
   const rng = mulberry32(0xc31);
   let onEdge = 0;
@@ -181,6 +210,10 @@ test('[P1] AC2 (Epic 12) directional placement tripwire: spawn lands on the oppo
 });
 
 test('[P0] AC7 statistical distribution matches fixed 40/40 + pot-by-ceiling, N3 invariant and displayRoll uniformity over 10k spawns', () => {
+  // DW-57 σ-budget: fixed seed 0x26c6, N=10000. Aggregate 40/40/20 window is
+  // absolute ±2% (≈4.1σ for p=0.4, ≈5.0σ for p=0.2) — deterministic tripwire,
+  // brittle to seed rotation. Per-tier conditional frequencies below use
+  // sigmaBound 5σ (seed-starvation/knife-edge decoupled since 2026-08-23).
   const { spawnValues, displayRolls, n3pairs, tieredPairs } = runSeededSession(0x26c6, 10000);
   const N = spawnValues.length;
   assert.ok(N >= 10000);
@@ -192,7 +225,7 @@ test('[P0] AC7 statistical distribution matches fixed 40/40 + pot-by-ceiling, N3
     else if (v === 2) twos++;
     else pots++;
   }
-  const tol = 0.02;
+  const tol = 0.02; // DW-57: ~4–5σ at N=10k — see header σ-budget; absolute window, no sigma scaling (hand-computed DW-58 literals remain the oracle, no band-math change)
   assert.ok(Math.abs(ones / N - 0.4) < tol, `expected ~40% ones, got ${(ones / N).toFixed(4)}`);
   assert.ok(Math.abs(twos / N - 0.4) < tol, `expected ~40% twos, got ${(twos / N).toFixed(4)}`);
   assert.ok(Math.abs(pots / N - 0.2) < tol, `expected ~20% pot band, got ${(pots / N).toFixed(4)}`);
@@ -243,6 +276,9 @@ test('[P1] AC7 pot-by-ceiling composition: every tier\'s conditional pot frequen
   // Exhaustive per-tier statistical check of the combined resolver: aggregate
   // pot share ≈ POT_WEIGHT and within-pot conditional frequencies match
   // normalizeTo(POT_WEIGHT, potWeights(pot)) / POT_WEIGHT for EVERY ceiling.
+  // DW-57 σ-budget: seeds 0x5eed+ceiling, N=12000 per ceiling. Aggregate pot
+  // share window is absolute ±2% (≈5.4σ for p=0.2); conditional frequencies
+  // use sigmaBound 5σ (max 0.01 floor) — decoupled from seed-starvation.
   const ceilings = [48, 96, 192, 384, 768, 1536];
   const N = 12000;
   for (const ceiling of ceilings) {
@@ -283,15 +319,38 @@ test('[P1] determinism: identical seed reproduces the identical { board, pending
 test('[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result', () => {
   const base = gameState(staticBoard([1, 2, null, null]), { value: 1, displayRoll: 0 });
   const r1 = game.move(base, 'left', rngOf(0.1, 0.2, 0.3));
-  const replayInput = { board: r1.board, pendingSpawn: r1.pendingSpawn };
+  const replayInput = game.stateFromResult(r1);
   const r2a = game.move(replayInput, 'right', rngOf(0.25, 0.35, 0.45));
   const r2b = game.move({ board: r1.board, pendingSpawn: { ...r1.pendingSpawn } }, 'right', rngOf(0.25, 0.35, 0.45));
   assert.strictEqual(r2a.moved, true);
   assert.deepStrictEqual(r2a, r2b, 'state object fully determines the next result — no hidden state');
 });
 
+test('[P1] tier-0 ceiling-ordering exception: pot value 3 legitimately exceeds tiny ceiling 0/1/2 (documented harmless)', () => {
+  // Game.ts:64-69 documents that tier-0 is the harmless exception — pot value 3 can exceed a tiny ceiling.
+  // This was the exact case excluded from the tier>=1 ordering test and asserted nowhere (DW-63).
+  // We pin that the exception actually occurs and is observable, so future refactors don't "fix" it away.
+  // DW-57 σ-budget: seeds 0x51ce+ceiling+0x100, N=2000 per tiny ceiling, exact contract (no tolerance).
+  for (const ceiling of [0, 1, 2]) {
+    const rng = mulberry32(0x51ce + ceiling + 0x100);
+    let sawThree = false;
+    let sawExceeding = false;
+    for (let i = 0; i < 2000; i++) {
+      const v = game.resolveSpawn(ceiling, rng);
+      assert.ok(isValidSpawnValue(v), `ceiling ${ceiling}: spawn value ${v} invalid`);
+      // Tier-0 pot is [3]; combined band is 1(0.4),2(0.4),3(0.2) — only 3 can be pot and exceed 0/1/2
+      assert.ok(v === 1 || v === 2 || v === 3, `ceiling ${ceiling}: tier-0 spawn must be 1,2 or 3, got ${v}`);
+      if (v === 3) sawThree = true;
+      if (v > ceiling) sawExceeding = true;
+    }
+    assert.ok(sawThree, `ceiling ${ceiling}: must eventually spawn 3 (tier-0 pot)`);
+    assert.ok(sawExceeding, `ceiling ${ceiling}: value 3 must exceed tiny ceiling ${ceiling} at least once (harmless exception)`);
+  }
+});
+
 // Tier >= 1 only: for ceilings 0/1/2 the tier-0 pot value 3 can legitimately
 // exceed the ceiling (documented exception in spawn.ts/game.ts comments).
+// DW-57 σ-budget: seeds 0x51ce+ceiling, N=2000 per ceiling, exact 0-exceed contract (no tolerance, no sigma window).
 test('[P1] ceiling ordering: resolveSpawn never returns a value above its ceiling (tier >= 1)', () => {
   for (const ceiling of [48, 96, 192, 384, 768, 1536]) {
     const rng = mulberry32(0x51ce + ceiling);

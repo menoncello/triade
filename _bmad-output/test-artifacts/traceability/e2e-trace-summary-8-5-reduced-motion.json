@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-01T18:15:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "0531056",
+  "target": {
+    "type": "story",
+    "id": "8-5",
+    "label": "8-5 Reduced Motion — preset-gated umbrella, 60 FPS fallback, game-over fade (Epic 8, S8.5)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-5-reduced-motion.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-5-reduced-motion.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-5-reduced-motion.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {"total": 4, "covered": 4, "pct": 100},
+      "P1": {"total": 1, "covered": 1, "pct": 100},
+      "P2": {"total": 1, "covered": 1, "pct": 100},
+      "P3": {"total": 0, "covered": 0, "pct": 100}
+    },
+    "by_level": {
+      "e2e": {"tests": 10, "criteria_covered": 6},
+      "api": {"tests": 12, "criteria_covered": 6},
+      "component": {"tests": 0, "criteria_covered": 0},
+      "unit": {"tests": 23, "criteria_covered": 6},
+      "other": {"tests": 0, "criteria_covered": 0}
+    }
+  },
+  "tests": {
+    "files": 9,
+    "cases": 45,
+    "skipped_cases": 0,
+    "fixme_cases": 2,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [
+    {"id": "8.5-U-P2-04", "severity": "medium", "reason": "GameBoard overlapping shake/bullet without cancelAnimation — deferred low R-006", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-04] overlapping shake/bullet without cancelAnimation"},
+    {"id": "8.5-U-P2-05", "severity": "medium", "reason": "Burst setTimeout orphan — deferred low R-010", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-05] burst accumulation setTimeout orphan"}
+  ],
+  "recommendations": [
+    {"priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": []}
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-5-reduced-motion.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "CONCERNS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

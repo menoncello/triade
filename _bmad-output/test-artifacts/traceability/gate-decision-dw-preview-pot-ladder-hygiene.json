@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T02:20:07.362118Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-preview-pot-ladder-hygiene",
+    "label": "dw-preview-pot-ladder-hygiene \u2014 tighten weight floor, dedupe state reconstruction, assert tier-0 ceiling exception"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "All P0 criteria met with 100% coverage (7/7) and 100% pass rates across critical helper/statistical/tier-0 paths. All P1 criteria exceeded thresholds with 100% P1 coverage (5/5) and 100% overall coverage (19/19) and 100% overall pass rate (48/48 active). No security issues, no critical NFR failures, no flaky tests. Working-tree delta 3a6038e \u2192 working tree (game.ts:93-95 stateFromResult + index.ts:18 + helpers.ts dedup + App/GameE2ETestFixture/5 smoke suites \u2192 stateFromResult + weights dual gate + adaptive tier-0 exception + rewind) is fully pinned by deterministic host suites 16 gateway + 6 umbrella + 11 weights + 15 adaptive + 19 ATDD dormant (19/19 when activated) + full suite 858/858 (+10 expected RED) all green, both tsc clean, rg allowlists green.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-preview-pot-ladder-hygiene.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

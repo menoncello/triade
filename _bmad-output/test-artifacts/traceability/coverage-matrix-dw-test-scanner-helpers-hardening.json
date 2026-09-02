@@ -1,0 +1,1953 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T00:22:19.807320+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-test-scanner-helpers-hardening",
+    "label": "dw-test-scanner-helpers-hardening \u2014 Test-tooling scanner & RNG helpers hardening"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-test-scanner-helpers-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-test-scanner-helpers-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-test-scanner-helpers-hardening.md",
+      "triade/test-utils/helpers.ts",
+      "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/__tests__/render/transitionPlan.test.ts",
+      "triade/__tests__/ui/gesture-pipeline.test.ts",
+      "triade/__tests__/engine/engine.purity.test.ts",
+      "triade/__tests__/ui/ui.norolls.test.ts",
+      "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/helpers-hardening-fixtures.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "DW-AC-01",
+      "description": "rngOf throws on exhaustion with 'exhausted after N scripted draw(s)' (no silent 0.5, DW-48)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "title": "[P0-01] AC rngOf throws",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 44,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 activate to green"
+        },
+        {
+          "id": "P0-API-01",
+          "title": "[P0] rngOf throws",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 62,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "game-3draw",
+          "title": "adaptive-spawn spy hardened",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 16,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-02",
+      "description": "spyRng (shared helpers.ts) throws on exhaustion + records calls exactly (DW-48)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02",
+          "title": "[P0-02] AC spyRng shared throws",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 55,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-02",
+          "title": "[P0] spyRng shared throws",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 70,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-API-calls",
+          "title": "[P1] spyRng calls exact",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 176,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-03",
+      "description": "spyRng local in adaptive-spawn-integration.test.ts throws (no 0.5 fallback, DW-59)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03",
+          "title": "[P0-03] AC local spyRng throws",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 66,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-03",
+          "title": "local spyRng file scan",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 202,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "adaptive-spy",
+          "title": "local spyRng hardened",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 16,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-04",
+      "description": "stripComments preserves string // and /* (comment-only stripping, blankStrings=false, DW-3)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04",
+          "title": "[P0-04] AC stripComments preserves // and /*",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 80,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-04",
+          "title": "[P0] stripComments preserves string // and /*",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 79,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-01",
+          "title": "[P1] E2E-01 scanner tripwire preserved",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 190,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "engine-purity",
+          "title": "engine.purity ADR-01 green",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 12,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-05",
+      "description": "stripComments escaped-quote edge + not blanking strings (DW-3, R-002/R-009)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "title": "[P0-05] AC stripComments escaped-quote edge",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 102,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-05",
+          "title": "[P0] stripComments escaped-quote",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 98,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-05-esc",
+          "title": "[P2] E2E-05 escaped-quote pin",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 243,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-06",
+      "description": "gameState defaults via defaultPendingSpawn() factory (fresh object, single literal, DW-60)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "title": "[P0-06] AC gameState factory",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 114,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-06",
+          "title": "[P0] gameState factory",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 108,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04",
+          "title": "[P1-04] explicit pendingSpawn",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 198,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-03",
+          "title": "[P1] E2E-03 ledger + factory wiring",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 216,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-07",
+      "description": "stripCommentsAndStrings doc Known limitation \u2014 regex literals mode-desync false NEGATIVE (DW-66, R-003)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07",
+          "title": "[P0-07] AC regex doc",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 132,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-07",
+          "title": "[P0] regex doc",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 124,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-06",
+          "title": "[P2] E2E-06 regex residual",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 260,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-AC-08",
+      "description": "scanner guards stay green on clean codebase (engine.purity + ui.norolls, delegation no naive fallback)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08",
+          "title": "[P0-08] scanner guards green",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 148,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-08",
+          "title": "[P0] scanner guards green",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 137,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-01-again",
+          "title": "engine.purity + ui.norolls suites",
+          "file": "triade/__tests__/ui/ui.norolls.test.ts",
+          "line": 99,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "laneSelect",
+          "title": "laneSelect + app.restart + gameOverOverlay",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 12,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-01",
+      "description": "effective move draw-budget 3: move(...,rngOf(0,0,0.5)) succeeds, rngOf(0,0) throws (R-001/R-004)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01",
+          "title": "[P1-01] effective move 3-draw",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 164,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-API-09",
+          "title": "[P1] effective move 3-draw",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 160,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-02",
+          "title": "[P1] E2E-02 draw-budget",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 204,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "game-move",
+          "title": "game.test.ts 20-site migration 3-draw",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 32,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-02",
+      "description": "newGame 20-draw budget: rngOf(0,0, 9\u00d70, 9\u00d70.5) \u2192 9 tiles, short throws (R-006)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02",
+          "title": "[P1-02] newGame 20-draw",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 176,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-API-10",
+          "title": "[P1] newGame 20-draw",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 168,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-02b",
+          "title": "E2E-02 newGame part",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 204,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "game-new",
+          "title": "game.test.ts newGame 20-draw",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 9,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-03",
+      "description": "extractSpecifiers / extractNamedImports still see real specifiers after hardening (R-002)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03",
+          "title": "[P1-03] extractSpecifiers",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 187,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-08b",
+          "title": "[P0] extractSpecifiers",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 145,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-01-spec",
+          "title": "E2E-01 specifiers",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 190,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-04",
+      "description": "gameState explicit pendingSpawn drives realistic flow (tiered 9 vs default 1, R-010)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04",
+          "title": "[P1-04] explicit pendingSpawn",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 198,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-03b",
+          "title": "E2E-03 explicit tiered",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 216,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-05",
+      "description": "spyRng calls recording exact per draw (no drift, R-001)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05",
+          "title": "[P1-05] spyRng calls exact",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 210,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-API-11",
+          "title": "[P1] spyRng calls exact",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 176,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P1-06",
+      "description": "ledger DW-3/48/59/60/66 done with resolution-undo hash, sprint-status.yaml untouched (R-008)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06",
+          "title": "[P1-06] ledger",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 221,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-API-12",
+          "title": "[P1] ledger",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 187,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-03c",
+          "title": "E2E-03 ledger",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 216,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P2-01",
+      "description": "no 0.5 fallback literal scan in helpers.ts or local spy (R-001)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "title": "[P2-01] SCAN no 0.5 fallback",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 242,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-API-13",
+          "title": "[P2] no 0.5 fallback",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 202,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-05",
+          "title": "[P2] E2E-05 allowlists",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 243,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P2-02",
+      "description": "single parser allowlist + length-preserving blank() (3-site, blankStrings split, R-002)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02",
+          "title": "[P2-02] single parser",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 255,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-API-14",
+          "title": "[P2] single parser",
+          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+          "line": 210,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-05b",
+          "title": "E2E-05 parser",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 243,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P2-03",
+      "description": "template interpolation ${} counted, over-brace not early-close (R-009)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03",
+          "title": "[P2-03] template interp",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 263,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-05c",
+          "title": "E2E-05 template interp",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 243,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P2-04",
+      "description": "quote-in-regex exploratory \u2014 no scanned file contains /'/ pattern (DW-66 residual complement, R-003)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04",
+          "title": "[P2-04] quote-in-regex exploratory",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 274,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-06b",
+          "title": "E2E-06 exploratory",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 260,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P3-01",
+      "description": "cross-cutting concern absent in helpers (no music/RevenueCat/AdMob) \u2014 scope hygiene",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01",
+          "title": "[P3-01] cross-cutting absent",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 282,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-07-scope",
+          "title": "[P3] E2E-07 scope guard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 269,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "DW-P3-02",
+      "description": "stripComments O(n) single-pass <500ms for 10k source (bench smoke, P3)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02",
+          "title": "[P3-02] bench",
+          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+          "line": 286,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "E2E-07-bench",
+          "title": "[P3] E2E-07 bench",
+          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+          "line": 269,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "present",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 20,
+    "fully_covered": 20,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 7,
+      "cases": 58,
+      "skipped_cases": 20,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 15,
+          "criteria_covered": 15
+        },
+        "api": {
+          "tests": 16,
+          "criteria_covered": 15
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 27,
+          "criteria_covered": 20
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-01",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 44,
+        "title": "[P0-01] AC rngOf throws",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase scaffold it.skip \u2014 activate to green"
+      },
+      {
+        "id": "P0-API-01",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 62,
+        "title": "[P0] rngOf throws",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "game-3draw",
+        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+        "line": 16,
+        "title": "adaptive-spawn spy hardened",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-02",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 55,
+        "title": "[P0-02] AC spyRng shared throws",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-02",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 70,
+        "title": "[P0] spyRng shared throws",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-calls",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 176,
+        "title": "[P1] spyRng calls exact",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-03",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 66,
+        "title": "[P0-03] AC local spyRng throws",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-03",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 202,
+        "title": "local spyRng file scan",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "adaptive-spy",
+        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+        "line": 16,
+        "title": "local spyRng hardened",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-04",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 80,
+        "title": "[P0-04] AC stripComments preserves // and /*",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-04",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 79,
+        "title": "[P0] stripComments preserves string // and /*",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 190,
+        "title": "[P1] E2E-01 scanner tripwire preserved",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "engine-purity",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 12,
+        "title": "engine.purity ADR-01 green",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-05",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 102,
+        "title": "[P0-05] AC stripComments escaped-quote edge",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-05",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 98,
+        "title": "[P0] stripComments escaped-quote",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-05-esc",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 243,
+        "title": "[P2] E2E-05 escaped-quote pin",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-06",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 114,
+        "title": "[P0-06] AC gameState factory",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-06",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 108,
+        "title": "[P0] gameState factory",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-04",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 198,
+        "title": "[P1-04] explicit pendingSpawn",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 216,
+        "title": "[P1] E2E-03 ledger + factory wiring",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-07",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 132,
+        "title": "[P0-07] AC regex doc",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-07",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 124,
+        "title": "[P0] regex doc",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-06",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 260,
+        "title": "[P2] E2E-06 regex residual",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-08",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 148,
+        "title": "[P0-08] scanner guards green",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-08",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 137,
+        "title": "[P0] scanner guards green",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-01-again",
+        "file": "triade/__tests__/ui/ui.norolls.test.ts",
+        "line": 99,
+        "title": "engine.purity + ui.norolls suites",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "laneSelect",
+        "file": "triade/__tests__/engine/engine.purity.test.ts",
+        "line": 12,
+        "title": "laneSelect + app.restart + gameOverOverlay",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-01",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 164,
+        "title": "[P1-01] effective move 3-draw",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-09",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 160,
+        "title": "[P1] effective move 3-draw",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 204,
+        "title": "[P1] E2E-02 draw-budget",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "game-move",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 32,
+        "title": "game.test.ts 20-site migration 3-draw",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-02",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 176,
+        "title": "[P1-02] newGame 20-draw",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-10",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 168,
+        "title": "[P1] newGame 20-draw",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-02b",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 204,
+        "title": "E2E-02 newGame part",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "game-new",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 9,
+        "title": "game.test.ts newGame 20-draw",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-03",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 187,
+        "title": "[P1-03] extractSpecifiers",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-08b",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 145,
+        "title": "[P0] extractSpecifiers",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-01-spec",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 190,
+        "title": "E2E-01 specifiers",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-03b",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 216,
+        "title": "E2E-03 explicit tiered",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-05",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 210,
+        "title": "[P1-05] spyRng calls exact",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-11",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 176,
+        "title": "[P1] spyRng calls exact",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-06",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 221,
+        "title": "[P1-06] ledger",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-12",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 187,
+        "title": "[P1] ledger",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-03c",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 216,
+        "title": "E2E-03 ledger",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-01",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 242,
+        "title": "[P2-01] SCAN no 0.5 fallback",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-API-13",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 202,
+        "title": "[P2] no 0.5 fallback",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-05",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 243,
+        "title": "[P2] E2E-05 allowlists",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-02",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 255,
+        "title": "[P2-02] single parser",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-API-14",
+        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
+        "line": 210,
+        "title": "[P2] single parser",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-05b",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 243,
+        "title": "E2E-05 parser",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-03",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 263,
+        "title": "[P2-03] template interp",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-05c",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 243,
+        "title": "E2E-05 template interp",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P2-04",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 274,
+        "title": "[P2-04] quote-in-regex exploratory",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-06b",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 260,
+        "title": "E2E-06 exploratory",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P3-01",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 282,
+        "title": "[P3-01] cross-cutting absent",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-07-scope",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 269,
+        "title": "[P3] E2E-07 scope guard",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P3-02",
+        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "line": 286,
+        "title": "[P3-02] bench",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-07-bench",
+        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
+        "line": 269,
+        "title": "[P3] E2E-07 bench",
+        "level": "e2e",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      }
+    ],
+    "blockers": [
+      {
+        "id": "P0-01",
+        "severity": "high",
+        "reason": "RED-phase scaffold it.skip \u2014 activate to green",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-01] AC rngOf throws"
+      },
+      {
+        "id": "P0-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-02] AC spyRng shared throws"
+      },
+      {
+        "id": "P0-03",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-03] AC local spyRng throws"
+      },
+      {
+        "id": "P0-04",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-04] AC stripComments preserves // and /*"
+      },
+      {
+        "id": "P0-05",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-05] AC stripComments escaped-quote edge"
+      },
+      {
+        "id": "P0-06",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-06] AC gameState factory"
+      },
+      {
+        "id": "P1-04",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-04] explicit pendingSpawn"
+      },
+      {
+        "id": "P0-07",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-07] AC regex doc"
+      },
+      {
+        "id": "P0-08",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P0-08] scanner guards green"
+      },
+      {
+        "id": "P1-01",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-01] effective move 3-draw"
+      },
+      {
+        "id": "P1-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-02] newGame 20-draw"
+      },
+      {
+        "id": "P1-03",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-03] extractSpecifiers"
+      },
+      {
+        "id": "P1-05",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-05] spyRng calls exact"
+      },
+      {
+        "id": "P1-06",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P1-06] ledger"
+      },
+      {
+        "id": "P2-01",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P2-01] SCAN no 0.5 fallback"
+      },
+      {
+        "id": "P2-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P2-02] single parser"
+      },
+      {
+        "id": "P2-03",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P2-03] template interp"
+      },
+      {
+        "id": "P2-04",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P2-04] quote-in-regex exploratory"
+      },
+      {
+        "id": "P3-01",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P3-01] cross-cutting absent"
+      },
+      {
+        "id": "P3-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+        "test_title": "[P3-02] bench"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "P0-01",
+      "severity": "high",
+      "reason": "RED-phase scaffold it.skip \u2014 activate to green",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-01] AC rngOf throws"
+    },
+    {
+      "id": "P0-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-02] AC spyRng shared throws"
+    },
+    {
+      "id": "P0-03",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-03] AC local spyRng throws"
+    },
+    {
+      "id": "P0-04",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-04] AC stripComments preserves // and /*"
+    },
+    {
+      "id": "P0-05",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-05] AC stripComments escaped-quote edge"
+    },
+    {
+      "id": "P0-06",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-06] AC gameState factory"
+    },
+    {
+      "id": "P1-04",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-04] explicit pendingSpawn"
+    },
+    {
+      "id": "P0-07",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-07] AC regex doc"
+    },
+    {
+      "id": "P0-08",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P0-08] scanner guards green"
+    },
+    {
+      "id": "P1-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-01] effective move 3-draw"
+    },
+    {
+      "id": "P1-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-02] newGame 20-draw"
+    },
+    {
+      "id": "P1-03",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-03] extractSpecifiers"
+    },
+    {
+      "id": "P1-05",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-05] spyRng calls exact"
+    },
+    {
+      "id": "P1-06",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P1-06] ledger"
+    },
+    {
+      "id": "P2-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P2-01] SCAN no 0.5 fallback"
+    },
+    {
+      "id": "P2-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P2-02] single parser"
+    },
+    {
+      "id": "P2-03",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P2-03] template interp"
+    },
+    {
+      "id": "P2-04",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P2-04] quote-in-regex exploratory"
+    },
+    {
+      "id": "P3-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P3-01] cross-cutting absent"
+    },
+    {
+      "id": "P3-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
+      "test_title": "[P3-02] bench"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Activate 20 ATDD scaffolds it.skip \u2192 it (RED-phase, already green when de-skipped at 20/20)",
+      "requirements": [
+        "DW-AC-01",
+        "DW-AC-02",
+        "DW-AC-03",
+        "DW-AC-04",
+        "DW-AC-05",
+        "DW-AC-06",
+        "DW-AC-07",
+        "DW-AC-08",
+        "DW-P1-01",
+        "DW-P1-02",
+        "DW-P1-03",
+        "DW-P1-04",
+        "DW-P1-05",
+        "DW-P1-06",
+        "DW-P2-01",
+        "DW-P2-02",
+        "DW-P2-03",
+        "DW-P2-04",
+        "DW-P3-01",
+        "DW-P3-02"
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Revisit deferred regex lexer DW-66 when scanned sources adopt regex with quote",
+      "requirements": [
+        "DW-AC-07"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T02:52:22.855981+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-purity-and-weight-doc-hardening",
+    "label": "dw-purity-and-weight-doc-hardening — PURITY_ROOTS fallback for pot.test.ts + σ-budget docs for adaptive-spawn-integration.test.ts"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (6/6) and overall coverage is 100% (19/19) and P1 coverage is 100% (6/6) — all thresholds met. Working-tree delta abd36bc → working tree (pot.test.ts PURITY_ROOTS_FALLBACK + findFileSync readdirSync Dirent + resolveWithFallback + adaptive header 15-47 DW-57 σ-budget + 4 inline docs) is fully pinned: gateway 16/16 + umbrella 6/6 + pot 6/6 + adaptive 15/15 + engine.purity 5/5 + ATDD 19 dormant (19/19 when activated) all green, both tsc clean for delivered files (ATDD 98 typed <1 minor is dormant and not engine change), rg allowlists green, ledger DW-54/57 done with 64-hex 9a5dc3eb…, no sprint-status write.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-purity-and-weight-doc-hardening.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

@@ -1,10 +1,48 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { weightedValue } from '../../src/engine/core/index.ts';
 import { rngOf, extractSpecifiers } from '../../test-utils/helpers.ts';
+
+// DW-54: file-move fallback for the source-text-coupled purity check.
+// Primary path is kept verbatim (ATDD purity / spawnConfig-keying oracle) —
+// fallback only activates if the file moved. Resolution mirrors
+// engine.purity.test.ts PURITY_ROOTS auto-scan so a move under src/engine
+// or src/game does not silently void the tripwire.
+const PURITY_ROOTS_FALLBACK = [
+  join(dirname(fileURLToPath(import.meta.url)), '../../src/engine'),
+  join(dirname(fileURLToPath(import.meta.url)), '../../src/game'),
+];
+
+function findFileSync(root: string, target: string): string | null {
+  let entries: import('node:fs').Dirent[];
+  try {
+    entries = readdirSync(root, { withFileTypes: true }) as unknown as import('node:fs').Dirent[];
+  } catch {
+    return null;
+  }
+  for (const entry of entries) {
+    const full = join(root, entry.name);
+    if (entry.isDirectory()) {
+      const nested = findFileSync(full, target);
+      if (nested) return nested;
+    } else if (entry.name === target) {
+      return full;
+    }
+  }
+  return null;
+}
+
+function resolveWithFallback(primaryPath: string, targetFileName: string): string {
+  if (existsSync(primaryPath)) return primaryPath;
+  for (const root of PURITY_ROOTS_FALLBACK) {
+    const found = findFileSync(root, targetFileName);
+    if (found) return found;
+  }
+  return primaryPath;
+}
 
 // Story 2.3 (pot tierizado por teto) — activated from ATDD RED-phase scaffolds.
 // Assertions pin EXPECTED behavior per the story acceptance criteria.
@@ -93,7 +131,8 @@ test('[P1] resolver purity and spawnConfig keying (no scattered literals, re-exp
   assert.notStrictEqual(potForTier(2), first, 'each call must return a fresh array');
   assert.deepStrictEqual(first, [3, 6, 12]);
 
-  const potPath = join(dirname(fileURLToPath(import.meta.url)), '../../src/engine/core/pot.ts');
+  const primaryPotPath = join(dirname(fileURLToPath(import.meta.url)), '../../src/engine/core/pot.ts');
+  const potPath = resolveWithFallback(primaryPotPath, 'pot.ts');
   const source = readFileSync(potPath, 'utf8');
   const specifiers = extractSpecifiers(source);
   assert.ok(
@@ -105,7 +144,8 @@ test('[P1] resolver purity and spawnConfig keying (no scattered literals, re-exp
   );
   assert.deepStrictEqual(forbidden, [], 'engine modules must never import RN/React/Skia/Expo');
 
-  const indexPath = join(dirname(fileURLToPath(import.meta.url)), '../../src/engine/core/index.ts');
+  const primaryIndexPath = join(dirname(fileURLToPath(import.meta.url)), '../../src/engine/core/index.ts');
+  const indexPath = resolveWithFallback(primaryIndexPath, 'index.ts');
   const indexSource = readFileSync(indexPath, 'utf8');
   assert.match(
     indexSource,

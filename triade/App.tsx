@@ -5,7 +5,7 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
-import { newGame, move, isGameOver, ceilingDetector, tierForCeiling } from './src/engine/core/index.ts';
+import { newGame, move, isGameOver, ceilingDetector, tierForCeiling, stateFromResult } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { potForTier } from './src/engine/core/pot.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
@@ -28,8 +28,9 @@ import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
-import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
-import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
+import { layoutFor, getBandTop } from './src/ui/layout.ts';
+import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
+import { handleGestureEnd } from './src/ui/gesture.ts';
 import { Hud } from './src/ui/Hud';
 import { laneFromIndex, profileForLaneId } from './src/game/lanes.ts';
 import {
@@ -72,6 +73,9 @@ import { TutorialOverlay } from './src/ui/TutorialOverlay.tsx';
 import { createTutorialState, nextPhase, skipTutorial, isTutorialActive, has12MergeInResult } from './src/game/tutorial.ts';
 import type { TutorialState } from './src/game/tutorial.ts';
 import { ToneScreen } from './src/ui/ToneScreen.tsx';
+import { triggerHapticsForTrace } from './src/feel/haptics.ts';
+import { triggerSfxForTrace, triggerSfxForSpawn, triggerSfxForGameOver } from './src/feel/sfx.ts';
+import { nextSessionBest } from './src/feel/bulletTime.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
 import { useTranslation } from 'react-i18next';
@@ -88,17 +92,21 @@ export default function App() {
 
 type Screen = 'tone' | 'laneSelect' | 'playing';
 
-type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats };
+type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; sessionBestMerge?: number };
 
 function AppContent() {
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { boardSize, bandHeight, isLandscape } = layoutFor({ width, height, insets });
-  const bandTop = insets.top + SAFE_MARGIN + bandHeight;
+  const bandTop = getBandTop(insets, bandHeight);
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
+  const restartSeqRef = useRef(0);
+  const gestureStartSeqRef = useRef(0);
+  const fallbackBusyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastDirectionRef = useRef<Direction | null>(null);
   const adBusyRef = useRef(false);
   const purchaseBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
@@ -112,6 +120,7 @@ function AppContent() {
   const [moveResult, setMoveResult] = useState<MoveResult | null>(null);
   const [match, setMatch] = useState<MatchScore>({ score: 0, best: 0 });
   const [matchStats, setMatchStats] = useState<MatchStats>(() => initialStats(game.board));
+  const [sessionBestMerge, setSessionBestMerge] = useState<number>(0);
   // 3.3 Accelerated per-match budgets (memory, die with match per ADR-02)
   const [undoHistory, setUndoHistory] = useState<Snapshot[]>([]);
   const [undoBudget, setUndoBudget] = useState<UndoBudget>(() => initialUndoBudget());
@@ -234,13 +243,26 @@ function AppContent() {
       const needsReset = hasActiveMatch;
       if (index === selectedLaneIndex && !needsReset) return;
       const nextLaneId: LaneId = laneFromIndex(index).id as LaneId;
+      // S8.4 lane switch resets sessionBestMerge (new session) and clears direction
+      lastDirectionRef.current = null;
+      setSessionBestMerge(0);
       // Changing lane always starts a new game (FR-11, D-008) — best is lane-scoped
       if (needsReset) {
+        // DW-96: lane switch mid-gesture needs same guard as restart
+        restartSeqRef.current += 1;
+        if (fallbackBusyTimerRef.current) {
+          clearTimeout(fallbackBusyTimerRef.current);
+          fallbackBusyTimerRef.current = null;
+        }
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
         setMatch(initialScore(persistedBestByLane[nextLaneId]));
         setMatchStats(initialStats(s.board));
+        if (fallbackBusyTimerRef.current) {
+          clearTimeout(fallbackBusyTimerRef.current);
+          fallbackBusyTimerRef.current = null;
+        }
         busyRef.current = false;
         resetAssistance();
         // Tutorial: new lane may need its own 3-move sequence
@@ -289,6 +311,10 @@ function AppContent() {
     if (!tutorialState || !isTutorialActive(tutorialState)) return;
     const laneId = tutorialState.laneId;
     setTutorialState(null);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
     const nextSettings: Settings = {
       ...settings,
@@ -319,13 +345,17 @@ function AppContent() {
 
   const doMove = useCallback(
     (dir: Direction) => {
+      // S8.3 capture swipe direction synchronously before move() for directional shake
+      lastDirectionRef.current = dir;
       // Capture snapshot before move for undo history (only if effective)
-      const snapshot: Snapshot = { game, match, matchStats };
+      const snapshot: Snapshot = { game, match, matchStats, sessionBestMerge };
       const result = move(game, dir, rngRef.current);
-      setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
+      setGame(stateFromResult(result));
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
       setMatchStats((prev) => applyMoveStats(prev, result.board, result));
+      // S8.4 sessionBestMerge — use functional update to avoid stale closure on rapid moves
+      setSessionBestMerge((prev) => nextSessionBest(result.trace, prev));
       if (result.moved) {
         // T3.4 in-flight gate: an effective move animates; block further swipes
         // until the input gate re-opens (~30% of the animation, via GameBoard's
@@ -333,6 +363,12 @@ function AppContent() {
         // transitionPlan — no animation runs, onMoveSettled never fires, so the
         // gate must only engage on real moves (noop deadlock guard).
         busyRef.current = true;
+        // DW-35/DW-90: App-level fallback if GameBoard never releases (empty plan / bailout)
+        if (fallbackBusyTimerRef.current) clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = setTimeout(() => {
+          fallbackBusyTimerRef.current = null;
+          busyRef.current = false;
+        }, 420);
         setUndoHistory((prev) => [...prev, snapshot]);
         // Hint highlight is one-shot, clear on next move
         setHintHighlight(null);
@@ -364,12 +400,40 @@ function AppContent() {
             setTutorialState(next);
           }
         }
+        // 8-1 Haptics — scaled by merge value (FR-30: stays under Reduced Motion)
+        // Observes trace merge entries (from.length===2, spawned===false) and fires via feel gateway.
+        // Best-effort, never throws, never blocks move dispatch.
+        try {
+          triggerHapticsForTrace(result.trace);
+        } catch {}
+        // 8-6 SFX — coupled with haptics, scaled by same tier (FR-30: Reduced Motion keeps sound)
+        // Thin swappable observer via expo-audio; never blocks move dispatch.
+        try {
+          triggerSfxForTrace(result.trace);
+        } catch {}
+        try {
+          // Spawn thock on every effective move that spawns (trace spawn entry)
+          if (result.moved) {
+            const spawnEntry = result.trace.find((e: any) => e.spawned);
+            if (spawnEntry && Number.isFinite(spawnEntry.value)) {
+              triggerSfxForSpawn(spawnEntry.value);
+            }
+          }
+        } catch {}
+        try {
+          if (result.moved && isGameOver(result.board)) {
+            triggerSfxForGameOver();
+          }
+        } catch {}
       }
     },
-    [game, match, matchStats, tutorialState, settings],
+    [game, match, matchStats, sessionBestMerge, tutorialState, settings],
   );
 
   const handleRestart = useCallback(() => {
+    // S8.3 clear last swipe direction on new game — board shake resets
+    lastDirectionRef.current = null;
+    setSessionBestMerge(0);
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
@@ -387,6 +451,11 @@ function AppContent() {
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
+    restartSeqRef.current += 1;
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
   }, [persistedBestByLane, selectedLaneIndex, entitlements]);
 
   // 3.3 Accelerated assistance handlers — gated by LaneProfile
@@ -418,7 +487,12 @@ function AppContent() {
       setGame(snap.game);
       setMatch(snap.match);
       setMatchStats(snap.matchStats);
+      setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
       return;
     }
@@ -470,7 +544,12 @@ function AppContent() {
       setGame(snap.game);
       setMatch(snap.match);
       setMatchStats(snap.matchStats);
+      setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
     } finally {
       adBusyRef.current = false;
@@ -500,7 +579,12 @@ function AppContent() {
     setGame(snap.game);
     setMatch(snap.match);
     setMatchStats(snap.matchStats);
+    setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
     setMoveResult(null);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
   }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
@@ -642,32 +726,7 @@ function AppContent() {
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(async () => {
-    // No Ads owners: immediate continue without ad
-    if (hasNoAds && activeProfile.canContinue) {
-      const tmp: OrchestratorState = {
-        undoHistory,
-        undoBudget,
-        hintBudget,
-        continueBudget,
-        hintHighlight,
-        bannerDismissed,
-        showUndoPrompt,
-      };
-      const res = orchestratorConsumeContinueAd(tmp, activeProfile);
-      if (!res.ok) return;
-      if (res.snapshot) {
-        setUndoHistory(res.state.undoHistory);
-        setGame(res.snapshot.game);
-        setMatch(res.snapshot.match);
-        setMatchStats(res.snapshot.matchStats);
-        setMoveResult(null);
-      }
-      setContinueBudget(res.state.continueBudget);
-      setHintHighlight(res.state.hintHighlight);
-      setShowUndoPrompt(res.state.showUndoPrompt);
-      busyRef.current = false;
-      return;
-    }
+    if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); if (fallbackBusyTimerRef.current) { clearTimeout(fallbackBusyTimerRef.current); fallbackBusyTimerRef.current = null; } busyRef.current = false; return; }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
     if (!activeProfile.allowAds || !activeProfile.canContinue) return;
@@ -698,11 +757,16 @@ function AppContent() {
         setGame(res.snapshot.game);
         setMatch(res.snapshot.match);
         setMatchStats(res.snapshot.matchStats);
+        setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0);
         setMoveResult(null);
       }
       setContinueBudget(res.state.continueBudget);
       setHintHighlight(res.state.hintHighlight);
       setShowUndoPrompt(res.state.showUndoPrompt);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
     } finally {
       adBusyRef.current = false;
@@ -726,11 +790,16 @@ function AppContent() {
       setGame(res.snapshot.game);
       setMatch(res.snapshot.match);
       setMatchStats(res.snapshot.matchStats);
+      setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0);
       setMoveResult(null);
     }
     setContinueBudget(res.state.continueBudget);
     setHintHighlight(res.state.hintHighlight);
     setShowUndoPrompt(res.state.showUndoPrompt);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
@@ -770,7 +839,20 @@ function AppContent() {
   doMoveRef.current = doMove;
 
   const onMoveSettled = useCallback(() => {
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
+    };
   }, []);
 
   const panGesture = useMemo(
@@ -779,11 +861,13 @@ function AppContent() {
         .activeOffsetX([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
         .activeOffsetY([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
         .runOnJS(true)
+        .onBegin(() => {
+          gestureStartSeqRef.current = restartSeqRef.current;
+        })
         .onEnd((event, success) => {
-          if (busyRef.current) return;
-          if (!success) return;
-          const dir = resolveSwipeDirection({ dx: event.translationX, dy: event.translationY });
-          if (dir) doMoveRef.current(dir);
+          // DW-96: drop dispatch if restart occurred mid-gesture (seq changed)
+          if (gestureStartSeqRef.current !== restartSeqRef.current) return;
+          handleGestureEnd(event, success, busyRef, (dir) => doMoveRef.current(dir));
         }),
     [],
   );
@@ -827,7 +911,10 @@ function AppContent() {
   }
 
   // FR-43 "only 3 available" semantics: the spawnable pot set is driven by the
-  // live board ceiling, computed once per render and shared by both lane previews.
+  // live board ceiling — DW-94 deflate hygiene: recomputed every render from
+  // `game.board` (after `ready` guard) and shared by both lane previews so a
+  // pending rolled at a higher tier fans out through preview's defensive fallback
+  // when the board deflates (availablePot shrinks). Never memoized stale.
   const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   const gameOver = isGameOver(game.board);
@@ -873,7 +960,16 @@ function AppContent() {
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
           <GestureDetector gesture={panGesture}>
-            <GameBoard board={game.board} moveResult={moveResult} width={boardSize} onMoveSettled={onMoveSettled} hintHighlight={hintHighlight} />
+            <GameBoard
+              board={game.board}
+              moveResult={moveResult}
+              width={boardSize}
+              reducedMotion={settings.reducedMotion}
+              sessionBestMerge={sessionBestMerge}
+              onMoveSettled={onMoveSettled}
+              hintHighlight={hintHighlight}
+              direction={lastDirectionRef.current ?? undefined}
+            />
           </GestureDetector>
         </View>
         {/* 3.3 Accelerated learning aids — contextual dismissible prompt-banners, never in Clean */}
@@ -917,7 +1013,7 @@ function AppContent() {
           }}
           isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score)}
           onRestart={handleRestart}
-          reducedMotion={false}
+          reducedMotion={settings.reducedMotion}
           insets={insets}
           activeLaneId={activeLaneId}
           canContinue={canContinueDerived}

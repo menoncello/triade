@@ -1,0 +1,424 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T10:15:00.000000+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-defensive-guards",
+    "label": "dw-engine-defensive-guards — harden matchScore, transitionPlan classify, and game pendingSpawn against malformed inputs"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-defensive-guards.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-defensive-guards.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-defensive-guards.md",
+      "triade/__tests__/engine/defensive-guards.atdd.test.ts",
+      "triade/__tests__/game/matchScore.test.ts",
+      "triade/__tests__/render/transitionPlan.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/src/game/matchScore.ts",
+      "triade/src/render/transitionPlan.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/types.ts",
+      "triade/test-utils/helpers.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-defensive-guards-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-24,30,65",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "266aa03",
+    "head": "000b640",
+    "production_files": [
+      "triade/src/game/matchScore.ts:12-15 (DW-24 sanitized applyMove)",
+      "triade/src/render/transitionPlan.ts:21-43 (DW-30 classify guard)",
+      "triade/src/engine/core/game.ts:27-50,58,83,100 (DW-65 sanitizePending)"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-defensive-guards.md (10 I-O rows, 5 ACs)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC applyMove NaN score — 10,20 stays (NaN sanitized to 0, no best poison via Math.max)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-01-gateway", "title": "applyMove NaN/Infinity/-5 floored →10,20", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-01-atdd", "title": "[P0-01] applyMove NaN sanitized", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-01", "title": "score journey never poisons", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-02",
+      "description": "AC applyMove Infinity/-5 score — 10,20 stays (non-finite/negative treated 0)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-02-gateway", "title": "applyMove Infinity/-5 →10,20", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-02-atdd", "title": "[P0-02] Infinity guard", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-03",
+      "description": "AC applyMove noop with score 5→10,20 no inflation (moved:false => contribution 0)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-03-gateway", "title": "applyMove moved:false with score 5 →10,20", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-03-atdd", "title": "[P0-03] noop guard", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-04",
+      "description": "AC applyMove string \"3\" as any →10,20 (typeof number guard)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-04-gateway", "title": "applyMove string 3 as any →10,20", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-04-atdd", "title": "[P0-04] type guard", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-05",
+      "description": "AC classify empty from[] →slide no throw (Array.isArray guard)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-05-gateway", "title": "classify empty from[] →slide", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-05-atdd", "title": "[P0-05] empty from slide", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-02", "title": "tile plan never throws", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-06",
+      "description": "AC classify malformed undefined/null/non-array →slide; spawned:true→spawn (no deref)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-06-gateway", "title": "classify malformed →slide", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-06-atdd", "title": "[P0-06] malformed from", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-07",
+      "description": "AC classify valid taxonomy merge 2 / hold / slide / noop [] byte-identical",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-07-gateway", "title": "classify valid taxonomy", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-07-atdd", "title": "[P0-07] valid taxonomy", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "transitionPlan-13", "title": "transitionPlan 13-case wall slide/merge/hold/spawn", "file": "triade/__tests__/render/transitionPlan.test.ts", "level": "unit", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-08",
+      "description": "AC game.move undefined pendingSpawn effective → fallback 1 spawned (no throw)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-08-gateway", "title": "game.move undefined effective →1", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-08-atdd", "title": "[P0-08] undefined effective", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-03", "title": "spawn journey never throws", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-09",
+      "description": "AC game.move undefined noop →{1,0} not {} (ADR-06 spread safePending)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-09-gateway", "title": "game.move undefined noop →{1,0}", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-09-atdd", "title": "[P0-09] undefined noop", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-10",
+      "description": "AC game.move NaN value effective →1 not NaN; displayRoll NaN→0 (strict window [0,1))",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-10-gateway", "title": "game.move NaN value →1 displayRoll NaN→0", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-10-atdd", "title": "[P0-10] NaN value/displayRoll", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P0-11",
+      "description": "AC valid pendingSpawn 2 →spawn 2 at [0,3] byte-identical + probe 5-log (10,20×2 + slide + {1,0} + board 1)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-11-gateway", "title": "valid pendingSpawn 2 →2 + probe", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P0-11-atdd", "title": "[P0-11] valid path + probe", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "P0-12-probe", "title": "spec Verification manual probe 5-log", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "game-32", "title": "game 32 pass valid pipeline", "file": "triade/__tests__/engine/game.test.ts", "level": "unit", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-01",
+      "description": "P1 matchScore pipeline 8-case + transitionPlan 13-case + game 32-case walls stay green",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-01-gateway", "title": "matchScore 3+6→9 + transitionPlan wall", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "matchScore-8", "title": "matchScore.test.ts 8 pass", "file": "triade/__tests__/game/matchScore.test.ts", "level": "unit", "status": "active"},
+        {"id": "transitionPlan-13", "title": "transitionPlan.test.ts 13 pass", "file": "triade/__tests__/render/transitionPlan.test.ts", "level": "unit", "status": "active"},
+        {"id": "game-32", "title": "game.test.ts 32 pass", "file": "triade/__tests__/engine/game.test.ts", "level": "unit", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-02",
+      "description": "P1 draw-budget preserved: effective 3 draws, noop 0 (sanitizePending must not consume RNG)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-02-gateway", "title": "draw-budget 3/0", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P1-02-atdd", "title": "[P1-02] draw budget", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-03", "title": "spawn journey draw 3/0", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-03",
+      "description": "P1 ADR-06 snapshot isolation — mutating result.pendingSpawn does not mutate state (shallow copy via ...safePending)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-03-gateway", "title": "ADR-06 isolation", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P1-03-atdd", "title": "[P1-03] isolation", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-04",
+      "description": "P1 ledger DW-24/30/65 done 2026-09-02 + resolution-undo 64-hex f115c8c + sprint-status untouched",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-04-gateway", "title": "ledger + sprint-status", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P1-04-atdd", "title": "[P1-04] ledger", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-04", "title": "ledger closed end-to-end", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-05",
+      "description": "P1 game pipeline smoke: valid effective move spawns next pending via ceiling before placement",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-05-gateway", "title": "game pipeline smoke", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "E2E-03", "title": "spawn journey pipeline", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P1-06",
+      "description": "P1 hygiene + tsc twin gates clean (no shape drift, no bare pendingSpawn.value)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-06-gateway", "title": "tsc both configs clean", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "E2E-06", "title": "scope stays pure", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P2-01",
+      "description": "P2 SCAN single sanitizer Number.isFinite(raw)==1 + no bare score sum (single guard)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-01-gateway", "title": "SCAN sanitizer", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P2-01-atdd", "title": "[P2-01] SCAN sanitizer", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-05", "title": "static allowlists", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P2-02",
+      "description": "P2 SCAN single from guard Array.isArray(from)==1 + no bare entry.from[0] deref",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-02-gateway", "title": "SCAN from guard", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P2-02-atdd", "title": "[P2-02] SCAN from", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P2-03",
+      "description": "P2 SCAN single helper sanitizePending==1 + safePending sites (value 1 hit, ...spread 1 hit, no bare state.pendingSpawn.value)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-03-gateway", "title": "SCAN helper", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P2-03-atdd", "title": "[P2-03] SCAN helper", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P2-04",
+      "description": "P2 SCAN types/shapes + displayRoll window strict [0,1) (no outside leakage)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-04-gateway", "title": "SCAN types/window", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P2-04-atdd", "title": "[P2-04] SCAN window", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P3-01",
+      "description": "P3 exploratory pendingSpawn edges 0/-1/Infinity/\"3\"/null→1 + displayRoll -0.1/1/1.5/NaN→0, 0.5 kept (strict >0 and [0,1) checks)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-01-gateway", "title": "exploratory pendingSpawn edges", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P3-01-atdd", "title": "[P3-01] exploratory edges", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-06", "title": "ragged guards", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P3-02",
+      "description": "P3 exploratory float 3.5→13.5 kept + current.score NaN residual documented (out-of-scope per Review Triage)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-02-gateway", "title": "exploratory float", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P3-02-atdd", "title": "[P3-02] float residual", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P3-03",
+      "description": "P3 hygiene O(1) 5000×3 guards <500ms + never-throw + scope pure (no spawn/feel/layout/monetization drift)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-03-gateway", "title": "hygiene bench O(1)", "file": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts", "level": "api", "status": "active"},
+        {"id": "P3-03-atdd", "title": "[P3-03] hygiene", "file": "triade/__tests__/engine/defensive-guards.atdd.test.ts", "level": "unit", "status": "skipped"},
+        {"id": "E2E-06", "title": "bench + scope hygiene", "file": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts", "level": "e2e", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    }
+  ],
+  "summary": {
+    "total": 24,
+    "full": 24,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {"total": 11, "full": 11, "pct": 100},
+      "P1": {"total": 6, "full": 6, "pct": 100},
+      "P2": {"total": 4, "full": 4, "pct": 100},
+      "P3": {"total": 3, "full": 3, "pct": 100}
+    }
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure engine math, no auth boundary; negative-path is never-throw guard NaN/Infinity/-5 + empty from + undefined pendingSpawn)",
+    "error_path": "present (all malformed inputs pinned: NaN/Infinity/-5 scores, empty [] from, undefined/null pendingSpawn, NaN value/displayRoll)",
+    "ui_journey": "not_applicable (pure engine/render TS, no DOM journey — E2E is host umbrella journeys score→tile→spawn)",
+    "ui_state": "not_applicable"
+  },
+  "quality": {
+    "passing_tests": 33,
+    "total_tests": 57,
+    "active_gateway": 26,
+    "active_umbrella": 7,
+    "dormant_atdd": 24,
+    "existing_matchScore": 8,
+    "existing_transitionPlan": 13,
+    "existing_game": 32,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-defensive-guards.md",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/engine-defensive-guards-fixtures.ts",
+    "gateway": "_bmad-output/test-artifacts/tests/api/engine-defensive-guards.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/engine-defensive-guards.umbrella.spec.ts",
+    "atdd": "triade/__tests__/engine/defensive-guards.atdd.test.ts",
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-defensive-guards.md",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-engine-defensive-guards.md",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary.md"
+  }
+}

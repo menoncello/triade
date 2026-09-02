@@ -1,0 +1,213 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T18:15:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-5",
+    "label": "8-5 Reduced Motion — preset-gated umbrella, 60 FPS fallback, game-over fade (Epic 8, S8.5)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-5-reduced-motion.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-5-reduced-motion.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-5-reduced-motion.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-5-reduced-motion.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/punch.ts",
+      "triade/src/feel/shake.ts",
+      "triade/src/feel/bulletTime.ts",
+      "triade/src/feel/haptics.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/ui/GameOverOverlay.tsx",
+      "triade/App.tsx",
+      "triade/src/services/storage/schema.ts",
+      "triade/benchmarks/feel.bench.test.ts",
+      "triade/__tests__/feel/feel.test.ts",
+      "triade/__tests__/feel/punch.test.ts",
+      "triade/__tests__/feel/shake.test.ts",
+      "triade/__tests__/feel/bulletTime.test.ts",
+      "triade/__tests__/feel/reducedMotion.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/feel-reduced-motion-fixtures.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.5-AC1",
+      "title": "Full feel layer gated under Reduced Motion — shake 0, bullet suppressed, flash false/particles 0/overshootScale 1/overshootMs 0, 1536+ glow false, game-over fade instant (S8.5, FR-30, UX-DR-16)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P0-01", "title": "[P0-01] preset identity vs reduced copy", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 28, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-02", "title": "[P0-02] reducedPresetFor preserves haptic zeroes visuals", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 48, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-03", "title": "[P0-03] punch flat for every tier 3..6144", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 62, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-04", "title": "[P0-04] shake flat via reducedPresetFor", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 79, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-05", "title": "[P0-05] bullet gated while nextSessionBest still advances", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 95, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-07", "title": "[P0-07] glow 1536+ gated", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 125, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-08", "title": "[P0-08] game-over fade branches never throw", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 141, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P0-punch", "title": "[P0] punch flat under Reduced Motion for every tier", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 52, "level": "api", "status": "active"},
+        {"id": "8.5-API-P0-shake", "title": "[P0] shake flat under Reduced Motion", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 61, "level": "api", "status": "active"},
+        {"id": "8.5-API-P0-bullet", "title": "[P0] bullet gated while nextSessionBest still advances", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 68, "level": "api", "status": "active"},
+        {"id": "8.5-U-FEE-PUNCH", "title": "[P0] punch.test Reduced Motion gates all visual", "file": "triade/__tests__/feel/punch.test.ts", "line": 42, "level": "unit", "status": "active"},
+        {"id": "8.5-U-FEE-SHAKE", "title": "[P0] shake.test reducedMotion gating all ->0/false", "file": "triade/__tests__/feel/shake.test.ts", "line": 58, "level": "unit", "status": "active"},
+        {"id": "8.5-U-FEE-BULLET", "title": "[P0] bulletTime.test Reduced Motion sweep", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 54, "level": "unit", "status": "active"},
+        {"id": "8.5-E2E-01", "title": "E2E-01 umbrella full layer gated (P0)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 29, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.5-AC2",
+      "title": "Haptics+sound stay under Reduced Motion — hapticsStyleForValue unchanged, triggerHapticsForTrace never reads reducedMotion, reducedPresetFor preserves heavy (FR-30, UX-DR-16)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P0-06", "title": "[P0-06] haptics stay never gated", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 108, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P0-haptics", "title": "[P0] haptics stay gateway never reads reducedMotion", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 76, "level": "api", "status": "active"},
+        {"id": "8.5-U-FEE-HAPTICS", "title": "[P0] haptics stay via feel.test", "file": "triade/__tests__/feel/feel.test.ts", "line": 88, "level": "unit", "status": "active"},
+        {"id": "8.5-E2E-02", "title": "E2E-02 haptics+sound stay (P0)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 52, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.5-AC3",
+      "title": "Reduced Motion is a preset not a flag — REDUCED_PRESET frozen, reducedPresetFor copy haptic-preserving never-throw, presetFor identity-stable (UX-DR-16, ADR-04)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P0-01", "title": "[P0-01] preset identity vs reduced copy", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 28, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P0-02", "title": "[P0-02] reducedPresetFor preserves haptic zeroes visuals", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 48, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P0-preset", "title": "[P0] REDUCED_PRESET frozen copy preset-not-flag", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 38, "level": "api", "status": "active"},
+        {"id": "8.5-API-P2-datum", "title": "[P2] datum literal scan no scattered literals", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 108, "level": "api", "status": "active"},
+        {"id": "8.5-U-FEE-PRESET", "title": "[P0] feel.test presetNotFlag", "file": "triade/__tests__/feel/feel.test.ts", "line": 41, "level": "unit", "status": "active"},
+        {"id": "8.5-E2E-03", "title": "E2E-03 preset-not-flag contract (P0)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 72, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.5-AC4",
+      "title": "Sanctioned 60 FPS fallback + benchmark both profiles under budget median <0.05ms p99 <0.1ms, SHAKE_CAP 8 and BULLET_TIME_MS 200 single-source never exceeded without data change (ADR-04, NFR-14)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P0-09", "title": "[P0-09] caps single-source + bench both profiles", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 158, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P2-01", "title": "[P2-01] perf micro-bench host-cheap", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 278, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P0-caps", "title": "[P0] caps single-source SHAKE_CAP 8 BULLET 200", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 84, "level": "api", "status": "active"},
+        {"id": "8.5-API-P2-bench", "title": "[P2] perf micro-bench umbrella helpers", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 115, "level": "api", "status": "active"},
+        {"id": "8.5-BENCH-01", "title": "benchmark feel helpers median/p99 sweep full profile", "file": "triade/benchmarks/feel.bench.test.ts", "line": 88, "level": "unit", "status": "active"},
+        {"id": "8.5-BENCH-02", "title": "benchmark feel helpers median/p99 sweep reduced profile", "file": "triade/benchmarks/feel.bench.test.ts", "line": 115, "level": "unit", "status": "active"},
+        {"id": "8.5-E2E-04", "title": "E2E-04 60 FPS fallback + caps (P0)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 92, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.5-AC5",
+      "title": "Haptics gateway + game-over wiring + mid-flight snap + chrome guard — App threads settings.reducedMotion to GameBoard+GameOverOverlay, mid-flight snap withTiming(0,20), board-only Animated.View never chrome (FR-30, UX-DR-27)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P1-01", "title": "[P1-01] trace→feel real engine trace via mulberry32+move", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 183, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P1-02", "title": "[P1-02] App threading settings.reducedMotion to GameBoard+GameOverOverlay", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 199, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P1-03", "title": "[P1-03] GameBoard feel gating board-only", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 221, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P1-04", "title": "[P1-04] GameOverOverlay fade branches instant vs 280ms", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 240, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P1-05", "title": "[P1-05] mid-animation snap withTiming(0,20)", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 259, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P1-06", "title": "[P1-06] chrome guard + haptics stay board never chrome", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 276, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P1-trace", "title": "[P1] trace→feel contract via REAL engine trace", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 92, "level": "api", "status": "active"},
+        {"id": "8.5-API-P1-wiring", "title": "[P1] App wiring settings.reducedMotion", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 101, "level": "api", "status": "active"},
+        {"id": "8.5-E2E-05", "title": "E2E-05 game-over wiring + fade branches (P1)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 115, "level": "e2e", "status": "active"},
+        {"id": "8.5-E2E-06", "title": "E2E-06 mid-flight snap (P1)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 135, "level": "e2e", "status": "active"},
+        {"id": "8.5-E2E-07", "title": "E2E-07 chrome guard board-only (P1)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 155, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.5-AC6",
+      "title": "Boundaries & non-functional: engine purity ADR-01, predicate allowlist 5 sanctioned sites, never-throw, datum single-source, width/overflow, preset allowlist, frozen invariants",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.5-U-P1-01", "title": "[P1-01] non-finite never throw via real trace", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 183, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P2-01", "title": "[P2-01] perf micro-bench", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 278, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P2-02", "title": "[P2-02] datum literal scan", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 290, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P2-03", "title": "[P2-03] reducedMotion allowlist only feel helpers+GameBoard/GameOverOverlay/App never haptics", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 305, "level": "unit", "status": "active"},
+        {"id": "8.5-U-P2-04", "title": "[P2-04] overlapping shake/bullet without cancelAnimation (EXPECTED RED)", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 322, "level": "unit", "status": "fixme"},
+        {"id": "8.5-U-P2-05", "title": "[P2-05] burst accumulation setTimeout orphan without cleanup (EXPECTED RED)", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 342, "level": "unit", "status": "fixme"},
+        {"id": "8.5-U-P2-06", "title": "[P2-06] board edge clipping product decision", "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "line": 361, "level": "unit", "status": "active"},
+        {"id": "8.5-API-P1-edge", "title": "[P1] non-finite and edge never throws", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 98, "level": "api", "status": "active"},
+        {"id": "8.5-API-P2-datum", "title": "[P2] datum literal scan", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 108, "level": "api", "status": "active"},
+        {"id": "8.5-API-P2-bench", "title": "[P2] perf micro-bench", "file": "_bmad-output/test-artifacts/tests/api/reducedMotion.gateway.spec.ts", "line": 115, "level": "api", "status": "active"},
+        {"id": "8.5-E2E-08", "title": "E2E-08 engine purity + datum single-source (P2)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 175, "level": "e2e", "status": "active"},
+        {"id": "8.5-E2E-09", "title": "E2E-09 perf + width/overflow product decision (P2)", "file": "_bmad-output/test-artifacts/tests/e2e/reducedMotion.umbrella.spec.ts", "line": 195, "level": "e2e", "status": "active"}
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {"total": 4, "covered": 4, "percentage": 100},
+      "P1": {"total": 1, "covered": 1, "percentage": 100},
+      "P2": {"total": 1, "covered": 1, "percentage": 100},
+      "P3": {"total": 0, "covered": 0, "percentage": 100}
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 9,
+      "cases": 45,
+      "skipped_cases": 0,
+      "fixme_cases": 2,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {"tests": 10, "criteria_covered": 6},
+        "api": {"tests": 12, "criteria_covered": 6},
+        "component": {"tests": 0, "criteria_covered": 0},
+        "unit": {"tests": 23, "criteria_covered": 6},
+        "other": {"tests": 0, "criteria_covered": 0}
+      }
+    },
+    "tests": [],
+    "blockers": [
+      {"id": "8.5-U-P2-04", "severity": "medium", "reason": "GameBoard overlapping shake/bullet without cancelAnimation — deferred low R-006 (one-line cancelAnimation fix, not S0/S1)", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-04] overlapping shake/bullet without cancelAnimation"},
+      {"id": "8.5-U-P2-05", "severity": "medium", "reason": "Burst setTimeout orphan without cleanup/burstTimerRef — deferred low R-010 (needs burstTimerRef + clear on unmount)", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-05] burst accumulation setTimeout orphan"}
+    ]
+  },
+  "blockers": [
+    {"id": "8.5-U-P2-04", "severity": "medium", "reason": "GameBoard overlapping shake/bullet without cancelAnimation — deferred low R-006", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-04] overlapping shake/bullet without cancelAnimation"},
+    {"id": "8.5-U-P2-05", "severity": "medium", "reason": "Burst setTimeout orphan — deferred low R-010", "test_file": "triade/__tests__/feel/reducedMotion.atdd.test.ts", "test_title": "[P2-05] burst accumulation setTimeout orphan"}
+  ],
+  "recommendations": [
+    {"priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": []},
+    {"priority": "MEDIUM", "action": "Fix 2 P2 deferred lows before next verified: overlapping shake/bullet cancelAnimation (R-006) + burst orphan burstTimerRef (R-010)", "requirements": ["8.5-AC6"]}
+  ]
+}

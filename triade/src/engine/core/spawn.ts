@@ -1,9 +1,20 @@
 import { GRID_SIZE, type Board, type Rng, type SpawnResult } from './types.ts';
-import { FIXED_WEIGHTS, POT_WEIGHT } from '../config/spawnConfig.ts';
+import { FIXED_WEIGHTS, POT_WEIGHT, validateSpawnConfig } from '../config/spawnConfig.ts';
 import type { CeilingTier } from './ceiling.ts';
 import { tierForCeiling } from './ceiling.ts';
 import { potForTier } from './pot.ts';
 import { potWeights, normalizeTo, weightedPicker } from './weights.ts';
+
+// Caller-side runtime guard (DW-46): wire validateSpawnConfig at engine init so
+// a drifted FIXED_WEIGHTS/POT_WEIGHT fails fast even if spawnConfig's self-check
+// is tree-shaken or bypassed via alternate entry point. Single invocation at
+// module evaluation; not per-draw. Spec 2.4: weightedPicker re-normalizes but
+// never asserts the sum — this invariant check closes the silent-degradation gap
+// (pot absorbtion / NaN poisoning → last-index collapse).
+const _spawnWeightValidation = validateSpawnConfig();
+if (!_spawnWeightValidation.ok) {
+  throw new Error(`[spawn] invalid spawn weights: ${_spawnWeightValidation.errors.join('; ')}`);
+}
 
 // Combined single-roll pick (promised by 2.4's AC "the combined distribution is
 // picked by a weightedPicker that always re-normalizes" and 2.5's dev note
@@ -55,6 +66,10 @@ export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): nu
   return pickCombined(tier, rng);
 }
 
+function cloneBoard(board: Board): Board {
+  return board.map((row) => [...row]);
+}
+
 // Place, not roll: puts the given value (the materialized pendingSpawn, per
 // the N3 invariant — the value is never rolled here) into a uniformly random
 // empty cell (one draw via pickIndex). On a full board nothing is placed.
@@ -63,12 +78,15 @@ export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): nu
 // pick). When provided, only empty in-bounds cells within the pool are
 // eligible; a provided-but-empty pool returns nulls and consumes 0 draws
 // (engine-never-throws). Out-of-bounds candidates are silently ignored.
+// Hygiene (DW-23/70/75): clones the board before placing so the input is never
+// mutated and the returned board is a new reference (no shared-mutable alias).
 export function spawnTile(
   board: Board,
   value: number,
   rng: Rng = Math.random,
   candidates?: Array<[number, number]>
 ): SpawnResult {
+  const next = cloneBoard(board);
   if (candidates === undefined) {
     const empty: Array<[number, number]> = [];
     for (let r = 0; r < GRID_SIZE; r++) {
@@ -76,14 +94,14 @@ export function spawnTile(
         if (board[r][c] === null) empty.push([r, c]);
       }
     }
-    if (empty.length === 0) return { board, cell: null, value: null };
+    if (empty.length === 0) return { board: next, cell: null, value: null };
     const cell = empty[pickIndex(empty.length, rng)];
-    board[cell[0]][cell[1]] = value;
-    return { board, cell, value };
+    next[cell[0]][cell[1]] = value;
+    return { board: next, cell, value };
   }
   const pool = candidates.filter(([r, c]) => r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE && board[r][c] === null);
-  if (pool.length === 0) return { board, cell: null, value: null };
+  if (pool.length === 0) return { board: next, cell: null, value: null };
   const cell = pool[pickIndex(pool.length, rng)];
-  board[cell[0]][cell[1]] = value;
-  return { board, cell, value };
+  next[cell[0]][cell[1]] = value;
+  return { board: next, cell, value };
 }

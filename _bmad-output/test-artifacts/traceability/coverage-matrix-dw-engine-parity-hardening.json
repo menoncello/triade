@@ -1,0 +1,925 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T11:57:30.814055+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-parity-hardening",
+    "label": "dw-engine-parity-hardening \u2014 spawn-nothing / blind-spot / multi-move / ladder-ceiling chain (DW-25, DW-26, DW-34, DW-103)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-engine-parity-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-parity-hardening.md",
+      "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+      "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/ceiling.ts",
+      "triade/src/engine/core/pot.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/src/game/matchStats.ts",
+      "triade/src/game/matchScore.ts",
+      "triade/test-utils/helpers.ts",
+      "triade/src/utils/mulberry32.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-parity-hardening-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-25,26,34,103",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "398a06d",
+    "head": "73f1b73 (commit 8f62b44 on main, working-tree HEAD 73f1b73)",
+    "production_files": [
+      "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts:1-223 (DW-26 header + DW-25 5 spawn-nothing + DW-34 5 replay)",
+      "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts:1-129 (DW-103 12-ceiling ladder + wiring + isNewRecord)",
+      "triade/__tests__/engine/game.test.ts:1 header doc DW-26",
+      "triade/src/engine/* byte-identical (spawn.ts:72-96 cloneBoard + game.ts:41-105 3/0/20 draws + ceiling.ts:5-50 + pot.ts:6-9 unchanged)"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md (6 I-O rows, 5 ACs)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "DW-25 spawn-nothing omitted candidates full board \u2192 nulls, 0 draws, clone!==input, board unchanged",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01-triade",
+          "title": "[P0-01] DW-25 omitted candidates full \u2192 nulls 0 draws clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 64,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "[P0-API-01] DW-25 omitted candidates full \u2192 nulls 0 draws clone",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-unit",
+          "title": "[P0-01] DW-25 omitted candidates full board \u2192 nulls, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-02",
+      "description": "DW-25 spawn-nothing provided [] pool full board \u2192 nulls, 0 draws, clone",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02-triade",
+          "title": "[P0-02] DW-25 provided [] pool full \u2192 nulls 0 draws clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 77,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "[P0-API-02] DW-25 provided [] pool full \u2192 nulls 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-unit",
+          "title": "[P0-02] DW-25 provided [] pool full",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-03",
+      "description": "DW-25 spawn-nothing occupied [[0,0],[1,1],[2,2]] full board \u2192 nulls, 0 draws (pool filter board[r][c]===null)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03-triade",
+          "title": "[P0-03] DW-25 occupied [[0,0]] full \u2192 nulls 0 draws",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 89,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "[P0-API-03] DW-25 occupied [[0,0],[1,1],[2,2]] full \u2192 nulls",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-unit",
+          "title": "[P0-03] DW-25 occupied candidates",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-04",
+      "description": "DW-25 control non-full board with 1 empty still places with 1 draw (branch not vacuous)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04-triade",
+          "title": "[P0-04] DW-25 control non-full 1 empty \u2192 1 draw clone",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 101,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "[P0-API-04] DW-25 control non-full 1 empty \u2192 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-unit",
+          "title": "[P0-04] DW-25 control non-full",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-05",
+      "description": "DW-26 shared-bug blind spot header doc + mitigation game.test.ts:198 absolute oracle",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05-triade",
+          "title": "[P0-05] DW-26 header shared-bug blind spot + mitigation",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "[P0-API-05] DW-26 blind-spot header 4\u00d7 rg gates",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-unit",
+          "title": "[P0-05] DW-26 header doc",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-oracle",
+          "title": "game.test.ts:198 spawnTile full-board\u2192nulls absolute",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P0-06",
+      "description": "DW-34 multi-move identical seed 42 \u00d710 left/up/right/down + left/left/up/down/right/up deepEqual boards/scores/cumulative/pendingSpawn",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06-triade",
+          "title": "[P0-06] DW-34 seed 42 \u00d710 identical",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 143,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "[P0-API-06] DW-34 seed 42\u00d710 identical",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-unit",
+          "title": "[P0-06] DW-34 seed 42 \u00d710 identical",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-07",
+      "description": "DW-34 diverge brake seed 1 vs 2 \u00d75 anyDiffer true (proves suite would catch drift)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07-triade",
+          "title": "[P0-07] DW-34 seed 1 vs 2 diverge true",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 156,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-gateway",
+          "title": "[P0-API-07] DW-34 seed 1 vs 2 diverge",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-unit",
+          "title": "[P0-07] DW-34 diverge brake",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-08",
+      "description": "DW-34 full-game 20260808 \u00d720 left/up/right/down*5 deterministic finite\u22650",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08-triade",
+          "title": "[P0-08] DW-34 20260808\u00d720 deterministic",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 172,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-gateway",
+          "title": "[P0-API-08] DW-34 20260808\u00d720 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-08-unit",
+          "title": "[P0-08] DW-34 20260808\u00d720 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-09",
+      "description": "DW-103 ladder chain 12 ceilings 0..3072 \u2192 tiers 0\u00d75,1..7 \u2192 pots [[3]..[3\u00d78]] hand-computed literals",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-09-triade",
+          "title": "[P0-09] DW-103 ladder 12 ceilings literal pots",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 37,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-09-umb",
+          "title": "[P0-UMB-01] DW-103 ladder 12 ceilings",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-09-unit",
+          "title": "[P0-09] DW-103 ladder 12 ceilings",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-10",
+      "description": "DW-103 App wiring availablePot = potForTier(tierForCeiling(ceilingDetector(game.board))) once + thin-view overlay no ladder imports",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-10-triade",
+          "title": "[P0-10] DW-103 App wiring pin",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 69,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-10-umb",
+          "title": "[P0-UMB-02] App wiring thin-view + availablePot pipeline",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-10-unit",
+          "title": "[P0-10] DW-103 App wiring",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P0-11",
+      "description": "DW-103 isNewRecord(sessionStartBest,score) gating strict + anti-leak handleRestart never writes sessionStartBest*Ref.current + runtime 0,0 false/0,1 true",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-11-triade",
+          "title": "[P0-11] DW-103 isNewRecord sessionStart gating",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 82,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-11-umb",
+          "title": "[P0-UMB-03] isNewRecord sessionStart gating + anti-leak",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-11-unit",
+          "title": "[P0-11] DW-103 isNewRecord sessionStart",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-01",
+      "description": "DW-25 hygiene sweep 4-case full omit / full [] / full [[0,0]] / full [[0,1],[0,2]] each clone+deepEquals+0 draws",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01-triade",
+          "title": "[P1-01] DW-25 hygiene 4-case",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 117,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "[P1-API-01] DW-25 hygiene 4-case",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-unit",
+          "title": "[P1-01] DW-25 hygiene 4-case",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-02",
+      "description": "DW-34 draw-budget effective 3 draws / noop 0 via spyRng exact + rngOf() throw-on-exhaust",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-triade",
+          "title": "[P1-02] DW-34 draw-budget 3/0",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 183,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "[P1-API-02] DW-34 draw 3/0 rngOf throw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] DW-34 draw-budget 3/0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-03",
+      "description": "DW-34 50 seeded moves 0xc31 \u00d750 cumulative+finalBoard deepEqual (Math.random 0)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-triade",
+          "title": "[P1-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "[P1-API-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] DW-34 50\u00d70xc31 deterministic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-04",
+      "description": "Absolute oracle game.test.ts 32 companion including game.test.ts:198 full-board nulls stays green",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-oracle",
+          "title": "game.test.ts 32 pass including :198 full-board",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] absolute oracle 32 companion green",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-05",
+      "description": "DW-103 no celebration beyond isNewRecord number highlight (confetti/celebrat/lottie/reward absent)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-triade",
+          "title": "[P1-05] DW-103 no celebration beyond isNewRecord",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 105,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-05-umb",
+          "title": "[P1-UMB-01] no celebration beyond isNewRecord",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] DW-103 no celebration",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-06",
+      "description": "DW-103 matchStats monotonic maxTile via initialStats\u2192ceilingDetector\u2192applyMoveStats never deflates 96\u21923\u219296",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-triade",
+          "title": "[P1-06] DW-103 matchStats monotonic",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 115,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-06-umb",
+          "title": "[P1-UMB-02] matchStats monotonic",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] DW-103 matchStats monotonic",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-07",
+      "description": "Deterministic helper hygiene mulberry32/rngOf/spyRng only, no Math.random in parity suites",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07-gateway",
+          "title": "[P1-07] helper mulberry32 only no Math.random",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-07-umb",
+          "title": "[P1-UMB-03] Math.random 0 in parity suites",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-07-unit",
+          "title": "[P1-07] helper mulberry32 only",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P1-08",
+      "description": "Thin-view + stripCommentsAndStrings seam hygiene App ladder single pipeline",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-08-triade",
+          "title": "[P1-08] thin-view strip seam",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 69,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-08-umb",
+          "title": "[P1-UMB-04] thin-view strip seam",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-08-unit",
+          "title": "[P1-08] thin-view strip",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-01",
+      "description": "Ledger resolution-undo 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9b 4 hits done 2026-09-02",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-gateway",
+          "title": "[P2-API-01] ledger 043844070ab 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-umb",
+          "title": "[P2-UMB-01] ledger 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] ledger 4 hits",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-02",
+      "description": "No Math.random in new suites (ui.norolls analogue) 0 hits both parity files",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-unit-a",
+          "title": "[P2-02] no Math.random suite A",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-unit-b",
+          "title": "[P2-02] no Math.random suite B",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-gateway",
+          "title": "[P2-02] no Math.random 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-03",
+      "description": "Single-definition invariants availablePot=1 hit GRID_SIZE=1 POT_BASE_VALUE=2",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] single-definition invariants",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umb",
+          "title": "[P2-UMB-02] single-definition invariants",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-04",
+      "description": "Empty-board 0 vs null edge boardWithMax(null||0)\u2192emptyBoard\u2192ceiling 0",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-triade",
+          "title": "[P2-04] empty-board 0 edge",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 29,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] empty-board 0 edge",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-05",
+      "description": "Candidate pool empty-filter hygiene candidates.filter + board[r][c]===null + GRID_SIZE bounds",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05-unit",
+          "title": "[P2-05] pool GRID_SIZE bounds",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-05-src",
+          "title": "spawn.ts candidates.filter + GRID_SIZE",
+          "file": "triade/src/engine/core/spawn.ts",
+          "line": 72,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "P2-06",
+      "description": "Hand-computed 12-case literal table [[3],\u2026[3\u00d78]] not recomputed oracle (circular-oracle guard)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-06-triade",
+          "title": "[P2-06] literal 12-case table",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 37,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P2-06-unit",
+          "title": "[P2-06] literal 12-case",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P2-07",
+      "description": "sprint-status.yaml ownership git diff empty (orchestrator-owned never write/revert)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-07-unit",
+          "title": "[P2-07] sprint-status.yaml diff empty",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-07-umb",
+          "title": "[P2-UMB-03] sprint-status.yaml diff empty",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P3-01",
+      "description": "Cross-cutting absent Board role grid a11y dev-build frame bench rewarded-ads absent",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] cross-cutting absent",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P3-02",
+      "description": "BENCH 50\u00d7 replay <30 ms wall-clock O(1) <0.1ms per move",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-triade",
+          "title": "[P3-02] BENCH 50\u00d7<30 ms",
+          "file": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] BENCH 50\u00d7<30 ms",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    },
+    {
+      "id": "P3-03",
+      "description": "potForTier cap 30 overflow 48*2^30 \u219231 entries still finite not Infinity",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03-triade",
+          "title": "[P3-03] pot cap 30 overflow",
+          "file": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+          "line": 105,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] pot cap 30 overflow",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 29,
+    "full": 29,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 11,
+        "full": 11,
+        "pct": 100
+      },
+      "P1": {
+        "total": 8,
+        "full": 8,
+        "pct": 100
+      },
+      "P2": {
+        "total": 7,
+        "full": 7,
+        "pct": 100
+      },
+      "P3": {
+        "total": 3,
+        "full": 3,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure engine determinism, no auth; negative-path is never-throw NaN/Infinity/-5 + empty-pool + occupied pool)",
+    "error_path": "present (all malformed inputs pinned: full-board omitted/[]/occupied, rngOf throw-on-exhaust, displayRoll bounds, empty-board null)",
+    "ui_journey": "not_applicable (pure TS engine, no DOM journey \u2014 umbrella journeys are host parity + ladder pipeline)",
+    "ui_state": "not_applicable"
+  },
+  "quality": {
+    "active_gateway": 12,
+    "active_umbrella": 10,
+    "active_triade": 15,
+    "dormant_atdd": 51,
+    "existing_game": 32,
+    "passing_tests": 47,
+    "total_tests": 98,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-engine-parity-hardening.md",
+    "atdd": "_bmad-output/test-artifacts/atdd-checklist-dw-engine-parity-hardening.md",
+    "gateway": "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
+    "unit_combined": "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/engine-parity-hardening-fixtures.ts",
+    "triade_parity": "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
+    "triade_ladder": "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-parity-hardening.md",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary.md"
+  }
+}

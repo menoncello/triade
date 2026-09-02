@@ -1,0 +1,119 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-01T20:45:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "b16a06e",
+  "target": {
+    "type": "story",
+    "id": "8-6",
+    "label": "8-6 SFX haptics — expo-audio thock coupled with haptics, swappable gateway, Reduced Motion keeps sound (Epic 8, S8.6)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-6-sfx-haptics.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-6-sfx-haptics.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-6-sfx-haptics.md",
+      "triade/src/feel/sfx.ts",
+      "triade/src/feel/feel.ts",
+      "triade/src/services/assets/assetManifest.ts",
+      "triade/App.tsx",
+      "triade/__tests__/feel/sfx.atdd.test.ts",
+      "triade/__tests__/feel/sfx.test.ts",
+      "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/feel-sfx-fixtures.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {"total": 4, "covered": 4, "pct": 100},
+      "P1": {"total": 1, "covered": 1, "pct": 100},
+      "P2": {"total": 1, "covered": 1, "pct": 100},
+      "P3": {"total": 0, "covered": 0, "pct": 100}
+    },
+    "by_level": {
+      "e2e": {"tests": 10, "criteria_covered": 6},
+      "api": {"tests": 13, "criteria_covered": 6},
+      "component": {"tests": 0, "criteria_covered": 0},
+      "unit": {"tests": 31, "criteria_covered": 6},
+      "other": {"tests": 0, "criteria_covered": 0}
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 54,
+    "skipped_cases": 0,
+    "fixme_cases": 2,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 1,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [
+    {
+      "id": "8.6-U-P2-06",
+      "severity": "medium",
+      "reason": "placeholder mastering absent — triade/assets/sfx/ 3 wavs not yet landed; degrade to silent no-op is current ship path per spec Residual risks (deferred, not threshold for 8-6 close)",
+      "test_file": "triade/__tests__/feel/sfx.atdd.test.ts",
+      "test_title": "[P2-06] placeholder mastering — triade/assets/sfx/ 3 wavs present (EXPECTED RED until mastering lands)"
+    },
+    {
+      "id": "8.6-E2E-10",
+      "severity": "medium",
+      "reason": "E2E-10 placeholder mastering device ear rank deferred — same wav absence, silent no-crash expected until mastering",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts",
+      "test_title": "E2E-10 placeholder mastering — triade/assets/sfx/ 3 wavs present EXPECTED RED"
+    }
+  ],
+  "recommendations": [
+    {"priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": []},
+    {"priority": "MEDIUM", "action": "Master 3 thock wavs under triade/assets/sfx/ (merge/spawn/gameover) to flip [P2-06]/E2E-10 GREEN — deferred per spec Residual risks, no code change required beyond asset drop", "requirements": ["8.6-AC6"]},
+    {"priority": "LOW", "action": "Device smoke 15-min iOS dev build (SDK 57 prebuild) — verify thock rank 0.45/0.65/1.0 + spawn 0.35 + gameOver 0.9 + FR-30 keep-sound when Reduced Motion ON, after mastering lands", "requirements": ["8.6-AC5", "8.6-AC6"]}
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-6-sfx-haptics.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "CONCERNS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-01T00:00:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "8-4",
+    "label": "8-4 Bullet time — rarity-gated 200ms flash, Snapshot-rewind, Reduced Motion gated (Epic 8, S8.4)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 100% (4/4) and P1 100% (1/1) and overall 100% (6/6) with P0 21/21 and P1 7/7 host pass and overall 99.01% (804/812) exceed deterministic PASS thresholds (P0 100%, P1 ≥90%, overall ≥80%), but 2 P2 EXPECTED RED with waivers remain (R-007 overlapping bullet truncation without cancelAnimation score 4, R-010 width NaN guard score 2) plus manual device smoke P1-07 pending 15-min pre-merge lane — waived per deferred-work.md + spec Residual risks, same precedent as 8-3 CONCERNS (2 P2 RED + pending device). Risk LOW; fixes are one-line cancelAnimation + Number.isFinite(width) guard/product decision and device pass before 8-5.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-4-bullet-time.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

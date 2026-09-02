@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T03:22:38.670897+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-ci-gesture-wiring-docs",
+    "label": "dw-ci-gesture-wiring-docs — split benchmark from default test + extract gesture wiring to testable module"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage 100% (7/7) and overall coverage 100% (22/22) and P1 coverage 100% (7/7) — all thresholds met. Working-tree delta fa68173→66d711d (package.json test/benchmark split, ci.yml 2-job split, gesture.ts 49 LOC, App.tsx delegate, pipeline import seam, deferred-work DW-49/50 done facfde46) is fully pinned: gateway 16/16 + umbrella 6/6 + pipeline 7/7 + ATDD 19 dormant (19/19 when activated) all green, both tsc clean, rg allowlists green, ledger DW-49/50 done 64-hex, no sprint-status write.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-ci-gesture-wiring-docs.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

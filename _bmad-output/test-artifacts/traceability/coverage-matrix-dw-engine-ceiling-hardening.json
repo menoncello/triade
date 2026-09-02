@@ -1,0 +1,516 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T09:37:51.471875+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-ceiling-hardening",
+    "label": "dw-engine-ceiling-hardening — harden ceiling/tier pipeline defensive guards"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-ceiling-hardening.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-ceiling-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-ceiling-hardening.md",
+      "triade/__tests__/engine/ceiling-hardening.atdd.test.ts",
+      "triade/__tests__/engine/ceiling.test.ts",
+      "triade/src/engine/core/ceiling.ts",
+      "triade/src/engine/core/pot.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-ceiling-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-ceiling-hardening-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-41..45",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC missing row guard — [[3,null],undefined,[768]]→768 via Array.isArray(row)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "title": "AC missing row guard — [[3,null],undefined,[768]]→768 via Array.isArray(row)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC invalid tile filter — NaN/-5/0/Infinity ignored →96 via isFinite&&>0",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02",
+          "title": "AC invalid tile filter — NaN/-5/0/Infinity ignored →96 via isFinite&&>0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC tier non-finite/negative/0 guards — -5/0/NaN/Infinity→0 no NaN/Infinity leak",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03",
+          "title": "AC tier non-finite/negative/0 guards — -5/0/NaN/Infinity→0 no NaN/Infinity leak",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC fractional ladder — 47.9→0,48.1→1,95.9→1,96→2 via floor(log2+1e-9)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04",
+          "title": "AC fractional ladder — 47.9→0,48.1→1,95.9→1,96→2 via floor(log2+1e-9)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC boundary ladder pinned — 24→0…6144→8 via 48*2^(k-1)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "title": "AC boundary ladder pinned — 24→0…6144→8 via 48*2^(k-1)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "AC very-large finite + pot cap — 1e15→45/MAX→48 finite + pot 31",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "title": "AC very-large finite + pot cap — 1e15→45/MAX→48 finite + pot 31",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "AC chain integrity — 96→2→3 + Infinity-filtered 96→2 no leak",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07",
+          "title": "AC chain integrity — 96→2→3 + Infinity-filtered 96→2 no leak",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-08",
+      "description": "AC single-guard/formula/cap invariants — 1 isFinite(v),1 board/row,1 log2,2 1e-9",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08",
+          "title": "AC single-guard/formula/cap invariants — 1 isFinite(v),1 board/row,1 log2,2 1e-9",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "P1 very-large + pot cap chain + mid-tier via gateway/umbrella",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01",
+          "title": "P1 very-large + pot cap chain + mid-tier via gateway/umbrella",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "P1 ceiling→tier→pot pipeline + game smoke + pot ladder FR7",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02",
+          "title": "P1 ceiling→tier→pot pipeline + game smoke + pot ladder FR7",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "P1 ledger DW-41..45 done + resolution-undo 64-hex",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03",
+          "title": "P1 ledger DW-41..45 done + resolution-undo 64-hex",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "P1 adaptive-spawn-integration + game pipeline no regression",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04",
+          "title": "P1 adaptive-spawn-integration + game pipeline no regression",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "P1 DEGRADE Infinity tier→0 fallback via potForTier",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05",
+          "title": "P1 DEGRADE Infinity tier→0 fallback via potForTier",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "P1 hygiene + tsc twin gates clean",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06",
+          "title": "P1 hygiene + tsc twin gates clean",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "P2 SCAN tile filter 1 hit + v !== null 0 hit",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "title": "P2 SCAN tile filter 1 hit + v !== null 0 hit",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "P2 SCAN row/board guards 1 each + no bare board[r][c]",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02",
+          "title": "P2 SCAN row/board guards 1 each + no bare board[r][c]",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "P2 SCAN log2 formula 1 + epsilon 2 + isFinite(raw) 1",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03",
+          "title": "P2 SCAN log2 formula 1 + epsilon 2 + isFinite(raw) 1",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "P2 SCAN unbounded 1 + pot cap 2 + ladder doc 1",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04",
+          "title": "P2 SCAN unbounded 1 + pot cap 2 + ladder doc 1",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-ceiling-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "P3 exploratory ragged beyond single undefined + all-invalid→0",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01",
+          "title": "P3 exploratory ragged beyond single undefined + all-invalid→0",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-ceiling-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "P3 hygiene bench O(1) + scope stays pure",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02",
+          "title": "P3 hygiene bench O(1) + scope stays pure",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-ceiling-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ]
+}

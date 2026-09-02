@@ -2,10 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { Canvas, Group, RoundedRect, Text, matchFont } from '@shopify/react-native-skia';
 import type { SkFont } from '@shopify/react-native-skia';
-import { useDerivedValue, useSharedValue, withDelay, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
-import type { Board, MoveResult } from '../engine/core/index.ts';
+import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withSequence, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
+import type { Board, Direction, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
 import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
+import { presetFor } from '../feel/feel.ts';
+import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
+import { BULLET_TIME_MS, shouldTriggerBulletTime } from '../feel/bulletTime.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
@@ -50,6 +53,15 @@ interface TileDescriptor {
   to: [number, number];
   kind: TileKind;
   delay?: number;
+  isMerge?: boolean;
+}
+
+interface Burst {
+  id: string;
+  x: number;
+  y: number;
+  value: number;
+  count: number;
 }
 
 function cellKey(r: number, c: number): string {
@@ -82,6 +94,8 @@ interface AnimatedTileProps {
   kind: TileKind;
   cell: number;
   delay?: number;
+  isMerge?: boolean;
+  reducedMotion?: boolean;
   onVanish: (id: string) => void;
 }
 
@@ -93,6 +107,8 @@ function AnimatedTile({
   kind,
   cell,
   delay = 0,
+  isMerge = false,
+  reducedMotion = false,
   onVanish
 }: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
@@ -101,8 +117,13 @@ function AnimatedTile({
   const y = useSharedValue(fromPos.y);
   const scale = useSharedValue(kind === 'appear' ? 0.5 : 1);
   const opacity = useSharedValue(kind === 'appear' ? 0 : 1);
+  const flashOpacity = useSharedValue(0);
 
   const spring = { damping: 14, stiffness: 260, mass: 0.8 };
+  const isPunch = Boolean(isMerge && !reducedMotion);
+  const punchPreset = isPunch ? presetFor(value) : null;
+  const hasFlash = Boolean(isPunch && punchPreset?.flash);
+  const hasGlow = Boolean(isPunch && value >= 1536);
 
   useEffect(() => {
     if (kind === 'move' || kind === 'vanish') {
@@ -122,10 +143,28 @@ function AnimatedTile({
 
   useEffect(() => {
     if (kind === 'appear') {
-      opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
-      scale.value = withDelay(delay, withSpring(1, spring));
+      if (isPunch && punchPreset) {
+        // Declarative overshoot-and-snap from trace (S8.2) — data-driven scale/duration
+        opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
+        scale.value = withDelay(
+          delay,
+          withSequence(
+            withTiming(punchPreset.overshootScale, { duration: punchPreset.overshootMs }),
+            withSpring(1, spring)
+          )
+        );
+        if (hasFlash) {
+          flashOpacity.value = withDelay(
+            delay,
+            withSequence(withTiming(0.55, { duration: 60 }), withTiming(0, { duration: 140 }))
+          );
+        }
+      } else {
+        opacity.value = withDelay(delay, withTiming(1, { duration: 120 }));
+        scale.value = withDelay(delay, withSpring(1, spring));
+      }
     }
-  }, [delay, kind]);
+  }, [delay, kind, isPunch, hasFlash, punchPreset]);
 
   useEffect(() => {
     if (kind === 'vanish') {
@@ -148,6 +187,18 @@ function AnimatedTile({
 
   return (
     <Group transform={translate}>
+      {/* Glow behind tile for 1536+ only — soft outer rect (only glow in system) */}
+      {hasGlow ? (
+        <RoundedRect
+          x={-4}
+          y={-4}
+          width={cell + 8}
+          height={cell + 8}
+          r={CELL_RADIUS + 2}
+          color="#ff8c2f"
+          opacity={0.28}
+        />
+      ) : null}
       <Group transform={scaleTransform} origin={{ x: cell / 2, y: cell / 2 }}>
         <RoundedRect
           x={0}
@@ -158,6 +209,10 @@ function AnimatedTile({
           color={cellColor(value)}
           opacity={opacity}
         />
+        {/* Flash overlay — imperative worklet via shared value, heavy tier only */}
+        {hasFlash ? (
+          <RoundedRect x={0} y={0} width={cell} height={cell} r={CELL_RADIUS} color="#fff7e0" opacity={flashOpacity} />
+        ) : null}
         {font ? (
           <Text
             x={centerX(font, value, cell)}
@@ -173,16 +228,94 @@ function AnimatedTile({
   );
 }
 
+function ParticleDot({ angle, distance, delay }: { angle: number; distance: number; delay: number }) {
+  const tx = useSharedValue(0);
+  const ty = useSharedValue(0);
+  const op = useSharedValue(1);
+  const sc = useSharedValue(1);
+  useEffect(() => {
+    tx.value = withDelay(delay, withTiming(Math.cos(angle) * distance, { duration: 300 }));
+    ty.value = withDelay(delay, withTiming(Math.sin(angle) * distance, { duration: 300 }));
+    op.value = withDelay(delay, withTiming(0, { duration: 340 }));
+    sc.value = withDelay(delay, withTiming(0.2, { duration: 340 }));
+  }, [angle, distance, delay]);
+  const style = useAnimatedStyle(() => ({
+    transform: [{ translateX: tx.value }, { translateY: ty.value }, { scale: sc.value }],
+    opacity: op.value,
+  }));
+  return (
+    <Animated.View
+      // @ts-ignore reanimated style
+      style={[
+        {
+          position: 'absolute',
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: '#fff0c2',
+          borderWidth: 1,
+          borderColor: '#e8a33d',
+          left: -3,
+          top: -3,
+        },
+        style,
+      ]}
+    />
+  );
+}
+
+function BurstView({ x, y, count }: { x: number; y: number; count: number }) {
+  const dots = useMemo(() => {
+    const arr: Array<{ angle: number; distance: number; delay: number }> = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + (i % 2 ? 0.18 : -0.12);
+      const distance = 14 + (i % 3) * 8 + (count > 8 ? 6 : 0);
+      const delay = (i % 4) * 16;
+      arr.push({ angle, distance, delay });
+    }
+    return arr;
+  }, [count]);
+  return (
+    <View style={{ position: 'absolute', left: x, top: y, width: 0, height: 0 }} pointerEvents="none">
+      {dots.map((d, i) => (
+        <ParticleDot key={i} angle={d.angle} distance={d.distance} delay={d.delay} />
+      ))}
+    </View>
+  );
+}
+
 export interface GameBoardProps {
   board: Board;
   moveResult: MoveResult | null;
   width: number;
+  reducedMotion?: boolean;
+  sessionBestMerge?: number;
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
+  direction?: Direction;
 }
 
-export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlight }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
   const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
+  // S8.3 screen shake — imperative worklet on board container only (never chrome)
+  const shakeX = useSharedValue(0);
+  const shakeY = useSharedValue(0);
+  const shakeStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shakeX.value }, { translateY: shakeY.value }],
+  }));
+  // S8.4 bullet-time flash — imperative worklet on board only (never chrome), ~200ms datum
+  const bulletFlash = useSharedValue(0);
+  const bulletFlashStyle = useAnimatedStyle(() => ({
+    opacity: bulletFlash.value,
+  }));
+  // Cancel shake immediately if Reduced Motion is enabled mid-animation (FR-30, UX-DR-16)
+  useEffect(() => {
+    if (reducedMotion) {
+      shakeX.value = withTiming(0, { duration: 20 });
+      shakeY.value = withTiming(0, { duration: 20 });
+      bulletFlash.value = withTiming(0, { duration: 20 });
+    }
+  }, [reducedMotion, shakeX, shakeY, bulletFlash]);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
@@ -200,6 +333,31 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
     return initial;
   });
   const tilesRef = useRef(tiles);
+  const prevMoveResultRef = useRef<MoveResult | null>(moveResult);
+
+  // Single disciplined writer for tiles state + ref (DW-36/DW-38): every
+  // mutation must route via this helper so tilesRef never desyncs from
+  // React state. No direct setTilesState+separate ref assignment elsewhere.
+  const syncTiles = useCallback((next: TileDescriptor[]) => {
+    tilesRef.current = next;
+    setTilesState(next);
+  }, []);
+
+  const rebuildTilesFromBoard = useCallback(
+    (boardToRender: Board): TileDescriptor[] => {
+      const next: TileDescriptor[] = [];
+      for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+          const v = boardToRender[r][c];
+          if (v !== null) {
+            next.push({ id: nextId(), value: v, from: [r, c], to: [r, c], kind: 'rest' });
+          }
+        }
+      }
+      return next;
+    },
+    [nextId]
+  );
 
   // T3.4 early-input release: onMoveSettled opens the App input gate ~30% into
   // the animation (EARLY_INPUT_MS), not after every tile finishes settling, so
@@ -211,9 +369,16 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     return () => {
-      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      if (settleTimerRef.current) {
+        clearTimeout(settleTimerRef.current);
+        settleTimerRef.current = null;
+        // DW-39: unmount mid-animation must release App gate, not just leak timer
+        onMoveSettledRef.current?.();
+      }
     };
   }, []);
+
+  const [bursts, setBursts] = useState<Burst[]>([]);
 
   const applyPlan = useCallback(
     (plan: TileTransition[]) => {
@@ -226,6 +391,7 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
       for (const t of prev) {
         if (t.kind === 'vanish') next.push(t);
       }
+      const newBursts: Burst[] = [];
       for (let i = 0; i < plan.length; i++) {
         const tr = plan[i];
         if (tr.type === 'spawn') {
@@ -238,7 +404,21 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
           // vanish on its own SLIDE_MS schedule instead of lingering extra ms.
           if (a) next.push({ ...a, from: a.to, to: tr.to, kind: 'vanish', delay: 0 });
           if (b) next.push({ ...b, from: b.to, to: tr.to, kind: 'vanish', delay: 0 });
-          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS });
+          next.push({ id: idPool[i], value: tr.value, from: tr.to, to: tr.to, kind: 'appear', delay: SLIDE_MS, isMerge: true });
+          // Imperative particle burst — only when not reducedMotion; scaled by preset (4/8/16)
+          if (!reducedMotion) {
+            const preset = presetFor(tr.value);
+            if (preset.particleBurst > 0) {
+              const p = pixel(tr.to, cell);
+              newBursts.push({
+                id: `b${idPool[i]}`,
+                x: p.x + cell / 2,
+                y: p.y + cell / 2,
+                value: tr.value,
+                count: preset.particleBurst,
+              });
+            }
+          }
         } else {
           const src = byCell.get(cellKey(tr.from[0][0], tr.from[0][1]));
           if (src) {
@@ -254,38 +434,122 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
           }
         }
       }
-      tilesRef.current = next;
-      setTilesState(next);
+      syncTiles(next);
+      if (newBursts.length > 0) {
+        setBursts((prev) => [...prev, ...newBursts]);
+        // Auto-clear bursts after animation window so they don't accumulate
+        setTimeout(() => {
+          setBursts((prev) => prev.filter((b) => !newBursts.some((nb) => nb.id === b.id)));
+        }, 500);
+      }
     },
-    [nextId]
+    [nextId, cell, reducedMotion, syncTiles]
   );
 
   useEffect(() => {
     if (!moveResult) {
+      // DW-88/DW-89: rebuild tiles when moveResult nulls after non-null (restart/undo)
+      // and clear any pending settle timer so it doesn't fire stale post-restart.
+      if (prevMoveResultRef.current !== null) {
+        if (settleTimerRef.current) {
+          clearTimeout(settleTimerRef.current);
+          settleTimerRef.current = null;
+        }
+        const rebuilt = rebuildTilesFromBoard(board);
+        syncTiles(rebuilt);
+        // Clear bursts that belong to previous game
+        setBursts([]);
+      }
       prevBoardRef.current = board;
+      prevMoveResultRef.current = moveResult;
       return;
     }
     const plan = planTileTransitions(prevBoardRef.current, moveResult);
     applyPlan(plan);
     prevBoardRef.current = board;
+    prevMoveResultRef.current = moveResult;
+    // S8.3 directional screen shake — data-driven from FeelPreset.shakeMs, capped ≤SHAKE_CAP,
+    // disabled under Reduced Motion, silent on NOOP/no-merge, board only.
+    if (moveResult.moved && !reducedMotion && direction) {
+      const maxShake = maxShakeForTrace(moveResult.trace, reducedMotion);
+      const amplitude = Math.min(maxShake, SHAKE_CAP);
+      if (amplitude > 0) {
+        const vec = directionVector(direction);
+        // Only drive the axis matching swipe direction; invalid dir -> zero vector -> no shake
+        if (vec.x !== 0) {
+          shakeX.value = withSequence(
+            withTiming(amplitude * vec.x, { duration: 30 }),
+            withTiming(-amplitude * 0.6 * vec.x, { duration: 40 }),
+            withTiming(amplitude * 0.3 * vec.x, { duration: 30 }),
+            withTiming(0, { duration: 30 }),
+          );
+          shakeY.value = withTiming(0, { duration: 130 });
+        } else if (vec.y !== 0) {
+          shakeY.value = withSequence(
+            withTiming(amplitude * vec.y, { duration: 30 }),
+            withTiming(-amplitude * 0.6 * vec.y, { duration: 40 }),
+            withTiming(amplitude * 0.3 * vec.y, { duration: 30 }),
+            withTiming(0, { duration: 30 }),
+          );
+          shakeX.value = withTiming(0, { duration: 130 });
+        } else {
+          // Invalid direction — suppress shake
+          shakeX.value = withTiming(0, { duration: 20 });
+          shakeY.value = withTiming(0, { duration: 20 });
+        }
+      } else {
+        // Effective move but no merge (slide-only) — cancel any prior shake so it doesn't bleed
+        shakeX.value = withTiming(0, { duration: 20 });
+        shakeY.value = withTiming(0, { duration: 20 });
+      }
+    } else {
+      // NOOP, Reduced Motion, or missing direction — cancel any residual shake
+      // (covers slide-only after merge, NOOP moves, and mid-shake Reduced Motion toggle)
+      if (shakeX.value !== 0 || shakeY.value !== 0) {
+        shakeX.value = withTiming(0, { duration: 20 });
+        shakeY.value = withTiming(0, { duration: 20 });
+      }
+    }
+    // S8.4 bullet time — rarity-gated flash on new session-best, ~200ms, board only
+    // Never throws on invalid trace; Reduced Motion suppresses; NOOP never triggers
+    try {
+      const safeBest = Number.isFinite(sessionBestMerge) ? (sessionBestMerge as number) : 0;
+      if (moveResult.moved && !reducedMotion && shouldTriggerBulletTime(moveResult.trace, safeBest, !!reducedMotion)) {
+        bulletFlash.value = withSequence(
+          withTiming(0.45, { duration: 60 }),
+          withTiming(0, { duration: BULLET_TIME_MS - 60 }),
+        );
+      }
+    } catch {
+      // never throw
+    }
     // Re-arm the input-release timer for this move: a noop (empty plan)
     // animates nothing, so it must not touch the gate. An effective move opens
     // the gate after ~30% of the animation; a new swipe then re-plans and tiles
     // retarget forward to their committed targets.
-    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    // DW-35/DW-90: if engine reports moved:true with empty plan, fallback still releases gate.
+    if (settleTimerRef.current) {
+      clearTimeout(settleTimerRef.current);
+      settleTimerRef.current = null;
+    }
     if (plan.length > 0) {
       settleTimerRef.current = setTimeout(() => {
         settleTimerRef.current = null;
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
+    } else if (moveResult.moved) {
+      // moved:true but empty plan -> deadlock without fallback; release quickly
+      settleTimerRef.current = setTimeout(() => {
+        settleTimerRef.current = null;
+        onMoveSettledRef.current?.();
+      }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
-    tilesRef.current = next;
-    setTilesState(next);
-  }, []);
+    syncTiles(next);
+  }, [syncTiles]);
 
   const renderOrder = (kind: TileKind): number => {
     if (kind === 'appear') return 0;
@@ -297,22 +561,46 @@ export function GameBoard({ board, moveResult, width, onMoveSettled, hintHighlig
 
   return (
     <View style={{ width, height: width }}>
-      <Canvas style={{ width, height: width }}>
-        <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
-        {ordered.map((t) => (
-          <AnimatedTile
-            key={t.id}
-            id={t.id}
-            value={t.value}
-            from={t.from}
-            to={t.to}
-            kind={t.kind}
-            cell={cell}
-            delay={t.delay}
-            onVanish={onVanish}
-          />
-        ))}
-      </Canvas>
+      <Animated.View style={shakeStyle}>
+        <Canvas style={{ width, height: width }}>
+          <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
+          {ordered.map((t) => (
+            <AnimatedTile
+              key={t.id}
+              id={t.id}
+              value={t.value}
+              from={t.from}
+              to={t.to}
+              kind={t.kind}
+              cell={cell}
+              delay={t.delay}
+              isMerge={t.isMerge}
+              reducedMotion={reducedMotion}
+              onVanish={onVanish}
+            />
+          ))}
+        </Canvas>
+      </Animated.View>
+      {/* S8.4 bullet-time flash overlay — board only, ~200ms, suppressed under Reduced Motion */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width,
+            height: width,
+            borderRadius: 14,
+            backgroundColor: '#fff7e0',
+          },
+          bulletFlashStyle,
+        ]}
+      />
+      {/* Imperative particle bursts — worklets in src/feel layer mounted from board (S8.2) */}
+      {bursts.map((b) => (
+        <BurstView key={b.id} x={b.x} y={b.y} count={b.count} />
+      ))}
       {hintHighlight
         ? hintHighlight.map(([r, c]) => {
             const pos = pixel([r, c], cell);

@@ -1,0 +1,256 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-4",
+    "label": "8-4 Bullet time — rarity-gated 200ms flash, Snapshot-rewind, Reduced Motion gated (Epic 8, S8.4)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-4-bullet-time.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-4-bullet-time.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-4-bullet-time.md",
+      "triade/src/feel/bulletTime.ts",
+      "triade/src/feel/feel.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/App.tsx",
+      "triade/src/game/matchOrchestrator.ts",
+      "triade/__tests__/feel/bulletTime.test.ts",
+      "triade/__tests__/feel/bulletTime.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/feel-bullet-time-fixtures.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.4-AC1",
+      "title": "Rarity-gated trigger + datum BULLET_TIME_MS=200 — Given trace with maxMergeValue > sessionBestMerge, when feel evaluates shouldTriggerBulletTime(trace, sessionBest, false), then it fires (new session-best) and nextSessionBest advances; BULLET_TIME_MS===200 single-source",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-U-001", "title": "[P0] BULLET_TIME_MS is 200", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 17, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-01", "title": "[P0-01] AC datum — BULLET_TIME_MS is 200 (single-source for S8.4)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 31, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-02", "title": "[P0-02] AC maxMergeValue — only board merges count (from.length===2 && !spawned && finite)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 41, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-03", "title": "[P0-03] AC isNewSessionBest — rarity gate max > sessionBest", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 62, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-05", "title": "[P0-05] AC multiple merges — max wins single 200ms (not per-merge)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 93, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-09", "title": "[P0-09] AC first-merge-always + rarity sequence (not value-gated)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 169, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-08", "title": "[P0-08] AC nextSessionBest — updated-or-unchanged + undo-rewind simulation (ADR-06)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 140, "level": "unit", "status": "active" },
+        { "id": "8.4-U-009", "title": "[P0] new session-best triggers timing datum 200ms (via BULLET_TIME_MS)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 121, "level": "unit", "status": "active" },
+        { "id": "8.4-API-P0-01", "title": "[P0] shouldTrigger only when maxMergeValue > sessionBest (rarity-gated, not value-gated)", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 44, "level": "api", "status": "active" },
+        { "id": "8.4-E2E-01", "title": "E2E-01 first-merge board-only flash", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 29, "level": "e2e", "status": "active" },
+        { "id": "8.4-E2E-02", "title": "E2E-02 rarity sequence", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 46, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.4-AC2",
+      "title": "Ordinary merge no-trigger but haptics stay — Given ordinary merge where maxMergeValue <= sessionBestMerge, when it resolves, then no bullet time fires (shouldTrigger===false, nextSessionBest unchanged) but haptics still fire (not gated here)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-ATDD-P0-03", "title": "[P0-03] AC isNewSessionBest — rarity gate max > sessionBest (6 vs 6 false, 6 vs 12 false)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 62, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-05", "title": "[P0-05] AC multiple merges — max wins single 200ms (6 vs 12 false unchanged)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 93, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-09", "title": "[P0-09] AC first-merge-always + rarity sequence (later 3 never when best 6)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 169, "level": "unit", "status": "active" },
+        { "id": "8.4-U-002", "title": "[P0] isNewSessionBest true/false (6 vs 6 false, 6 vs 12 false)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 41, "level": "unit", "status": "active" },
+        { "id": "8.4-U-004", "title": "[P0] multiple merges max wins — single 200ms not per-merge ([3,6] vs 12 false)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 62, "level": "unit", "status": "active" },
+        { "id": "8.4-U-008", "title": "[P0] nextSessionBest returns updated best or unchanged (ordinary merge keep)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 98, "level": "unit", "status": "active" },
+        { "id": "8.4-API-P0-02", "title": "[P0] should NOT trigger when max <= sessionBest (ordinary merge)", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 58, "level": "api", "status": "active" },
+        { "id": "8.4-E2E-02", "title": "E2E-02 rarity sequence (ordinary no flash, haptics stay)", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 46, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.4-AC3",
+      "title": "FR-30 Reduced Motion gated (S8.4, FR-30, UX-DR-16) — Given Reduced Motion enabled, when new session-best merge resolves, then flash is suppressed (shouldTrigger(..., true)===false, GameBoard bulletFlash snapped withTiming(0,20) even mid-animation) while nextSessionBest still advances and haptics+sound stay",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-U-003", "title": "[P0] shouldTrigger respects Reduced Motion (true=>false, false=>true)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 53, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-04", "title": "[P0-04] AC shouldTrigger — Reduced Motion gates bullet (FR-30) while nextSessionBest still advances", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 77, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-04", "title": "[P1-04] Reduced Motion mid-flight snap — useEffect snaps bulletFlash to 0 when reducedMotion toggles", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 272, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-02", "title": "[P1-02] App Snapshot/sessionBestMerge wiring — threads reducedMotion into GameBoard", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 216, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-03", "title": "[P1-03] GameBoard flash overlay — trigger gated moved && !reducedMotion && shouldTriggerBulletTime", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 240, "level": "unit", "status": "active" },
+        { "id": "8.4-API-P0-03", "title": "[P0] should NOT trigger under Reduced Motion but still advance sessionBest (FR-30)", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 64, "level": "api", "status": "active" },
+        { "id": "8.4-E2E-03", "title": "E2E-03 Reduced Motion FR-30", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 62, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.4-AC4",
+      "title": "NOOP silent (S8.4) — Given NOOP move or trace with no merge entries (moved:false or only spawned:true/from.length!==2), when bullet observer runs, then no flash fires and no error is thrown (shouldTrigger===false, maxMerge===null, never throws on NaN/Infinity/null/undefined)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-U-005", "title": "[P0] NOOP / empty no trigger", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 74, "level": "unit", "status": "active" },
+        { "id": "8.4-U-006", "title": "[P0] non-finite ignored, never throws", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 87, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-06", "title": "[P0-06] AC NOOP / no-merge silent — never flashes, never throws", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 109, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-07", "title": "[P0-07] AC non-finite safety — never throws, Number.isFinite guards", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 125, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-05", "title": "[P1-05] chrome guard — spawn/NOOP never trigger even at board level", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 294, "level": "unit", "status": "active" },
+        { "id": "8.4-API-P0-04", "title": "[P0] should return null/false for NOOP / spawn-only / slide-only traces", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 72, "level": "api", "status": "active" },
+        { "id": "8.4-E2E-04", "title": "E2E-04 NOOP silent", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 79, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.4-AC5",
+      "title": "Multiple merges max wins + undo-rewind (S8.4, ADR-06) — Given multiple merges in one move, when bullet fires, then single 200ms driven by maxMergeValue (max among merges, not stacked per merge) fires; and given undo pops Snapshot with prior sessionBestMerge, when rewound, then same value re-triggers (Snapshot.sessionBestMerge? with Number.isFinite guard on 7 restore sites)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-U-004", "title": "[P0] multiple merges max wins — single 200ms not per-merge", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 62, "level": "unit", "status": "active" },
+        { "id": "8.4-U-008", "title": "[P0] nextSessionBest returns updated best or unchanged (chain 0->3->6->12 then rewind 6 re-triggers)", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 98, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-05", "title": "[P0-05] AC multiple merges — max wins single 200ms (not per-merge)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 93, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P0-08", "title": "[P0-08] AC nextSessionBest — updated-or-unchanged + undo-rewind simulation (ADR-06)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 140, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-01", "title": "[P1-01] trace→bullet contract via REAL engine trace (move() fixture)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 181, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-02", "title": "[P1-02] App Snapshot/sessionBestMerge wiring — Snapshot includes sessionBestMerge, 7 Number.isFinite guards, functional update", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 216, "level": "unit", "status": "active" },
+        { "id": "8.4-API-P1-02", "title": "[P1] should re-trigger after undo rewind (Snapshot sessionBestMerge, ADR-06)", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 106, "level": "api", "status": "active" },
+        { "id": "8.4-API-P1-01", "title": "[P1] should match real engine trace: fires iff from.length===2 && !spawned && finite", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 81, "level": "api", "status": "active" },
+        { "id": "8.4-E2E-05", "title": "E2E-05 undo rewind Snapshot", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 94, "level": "e2e", "status": "active" },
+        { "id": "8.4-E2E-02", "title": "E2E-02 rarity sequence (single flash not stacked)", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 46, "level": "e2e", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.4-AC6",
+      "title": "Chrome guard + board-only + never exceeds cap (UX-DR-27, S8.4) — Given board flashes, when rendered, then preview card and score never animate with it (Animated.View overlay board only, Canvas sibling, never Hud/PreviewCard); datum never exceeds 200ms without data change (BULLET_TIME_MS single source, BULLET_TIME_MS-60 derived)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.4-ATDD-P1-03", "title": "[P1-03] GameBoard flash overlay — datum single-source, board-only, timing 60+140", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 240, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-05", "title": "[P1-05] chrome guard — bullet overlay is board only, never preview/score", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 294, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P1-06", "title": "[P1-06] datum single-source + engine purity + predicate allowlist", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 316, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-01", "title": "[P2-01] overlapping bullet truncation without cancelAnimation (EXPECTED RED)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 353, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-03", "title": "[P2-03] datum literal scan — no scattered 200/140/60 bullet literals outside datum", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 393, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-05", "title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 437, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-04", "title": "[P2-04] engine purity — triade/src/engine byte-identical, no duplicate predicate drift", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 420, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-06", "title": "[P2-06] single-preset + frozen invariants — FeelPreset still frozen, BULLET_TIME_MS cap never exceeded", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 457, "level": "unit", "status": "active" },
+        { "id": "8.4-ATDD-P2-02", "title": "[P2-02] perf micro-bench — bullet helpers host-cheap (<1ms per 10k sweeps)", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 372, "level": "unit", "status": "active" },
+        { "id": "8.4-E2E-06", "title": "E2E-06 chrome guard", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 110, "level": "e2e", "status": "active" },
+        { "id": "8.4-E2E-07", "title": "E2E-07 overlapping bullet truncation (R-007 deferred)", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 124, "level": "e2e", "status": "active" },
+        { "id": "8.4-E2E-08", "title": "E2E-08 board width / overflow (R-010 deferred)", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 138, "level": "e2e", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 1, "covered": 1, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure feel+render story: no API endpoints, no auth surfaces, no UI journey E2E in host automation (Skia+Reanimated worklets + Taptic require real iPhone). Negative paths covered via P0-07/P0-08 non-finite/invalid, P0-06 NOOP/empty, P1-04 Reduced Motion mid-flight, P1-05 chrome guard, and AC3 FR-30 independence. Every I/O row (new-best 12 vs 6 / ordinary 6 vs 12 / first 3 / multi-merge max / Reduced Motion / NOOP / undo rewind / non-finite / datum 200 / chrome) has boundary+error. E2E-equivalent P1-07 device smoke (real iPhone 0->3 flash / 3 vs 6 no flash / 6 vs 3 flash / 12 vs 6 flash each portrait+landscape; undo after 12 re-flashes; Reduced Motion ON flat while haptics stay; NOOP flat; Hud preview/score never flash; rapid new-bests within 200ms truncated; airplane) is manual pre-merge lane, documented as 8 journeys in _bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts, not scaffolded as Playwright by design (see test-design Execution Order > Device gate). Heuristics all present => 0 gaps."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 45,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 8, "criteria_covered": 6 },
+        "api": { "tests": 7, "criteria_covered": 2 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 30, "criteria_covered": 6 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "8.4-U-001", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 17, "title": "[P0] BULLET_TIME_MS is 200", "level": "unit", "status": "active" },
+      { "id": "8.4-U-002", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 21, "title": "[P0] maxMergeValue extraction — only board merges count", "level": "unit", "status": "active" },
+      { "id": "8.4-U-003", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 41, "title": "[P0] isNewSessionBest true/false", "level": "unit", "status": "active" },
+      { "id": "8.4-U-004", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 53, "title": "[P0] shouldTrigger respects Reduced Motion", "level": "unit", "status": "active" },
+      { "id": "8.4-U-005", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 62, "title": "[P0] multiple merges max wins — single 200ms not per-merge", "level": "unit", "status": "active" },
+      { "id": "8.4-U-006", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 74, "title": "[P0] NOOP / empty no trigger", "level": "unit", "status": "active" },
+      { "id": "8.4-U-007", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 87, "title": "[P0] non-finite ignored, never throws", "level": "unit", "status": "active" },
+      { "id": "8.4-U-008", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 98, "title": "[P0] nextSessionBest returns updated best or unchanged", "level": "unit", "status": "active" },
+      { "id": "8.4-U-009", "file": "triade/__tests__/feel/bulletTime.test.ts", "line": 121, "title": "[P0] new session-best triggers timing datum 200ms", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-01", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 31, "title": "[P0-01] AC datum — BULLET_TIME_MS is 200", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-02", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 41, "title": "[P0-02] AC maxMergeValue — only board merges count", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-03", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 62, "title": "[P0-03] AC isNewSessionBest — rarity gate", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-04", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 77, "title": "[P0-04] AC shouldTrigger — Reduced Motion gates bullet", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-05", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 93, "title": "[P0-05] AC multiple merges — max wins", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-06", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 109, "title": "[P0-06] AC NOOP / no-merge silent", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-07", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 125, "title": "[P0-07] AC non-finite safety", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-08", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 140, "title": "[P0-08] AC nextSessionBest — undo-rewind", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P0-09", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 169, "title": "[P0-09] AC first-merge-always + rarity sequence", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-01", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 181, "title": "[P1-01] trace→bullet contract via REAL engine trace", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-02", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 216, "title": "[P1-02] App Snapshot/sessionBestMerge wiring", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-03", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 240, "title": "[P1-03] GameBoard flash overlay", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-04", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 272, "title": "[P1-04] Reduced Motion mid-flight snap", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-05", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 294, "title": "[P1-05] chrome guard", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P1-06", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 316, "title": "[P1-06] datum single-source + engine purity", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-01", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 353, "title": "[P2-01] overlapping bullet truncation without cancelAnimation (EXPECTED RED)", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-02", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 372, "title": "[P2-02] perf micro-bench", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-03", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 393, "title": "[P2-03] datum literal scan", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-04", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 420, "title": "[P2-04] engine purity", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-05", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 437, "title": "[P2-05] board width / overflow (EXPECTED RED)", "level": "unit", "status": "active" },
+      { "id": "8.4-ATDD-P2-06", "file": "triade/__tests__/feel/bulletTime.atdd.test.ts", "line": 457, "title": "[P2-06] single-preset + frozen invariants", "level": "unit", "status": "active" },
+      { "id": "8.4-API-P0-01", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 44, "title": "[P0] shouldTrigger only when maxMergeValue > sessionBest", "level": "api", "status": "active" },
+      { "id": "8.4-API-P0-02", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 58, "title": "[P0] should NOT trigger when max <= sessionBest", "level": "api", "status": "active" },
+      { "id": "8.4-API-P0-03", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 64, "title": "[P0] should NOT trigger under Reduced Motion but still advance", "level": "api", "status": "active" },
+      { "id": "8.4-API-P0-04", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 72, "title": "[P0] should return null/false for NOOP / spawn-only", "level": "api", "status": "active" },
+      { "id": "8.4-API-P1-01", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 81, "title": "[P1] should match real engine trace: fires iff from.length===2 && !spawned", "level": "api", "status": "active" },
+      { "id": "8.4-API-P1-02", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 106, "title": "[P1] should re-trigger after undo rewind", "level": "api", "status": "active" },
+      { "id": "8.4-API-P2-01", "file": "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts", "line": 118, "title": "[P2] should never throw on non-finite", "level": "api", "status": "active" },
+      { "id": "8.4-E2E-01", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 29, "title": "E2E-01 first-merge board-only flash", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-02", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 46, "title": "E2E-02 rarity sequence", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-03", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 62, "title": "E2E-03 Reduced Motion FR-30", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-04", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 79, "title": "E2E-04 NOOP silent", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-05", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 94, "title": "E2E-05 undo rewind Snapshot", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-06", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 110, "title": "E2E-06 chrome guard", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-07", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 124, "title": "E2E-07 overlapping bullet truncation (deferred)", "level": "e2e", "status": "active" },
+      { "id": "8.4-E2E-08", "file": "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts", "line": 138, "title": "E2E-08 board width / overflow (deferred)", "level": "e2e", "status": "active" }
+    ]
+  },
+  "working_tree": {
+    "delta_commit": "0e2717e",
+    "description": "feat: 8-4 bullet time — rarity-gated 200ms flash on new session-best — 1 commit ahead of 590e461 (baseline e4629cd/590e461 for epic 8). Production delta: triade/src/feel/bulletTime.ts (new 66 LOC, BULLET_TIME_MS=200, 4 pure helpers maxMergeValue/isNewSessionBest/shouldTriggerBulletTime/nextSessionBest with Number.isFinite + try/catch never-throw, board-only filter !spawned && from.length===2 && finite) + triade/src/feel/feel.ts (+2 LOC comment, frozen PRESET_LIGHT/MEDIUM/HEAVY + REDUCED_PRESET intact, defensive comment BULLET_TIME_MS fixed datum not per-preset) + triade/src/game/matchOrchestrator.ts (+1 LOC, Snapshot extended sessionBestMerge?: number) + triade/App.tsx (+48 −33 LOC, sessionBestMerge: number state init 0, Snapshot type extended, doMove captures snapshot with sessionBestMerge before move(), functional setSessionBestMerge(prev=>nextSessionBest(trace,prev)) avoids EARLY_INPUT_MS≈84ms stale closure, reset 0 on handleRestart + lane switch applyLaneSelection/lastDirectionRef clear, restore Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge : 0 on 7 sites (undo/Ad/Iap, continue Ad/Iap, lane), threaded sessionBestMerge + settings.reducedMotion into GameBoard) + triade/src/render/GameBoard.tsx (+43 −1 LOC, props sessionBestMerge?: number, bulletFlash shared value + bulletFlashStyle opacity, imperative withSequence(withTiming(0.45,{duration:60}), withTiming(0,{duration:BULLET_TIME_MS-60})) ≈200ms on Animated.View overlay position:absolute width×width borderRadius:14 #fff7e0, gated moved && !reducedMotion && shouldTriggerBulletTime(trace,safeBest,!!reducedMotion) with safeBest = Number.isFinite(sessionBestMerge) ? sessionBestMerge : 0, Reduced Motion mid-animation snap withTiming(0,20ms) on bulletFlash alongside shake, try/catch never-throw, deps include sessionBestMerge) + triade/__tests__/feel/bulletTime.test.ts (new 133 LOC, 9 P0 cases, always GREEN) + _bmad-output/implementation-artifacts/deferred-work.md (+14 LOC, 4 deferred lows: spawned-undefined, value<3, width NaN, doMove identity). triade/src/engine/** byte-identical (ADR-01 purity) + triggerHapticsForTrace stays independent (not gated here per haptics stay).",
+    "uncommitted_stat": "M _bmad-output/implementation-artifacts/sprint-status.yaml (8-4-bullet-time backlog->done), M _bmad-output/test-artifacts/automation-summary.md (8-3->8-4), M _bmad-output/test-artifacts/test-design-progress.md (8-4 ledger) — all metadata-only; untracked: triade/__tests__/feel/bulletTime.atdd.test.ts (21, 19G/2R) + _bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts (7) + _bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts (8) + _bmad-output/test-artifacts/fixtures/feel-bullet-time-fixtures.ts + atdd-checklist-8-4 + test-design-epic-8-4 (both inputs) — all part of delta assessment. Production files committed at 0e2717e.",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01 verified)",
+    "full_suite": "812 tests, 804 pass / 8 fail (793→804 pass: +9 bulletTime.test.ts +19 bulletTime.atdd GREEN) — 8 = 2 carry-over 8-1 (P1-03 2!==1 tutorial dedup, P2-06 expo-haptics) + 2 carry-over 8-2 (P1-05/P2-01 burst orphan) + 2 carry-over 8-3 (P2-01 shake overlap, P2-05 shake clipping) + 2 new 8-4 (P2-01 cancelAnimation, P2-05 width guard) — same root causes as spec-8-4 Residual risks / deferred-work.md. Scoped 8-4 surface 30 host unit cases (9+21): 28 pass / 2 fail (both P2 expected RED with waiver) + 7 api gateway GREEN + 8 e2e journeys documented manual. tsc --noEmit --project triade/tsconfig.json clean, tsc --noEmit --project triade/tsconfig.test.json clean."
+  },
+  "recommendations": [
+    { "priority": "HIGH", "action": "Fix overlapping bullet truncation (R-007 score 4) — import cancelAnimation from react-native-reanimated and call cancelAnimation(bulletFlash) before new withSequence in GameBoard moveResult effect (one-line). Re-run P2-01 until GREEN and verify rapid new-bests video (heavy 12 then medium 6 within 90ms) shows no freeze and second 200ms flash starts clean. Same class as shake R-001, deferred to before 8-5 (bullet time adds main-thread cost alongside shake 130ms + punch 120ms).", "requirements": ["8.4-AC6"] },
+    { "priority": "MEDIUM", "action": "Product decision on board width guard (R-010 score 2) — add Number.isFinite(width) / Math.max(width,1) guard before GameBoard overlay style width/height=width so degenerate NaN/Infinity does not propagate to RN warning, or accept as deferred cosmetic with UX sign-off (boardWrap overflow:hidden clips at extreme — deferred low in spec Residual risks) and update P2-05 to passing. Capture device screenshot at board corners heavy flash.", "requirements": ["8.4-AC6"] },
+    { "priority": "MEDIUM", "action": "Execute 15-min device smoke (P1-07 in test-design): real iPhone dev build, 0->3 flash board-only, 3 vs 6 no flash, 6 vs 3 flash, 12 vs 6 flash each portrait+landscape; undo after 12 re-flashes; Reduced Motion ON flat while haptics stay; NOOP flat; chrome (Hud preview card / score) never flash; airplane mode; rapid new-bests within 200ms truncated (R-007). Sign-off checkbox in PR description.", "requirements": ["8.4-AC1", "8.4-AC3", "8.4-AC5", "8.4-AC6"] },
+    { "priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality for bulletTime.test.ts + bulletTime.atdd.test.ts (one assertion per test, determinism, no faker, isolation ok).", "requirements": [] },
+    { "priority": "LOW", "action": "Carry-over 8-1/8-2/8-3 waivers (R-001 tutorial 2!==1, R-006 expo-haptics, R-002/R-007 burst leak, R-001/R-007 shake overlap) remain waived until before 8-2/8-3 freeze — do not re-introduce for 8-4. Spawned-undefined + value<3 gaps in bulletTime kept as deferred lows with no fix this story (engine today sets spawned:false explicitly and never emits <3 today).", "requirements": [] }
+  ],
+  "tempCoverageMatrixPath": "/tmp/tea-trace-coverage-matrix-2026-09-01.json"
+}

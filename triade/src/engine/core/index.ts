@@ -15,4 +15,4 @@ export {
   POT_CURVE,
   validateSpawnConfig,
 } from '../config/spawnConfig.ts';
-export { newGame, move, isGameOver } from './game.ts';
+export { newGame, move, isGameOver, stateFromResult } from './game.ts';

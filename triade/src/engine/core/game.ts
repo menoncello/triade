@@ -24,11 +24,22 @@ export function newGame(rng: Rng = Math.random): GameState {
   return { board, pendingSpawn };
 }
 
+function sanitizePending(raw: unknown): PendingSpawn {
+  if (!raw || typeof raw !== 'object') return { value: 1, displayRoll: 0 };
+  const rec = raw as Record<string, unknown>;
+  const v = rec.value;
+  const dr = rec.displayRoll;
+  const safeValue = typeof v === 'number' && Number.isFinite(v) && v > 0 ? (v as number) : 1;
+  const safeDisplay = typeof dr === 'number' && Number.isFinite(dr) && dr >= 0 && dr < 1 ? (dr as number) : 0;
+  return { value: safeValue, displayRoll: safeDisplay };
+}
+
 // state.pendingSpawn (input) = the value THIS effective move materializes;
 // result.pendingSpawn (output) = the value the NEXT effective move will
 // materialize. A noop does neither: no spawn, no score, no turn, no rng draw,
 // and the pending preview stays put.
 export function move(state: GameState, dir: Direction, rng: Rng = Math.random): MoveResult {
+  const safePending = sanitizePending((state as unknown as { pendingSpawn?: unknown }).pendingSpawn);
   const lines = movementLines(state.board, dir);
   const shifted: Array<ReturnType<typeof shiftLine>> = [];
   let score = 0;
@@ -38,9 +49,9 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     score += res.score;
   }
   const built = boardFromLines(shifted.map((s) => s.line), dir);
-  const newBoard = built.board;
+  let effectiveBoard = built.board;
   const trace = built.trace;
-  const moved = !boardsEqual(state.board, newBoard);
+  const moved = !boardsEqual(state.board, effectiveBoard);
   let pendingSpawn: PendingSpawn;
   if (moved) {
     // Directional spawn (Story 12.1): only lines that actually changed during
@@ -68,8 +79,9 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     // pre-spawn ceiling (tier-t pot max 3·2^t < 48·2^(t−1)); tier 0 is the
     // exception (pot value 3 can exceed a tiny ceiling) and harmless there.
     // The order is pinned by adaptive-spawn-integration.test.ts.
-    const ceiling = ceilingDetector(newBoard);
-    const spawn = spawnTile(newBoard, state.pendingSpawn.value, rng, candidates);
+    const ceiling = ceilingDetector(effectiveBoard);
+    const spawn = spawnTile(effectiveBoard, safePending.value, rng, candidates);
+    effectiveBoard = spawn.board;
     if (spawn.cell && spawn.value !== null) {
       trace.push({
         value: spawn.value,
@@ -85,9 +97,15 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
   } else {
     // Shallow copy keeps snapshots structurally independent (ADR-06): a
     // caller mutating result.pendingSpawn must never rewrite prior history.
-    pendingSpawn = { ...state.pendingSpawn };
+    // Hardened for defensive posture (DW-65): malformed pendingSpawn degrades
+    // to {value:1,displayRoll:0} instead of {...undefined} -> {}.
+    pendingSpawn = { ...safePending };
   }
-  return { board: newBoard, score, moved, trace, pendingSpawn };
+  return { board: effectiveBoard, score, moved, trace, pendingSpawn };
+}
+
+export function stateFromResult(result: MoveResult): GameState {
+  return { board: result.board, pendingSpawn: result.pendingSpawn };
 }
 
 export function isGameOver(board: Board): boolean {

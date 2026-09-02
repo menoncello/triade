@@ -123,3 +123,15 @@ export function validateSpawnConfig(
 
   return errors.length === 0 ? { ok: true } : { ok: false, errors };
 }
+
+// Startup fail-fast guard (DW-46): validate shipped defaults at module load so
+// a future edit that drifts FIXED_WEIGHTS/POT_WEIGHT or introduces NaN/negative
+// cannot silently warp pot share or poison weightedPicker comparisons (pot would
+// absorb drift, NaN forces last-index). Lightweight, cold-path single call;
+// weightedPicker re-normalizes per spec 2.4 but never trusts exact sum — this
+// closes that gap. Throws only at init, never during gameplay per-call.
+// No API break: validateSpawnConfig stays pure for explicit caller use.
+const _defaultSpawnConfigValidation = validateSpawnConfig();
+if (!_defaultSpawnConfigValidation.ok) {
+  throw new Error(`[spawnConfig] invalid shipped weights: ${_defaultSpawnConfigValidation.errors.join('; ')}`);
+}

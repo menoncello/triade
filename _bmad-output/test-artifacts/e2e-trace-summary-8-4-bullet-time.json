@@ -1,0 +1,167 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-01T00:00:00.000Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "0e2717e",
+  "target": {
+    "type": "story",
+    "id": "8-4",
+    "label": "8-4 Bullet time — rarity-gated 200ms flash, Snapshot-rewind, Reduced Motion gated (Epic 8, S8.4)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-4-bullet-time.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-4-bullet-time.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-4-bullet-time.md",
+      "triade/src/feel/bulletTime.ts",
+      "triade/src/feel/feel.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/App.tsx",
+      "triade/src/game/matchOrchestrator.ts",
+      "triade/__tests__/feel/bulletTime.test.ts",
+      "triade/__tests__/feel/bulletTime.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/bulletTime.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/bulletTime.flash.spec.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "P2": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 8,
+        "criteria_covered": 6
+      },
+      "api": {
+        "tests": 7,
+        "criteria_covered": 2
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 30,
+        "criteria_covered": 6
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 45,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "present",
+    "ui_state_status": "present"
+  },
+  "gate_status": "CONCERNS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  },
+  "blockers": [
+    {
+      "id": "8.4-ATDD-P2-01",
+      "severity": "medium",
+      "reason": "GameBoard must call cancelAnimation(bulletFlash) before new withSequence to avoid truncated overlap when EARLY_INPUT_MS 84ms re-opens gate before 200ms bullet completes (R-007 deferred) — expected RED until fixed, waived LOW before 8-5",
+      "test_file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+      "test_title": "[P2-01] overlapping bullet truncation without cancelAnimation (EXPECTED RED)"
+    },
+    {
+      "id": "8.4-ATDD-P2-05",
+      "severity": "medium",
+      "reason": "GameBoard bullet overlay should guard width NaN/Infinity via Math.max(width,1) or Number.isFinite check before style width/height (R-010 deferred) — expected RED until product decides guard vs accepted, waived LOW",
+      "test_file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+      "test_title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "action": "Fix overlapping bullet truncation (R-007 score 4) — import cancelAnimation from react-native-reanimated and call cancelAnimation(bulletFlash) before new withSequence in GameBoard moveResult effect",
+      "requirements": ["8.4-AC6"]
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Product decision on board width guard (R-010 score 2) — add Number.isFinite(width) / Math.max(width,1) guard or accept as deferred cosmetic with UX sign-off",
+      "requirements": ["8.4-AC6"]
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Execute 15-min device smoke (P1-07): real iPhone dev build, 0->3 flash board-only, 3 vs 6 no flash, 6 vs 3 flash, 12 vs 6 flash each portrait+landscape; undo after 12 re-flashes; Reduced Motion ON flat while haptics stay; NOOP flat; chrome never flash; airplane mode",
+      "requirements": ["8.4-AC1", "8.4-AC3", "8.4-AC5", "8.4-AC6"]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality for bulletTime.test.ts + bulletTime.atdd.test.ts",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-4-bullet-time.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

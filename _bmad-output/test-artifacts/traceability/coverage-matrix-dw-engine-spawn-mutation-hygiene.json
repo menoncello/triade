@@ -1,0 +1,935 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T09:07:17.162190+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-spawn-mutation-hygiene",
+    "label": "dw-engine-spawn-mutation-hygiene \u2014 clone boards on spawn and deep-freeze helper snapshots"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-spawn-mutation-hygiene.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-spawn-mutation-hygiene.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-spawn-mutation-hygiene.md",
+      "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+      "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/test-utils/helpers.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-spawn-mutation-hygiene-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-23/DW-70/DW-75/DW-81",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC spawnTile clones \u2014 input not mutated, returned board has value at cell, 1 draw",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "title": "AC spawnTile clones \u2014 input not mutated, returned board has value at cell, 1 draw",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "AC spawnTile clones \u2014 input not mutated, returned board has value at cell, 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC spawnTile full board \u2014 returns clone !== input, cell/value null, 0 draws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02",
+          "title": "AC spawnTile full board \u2014 returns clone !== input, cell/value null, 0 draws",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "AC spawnTile full board \u2014 returns clone !== input, cell/value null, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC spawnTile empty candidate pool [] \u2014 clone !== input, nulls, 0 draws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03",
+          "title": "AC spawnTile empty candidate pool [] \u2014 clone !== input, nulls, 0 draws",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "AC spawnTile empty candidate pool [] \u2014 clone !== input, nulls, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC spawnTile all candidates occupied \u2014 clone !== input, nulls, 0 draws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04",
+          "title": "AC spawnTile all candidates occupied \u2014 clone !== input, nulls, 0 draws",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "AC spawnTile all candidates occupied \u2014 clone !== input, nulls, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC spawnTile OOB candidates ignored \u2014 only in-bounds empty eligible",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "title": "AC spawnTile OOB candidates ignored \u2014 only in-bounds empty eligible",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "AC spawnTile OOB candidates ignored \u2014 only in-bounds empty eligible",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "AC spawnTile single candidate deterministic \u2014 clone hygiene",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "title": "AC spawnTile single candidate deterministic \u2014 clone hygiene",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "AC spawnTile single candidate deterministic \u2014 clone hygiene",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "AC gameState snapshot freeze \u2014 deepEqual !== input, frozen outer+rows, mutating stored throws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07",
+          "title": "AC gameState snapshot freeze \u2014 deepEqual !== input, frozen outer+rows, mutating stored throws",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-07-gateway",
+          "title": "AC gameState snapshot freeze \u2014 deepEqual !== input, frozen outer+rows, mutating stored throws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-08",
+      "description": "AC move propagates cloned spawn board \u2014 result.board contains spawned value at opposite-edge candidate, !== input ref, history isolation",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08",
+          "title": "AC move propagates cloned spawn board \u2014 result.board contains spawned value at opposite-edge candidate, !== input ref, history isolation",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P0-08-gateway",
+          "title": "AC move propagates cloned spawn board \u2014 result.board contains spawned value at opposite-edge candidate, !== input ref, history isolation",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-umbrella",
+          "title": "AC move propagates cloned spawn board \u2014 result.board contains spawned value at opposite-edge candidate, !== input ref, history isolation",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "AC game.move 4-direction wall+spawn pipeline preserves line wall compaction after hygiene",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01",
+          "title": "AC game.move 4-direction wall+spawn pipeline preserves line wall compaction after hygiene",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "AC game.move 4-direction wall+spawn pipeline preserves line wall compaction after hygiene",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-umbrella",
+          "title": "AC game.move 4-direction wall+spawn pipeline preserves line wall compaction after hygiene",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "AC transitionPlan congruence \u2014 resultingTiles equals occupiedCells after cloned effectiveBoard",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02",
+          "title": "AC transitionPlan congruence \u2014 resultingTiles equals occupiedCells after cloned effectiveBoard",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "AC transitionPlan congruence \u2014 resultingTiles equals occupiedCells after cloned effectiveBoard",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-umbrella",
+          "title": "AC transitionPlan congruence \u2014 resultingTiles equals occupiedCells after cloned effectiveBoard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "AC draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03",
+          "title": "AC draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "AC draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-umbrella",
+          "title": "AC draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "AC engine.purity ADR-01/05 \u2014 spawn.ts + game.ts import nothing from RN/Skia/Expo",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04",
+          "title": "AC engine.purity ADR-01/05 \u2014 spawn.ts + game.ts import nothing from RN/Skia/Expo",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-04-gateway",
+          "title": "AC engine.purity ADR-01/05 \u2014 spawn.ts + game.ts import nothing from RN/Skia/Expo",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "AC move noop isolation \u2014 deepEqual input board, pendingSpawn !== input ref, 0 draws",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05",
+          "title": "AC move noop isolation \u2014 deepEqual input board, pendingSpawn !== input ref, 0 draws",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-05-gateway",
+          "title": "AC move noop isolation \u2014 deepEqual input board, pendingSpawn !== input ref, 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "AC spawn-candidates uniform still 40/40-like within pool after clone",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06",
+          "title": "AC spawn-candidates uniform still 40/40-like within pool after clone",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "AC spawn-candidates uniform still 40/40-like within pool after clone",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "SCAN single cloneBoard definition per module, no structuredClone/JSON board copy",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "title": "SCAN single cloneBoard definition per module, no structuredClone/JSON board copy",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-01-gateway",
+          "title": "SCAN single cloneBoard definition per module, no structuredClone/JSON board copy",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "SCAN effectiveBoard single propagation site",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02",
+          "title": "SCAN effectiveBoard single propagation site",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-02-gateway",
+          "title": "SCAN effectiveBoard single propagation site",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "SCAN row-freeze completeness \u2014 gameState freezes rows+outer",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03",
+          "title": "SCAN row-freeze completeness \u2014 gameState freezes rows+outer",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-03-gateway",
+          "title": "SCAN row-freeze completeness \u2014 gameState freezes rows+outer",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "SCAN no GRID_SIZE drift \u2014 types.ts single GRID_SIZE=4",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04",
+          "title": "SCAN no GRID_SIZE drift \u2014 types.ts single GRID_SIZE=4",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-04-gateway",
+          "title": "SCAN no GRID_SIZE drift \u2014 types.ts single GRID_SIZE=4",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-05",
+      "description": "SCAN ledger DW-23/70/75/81 done + sprint-status untouched",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05",
+          "title": "SCAN ledger DW-23/70/75/81 done + sprint-status untouched",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-05-gateway",
+          "title": "SCAN ledger DW-23/70/75/81 done + sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-05-umbrella",
+          "title": "SCAN ledger DW-23/70/75/81 done + sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts",
+          "line": 60,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-06",
+      "description": "Hygiene \u2014 clone+freeze O(16) per spawn/move <15 ms gate",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-06",
+          "title": "Hygiene \u2014 clone+freeze O(16) per spawn/move <15 ms gate",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P2-06-gateway",
+          "title": "Hygiene \u2014 clone+freeze O(16) per spawn/move <15 ms gate",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "Exploratory \u2014 200-move alias sweep with frozen snapshots",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01",
+          "title": "Exploratory \u2014 200-move alias sweep with frozen snapshots",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P3-01-gateway",
+          "title": "Exploratory \u2014 200-move alias sweep with frozen snapshots",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "Hygiene \u2014 bench O(16) per spawn/move invisible to frame budget",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02",
+          "title": "Hygiene \u2014 bench O(16) per spawn/move invisible to frame budget",
+          "file": "triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts",
+          "line": 40,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway/umbrella (20 pass when activated)"
+        },
+        {
+          "id": "P3-02-gateway",
+          "title": "Hygiene \u2014 bench O(16) per spawn/move invisible to frame budget",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 22,
+    "fully_covered": 22,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 6,
+        "criteria_covered": 8
+      },
+      "api": {
+        "tests": 20,
+        "criteria_covered": 22
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 26,
+        "criteria_covered": 22
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": []
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 3,
+      "cases": 46,
+      "skipped_cases": 20,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 6,
+          "criteria_covered": 8
+        },
+        "api": {
+          "tests": 20,
+          "criteria_covered": 22
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 20,
+          "criteria_covered": 8
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "coverage_heuristics": {
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "endpoints_without_tests": [],
+    "auth_missing_negative_paths": [],
+    "happy_path_only_criteria": []
+  },
+  "source_sha": "53c4f3d"
+}

@@ -22,6 +22,7 @@ export interface Snapshot {
   game: GameState;
   match: MatchScore;
   matchStats: MatchStats;
+  sessionBestMerge?: number;
 }
 
 export interface OrchestratorState {

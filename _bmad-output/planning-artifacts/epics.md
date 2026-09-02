@@ -878,7 +878,7 @@ So that strategy display can never corrupt the game's randomness.
 
 Jogadores sentem o grande merge via haptics escalados, punch visual, shake direcional e bullet time (Reduced Motion aware), com som e haptics acoplados.
 
-### Story 8.1: Haptics escalados por valor de merge
+### Story 8.1: Haptics
 
 As a player,
 I want the device to tap with the weight of my merge,
@@ -893,7 +893,7 @@ So that a big merge feels physically earned.
 **And** `presetFor(value)` is a pure, tested function; the mapping is covered by tests sweeping all presets.
 **And** haptics stay enabled under Reduced Motion (FR-30).
 
-### Story 8.2: Punch visual — overshoot, flash e partículas
+### Story 8.2: Punch visual
 
 As a player,
 I want the merge to visibly pop,
@@ -909,7 +909,7 @@ So that the moment lands visually, not just numerically.
 **And** the `1536`/`3072+` tiers add the incandescent glow (the only glow in the system) (S8.2, DESIGN).
 **And** under Reduced Motion, flash/particles and the overshoot scale are cut or smoothed (UX-DR-16, FR-30).
 
-### Story 8.3: Screen shake direcional
+### Story 8.3: Screen shake
 
 As a player,
 I want the screen to shake in the swipe direction,
@@ -925,7 +925,7 @@ So that the move feels directional and alive.
 **And** under Reduced Motion the shake is smoothed or disabled (FR-30, UX-DR-16).
 **And** the shake is imperceptible or absent for a NOOP move (no feel on rejected moves) (UX-DR-23).
 
-### Story 8.4: Bullet time no novo session-best merge
+### Story 8.4: Bullet time
 
 As a player,
 I want the biggest merge of my run to slow time for a moment,
@@ -941,7 +941,7 @@ So that the golden moment feels earned and rare.
 **And** the bullet time is a 200ms timing config on the merge event (architecture, no fixed-step loop).
 **And** under Reduced Motion the bullet time is smoothed or disabled while haptics and sound stay (FR-30, UX-DR-16).
 
-### Story 8.5: Reduced Motion como preset
+### Story 8.5: Reduced Motion
 
 As a player with motion sensitivity,
 I want to reduce screen effects without losing the game's feedback,
@@ -957,7 +957,7 @@ So that I can play comfortably without losing haptics and sound.
 **And** the reduced preset is the sanctioned 60 FPS emergency fallback: if the full preset exceeds budget, the reduced preset is used, never game-killing code (ADR-04, NFR-14).
 **And** the benchmark sweeps both full and reduced profiles (architecture).
 
-### Story 8.6: SFX mínimos + haptics acoplados
+### Story 8.6: SFX haptics
 
 As a player,
 I want subtle sound that matches the game's warm identity,

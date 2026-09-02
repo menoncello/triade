@@ -1,0 +1,928 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T02:52:15.691550+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-purity-and-weight-doc-hardening",
+    "label": "dw-purity-and-weight-doc-hardening — PURITY_ROOTS fallback for pot.test.ts + σ-budget docs for adaptive-spawn-integration.test.ts"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-purity-and-weight-doc-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-purity-and-weight-doc-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-purity-and-weight-doc-hardening.md",
+      "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+      "triade/__tests__/engine/pot.test.ts",
+      "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+      "triade/__tests__/engine/engine.purity.test.ts",
+      "triade/src/engine/core/pot.ts",
+      "triade/src/engine/config/spawnConfig.ts",
+      "triade/test-utils/helpers.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-54/DW-57",
+      "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/purity-weight-doc-hardening-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC pot.ts canonical primary-hit — resolveWithFallback returns primary and purity oracle verbatim (Dw-54, R-001/R-006)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01",
+          "title": "AC pot.ts canonical primary-hit — resolveWithFallback returns primary and purity oracle verbatim (Dw-54, R-001/R-006)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 50,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "AC pot.ts canonical primary-hit — resolveWithFallback returns primary and purity oracle verbatim (Dw-54, R-001/R-006)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 57,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-regression-pot",
+          "title": "pot.test.ts:126 purity oracle",
+          "file": "triade/__tests__/engine/pot.test.ts",
+          "line": 126,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC index.ts re-export preserved verbatim via resolveWithFallback (DW-54, R-006)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02",
+          "title": "AC index.ts re-export preserved verbatim via resolveWithFallback (DW-54, R-006)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 70,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "AC index.ts re-export preserved verbatim via resolveWithFallback (DW-54, R-006)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 77,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-regression-pot",
+          "title": "pot.test.ts:147 index re-export",
+          "file": "triade/__tests__/engine/pot.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC weightedValue hand-computed literals remain independent oracle (DW-58, 0.9016/0.9524/0.9778/0.9905/0.9968)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03",
+          "title": "AC weightedValue hand-computed literals remain independent oracle (DW-58, 0.9016/0.9524/0.9778/0.9905/0.9968)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 79,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "AC weightedValue hand-computed literals remain independent oracle (DW-58, 0.9016/0.9524/0.9778/0.9905/0.9968)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-regression-pot",
+          "title": "pot.test.ts:86 weightedValue",
+          "file": "triade/__tests__/engine/pot.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC FR7_LADDER matrix + structural invariants tiers 0..12 (doubling, length=t+1, fresh array)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04",
+          "title": "AC FR7_LADDER matrix + structural invariants tiers 0..12 (doubling, length=t+1, fresh array)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 92,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "AC FR7_LADDER matrix + structural invariants tiers 0..12 (doubling, length=t+1, fresh array)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 105,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-regression-pot",
+          "title": "pot.test.ts:65 FR7_LADDER",
+          "file": "triade/__tests__/engine/pot.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC header DW-57 σ-budget block with derivations σ=√(p(1-p)/N) (AC2 0xc31 N=5000≈10σ, AC7 0x26c6≈4-5σ, ceiling 0x51ce, displayRoll 0.015≈5.2σ)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05",
+          "title": "AC header DW-57 σ-budget block with derivations σ=√(p(1-p)/N) (AC2 0xc31 N=5000≈10σ, AC7 0x26c6≈4-5σ, ceiling 0x51ce, displayRoll 0.015≈5.2σ)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 110,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "AC header DW-57 σ-budget block with derivations σ=√(p(1-p)/N) (AC2 0xc31 N=5000≈10σ, AC7 0x26c6≈4-5σ, ceiling 0x51ce, displayRoll 0.015≈5.2σ)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 120,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-regression-adaptive",
+          "title": "adaptive-spawn:15-47 header",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 15,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "AC deterministic tripwires still pass with documented σ headroom (pot 6 + adaptive 15 =21/21)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06",
+          "title": "AC deterministic tripwires still pass with documented σ headroom (pot 6 + adaptive 15 =21/21)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 127,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "AC deterministic tripwires still pass with documented σ headroom (pot 6 + adaptive 15 =21/21)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 143,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-regression-adaptive",
+          "title": "adaptive-spawn 21/21 + pot 6/6",
+          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
+          "line": 15,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "Fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity PURITY_ROOTS src/engine+src/game 2 roots (R-001/R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01",
+          "title": "Fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity PURITY_ROOTS src/engine+src/game 2 roots (R-001/R-003)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 143,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "Fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity PURITY_ROOTS src/engine+src/game 2 roots (R-001/R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 164,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-umbrella",
+          "title": "Fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity PURITY_ROOTS src/engine+src/game 2 roots (R-001/R-003)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 167,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "Fallback never-throw vs fail-closed — catch→null + primary return → ENOENT (R-001/R-007)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02",
+          "title": "Fallback never-throw vs fail-closed — catch→null + primary return → ENOENT (R-001/R-007)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 159,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "Fallback never-throw vs fail-closed — catch→null + primary return → ENOENT (R-001/R-007)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 179,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-umbrella",
+          "title": "Fallback never-throw vs fail-closed — catch→null + primary return → ENOENT (R-001/R-007)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 167,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "engine.purity scanner stays green after readdirSync addition (node:fs not forbidden)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03",
+          "title": "engine.purity scanner stays green after readdirSync addition (node:fs not forbidden)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 167,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "engine.purity scanner stays green after readdirSync addition (node:fs not forbidden)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 194,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-umbrella",
+          "title": "engine.purity scanner stays green after readdirSync addition (node:fs not forbidden)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 206,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-engine-purity",
+          "title": "ADR-01 purity scan",
+          "file": "triade/__tests__/engine/engine.purity.test.ts",
+          "line": 7,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "No tolerance/band-math change — adaptive diff comment-only, pot literals unchanged (R-002/R-005)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04",
+          "title": "No tolerance/band-math change — adaptive diff comment-only, pot literals unchanged (R-002/R-005)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 177,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-04-gateway",
+          "title": "No tolerance/band-math change — adaptive diff comment-only, pot literals unchanged (R-002/R-005)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 203,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-umbrella",
+          "title": "No tolerance/band-math change — adaptive diff comment-only, pot literals unchanged (R-002/R-005)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 186,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "Ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched (R-007)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05",
+          "title": "Ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched (R-007)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 194,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-05-gateway",
+          "title": "Ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched (R-007)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 219,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-05-umbrella",
+          "title": "Ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched (R-007)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 206,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "tsc clean both configs via Dirent cast as unknown as Dirent[] (NonSharedBuffer guard, R-008)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06",
+          "title": "tsc clean both configs via Dirent cast as unknown as Dirent[] (NonSharedBuffer guard, R-008)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 206,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "tsc clean both configs via Dirent cast as unknown as Dirent[] (NonSharedBuffer guard, R-008)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 239,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-06-umbrella",
+          "title": "tsc clean both configs via Dirent cast as unknown as Dirent[] (NonSharedBuffer guard, R-008)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 206,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "SCAN single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail, R-003)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01",
+          "title": "SCAN single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail, R-003)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P2-01-gateway",
+          "title": "SCAN single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail, R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 253,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "title": "SCAN single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail, R-003)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 225,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "SCAN no verbatim-oracle regression — readFileSync(potPath 2 sites, extractSpecifiers, potForTier regex (R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02",
+          "title": "SCAN no verbatim-oracle regression — readFileSync(potPath 2 sites, extractSpecifiers, potForTier regex (R-006)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 225,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P2-02-gateway",
+          "title": "SCAN no verbatim-oracle regression — readFileSync(potPath 2 sites, extractSpecifiers, potForTier regex (R-006)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 263,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-umbrella",
+          "title": "SCAN no verbatim-oracle regression — readFileSync(potPath 2 sites, extractSpecifiers, potForTier regex (R-006)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 225,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "SCAN no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound stable, σ-budget≥5 (R-002)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03",
+          "title": "SCAN no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound stable, σ-budget≥5 (R-002)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 237,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P2-03-gateway",
+          "title": "SCAN no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound stable, σ-budget≥5 (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 274,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "SCAN no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound stable, σ-budget≥5 (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 225,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "SCAN escape/symlink pin — findFileSync handles Dirent isDirectory deterministically catch→null (R-001)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04",
+          "title": "SCAN escape/symlink pin — findFileSync handles Dirent isDirectory deterministically catch→null (R-001)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 246,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P2-04-gateway",
+          "title": "SCAN escape/symlink pin — findFileSync handles Dirent isDirectory deterministically catch→null (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts",
+          "line": 284,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "title": "SCAN escape/symlink pin — findFileSync handles Dirent isDirectory deterministically catch→null (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 225,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "Exploratory — fallback-miss simulation (temp-dir move) proves scan would locate pot.ts",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01",
+          "title": "Exploratory — fallback-miss simulation (temp-dir move) proves scan would locate pot.ts",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 255,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P3-01-umbrella",
+          "title": "Exploratory — fallback-miss simulation (temp-dir move) proves scan would locate pot.ts",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 255,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "BENCH findFileSync scan <1 ms / p99 <2 ms, existsSync <0.25ms, 2000× <500ms (R-004)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02",
+          "title": "BENCH findFileSync scan <1 ms / p99 <2 ms, existsSync <0.25ms, 2000× <500ms (R-004)",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 266,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "title": "BENCH findFileSync scan <1 ms / p99 <2 ms, existsSync <0.25ms, 2000× <500ms (R-004)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 255,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "SCAN cross-cutting absent — no async fs/promises or music/RevenueCat/AdMob deps in seam",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03",
+          "title": "SCAN cross-cutting absent — no async fs/promises or music/RevenueCat/AdMob deps in seam",
+          "file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+          "line": 278,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold it.skip — active coverage via gateway/umbrella/regression (19 pass when activated)"
+        },
+        {
+          "id": "P3-03-umbrella",
+          "title": "SCAN cross-cutting absent — no async fs/promises or music/RevenueCat/AdMob deps in seam",
+          "file": "_bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts",
+          "line": 255,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 19,
+    "fully_covered": 19,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 48,
+      "skipped_cases": 19,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 6,
+          "criteria_covered": 19
+        },
+        "api": {
+          "tests": 16,
+          "criteria_covered": 16
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 45,
+          "criteria_covered": 19
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [],
+    "blockers": []
+  },
+  "blockers": [
+    {
+      "id": "ATDD-dormant-19",
+      "severity": "medium",
+      "reason": "19 ATDD scaffolds are it.skip dormant (RED-phase) — intentional, activated → 19 pass; not a blocker for this bundle since gateway+umbrella+regression are green",
+      "test_file": "triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts",
+      "test_title": "ATDD dormant 19 skipped"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality (naming, fixture reuse, outlier tsc atdd:98 typed <1 minor)",
+      "requirements": []
+    },
+    {
+      "priority": "LOW",
+      "action": "No fallback-miss E2E auto-move needed — primary-hit path is canonical; bench shows <1ms scan on move (R-004 monitored)",
+      "requirements": [
+        "P3-01",
+        "P3-02"
+      ]
+    }
+  ]
+}

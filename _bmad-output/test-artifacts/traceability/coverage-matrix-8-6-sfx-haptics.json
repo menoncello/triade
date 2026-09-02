@@ -1,0 +1,211 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T20:45:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-6",
+    "label": "8-6 SFX haptics — expo-audio thock coupled with haptics, swappable gateway, Reduced Motion keeps sound (Epic 8, S8.6)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-6-sfx-haptics.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-6-sfx-haptics.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-6-sfx-haptics.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-6-sfx-haptics.md",
+      "triade/src/feel/sfx.ts",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/haptics.ts",
+      "triade/src/services/assets/assetManifest.ts",
+      "triade/App.tsx",
+      "triade/package.json",
+      "triade/__tests__/feel/sfx.atdd.test.ts",
+      "triade/__tests__/feel/sfx.test.ts",
+      "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/feel-sfx-fixtures.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.6-AC1",
+      "title": "SFX kinds — merge/spawn/gameOver only, no music in MVP; spawn 0.35 soft, gameOver 0.9 fall, merge per entry scaled (S8.6, UX-DR-29)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P0-05", "title": "[P0-05] AC1 NOOP/empty/spawn-only never throws and plays nothing", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 104, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-06", "title": "[P0-06] AC1 triggerSfxForTrace fires one SFX per merge entry with scaled volume", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 128, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-07", "title": "[P0-07] AC1 triggerSfxForMerge/ForSpawn/ForGameOver correct kind+volume", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 155, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-10", "title": "[P0-10] AC1 no music — only merge/spawn/gameOver kinds ever emitted", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 212, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-06", "title": "[P0] triggerSfxForTrace fires one SFX per merge entry with scaled volume", "file": "triade/__tests__/feel/sfx.test.ts", "line": 77, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-08", "title": "[P0] triggerSfxForMerge/ForSpawn/ForGameOver never throw and use correct kind", "file": "triade/__tests__/feel/sfx.test.ts", "line": 92, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-11", "title": "[P0] no music — only merge/spawn/gameOver kinds ever emitted", "file": "triade/__tests__/feel/sfx.test.ts", "line": 123, "level": "unit", "status": "active"},
+        {"id": "8.6-API-P0-merge", "title": "[P0] triggerSfxForTrace fires one SFX per merge entry with scaled volume", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 129, "level": "api", "status": "active"},
+        {"id": "8.6-API-P0-kind", "title": "[P0] triggerSfxForMerge/ForSpawn/ForGameOver correct kind+volume", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 154, "level": "api", "status": "active"},
+        {"id": "8.6-API-P0-nomusic", "title": "[P0] no music — only merge/spawn/gameOver kinds ever emitted", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 203, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-02", "title": "E2E-02 spawn 0.35 + gameOver 0.9 single-fire, thin observer never blocks", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 60, "level": "e2e", "status": "active"},
+        {"id": "8.6-E2E-03", "title": "E2E-03 no music 3-kind cap merge/spawn/gameOver", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 77, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.6-AC2",
+      "title": "Volume scales mirroring haptic scale — 3 light 0.45 → 6 medium 0.65 → 12+ heavy 1.0 via VOLUME_BY_HAPTIC + presetFor tier, coupled per entry same order (S8.6, UX-DR-29)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P0-01", "title": "[P0-01] AC2 sfxVolumeForValue mirrors haptic scale via presetFor tier", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 35, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-04", "title": "[P0-04] AC3 coupled haptics+audio same tier Light↔0.45 / Medium↔0.65 / Heavy↔1.0", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 86, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-06", "title": "[P0-06] AC1 triggerSfxForTrace fires one SFX per merge entry with scaled volume", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 128, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-01", "title": "[P0] AC2 3 light -> 0.45, 6 medium -> 0.65, 12+ heavy -> 1.0", "file": "triade/__tests__/feel/sfx.test.ts", "line": 15, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-02", "title": "[P0] sfxVolumeForValue derives from presetFor haptic tier", "file": "triade/__tests__/feel/sfx.test.ts", "line": 22, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-05", "title": "[P0] coupled haptics+audio same tier — volume maps 1:1", "file": "triade/__tests__/feel/sfx.test.ts", "line": 47, "level": "unit", "status": "active"},
+        {"id": "8.6-API-P0-volume", "title": "[P0] sfxVolumeForValue mirrors haptic scale 3→0.45 / 6→0.65 / 12+→1.0", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 65, "level": "api", "status": "active"},
+        {"id": "8.6-API-P0-coupled", "title": "[P0] coupled haptics+audio same tier Light↔0.45 / Medium↔0.65 / Heavy↔1.0", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 112, "level": "api", "status": "active"},
+        {"id": "8.6-API-P0-permerge", "title": "[P0] triggerSfxForTrace fires one SFX per merge entry with scaled volume", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 129, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-01", "title": "E2E-01 merge SFX scaled 3→0.45 / 6→0.65 / 12+→1.0 coupled", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 41, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.6-AC3",
+      "title": "Thin swappable observer — SfxGateway injectable, never throws/never awaits/never blocks move(), dispatch prefers gateway else void playViaExpoAudio dynamic import catch→null, predicate single-seam (architecture)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P0-05", "title": "[P0-05] NOOP never throws predicate single-seam", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 104, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-08", "title": "[P0-08] swappable gateway + missing expo-audio degrades silent without throw", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 179, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P0-09", "title": "[P0-09] gateway failure never suppresses caller — play throwing swallowed", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 197, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-06a", "title": "[P0] NOOP / empty / null trace never throws and plays nothing", "file": "triade/__tests__/feel/sfx.test.ts", "line": 58, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-09", "title": "[P0] swappable gateway receives correct kind+volume; missing expo-audio degrades silent", "file": "triade/__tests__/feel/sfx.test.ts", "line": 105, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-10", "title": "[P0] gateway failure never suppresses caller — play throwing swallowed", "file": "triade/__tests__/feel/sfx.test.ts", "line": 112, "level": "unit", "status": "active"},
+        {"id": "8.6-API-P0-swappable", "title": "[P0] swappable gateway + missing expo-audio degrades silent without throw", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 175, "level": "api", "status": "active"},
+        {"id": "8.6-API-P0-neverthrow", "title": "[P0] gateway failure never suppresses caller — play throwing swallowed", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 191, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-04", "title": "E2E-04 swappable gateway SfxGateway { play } + never throw/never await/never block", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 93, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.6-AC4",
+      "title": "Reduced Motion keeps sound — sfx never reads reducedMotion, sfxVolume via presetFor not reducedPresetFor, App never gates sfx (FR-30, UX-DR-16)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P0-03", "title": "[P0-03] AC4 Reduced Motion keeps sound — sfxVolume independent of reducedPresetFor", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 70, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P1-05", "title": "[P1-05] App threading — settings.reducedMotion still gates visuals but never gates sfx", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 341, "level": "unit", "status": "active"},
+        {"id": "8.6-U-SFX-04", "title": "[P0] reducedMotion keeps sound — sfxVolume identical via reducedPresetFor", "file": "triade/__tests__/feel/sfx.test.ts", "line": 39, "level": "unit", "status": "active"},
+        {"id": "8.6-API-P0-reduced", "title": "[P0] Reduced Motion keeps sound — sfxVolume independent of reducedPresetFor", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 99, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-06", "title": "E2E-06 FR-30 Reduced Motion keeps sound — sfx never gated", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 126, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.6-AC5",
+      "title": "App coupling same call site + assetManifest sfx-merge/spawn/gameover degrade (try/catch→null, preload filters finite) + engine-trace→SFX rank + integrated device smoke P1",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P1-01", "title": "[P1-01] engine-trace→SFX volume rank via merge predicate", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 243, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P1-02", "title": "[P1-02] App.tsx coupling — triggerHapticsForTrace + 3 triggerSfx fire-and-forget never reducedMotion-gated", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 265, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P1-03", "title": "[P1-03] assetManifest sfx-merge/spawn/gameover degrade — require in try/catch→null", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 296, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P1-04", "title": "[P1-04] haptics failure never suppresses audio and vice versa", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 320, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P1-05", "title": "[P1-05] App threading — settings.reducedMotion still gates visuals but never gates sfx (8-5 guard)", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 341, "level": "unit", "status": "active"},
+        {"id": "8.6-API-P1-trace", "title": "[P1] trace→SFX contract via REAL engine trace", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 224, "level": "api", "status": "active"},
+        {"id": "8.6-API-P1-coupling", "title": "[P1] App coupling — triggerHapticsForTrace + 3 triggerSfx at same site", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 253, "level": "api", "status": "active"},
+        {"id": "8.6-API-P1-manifest", "title": "[P1] assetManifest sfx-merge/spawn/gameover degrade + haptics/audio independence", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 275, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-05", "title": "E2E-05 App.tsx coupling same call site fire-and-forget, never reducedMotion-gated", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 110, "level": "e2e", "status": "active"},
+        {"id": "8.6-E2E-06", "title": "E2E-06 FR-30 Reduced Motion keeps sound — sfx never gated", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 126, "level": "e2e", "status": "active"},
+        {"id": "8.6-E2E-07", "title": "E2E-07 assetManifest sfx-merge/spawn/gameover preload degrade silent", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 144, "level": "e2e", "status": "active"},
+        {"id": "8.6-E2E-08", "title": "E2E-08 device smoke integrated thock rank + FR-30 + NOOP + chrome", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 161, "level": "e2e", "status": "active"}
+      ]
+    },
+    {
+      "id": "8.6-AC6",
+      "title": "Boundaries & NFR: expo-audio 57 pin + 6-site require allowlist + 5-site predicate allowlist + perf median<0.05/p99<0.1 + rapid multi-merge last-wins + placeholder mastering deferred (TECH/OPS, R-007..R-010)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "8.6-U-P2-01", "title": "[P2-01] expo-audio SDK 57 pin — expo-audio ~57.0.3 and expo-haptics ~57.0.1", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 360, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P2-02", "title": "[P2-02] asset duplicate-require allowlist — exactly 6 require sites", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 381, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P2-03", "title": "[P2-03] merge-predicate 5-site allowlist", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 400, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P2-04", "title": "[P2-04] perf micro-bench — sfxVolumeForValue host-cheap median <0.05ms / p99 <0.1ms", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 416, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P2-05", "title": "[P2-05] rapid multi-merge within EARLY_INPUT_MS re-trigger does not block next swipe", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 436, "level": "unit", "status": "active"},
+        {"id": "8.6-U-P2-06", "title": "[P2-06] placeholder mastering — triade/assets/sfx/ 3 wavs present (EXPECTED RED)", "file": "triade/__tests__/feel/sfx.atdd.test.ts", "line": 451, "level": "unit", "status": "fixme"},
+        {"id": "8.6-API-P2-allowlist", "title": "[P2] datum literal + allowlist scans — VOLUME_BY_HAPTIC single-source", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 294, "level": "api", "status": "active"},
+        {"id": "8.6-API-P2-perf", "title": "[P2] perf micro-bench — sfxVolumeForValue host-cheap median <0.05 / p99 <0.1", "file": "_bmad-output/test-artifacts/tests/api/sfx.gateway.spec.ts", "line": 321, "level": "api", "status": "active"},
+        {"id": "8.6-E2E-09", "title": "E2E-09 SDK pin + 6-site require + 5-site predicate + perf micro-bench", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 180, "level": "e2e", "status": "active"},
+        {"id": "8.6-E2E-10", "title": "E2E-10 placeholder mastering — triade/assets/sfx/ 3 wavs present EXPECTED RED", "file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "line": 199, "level": "e2e", "status": "fixme"}
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {"total": 4, "covered": 4, "percentage": 100},
+      "P1": {"total": 1, "covered": 1, "percentage": 100},
+      "P2": {"total": 1, "covered": 1, "percentage": 100},
+      "P3": {"total": 0, "covered": 0, "percentage": 100}
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 4,
+      "cases": 54,
+      "skipped_cases": 0,
+      "fixme_cases": 2,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {"tests": 10, "criteria_covered": 6},
+        "api": {"tests": 13, "criteria_covered": 6},
+        "component": {"tests": 0, "criteria_covered": 0},
+        "unit": {"tests": 31, "criteria_covered": 6},
+        "other": {"tests": 0, "criteria_covered": 0}
+      }
+    },
+    "tests": [],
+    "blockers": [
+      {"id": "8.6-U-P2-06", "severity": "medium", "reason": "placeholder mastering absent — triade/assets/sfx/ 3 wavs not yet landed; degrade to silent no-op is current ship path per spec Residual risks (deferred, not threshold for 8-6 close)", "test_file": "triade/__tests__/feel/sfx.atdd.test.ts", "test_title": "[P2-06] placeholder mastering — triade/assets/sfx/ 3 wavs present (EXPECTED RED until mastering lands)"},
+      {"id": "8.6-E2E-10", "severity": "medium", "reason": "E2E-10 placeholder mastering device ear rank deferred — same wav absence, silent no-crash expected until mastering", "test_file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "test_title": "E2E-10 placeholder mastering — triade/assets/sfx/ 3 wavs present EXPECTED RED"}
+    ]
+  },
+  "blockers": [
+    {"id": "8.6-U-P2-06", "severity": "medium", "reason": "placeholder mastering absent — triade/assets/sfx/ 3 wavs not yet landed; degrade to silent no-op is ship path", "test_file": "triade/__tests__/feel/sfx.atdd.test.ts", "test_title": "[P2-06] placeholder mastering — triade/assets/sfx/ 3 wavs present (EXPECTED RED until mastering lands)"},
+    {"id": "8.6-E2E-10", "severity": "medium", "reason": "E2E-10 placeholder mastering device ear rank deferred — same wav absence", "test_file": "_bmad-output/test-artifacts/tests/e2e/sfx.umbrella.spec.ts", "test_title": "E2E-10 placeholder mastering — triade/assets/sfx/ 3 wavs present EXPECTED RED"}
+  ],
+  "recommendations": [
+    {"priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": []},
+    {"priority": "MEDIUM", "action": "Master 3 thock wavs under triade/assets/sfx/ (merge/spawn/gameover) to flip [P2-06]/E2E-10 GREEN — deferred per spec Residual risks, no code change required beyond asset drop", "requirements": ["8.6-AC6"]},
+    {"priority": "LOW", "action": "Device smoke 15-min iOS dev build (SDK 57 prebuild) — verify thock rank 0.45/0.65/1.0 + spawn 0.35 + gameOver 0.9 + FR-30 keep-sound when Reduced Motion ON, after mastering lands", "requirements": ["8.6-AC5", "8.6-AC6"]}
+  ]
+}

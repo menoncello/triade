@@ -1,0 +1,194 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-01T00:00:00.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "8-1",
+    "label": "8-1 Haptics — scaled haptics via FeelPreset (Epic 8, S8.1)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-1-haptics.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design-epic-8-1-haptics.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-1-haptics.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/haptics.ts",
+      "triade/App.tsx"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "8.1-AC1",
+      "title": "Scaled haptics fire via expo-haptics when feel observes merge trace entry (from.length===2 && !spawned): 3→Light, 6→Medium, 12+→Heavy",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-U-001", "title": "[P0] AC1 3 -> light", "file": "triade/__tests__/feel/feel.test.ts", "line": 7, "level": "unit", "status": "active" },
+        { "id": "8.1-U-002", "title": "[P0] AC1 6 -> medium", "file": "triade/__tests__/feel/feel.test.ts", "line": 10, "level": "unit", "status": "active" },
+        { "id": "8.1-U-003", "title": "[P0] AC1 12+ -> heavy (sweep 12..6144)", "file": "triade/__tests__/feel/feel.test.ts", "line": 13, "level": "unit", "status": "active" },
+        { "id": "8.1-U-009", "title": "[P0] AC1 hapticsStyleForValue maps 3/6/12+ to Light/Medium/Heavy", "file": "triade/__tests__/feel/feel.test.ts", "line": 66, "level": "unit", "status": "active" },
+        { "id": "8.1-U-011", "title": "[P0] AC1 triggerHapticsForTrace fires per merge entry (best-effort)", "file": "triade/__tests__/feel/feel.test.ts", "line": 85, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-01", "title": "[P0-01] AC1 3 -> light / Light (spec I/O small merge, frozen identity)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 19, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-02", "title": "[P0-02] AC1 6 -> medium / Medium", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 28, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-03", "title": "[P0-03] AC1 12+ -> heavy / Heavy (sweep 12..12288 incl future tiers)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 34, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.1-AC2",
+      "title": "presetFor(value) is pure data-driven lookup returning frozen canonical FEEL_PRESETS identity; allPresetValues sweeps every tier 3..12288 with finite shakeMs/particleBurst/overshootMs/flash",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-U-004", "title": "[P0] AC2 presetFor is pure and data-driven (same input -> same object identity)", "file": "triade/__tests__/feel/feel.test.ts", "line": 18, "level": "unit", "status": "active" },
+        { "id": "8.1-U-005", "title": "[P0] AC2 sweeps all preset values (haptic valid, finite fields)", "file": "triade/__tests__/feel/feel.test.ts", "line": 25, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-07", "title": "[P0-07] AC2 data-not-code — presetFor returns frozen canonical identity (memo-safe)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 84, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.1-AC3",
+      "title": "FR-30 / UX-DR-16 — Reduced Motion keeps haptics fully active (never gated on reducedMotion): presetFor(12+)=heavy still fires Heavy, reducedPresetFor zeroes visuals only",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-U-008", "title": "[P0] reducedPresetFor keeps haptic, cuts visual (shakeMs 0, particleBurst 0, flash false)", "file": "triade/__tests__/feel/feel.test.ts", "line": 55, "level": "unit", "status": "active" },
+        { "id": "8.1-U-012", "title": "[P0] FR-30 haptics stay under Reduced Motion (gateway does not read settings)", "file": "triade/__tests__/feel/feel.test.ts", "line": 99, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-04", "title": "[P0-04] AC3 FR-30 — Reduced Motion keeps haptics (Heavy preserved, visuals zeroed)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 41, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P2-01", "title": "[P2-01] reducedPresetFor zeroes visuals for ALL tiers while preserving haptic (sweep allPresetValues)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 188, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.1-AC4",
+      "title": "NOOP / effective-move contract — trace with no merge entries (empty/null/undefined, slides/spawns only, moved=false) fires zero haptics and never throws; defensive fallback for non-finite/unknown values to light",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-U-007", "title": "[P0] edge non-finite / small values fallback to light and never throw (NaN/Infinity/-1/0/1/2)", "file": "triade/__tests__/feel/feel.test.ts", "line": 47, "level": "unit", "status": "active" },
+        { "id": "8.1-U-010", "title": "[P0] AC4 NOOP / empty trace never throws (slides/spawns only)", "file": "triade/__tests__/feel/feel.test.ts", "line": 73, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-05", "title": "[P0-05] AC4 NOOP contract — no haptic, never throws (empty/null/undefined, from.length!==2)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 52, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P0-06", "title": "[P0-06] edge defensive — non-finite/unknown fallback to light, never throws (triggerHapticsForMerge)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 76, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.1-AC5",
+      "title": "Multi-merge & wiring — triggerHapticsForTrace over real engine trace (newGame+move via mulberry32) identifies merges via from.length===2&&!spawned; App.tsx observer fires only inside result.moved; per-entry policy (2-4 fires) vs heaviest-only; tutorial 1+2→3 climax dedup (R-001)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-ATDD-P1-01", "title": "[P1-01] triggerHapticsForTrace over REAL engine trace identifies merges correctly", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 105, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P1-02", "title": "[P1-02] App.tsx wiring — moved:true with merge calls gateway; moved:false does not (busyRef/animation gate unchanged)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 128, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P1-04", "title": "[P1-04] R-003 multi-merge — trace with 3 merges (3,6,12) fires 3 times (per-entry policy pin)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 156, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P1-03", "title": "[P1-03] R-001 tutorial climax dedup — expects 1 Light per 1+2->3 climax (EXPECTED RED: currently fires 2)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 170, "level": "unit", "status": "active" }
+      ]
+    },
+    {
+      "id": "8.1-AC6",
+      "title": "Boundaries — engine byte-identical (ADR-01), single access point FEEL_PRESETS (no scattered haptic literals outside feel.ts), expo-haptics dep declared (R-006), never-throw guarantee",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        { "id": "8.1-ATDD-P2-03", "title": "[P2-03] engine purity — triade/src/engine byte-identical gate (ADR-01, git diff empty)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 198, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P2-04", "title": "[P2-04] single access point — no scattered haptic literals outside feel.ts (static/grep gate)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 205, "level": "unit", "status": "active" },
+        { "id": "8.1-ATDD-P2-06", "title": "[P2-06] R-006 expo-haptics declared in package.json (EXPECTED RED: missing, relies on bundledNativeModules)", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 211, "level": "unit", "status": "active" },
+        { "id": "8.1-U-006", "title": "[P0] AC3 shakeMs capped at 8 and monotonic light/medium/heavy", "file": "triade/__tests__/feel/feel.test.ts", "line": 37, "level": "unit", "status": "active" }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "percentage": 100 },
+      "P1": { "total": 1, "covered": 1, "percentage": 100 },
+      "P2": { "total": 1, "covered": 1, "percentage": 100 },
+      "P3": { "total": 0, "covered": 0, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journeys_without_e2e": [],
+    "ui_states_missing_coverage": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    },
+    "notes": "Pure feel-layer story: no API endpoints, no auth surfaces, no UI journey E2E in host automation (Taptic Engine requires real iPhone). Negative paths covered via AC4 NOOP/never-throw sweeps (null/undefined/empty, spawned:true, from.length!==2) and AC3 Reduced Motion independence. Happy-path-only gaps: 0 — every I/O row has boundary + error case. E2E-equivalent P1-05 device smoke (real iPhone 3/6/12+ + Reduced Motion ON + airplane) is manual pre-merge lane, not scaffolded as code by design (see test-design Execution Order > Device gate)."
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 2,
+      "cases": 27,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 27, "criteria_covered": 6 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "8.1-U-001", "file": "triade/__tests__/feel/feel.test.ts", "line": 7, "title": "[P0] AC1 3 -> light", "level": "unit", "status": "active" },
+      { "id": "8.1-U-002", "file": "triade/__tests__/feel/feel.test.ts", "line": 10, "title": "[P0] AC1 6 -> medium", "level": "unit", "status": "active" },
+      { "id": "8.1-U-003", "file": "triade/__tests__/feel/feel.test.ts", "line": 13, "title": "[P0] AC1 12+ -> heavy", "level": "unit", "status": "active" },
+      { "id": "8.1-U-004", "file": "triade/__tests__/feel/feel.test.ts", "line": 18, "title": "[P0] AC2 presetFor is pure and data-driven", "level": "unit", "status": "active" },
+      { "id": "8.1-U-005", "file": "triade/__tests__/feel/feel.test.ts", "line": 25, "title": "[P0] AC2 sweeps all preset values", "level": "unit", "status": "active" },
+      { "id": "8.1-U-006", "file": "triade/__tests__/feel/feel.test.ts", "line": 37, "title": "[P0] AC3 shakeMs capped at 8 and monotonic", "level": "unit", "status": "active" },
+      { "id": "8.1-U-007", "file": "triade/__tests__/feel/feel.test.ts", "line": 47, "title": "[P0] edge non-finite / small values fallback to light", "level": "unit", "status": "active" },
+      { "id": "8.1-U-008", "file": "triade/__tests__/feel/feel.test.ts", "line": 55, "title": "[P0] reducedPresetFor keeps haptic, cuts visual", "level": "unit", "status": "active" },
+      { "id": "8.1-U-009", "file": "triade/__tests__/feel/feel.test.ts", "line": 66, "title": "[P0] AC1 hapticsStyleForValue maps 3/6/12+ to Light/Medium/Heavy", "level": "unit", "status": "active" },
+      { "id": "8.1-U-010", "file": "triade/__tests__/feel/feel.test.ts", "line": 73, "title": "[P0] AC4 NOOP / empty trace never throws", "level": "unit", "status": "active" },
+      { "id": "8.1-U-011", "file": "triade/__tests__/feel/feel.test.ts", "line": 85, "title": "[P0] AC1 triggerHapticsForTrace fires per merge entry", "level": "unit", "status": "active" },
+      { "id": "8.1-U-012", "file": "triade/__tests__/feel/feel.test.ts", "line": 99, "title": "[P0] FR-30 haptics stay under Reduced Motion", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-01", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 19, "title": "[P0-01] AC1 3 -> light / Light", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-02", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 28, "title": "[P0-02] AC1 6 -> medium / Medium", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-03", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 34, "title": "[P0-03] AC1 12+ -> heavy / Heavy", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-04", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 41, "title": "[P0-04] AC3 FR-30 — Reduced Motion keeps haptics", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-05", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 52, "title": "[P0-05] AC4 NOOP contract", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-06", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 76, "title": "[P0-06] edge defensive fallback", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P0-07", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 84, "title": "[P0-07] AC2 data-not-code frozen identity", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P1-01", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 105, "title": "[P1-01] triggerHapticsForTrace over REAL engine trace", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P1-02", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 128, "title": "[P1-02] App.tsx wiring moved:true/false", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P1-04", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 156, "title": "[P1-04] R-003 multi-merge 3 fires", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P1-03", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 170, "title": "[P1-03] R-001 tutorial climax dedup (EXPECTED RED)", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P2-01", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 188, "title": "[P2-01] reducedPresetFor zeroes visuals for ALL tiers", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P2-03", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 198, "title": "[P2-03] engine purity byte-identical", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P2-04", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 205, "title": "[P2-04] single access point", "level": "unit", "status": "active" },
+      { "id": "8.1-ATDD-P2-06", "file": "triade/__tests__/feel/haptics.atdd.test.ts", "line": 211, "title": "[P2-06] R-006 expo-haptics dep (EXPECTED RED)", "level": "unit", "status": "active" }
+    ]
+  },
+  "working_tree": {
+    "delta_commit": "1a24dc0",
+    "description": "feat(8-1): scaled haptics via FeelPreset data model and expo-haptics observer — triade/src/feel/feel.ts (91 LOC) + triade/src/feel/haptics.ts (55 LOC) + triade/App.tsx:75,368-373 observer + triade/__tests__/feel/feel.test.ts (12 cases)",
+    "uncommitted_stat": "_bmad-output/implementation-artifacts/spec-8-1-haptics.md (final_revision bump 16257f1->1a24dc0) + _bmad-output/implementation-artifacts/sprint-status.yaml (timestamp)",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01 verified)",
+    "full_suite": "721 tests, 719 pass / 2 fail (expected RED), tsc --noEmit clean"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-01T00:00:00Z",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "ef72635 (feat: 8-2 punch visual — overshoot+flash+particles+1536 glow; 4 ahead of origin/main)",
+  "target": {
+    "type": "story",
+    "id": "8-2",
+    "label": "8-2 Punch visual — overshoot+flash+particles+1536 glow (Epic 8, S8.2)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo (TEA Master Test Architect)",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md",
+      "_bmad-output/implementation-artifacts/epic-8-context.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md",
+      "_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md",
+      "triade/src/feel/feel.ts",
+      "triade/src/feel/punch.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/render/transitionPlan.ts",
+      "triade/App.tsx",
+      "triade/__tests__/feel/punch.test.ts",
+      "triade/__tests__/feel/punch.atdd.test.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree": {
+    "delta_commit": "ef72635",
+    "uncommitted": "M sprint-status.yaml (8-2 backlog->done), M automation-summary.md, M test-design-progress.md — metadata-only, orchestrator-owned board not written; untracked: punch.atdd.test.ts (19), atdd-checklist + test-design mirrors — all host-testable",
+    "engine_purity": "git diff --stat -- triade/src/engine empty (ADR-01)",
+    "feel_files": "triade/src/feel/feel.ts (96 LOC, FeelPreset + overshootScale 1.08/1.12/1.15 + REDUCED_PRESET scale 1) + triade/src/feel/punch.ts (new 47 LOC, punchScaleFor/punchDurationFor/shouldFlash/particleCountFor/shouldGlow/punchProfileFor) + triade/src/render/GameBoard.tsx:87-480 (reducedMotion prop, isMerge, AnimatedTile overshoot withDelay+withSequence+withTiming->withSpring, flashOpacity worklet, hasGlow #ff8c2f 0.28, BurstView/ParticleDot 4/8/16, reducedMotion gating) + triade/App.tsx:887 wiring",
+    "full_suite": "749 tests, 745 pass / 4 fail (expected RED) — failures: 2 carry-over 8-1 (P1-03 dedup, P2-06 dep) + 2 new 8-2 (P1-05/P2-01 burst timer leak same cause R-002/R-007) — 26 suites, 4906ms, tsc --noEmit clean"
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 6,
+      "total": 6,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": { "total": 4, "covered": 4, "pct": 100 },
+      "P1": { "total": 1, "covered": 1, "pct": 100 },
+      "P2": { "total": 1, "covered": 1, "pct": 100 },
+      "P3": { "total": 0, "covered": 0, "pct": 100 }
+    },
+    "by_level": {
+      "e2e": { "tests": 0, "criteria_covered": 0 },
+      "api": { "tests": 0, "criteria_covered": 0 },
+      "component": { "tests": 0, "criteria_covered": 0 },
+      "unit": { "tests": 28, "criteria_covered": 6 },
+      "other": { "tests": 0, "criteria_covered": 0 }
+    }
+  },
+  "tests": {
+    "files": 2,
+    "cases": 28,
+    "skipped_cases": 0,
+    "fixme_cases": 0,
+    "pending_cases": 0,
+    "passed_scoped": 26,
+    "failed_scoped": 2,
+    "full_suite": { "total": 749, "passed": 745, "failed": 4, "skipped": 0, "duration_ms": 4906 }
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 1,
+    "medium_open": 1,
+    "low_open": 0,
+    "details": [
+      { "id": "R-002", "score": 6, "priority": "P1", "status": "EXPECTED RED waived — early-input burst orphan (bare setTimeout)", "test": "punch.atdd.test.ts:269 P1-05 no ref/clearTimeout", "remediation_due": "before 8-3" },
+      { "id": "R-007", "score": 4, "priority": "P2", "status": "EXPECTED RED waived — same leak, second signal P2-01", "test": "punch.atdd.test.ts:314 P2-01 unmount guard missing", "remediation_due": "before 8-3 (one fix)" },
+      { "id": "R-001", "score": 6, "priority": "P1", "status": "PLANNED — burst-driven jank vs 60 FPS p99 16.7ms (device benchmark pending)", "test": "P2-02 micro-bench GREEN but device p99 pending", "remediation_due": "before 8-3 device lane" },
+      { "id": "R-003", "score": 6, "priority": "P1", "status": "PLANNED — FR-30 wiring regression risk (mitigated: P0-05 sweep + P1-04 App wiring gate GREEN)", "test": "punch.atdd.test.ts:89 P0-05, 246 P1-04", "remediation_due": "immediate lint rule, enforce in 8-5" }
+    ]
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "not_applicable",
+    "error_path_status": "present",
+    "ui_journey_status": "manual_device_lane",
+    "ui_state_status": "not_applicable",
+    "notes": "Pure feel+render story: no HTTP/API, no auth. Negative paths via P0-06 non-finite/NAN/negative sweeps + P1-06 NOOP/moved false + AC4 Reduced Motion FR-30 zeroing vs haptics stay. Happy-path-only gaps 0 — every I/O row has boundary+error + chrome guard + NOOP + multi-merge. E2E is manual real-iPhone lane (P1-06 device smoke in test-design: 3 subtle / 6 medium / 12+ flash+16 / 1536 glow portrait+landscape, Reduced Motion ON flat while haptics felt, preview chrome, airplane, rapid-swipe orphan) — not scaffolded as code by design; PENDING before verified."
+  },
+  "device_lane": {
+    "id": "P1-06-device",
+    "type": "manual-e2e",
+    "status": "PENDING",
+    "description": "Real iPhone dev build (SDK 57, Skia 2.6.2 + Reanimated 4, no Simulator punch): trigger merges 3→subtle punch, 6→medium, 12+→flash+16 particles, 1536+→glow (only glow) in portrait+landscape; toggle Reduced Motion ON → repeat each: flat (scale=1 no overshoot, no flash/particles/glow) while haptics still felt; preview card and score never animate; airplane mode; rapid swipes during 500ms burst window → no orphan bursts",
+    "estimate": "15 min",
+    "owner": "PR author / QA",
+    "signoff": "PR checkbox device punch smoke: 3/6/12+/1536 + Reduced Motion ON flat + rapid-swipe orphan check"
+  },
+  "blockers": [
+    { "id": "P1-05", "severity": "high", "reason": "R-002 early-input burst timer not stored in ref nor cleared on unmount (bare setTimeout(500))", "test_file": "triade/__tests__/feel/punch.atdd.test.ts", "test_line": 269, "waived": true, "waiver_expiry": "before 8-3 / 8-5 review" },
+    { "id": "P2-01", "severity": "medium", "reason": "R-007 same bare setTimeout leak — filters by id correctly but no unmount guard (waived with R-002)", "test_file": "triade/__tests__/feel/punch.atdd.test.ts", "test_line": 314, "waived": true, "waiver_expiry": "before 8-3" }
+  ],
+  "gate_status": "CONCERNS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  },
+  "carry_over": {
+    "source": "spec-8-2-punch-visual.md Review Triage: R-001 tutorial double Light + R-006 expo-haptics dep are pre-existing from 8-1 ATDD, not caused by 8-2 — remain waived with expiry at 8-2 freeze/review; not counted as 8-2 blockers but contribute to full-suite 4 RED total",
+    "r001_p1_03": "haptics.atdd.test.ts:170 2!==1 waived before 8-2 freeze — patch 0 defer 2 reject 0 per spec",
+    "r006_p2_06": "haptics.atdd.test.ts:211 expo-haptics missing waived before 8-2 review"
+  },
+  "recommendations": [
+    { "priority": "HIGH", "action": "Fix R-002/R-007: store burst setTimeout id(s) in burstTimer(s)Ref + clear on unmount (mirrors settleTimerRef at GameBoard.tsx:321-326); re-run npm test until 19/19 GREEN (one fix clears both).", "requirements": ["8.2-AC5", "8.2-AC6"] },
+    { "priority": "HIGH", "action": "Run 15-min real-iPhone device smoke before verified (test-design P1-06): 3/6/12+/1536 portrait+landscape + Reduced Motion ON flat + preview chrome + airplane + rapid-swipe orphan; record PR checkbox.", "requirements": ["8.2-AC4", "8.2-AC5"] },
+    { "priority": "MEDIUM", "action": "Keep CI gates: engine byte-identical (git diff --stat -- triade/src/engine empty), no scattered 1.08/1.12/1.15 outside feel.ts, single #ff8c2f inside hasGlow, FR-30 lint rule for reducedMotion imports outside punch.ts.", "requirements": ["8.2-AC6"] },
+    { "priority": "LOW", "action": "Carry-over 8-1 R-001/R-006 remain waived; verify when 8-2 device lane passes and again before Epic 8 close.", "requirements": [] }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-2-punch-visual.md",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-8-2-punch-visual.json",
+    "gate_decision_path": "_bmad-output/test-artifacts/traceability/gate-decision-8-2-punch-visual.json",
+    "test_design_path": "_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md",
+    "atdd_checklist_path": "_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md",
+    "automation_summary_path": "_bmad-output/test-artifacts/automation-summary.md",
+    "spec_path": "_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md",
+    "epic_context_path": "_bmad-output/implementation-artifacts/epic-8-context.md"
+  }
+}

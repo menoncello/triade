@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-01T18:15:00.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "8-5",
+    "label": "8-5 Reduced Motion — preset-gated umbrella, 60 FPS fallback, game-over fade (Epic 8, S8.5)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 100% (4/4) and P1 100% (1/1) and overall 100% (6/6) with P0 15/15 and P1 9/9 host pass and overall 98.68% (824/835) exceed deterministic PASS thresholds (P0 100%, P1 ≥90%, overall ≥80%), but 2 P2 EXPECTED RED with waivers remain (R-006 overlapping shake/bullet without cancelAnimation, R-010 burst setTimeout orphan) plus manual device smoke P1-07 pending 15-min pre-merge lane — waived per spec Residual risks + test-design R-006/R-010 deferred-work lows, same precedent as 8-4 CONCERNS (2 P2 RED + pending device). Risk LOW; fixes are one-line cancelAnimation + burstTimerRef + pending device pass before verified. Map working-tree delta to tests: 9 files ~263 insertions, engine byte-identical empty, tsc clean, bench 2/2 both profiles median 9.6ms/6.5ms under 0.05/0.1 budget.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-5-reduced-motion.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}
