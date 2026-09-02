@@ -3,35 +3,36 @@ stepsCompleted: ['step-01-preflight-and-context', 'step-02-identify-targets', 's
 lastStep: 'step-04-validate-and-summarize'
 lastSaved: '2026-09-02'
 workflowType: 'bmad-testarch-automate'
-storyId: 'dw-purity-and-weight-doc-hardening'
-storyKey: 'dw-purity-and-weight-doc-hardening'
+storyId: 'dw-ci-gesture-wiring-docs'
+storyKey: 'dw-ci-gesture-wiring-docs'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-purity-and-weight-doc-hardening.md'
-  - '_bmad-output/test-artifacts/test-design-dw-purity-and-weight-doc-hardening.md'
-  - '_bmad-output/test-artifacts/test-design/test-design-dw-purity-and-weight-doc-hardening.md'
-  - '_bmad-output/test-artifacts/atdd-checklist-dw-purity-and-weight-doc-hardening.md'
-  - 'triade/__tests__/engine/pot.test.ts'
-  - 'triade/__tests__/engine/adaptive-spawn-integration.test.ts'
-  - 'triade/__tests__/engine/engine.purity.test.ts'
-  - 'triade/src/engine/core/pot.ts'
-  - 'triade/src/engine/config/spawnConfig.ts'
-  - 'triade/test-utils/helpers.ts'
-  - 'triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts'
+  - '_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/test-design-dw-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/test-design/test-design-dw-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/atdd-checklist-dw-ci-gesture-wiring-docs.md'
+  - 'triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts'
+  - 'triade/__tests__/ui/gesture-pipeline.test.ts'
+  - 'triade/src/ui/gesture.ts'
+  - 'triade/src/ui/swipe.ts'
+  - 'triade/App.tsx'
+  - 'triade/package.json'
+  - '.github/workflows/ci.yml'
+  - 'triade/benchmarks/engine.bench.test.ts'
   - '_bmad/tea/config.yaml'
 outputFile: '_bmad-output/test-artifacts/automation-summary.md'
 test_artifacts: '_bmad-output/test-artifacts'
 ---
 
-# Automation Summary — DW bundle dw-purity-and-weight-doc-hardening — PURITY_ROOTS fallback for pot.test.ts + σ-budget docs for adaptive-spawn-integration.test.ts
+# Automation Summary — DW bundle dw-ci-gesture-wiring-docs — split benchmark from default test + extract gesture wiring to testable module
 
 **Date:** 2026-09-02
 **Author:** Eduardo (TEA / Murat — Master Test Architect)
-**Workflow:** `bmad-testarch-automate` (Create) — targeted delta for `dw-purity-and-weight-doc-hardening`
-**Mode:** BMad-integrated context (spec + test-design + ATDD) but host-dominated execution; no Playwright/Cypress harness required for this pure test-harness hardening
+**Workflow:** `bmad-testarch-automate` (Create) — targeted delta for `dw-ci-gesture-wiring-docs`
+**Mode:** BMad-integrated context (spec + test-design + ATDD) but host-dominated execution; no Playwright/Cypress harness required for this pure gesture wiring + CI glob hardening
 **Stack:** `frontend` (Expo RN SDK 57, `node:test` + `tsx`, Reanimated 4 + Skia 2.6.2)
-**Working-tree delta under test:** Working-tree `git diff` vs baseline `abd36bcc056bb060a867940a0afbe4d91aac2513` (spec `spec-purity-and-weight-doc-hardening.md` intent/boundaries/I-O matrix 8 rows, 5 ACs). HEAD is `abd36bc` (after `sweep dw-preview-pot-ladder-hygiene`); working-tree diff is 2 test files + ledger vs HEAD. `triade/src/engine` byte-identical except via tests (`git diff --stat -- triade/src/engine` empty except `pot.test.ts`/`adaptive-spawn`).
+**Working-tree delta under test:** `HEAD 66d711d` (`refactor(ci-gesture): split benchmark from default test, extract gesture wiring to testable module (DW-49, DW-50)`) vs baseline `fa68173` (spec `spec-ci-gesture-wiring-docs.md` intent/boundaries/I-O matrix 7 rows, 5 ACs). `triade/src/engine` byte-identical (`git diff --stat -- triade/src/engine` empty), `triade/benchmarks` byte-identical.
 
-> **Delta (2 test files + ledger, ~83 insertions, no engine logic change):** `triade/__tests__/engine/pot.test.ts:1-45` — `import { existsSync, readFileSync, readdirSync }` (was `readFileSync` only) + `const PURITY_ROOTS_FALLBACK = [join(...src/engine), join(...src/game)]` mirroring `engine.purity.test.ts:7-10` + `function findFileSync(root,target)` recursive `readdirSync(root,{withFileTypes:true}) as unknown as Dirent[]` `try/catch→null` + `function resolveWithFallback(primaryPath,targetFileName){ if(existsSync(primaryPath)) return primaryPath; for(root of PURITY_ROOTS_FALLBACK){ found=findFileSync(root,target); if(found) return found; } return primaryPath; }` + wraps `potPath`/`indexPath` via `resolveWithFallback(primaryPotPath,'pot.ts')` / `resolveWithFallback(primaryIndexPath,'index.ts')` while keeping verbatim `readFileSync`+`extractSpecifiers`+forbidden filter+export regex; `FR7_LADDER` + `weightedValue` literals `0.9016` untouched (DW-58) — plus `triade/__tests__/engine/adaptive-spawn-integration.test.ts:15-47` header `DW-57 σ-budget` block + 4 inline `DW-57 σ-budget` comments adjacent to `mulberry32(0xc31)` N=5000 exact, `runSeededSession(0x26c6,10000)` aggregate ±2%≈4–5σ, `0x5eed+ceiling N=12000` / `0x51ce+ceiling N=2000` exact; no `tol`/`sigmaBound`/`seed`/`N` numeric change, band math untouched — plus `_bmad-output/implementation-artifacts/deferred-work.md` DW-54/DW-57 `open→done 2026-09-01` with `resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c`.
+> **Delta (5 production files + 1 ATDD, ~215 insertions, no gameplay change, no new deps):** `triade/package.json:13-14` — `test: "TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test \"__tests__/**/*.test.ts\""` (was `"__tests__/**/*.test.ts" "benchmarks/**/*.test.ts"` duplicated) + `benchmark: "TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test \"benchmarks/**/*.test.ts\""` (was identical to `test`) → separates timing-sensitive benchmarks from default run (DW-49); `.github/workflows/ci.yml:9,37` — job `engine-test-and-benchmark` keeps name (branch protection) but `Run tests (benchmarks excluded — see benchmark job)` + new parallel job `benchmark` duplicates `checkout/setup-node/npm ci` then `Run benchmark gate (timing-sensitive, separate from default test) → npm run benchmark` → default excludes benches, benchmark never gates release; `triade/src/ui/gesture.ts` — NEW 49 LOC module exporting `handleSwipe(dx,dy,busy,dispatch,opts?)` (busy null+current gate, `opts.success` fail-closed via `'success' in opts && !opts.success`, `Number.isFinite(dx/dy)`, `typeof dispatch==='function'`, `resolveSwipeDirection({dx,dy})`, `try/catch dispatch`) + `handleGestureEnd(event,success,busy,dispatch)` (null+typeof translationX/Y, `!success` early, delegates to `handleSwipe` with `{success}`) — extracts `App.tsx` `onEnd` contract (DW-50); `triade/App.tsx:31,804` — `import { handleGestureEnd } from './src/ui/gesture.ts'` + `panGesture.onEnd((event,success)=> handleGestureEnd(event,success,busyRef,dir=>doMoveRef.current(dir)))` replacing inline wiring; `SWIPE_THRESHOLD` retained for `activeOffsetX/Y` gate; `triade/__tests__/ui/gesture-pipeline.test.ts:4,12-26` — replaces local `handleSwipe` copy with `import { handleSwipe } from '../../src/ui/gesture.ts'` + helper `swipeToMove` composes imported `handleSwipe` with `game.move` for board-mutation assertions; WIRING assertion kept (`handleGestureEnd` + `doMoveRef.current(dir)` + `SWIPE_THRESHOLD` + `gesture.ts` `resolveSwipeDirection`).
 
 ---
 
@@ -41,9 +42,9 @@ test_artifacts: '_bmad-output/test-artifacts'
 
 - **Config `test_stack_type`:** `auto` (`_bmad/tea/config.yaml:14`)
 - **Auto-detection:** `triade/package.json` has `react`/`react-native`/`expo`/`@shopify/react-native-skia`/`react-native-reanimated` + no `pyproject.toml`/`go.mod`/`pom.xml`/`Cargo.toml` → **frontend**
-- **Framework:** `node:test` + `tsx` (`triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test`) — **verified exists** (`triade/node_modules/.bin/tsx` + `npm --prefix triade exec -- tsc --noEmit` clean via `TSX_TSCONFIG_PATH`, `tsx` host-verified)
-- **No Playwright/Cypress harness required:** dw bundle is pure `PURITY_ROOTS_FALLBACK` file-move fallback + `σ-budget` doc hardening + `FR7_LADDER`/`weightedValue` literals + `engine.purity` scanner + `tsc` both configs + ledger `resolution-undo`. Host `node:test` is correct harness per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device`. `tea_use_playwright_utils:true` loaded but not applied for this harness seam — no `page.goto`/`page.locator` surface (TEA `browser_automation: auto` → host adaptation is correct for Expo Canvas). `tea_use_pactjs_utils:false` — provider scrutiny is `game.ts`/`pot.ts` delegation (single `PURITY_ROOTS_FALLBACK` + single `findFileSync`/`resolveWithFallback` + single σ header `DW-57`), not Pact.
-- **Existing test structure:** `triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts` (19 `it.skip` scaffolds, P0 6 + P1 6 + P2 4 + P3 3, ~283 lines, host `node:test` + `tsx`) + `triade/__tests__/engine/pot.test.ts` (6 pass) + `triade/__tests__/engine/adaptive-spawn-integration.test.ts` (15 pass) + `triade/__tests__/engine/engine.purity.test.ts` (5 pass) + `_bmad-output/test-artifacts/tests/{api,e2e}` + `fixtures/` (7 prior: `feel-*` + `helpers-hardening` + `layout-band` + `preview-pot-ladder`).
+- **Framework:** `node:test` + `tsx` (`triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test`) — **verified exists** (`triade/node_modules/.bin/tsx` + `npm --prefix triade exec -- tsc --noEmit` clean via `TSX_TSCONFIG_PATH`, `tsx` host-verified, `npm --prefix triade test -- __tests__/ui/gesture-pipeline.test.ts` 7/7 green)
+- **No Playwright/Cypress harness required:** dw bundle is pure `handleSwipe` dispatch predicate + `SWIPE_THRESHOLD` single-source + `package.json` 2-script split + `ci.yml` 2-job shape + `tsc` both configs + ledger `resolution-undo`. Host `node:test` is correct harness per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device`. `tea_use_playwright_utils:true` loaded but not applied for this harness seam — no `page.goto`/`page.locator` surface (TEA `browser_automation: auto` → host adaptation is correct for Expo Canvas). `tea_use_pactjs_utils:false` — provider scrutiny is `gesture.ts`/`swipe.ts` delegation (single `handleSwipe` + single `SWIPE_THRESHOLD` + single `resolveSwipeDirection`), not Pact.
+- **Existing test structure:** `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts` (19 `it.skip` scaffolds, P0 7 + P1 5 + P2 4 + P3 3, ~272 lines, host `node:test` + `tsx`) + `triade/__tests__/ui/gesture-pipeline.test.ts` (7/7 via imported wiring) + `triade/__tests__/ui/swipe.test.ts` (10/10) + `_bmad-output/test-artifacts/tests/{api,e2e}` + `fixtures/` (8 prior: `feel-*` + `helpers-hardening` + `layout-band` + `preview-pot-ladder` + `purity-weight`).
 
 ### Execution Mode Resolution
 
@@ -57,18 +58,18 @@ test_artifacts: '_bmad-output/test-artifacts'
 ```
 
 - **Knowledge fragments loaded (core, always):** `test-levels-framework.md`, `test-priorities-matrix.md`, `data-factories.md`, `selective-testing.md`, `ci-burn-in.md`, `test-quality.md`
-- **Extended on demand:** `probability-impact.md`/`risk-governance.md` (via `test-design-dw-purity-and-weight-doc-hardening.md` R-001..R-009, 2 high score 6: R-001 fallback dead-code, R-002 σ-comment drift), `nfr-criteria.md` (reliability fail-closed vs never-throw + maintainability single `PURITY_ROOTS_FALLBACK` + single header + 60 FPS `<1 ms` + ATDD purity green + statistical headroom `≈10σ`/`≈5σ`), `fixture-architecture.md` (deterministic, no faker — `PURITY_ROOTS_FALLBACK` scan + `mulberry32` 0xc31/0x26c6/0x51ce), `api-testing-patterns.md` (gateway contract via pure helpers + scanner), `selector-resilience.md` (not applied — no DOM), `network-first.md` (not applied — pure helper)
+- **Extended on demand:** `probability-impact.md`/`risk-governance.md` (via `test-design-dw-ci-gesture-wiring-docs.md` R-001..R-009, 3 high score 6: R-001 single-wiring dedup, R-002 benchmark exclusion, R-003 dispatch fail-closed), `nfr-criteria.md` (reliability never-throw vs single-source + 60 FPS O(1) `<80ms` + ledger 64-hex), `fixture-architecture.md` (deterministic, no faker — `staticBoard`/`rngOf`/`gameState` + `swipeToMove` composition), `api-testing-patterns.md` (gateway contract via pure helpers + scanner), `selector-resilience.md` (not applied — no DOM), `network-first.md` (not applied — pure predicate)
 - **TEA flags:** `tea_use_playwright_utils:true`, `tea_use_pactjs_utils:false`, `tea_pact_mcp:none`, `tea_browser_automation:auto`, `tea_execution_mode:auto`, `tea_capability_probe:true`, `risk_threshold:p1`
 - **Persistent facts:** `file:{project-root}/**/project-context.md` (expanded; none found — facts skipped)
 
 ### Inputs Confirmed
 
-- Spec `spec-purity-and-weight-doc-hardening.md` (intent/boundaries/I-O 8 rows, 5 ACs: keep source-text oracle verbatim, `PURITY_ROOTS` mirror `src/engine`+`src/game`, σ-budget header+inline without tol change, DW-58 literals stay)
-- Test-design `test-design-dw-purity-and-weight-doc-hardening.md` (9 risks R-001..R-009, 2 high score 6, P0 6 groups / P1 6 / P2 4 / P3 3, NFR planning, entry/exit, estimates ~4–6.5h host)
-- ATDD checklist `atdd-checklist-dw-purity-and-weight-doc-hardening.md` + `purity-weight-doc-hardening.atdd.test.ts` (19 `it.skip`, P0 6 + P1 6 + P2 4 + P3 3, `it.skip` RED-phase scaffolds, host `node:test` dormant 19 skip → 19 pass when activated with `sed s/it.skip/it/g`)
-- Source `pot.test.ts:9-45` (`PURITY_ROOTS_FALLBACK` 2 roots + `findFileSync` Dirent + `resolveWithFallback`) / `pot.test.ts:134-153` (primaryHit + purity oracle) / `adaptive-spawn-integration.test.ts:15-47` (header `DW-57`) + 4 inline `0xc31/0x26c6/0x5eed+ceiling/0x51ce+ceiling` / `engine.purity.test.ts:7-10` mirror / `helpers.ts:116 sigmaBound z=5` channel
-- Existing guards `pot.test.ts` 6 pass + `adaptive-spawn 15` pass + `engine.purity 5` pass + `tsc` both tsconfigs clean via `TSX_TSCONFIG_PATH`
-- Ledger `deferred-work.md` DW-54/DW-57 `done 2026-09-01` with `resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c 2026-09-01 …`; `sprint-status.yaml` untouched (orchestrator-owned per prompt, verified absent string `dw-purity-and-weight-doc-hardening`)
+- Spec `spec-ci-gesture-wiring-docs.md` (intent/boundaries/I-O 7 rows, 5 ACs: package glob split, CI 2-job, busy/success/valid/WIRING, ledger `resolution-undo: facfde46…`, engine byte-identical)
+- Test-design `test-design-dw-ci-gesture-wiring-docs.md` (9 risks R-001..R-009, 3 high score 6, P0 7 groups / P1 7 / P2 5 / P3 3, NFR planning, entry/exit, estimates ~3.5–6.1h host)
+- ATDD checklist `atdd-checklist-dw-ci-gesture-wiring-docs.md` + `ci-gesture-wiring-docs.atdd.test.ts` (19 `it.skip`, P0 7 + P1 5 + P2 4 + P3 3, `it.skip` RED-phase scaffolds, host `node:test` dormant 19 skip → 19 pass when activated)
+- Source `gesture.ts:19-49` (`handleSwipe` 19-38 + `handleGestureEnd` 40-48 WIRING delegation) / `swipe.ts:3-18` (`SWIPE_THRESHOLD=10` + `resolveSwipeDirection` tie/subthreshold) / `App.tsx:31,804` (import + delegate) / `package.json:13-14` (test/benchmark split) / `ci.yml:9,37` (2-job shape) / `gesture-pipeline.test.ts:4,12-26` (import seam)
+- Existing guards `gesture-pipeline 7` pass + `swipe 10` pass + `npm test 852` host + `npm run benchmark 6` benches separate + `tsc` both tsconfigs clean via `TSX_TSCONFIG_PATH`
+- Ledger `deferred-work.md` DW-49/DW-50 `done 2026-09-02` with `resolution-undo: facfde46…`; `sprint-status.yaml` untouched (orchestrator-owned per prompt, verified absent string `dw-ci-gesture-wiring-docs`)
 
 ---
 
@@ -78,293 +79,303 @@ test_artifacts: '_bmad-output/test-artifacts'
 
 | Target | File(s) | Test Level | Priority | Justification |
 |--------|---------|------------|----------|---------------|
-| `pot.ts` at canonical path: `resolveWithFallback` returns primary, `readFileSync`+`extractSpecifiers` still asserts `endsWith spawnConfig.ts` and no RN/Skia forbidden + `index.ts` re-export `export {potForTier} from './pot.ts'` via fallback | `triade/__tests__/engine/pot.test.ts:134-153` | **Unit** | **P0** | AC purity tripwire verbatim (R-001/R-006 score 6) — blocks void on move that ships forbidden imports. No workaround — void ships RN/Skia. |
-| `index.ts` re-export preserved verbatim via `resolveWithFallback` | `pot.test.ts:147-153` | **Unit** | **P0** | AC re-export gate (R-006) — blocks reformat drift to live import. |
-| `weightedValue` hand-computed literals remain independent oracle (DW-58) — tier 1 `[0.8,0.9333)` + tier 5 `0.9016,0.9524,0.9778,0.9905,0.9968,1.0` via `rngOf(0.9/0.98/0.85/0.93/0.99/0.999)` | `pot.test.ts:86-101` | **Unit** | **P0** | AC DW-58 oracle (R-005 score 4) — blocks circular-oracle regression (recomputed `normalizeTo` would hide wrong formula). |
-| `FR7_LADDER` matrix + structural invariants (`>=3`, doubling, `length=tier+1`) for tiers 0..12 + fresh array ref purity | `pot.test.ts:50-59,65-84,126-132` | **Unit** | **P0** | AC structural invariants (R-005) — `FR7_LADDER` literal + doubling/length≥3 still pinned. |
-| Header `DW-57 σ-budget` block with derivations `σ=√(p(1-p)/N)` (`N=15000 p=1/16→10.1σ`, `N=10000 p=0.4→4.08σ / p=0.2→5σ`, `displayRoll σ_mean 0.00289→5.2σ`) | `adaptive-spawn-integration.test.ts:15-47` | **Unit (doc)** | **P0** | AC σ-budget doc (R-002 score 6) — blocks comment drift on future `N`/`tol` rotation. |
-| Deterministic tripwires still pass with documented σ headroom — `adaptive-spawn-integration` 15/15 (AC2 `0 off-edge`, AC7 `±2%` absolute, per-tier `sigmaBound 5σ`, ceiling `v<=ceiling` exact) | `adaptive-spawn-integration.test.ts` + `pot.test.ts` | **Integration (engine→helper)** | **P0** | AC no band-math change (R-002) — 21/21 `pot 6 + adaptive 15` proves byte-identical tolerances with headroom documented. |
-| Fallback scan correctness — `PURITY_ROOTS_FALLBACK` mirrors `engine.purity` `PURITY_ROOTS` (`src/engine`+`src/game` two roots, recursive `findFileSync` depth-first) and `resolveWithFallback` first-hit semantics | `pot.test.ts:9-45` + `engine.purity.test.ts:7-10` | **Unit + Static** | **P1** | AC fallback scan mirror (R-001/R-003) — blocks mirror drift + wrong-file ambiguity. |
-| Fallback never-throw vs fail-closed — `findFileSync` `catch→null` on `ENOENT`/`ENOTDIR` + `resolveWithFallback` returns `primaryPath` on miss → `readFileSync` throws `ENOENT` fail-closed | `pot.test.ts:19-44` | **Unit** | **P1** | R-001/R-007 — tripwire fails closed, not green, if file truly absent outside roots. |
-| `engine.purity` scanner stays green after `readdirSync` addition (no new forbidden `react`/`expo` specifier via `node:fs` imports) | `pot.test.ts:1-3` + `engine.purity.test.ts` | **Integration (scanner)** | **P1** | R-001/R-006 — `node:fs` allowed, `pot.ts` still keys `spawnConfig`, scanner green. |
-| No tolerance/band-math change — `git diff -- adaptive` shows only `+// DW-57` comment lines, zero `tol`/`sigmaBound`/`seed`/`N` numeric diff + `weightedValue` literals unchanged | `adaptive-spawn-integration.test.ts` + `pot.test.ts` + `git diff`| **Static** | **P1** | R-002/R-005 — spec `Never: change σ-gate numeric tolerances` gate. |
-| Ledger `resolution-undo` 64-hex hash for DW-54/DW-57 `done`, `sprint-status.yaml` untouched (orchestrator-owned) | `deferred-work.md` + `sprint-status.yaml` | **Static** | **P1** | R-007 — reversibility + ownership. |
-| `npx tsc --noEmit` clean on both `triade/tsconfig.json` and `triade/tsconfig.test.json` via `TSX_TSCONFIG_PATH` (`Dirent` `as unknown as Dirent[]` avoids `NonSharedBuffer`) | `pot.test.ts:22` + `tsconfig*.json` | **Static** | **P1** | R-008 — `Dirent` cast gate. |
-| Single-root mirror allowlist — `rg -n "PURITY_ROOTS"` each file `src/engine`+`src/game` (mirror) — drift is fail | `pot.test.ts` + `engine.purity.test.ts` | **Static scan** | **P2** | R-003 — mirror invariant. |
-| No verbatim-oracle regression — `rg -n "readFileSync(potPath"` ==2 (pot+index via fallback) + `extractSpecifiers` present | `pot.test.ts:134-153` | **Static scan** | **P2** | R-006 — oracle verbatim. |
-| No `tol`/`sigmaBound` numeric change scan — `rg -n "tol = 0.02\|sigmaBound"` counts unchanged + `σ-budget` ==5 pin | `adaptive-spawn-integration.test.ts` | **Static scan** | **P2** | R-002 — doc-vs-code pin. |
-| Escape/symlink pin — `findFileSync` handles `Dirent` `isDirectory()` deterministically and `catch→null` guards | `pot.test.ts:19-36` | **Unit** | **P2** | R-001 — no throw on symlink leaf. |
-| Exploratory — simulate `pot.ts` move under `src/engine/core/sub/` and assert purity tripwire still passes via fallback (host temp-dir + `readdirSync` scan) | `pot.test.ts:9-45` | **Device exploratory (host `fs`)** | **P3** | DW-54 closed without editing `src/engine`. |
-| Micro-bench — `findFileSync` scan `10k × 50-file` `src/engine` mock median `<1 ms` / `p99 <2 ms` (primary-hit `existsSync` only) | `pot.test.ts:9-45` | **Unit (bench)** | **P3** | R-004 `<1 ms` fallback budget. |
-| Cross-cutting negative scan — `rg -n "async.*readdir\|fs/promises"` empty (spec `Never: async fs`) | `pot.test.ts` | **Static scan** | **P3** | Hygiene — stayed sync. |
+| `package.json` `test` glob: `__tests__/**/*.test.ts` without `benchmarks` (DW-49) | `triade/package.json:13` | **Unit (source-text `rg` + count)** | **P0** | AC glob separation (R-002 score 6) — blocks p99 bench tail re-flaking default gate. No workaround — glob typo re-merges benches. |
+| `package.json` `benchmark` glob: `benchmarks/**/*.test.ts` without `__tests__` + scripts differ (DW-49) | `triade/package.json:14` | **Unit (source-text `rg`)** | **P0** | AC glob single-source (R-002 score 6) — blocks desync where benchmark re-points to `__tests__`. |
+| `ci.yml` 2-job shape: `engine-test-and-benchmark` keeps name (branch protection) `Run tests (benchmarks excluded)` + `benchmark` job `Run benchmark gate → npm run benchmark` (DW-49) | `.github/workflows/ci.yml:9,37` | **Unit (yaml `rg`)** | **P0** | AC CI split (R-002/R-004 score 6/3) — blocks missing bench job or default running `npm run benchmark`. |
+| `handleSwipe` busy-gate: `busy.current===true` + null busy suppresses any swipe (valid/50px/threshold) via imported wiring (DW-50) | `triade/src/ui/gesture.ts:19-38` | **Unit (import `handleSwipe`)** | **P0** | AC busy-gate (R-001/R-003 score 6) — blocks swipe mid-animation (T3.4) or null-busy crash. |
+| `handleSwipe`/`handleGestureEnd` success-gate: `success===false` / `opts.success===false` suppresses even when busy idle (DW-50) | `triade/src/ui/gesture.ts:27,41-48` | **Unit (import `handleSwipe` + `handleGestureEnd`)** | **P0** | AC success-gate (R-003 score 6) — blocks failed gesture dispatch (`success undefined` would slip via `===false` only). |
+| Valid swipe dispatches with real wiring and mutates board: right `30,2→right 3` at right wall, left `-30,1→left 3` via `game.move` composition (DW-50) | `triade/src/ui/gesture.ts:30-37` + `triade/__tests__/ui/gesture-pipeline.test.ts:28-42` | **Unit (helper `swipeToMove` + `staticBoard/rngOf/gameState`)** | **P0** | AC valid dispatch via imported wiring (R-001 score 6) — blocks local-copy regression (import not stub). |
+| WIRING regex: App binds `handleGestureEnd` + `doMoveRef.current(dir)` + `SWIPE_THRESHOLD`, gesture module resolves via `resolveSwipeDirection` (DW-50) | `triade/App.tsx:31,804` + `triade/src/ui/gesture.ts:2` | **Unit (source-text `rg`)** | **P0** | AC WIRING secondary guard (R-001/R-005 score 6/4) — blocks re-inline drift in App. |
+| Threshold coupling: sub-threshold `dx=5<10` + diagonal tie `dx==dy 20,20` resolve to null without dispatch (DW-50) | `triade/src/ui/swipe.ts:3-18` | **Unit (fixtures)** | **P1** | AC threshold coupling (R-005/R-006 score 4) — blocks activation without `threshold` gating. |
+| Guard-order: NaN/Infinity dx/dy and null/non-finite event return false before `resolveSwipeDirection`/`dispatch` | `triade/src/ui/gesture.ts:26-29,41-46` | **Unit (spy + throws)** | **P1** | AC guard-order (R-003/R-006 score 4) — busy/success/NaN must block before direction resolve + side-effect. |
+| Dispatch never-throw: throwing dispatch is caught and returns false rather than bubbling | `triade/src/ui/gesture.ts:32-36` | **Unit (spy throwing)** | **P1** | AC never-throw (R-003/R-007 score 6/3) — `try/catch` narrow (dispatch only) vs hide engine throw. |
+| Engine→gesture composition: `handleSwipe` with `game.move(state,dir,rng)` preserves board-mutation + spawn invariant | `triade/test-utils/helpers.ts` | **Unit (helpers `staticBoard/rngOf/gameState`)** | **P1** | AC composition (R-001 score 6) — swipe still spawns via `move()` not stub. |
+| CI name stability: default job name byte-identical `engine-test-and-benchmark` (branch protection) incl. second job not required | `.github/workflows/ci.yml:9` | **Unit (yaml)** | **P1** | AC CI name stability (R-004 score 3) — blocks rename to `test`. |
+| Dispatch type-gate: `typeof dispatch !== 'function'` returns false without calling `resolveSwipeDirection` | `triade/src/ui/gesture.ts:29` | **Unit** | **P1** | AC type-gate (R-003 score 6) — blocks null/123 dispatch crash. |
+| `tsc --noEmit` clean both configs (`tsconfig.json` + `tsconfig.test.json`) | `triade/tsconfig*.json` | **Unit (type)** | **P1** | AC type gate (R-001/R-003) — `BusyRef`/`SwipeEvent` shape drift would break wiring. |
+| Single-helper allowlist: `handleSwipe` definition count==1 (`gesture.ts` only), not re-inlined in `App.tsx` | `triade/src/ui/gesture.ts:19` + `triade/App.tsx` | **Unit (`rg`)** | **P2** | AC single-helper dedup (R-001 score 6) — blocks re-inline. |
+| Single-threshold allowlist: `SWIPE_THRESHOLD` definition count==1 (`swipe.ts` only) | `triade/src/ui/swipe.ts:3` | **Unit (`rg`)** | **P2** | AC threshold single-source (R-005 score 4) — blocks shadow. |
+| Guard-order literal ordering pin: `!busy` → `success` → `Number.isFinite` → `typeof dispatch` → `resolveSwipeDirection` → `try` | `triade/src/ui/gesture.ts:19-37` | **Unit (source-text)** | **P2** | AC guard-order pin (R-006 score 4) — blocks reorder before side-effect. |
+| Ledger: DW-49/DW-50 `resolution-undo: facfde46…` 64-hex + `status: done` present | `_bmad-output/implementation-artifacts/deferred-work.md` | **Unit (`rg`)** | **P2** | AC ledger reversibility (R-009 score 2) — blocks open→done without hash. |
+| Glob literal single-source: `benchmarks/` appears only via `package.json` `benchmark` script, not `test` | `triade/package.json` | **Unit (`rg`)** | **P2** | AC glob single-source (R-002/R-008 score 6/4) — blocks duplicate `benchmarks` in `test`. |
+| `handleSwipe` micro-bench `10k×` <80ms wall (O(1) trivial, no loop) | `triade/src/ui/gesture.ts` | **Unit (bench)** | **P3** | AC bench hygiene (NFR) — proves O(1) not loop. |
+| Negative exploratory: `handleSwipe(∞,∞)` / `{translationX: undefined}` / `busy=undefined` all fail-closed false without throw | `triade/src/ui/gesture.ts` | **Unit** | **P3** | AC negative exploratory (R-003) — complements NaN guard. |
+| Cross-cutting: `git diff --stat -- triade/src/engine` empty + `git diff --stat -- triade/benchmarks` empty (no engine/bench drift) | `triade/src/engine` + `triade/benchmarks` | **Unit (`rg`)** | **P3** | AC scope guard (Not in Scope) — proves zero gameplay change. |
 
-**API/E2E mapping note (TEA terminology for this Expo RN story):**
-- **"API" in TEA = engine purity + statistical gate gateway contract** over `PURITY_ROOTS_FALLBACK`/`findFileSync`/`resolveWithFallback` + `σ-budget` header+inline + `FR7_LADDER`/`weightedValue` literals + `engine.purity` scanner + `sigmaBound`/`mulberry32` (see tests in `_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts` — 16 cases, host 193 ms). They validate the gateway contract the same way API tests validate request/response shapes. No Pact/HTTP harness (`tea_use_pactjs_utils:false`); provider scrutiny is `pot.test.ts`/`adaptive-spawn-integration` + `helpers.ts` via real engine delegation (single `PURITY_ROOTS_FALLBACK` + single σ header `DW-57`).
-- **"E2E" in TEA = scanner + ledger + chrome verification journeys** (P1 fallback dead-code→primary-hit vs fallback-miss + P1 σ-budget doc→deterministic tripwires + P1 full integration sweep 21/21 + P2 static allowlists + P2 ledger/FR7 + P3 bench). These are `tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts` (6 journeys, host, P1/P2/P3) plus manual `npm --prefix triade test` full gate. Host automation covers all automatable surfaces; E2E is the Definition-of-Done exit criterion (no device lane per test-design). This is host verification, not `playwright.config.ts` `page.goto` suites — correctly skipped per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device / nightly-not-required`.
+### Test Levels Chosen (per `test-levels-framework.md`)
 
-### Priority Assignment (per `test-priorities-matrix.md` / `risk-governance.md`)
+- **Unit** dominant (pure `handleSwipe` predicate + `swipeToMove` composition + `SWIPE_THRESHOLD` literal + `ci.yml`/`package.json` source-text scans) — correct level for host-only predicate/CI shape with no network/browser.
+- **Static scan** for maintainability allows (`handleSwipe` definition count, `SWIPE_THRESHOLD` literal, guard-order indices, `benchmarks` token) — cargo-culting E2E `page.goto` for RN Skia Canvas would be wrong-level; host `rg` gates are the E2E-equivalent here (ci shape + wiring).
+- **Integration** via `swipeToMove` → `game.move` board mutation (consumes `staticBoard`/`rngOf` determinism) — E2E journeys in `umbrella.spec.ts` are host through wiring+engine, not browser.
+- No Playwright/Cypress harness — correct per stack `frontend` but scenario is framework-free host source-text + pure dispatch predicate exercised via `node:test`.
 
-- **P0:** Blocks purity-tripwire void + σ drift + high risk (R-001/R-002 score 6) + no workaround — must be 100% green before verified. Host `<5s` + bench `<1s` (<10s incl full suite), PR gate.
-- **P1:** Wiring + ledger boundary — ≥95% green; ledger scan may be waiver with owner+date if host guard + finite byte-identical gates already green per `selective-testing.md`.
-- **P2/P3:** Static/perf/exploratory — ≥90% informational; P2/P3 never block close (residual `findFileSync` scan <1ms R-004 is observed, not threshold; `PURITY_ROOTS_FALLBACK` mirror is the gate).
+### Priorities Assigned (per `test-priorities-matrix.md`)
 
-### Coverage Plan
+- **P0** (7 groups, `P×I ≥6` + blocks core journey + no workaround): globs + CI split + busy/success/valid/WIRING — blocks p99 flake + wiring diverge without workaround.
+- **P1** (7 groups, `P×I 3–4` + important common workflows): threshold/tie, NaN/event, throwing dispatch, composition, job name, type-gate, tsc both configs — important wiring contracts.
+- **P2** (5 groups, `P×I 1–2` + secondary + edge): single-helper, single-threshold, ordering pin, ledger `resolution-undo`, glob single-source — maintainability scans.
+- **P3** (3 groups, `P×I 1` + exploratory + perf): `10k×` bench `<80ms`, `∞/undefined` negative, engine/benchmarks empty diff — informative.
 
-- **P0:** 6 groups (host unit + scanner green — fallback primary-hit + purity oracle still exact + weightedValue literals + header+inline σ docs + adaptive-spawn 21/21 green)
-- **P1:** 6 groups (engine→helper σ-budget wiring + fallback scan over `PURITY_ROOTS` + `engine.purity` green + `tsc` clean both configs + ledger `resolution-undo` + no tol change)
-- **P2:** 4 groups (static `PURITY_ROOTS_FALLBACK` mirror grep, no-threshold-change scan, comment-drift pin, fallback escape/symlink, quote-in-regex hygiene)
-- **P3:** 3 groups (exploratory fallback-miss temp-dir move simulation + `findFileSync` 10k bench `<2 ms` + async-fs negative scan)
-- **Total:** 19 checks (P0 6 + P1 6 + P2 4 + P3 3, incl. E2E 6 journeys), `~4–6.5h` host → `~4–6.5h` elapsed (no device, host-only pure TS per test-design Resource Estimates `~4–6.5h`). Full host gate `npm --prefix triade test` 19 activated ATDD (19 pass when activated) + 16 gateway (16 pass) + 6 umbrella (6 pass) + both `tsc` clean `<15 min`.
+### Coverage Plan (critical-paths, host-only, no device lane)
+
+- **Smoke (<5 min, host):** `TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test triade/__tests__/ui/gesture-pipeline.test.ts` 7/7 + `rg 'handleGestureEnd' triade/App.tsx` + `rg '"test".*__tests__' package.json` (<0.1s) — fast feedback.
+- **P0 (<10 min, host):** 7 groups (globs + CI split + busy + success + valid + WIRING + tsc quick) — critical path.
+- **P1 (<30 min, host):** 7 groups (threshold/diagonal, NaN/null, dispatch throw, composition, job name, type-gate, tsc both configs) — important feature coverage.
+- **P2/P3 (<60 min, host):** 5 allowlist/ledger/glob checks + 3 exploratory/bench (optional) — full regression.
+- No E2E Playwright `page.goto`/`page.locator` — `App.tsx` `Gesture.Pan().activeOffsetX/Y` `[-10,+10]` preserved byte-identically; WIRING import + threshold literal are sufficient. Deferred E2E smoke remains manual per spec Not in Scope.
+
+### Risk/Priority Matrix
+
+| Risk ID | Category | Description | P×I | Priority | Mitigation via Tests |
+|---------|----------|-------------|-----|----------|----------------------|
+| R-001 | TECH | Single-wiring dedup drift (gesture.ts single source vs App re-inline) | 6 | P0/P2 | P0 WIRING + P2 single-helper allowlist + pipeline import seam |
+| R-002 | OPS | Benchmark exclusion regression (package.json glob desync) | 6 | P0/P2 | P0 package globs + P2 glob single-source + CI split |
+| R-003 | TECH | Dispatch fail-closed contract (busy null/success falsy/NaN/throw) | 6 | P0/P1/P3 | P0 busy/success + P1 guard-order/throw/type-gate + P3 negative |
+| R-004 | OPS | CI required-checks rename (engine-test-and-benchmark name must not change) | 3 | P1 | P1 CI name stability + P0 CI split |
+| R-005 | TECH | Threshold coupling (SWIPE_THRESHOLD=10 single source) | 4 | P1/P2 | P1 threshold sweep + P2 single-threshold allowlist |
+| R-006 | TECH | Guard-order regression (busy/success/NaN before resolve/dispatch) | 4 | P1/P2 | P1 guard-order + P2 ordering pin |
+| R-007 | TECH | Swallow vs hide engine throw (try wraps only dispatch) | 3 | P1/P3 | P1 never-throw + P3 narrow try check |
+| R-008 | PERF | Glob perf / CI time drift (benches re-merge) | 4 | P2/P3 | P2 glob allowlist + P3 10k× bench |
+| R-009 | OPS | Ledger resolution-undo 64-hex + sprint-status ownership | 2 | P2 | P2 ledger scan |
 
 ---
 
-## Step 3 — Generate Tests (Sequential, stack=`frontend`)
+## Step 3 — Generate Tests (adaptive orchestration)
 
-### Execution Report
+### Execution Mode
 
 ```
-🚀 Performance Report:
-- Execution Mode: sequential (auto→sequential, no subagent/agent-team support in opencode)
-- Stack Type: frontend (Expo RN)
-- API Test Generation (purity + σ-budget gateway): _bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts (16 cases, host 193 ms, file 224 lines)
-- E2E Test Generation (scanner + ledger + chrome journeys): _bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts (6 journeys, host, file 284 lines) — not scaffolded as Playwright page.goto (RN harness hardening, host-verifiable: fallback seam + σ docs + ledger)
-- Fixtures: _bmad-output/test-artifacts/fixtures/purity-weight-doc-hardening-fixtures.ts (new, 236 lines, this run) + reused feel-trace-fixtures.ts (69 lines, 8-1) + feel-bullet-time-fixtures.ts (133 lines, 8-4) + feel-reduced-motion-fixtures.ts (223 lines, 8-5) + feel-sfx-fixtures.ts (198 lines, 8-6) + helpers-hardening-fixtures.ts (235 lines) + layout-band-dedup-guard-fixtures.ts (215 lines) + preview-pot-ladder-hygiene-fixtures.ts (205 lines, host-only pure fixtures)
-- Backend Test Generation: skipped (frontend only, tea_use_pactjs_utils:false, no Pact)
-- Total Elapsed: host ATDD 19 (0 pass dormant / 19 pass when activated, ~149 ms) + gateway 16 (16G, ~193 ms) + umbrella 6 (6G, ~5 ms / observed 160 ms incl JIT) + existing pot 6G + adaptive 15G + engine.purity 5G + 5 smoke suites green (~5.8s full npm gate) + both tsc clean <15 min
-- Parallel Gain: baseline (no parallel speedup; sequential is correct for node:test pure surface)
+⚙️ Execution Mode Resolution:
+- Requested: auto
+- Resolved: sequential (opencode runtime — no subagent/agent-team, host-verified)
+- Supports subagent: false, Supports agent-team: false, Probe Enabled: true
 ```
 
-No subagent temp files (`/tmp/tea-automate-*.json`) — this run aggregates **existing** ATDD scaffolds (`purity-weight-doc-hardening.atdd.test.ts` 19 cases, dormant `it.skip`) + the shipped `pot.test.ts:9-45` / `adaptive-spawn-integration.test.ts:15-47` + header docs delta and expands into TEA `test_artifacts/tests/{api,e2e}` plus `fixtures/purity-weight-doc-hardening-fixtures.ts` for traceability, rather than launching Playwright subagents that would add dead weight for a pure-function delta. Same adaptation as `dw-test-scanner-helpers-hardening` / `dw-layout-band-dedup-and-guard` / `dw-preview-pot-ladder-hygiene` / Epic 8 `automate` — see Step 3 in prior summaries. E2E journeys are host scanner + ledger + chrome checklists (not `playwright.config.ts` suites) — correctly skipped per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device / nightly-not-required`.
+Sequential dispatch (no runtime-managed parallelism) — TEA does not impose an additional worker ceiling; all outputs are valid JSON with stable schema.
 
-### Tests Aggregated + Generated (deduplicated against ATDD)
+### Worker Dispatch (by `detected_stack: frontend`)
 
-**Source of truth (ATDD, existing, RED-phase scaffolds dormant):** `triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts` (19 `it.skip`, ~283 lines, P0 6 + P1 6 + P2 4 + P3 3, prioritized `[P0-..]/[P1-..]/[P2-..]`, GWT comments) — I/O matrix 8 rows + DW-54/57/58 contracts. No duplicate generation — `automate` expands fixtures/validates and aggregates, plus TEA `tests/api` + `tests/e2e` artifacts for traceability. When a priority bucket is already covered by the ATDD file (e.g. P0 helper single definition), the `gateway` file re-pins it as an executable gateway contract; the `umbrella` file documents the journey-level exit criterion.
+| Stack | Subagent A (API) | Subagent B (E2E) | Subagent B-backend |
+|-------|------------------|------------------|---------------------|
+| `frontend` | Launch → `ci-gesture-wiring-docs.gateway.spec.ts` (16 contracts) | Launch → `ci-gesture-wiring-docs.umbrella.spec.ts` (6 journeys) | Skip (no backend) |
 
-| # | Requirement | Scenario | Level | Priority | File | Test Name | Status on working-tree |
-|---|-------------|----------|-------|----------|------|-----------|------------------------|
-| 1 | AC pot.ts canonical primary-hit — resolveWithFallback returns primary and purity oracle verbatim | `primaryPotPath = join(...pot.ts)` → `potPath=resolveWithFallback(primary,'pot.ts')` `existsSync` true → no scan, `readFileSync(potPath)` + `extractSpecifiers` `endsWith spawnConfig.ts` + no RN/Skia + export regex | Unit | P0 | `purity-weight-doc-hardening.atdd.test.ts:P0-01` + `gateway.spec.ts [P0] primary-hit` + `fixtures resolveWithFallbackFixture()` | `[P0] AC pot.ts canonical primary-hit — resolveWithFallback returns primary and purity oracle verbatim` | GREEN (ATDD 19 pass when activated; gateway 1/16 pass 0.68 ms) |
-| 2 | AC index.ts re-export preserved verbatim via resolveWithFallback | `primaryIndexPath = join(...index.ts)` → `indexPath=resolveWithFallback(primary,'index.ts')` + `readFileSync(indexPath)` + `potForTier`/`pot.ts`/`from` preserved | Unit | P0 | `atdd P0-02` + `gateway [P0] index.ts` | `[P0] AC index.ts re-export preserved verbatim via resolveWithFallback` | GREEN |
-| 3 | AC weightedValue hand-computed literals remain independent oracle (DW-58) | `0.9016,0.9524,0.9778,0.9905,0.9968,1.0` + `0.9∈[0.8,0.9333)` + `rngOf(0.9)/0.99` pins present, no recomputed `normalizeTo` | Unit | P0 | `atdd P0-03` + `gateway [P0] literals` + `fixtures literal09016Present()` | `[P0] AC weightedValue hand-computed literals remain independent oracle (DW-58)` | GREEN |
-| 4 | AC FR7_LADDER matrix + structural invariants (tiers 0..12) | `FR7_LADDER` 8 matrices + `potForTier` doubling/length≥3 invariants + fresh array ref purity | Unit | P0 | `atdd P0-04` + `gateway [P0] FR7` | `[P0] AC FR7_LADDER matrix + structural invariants (tiers 0..12)` | GREEN |
-| 5 | AC header DW-57 σ-budget block present with derivations σ=√(p(1-p)/N) | Header `AC2 0xc31 N5000 exact` / historical `N15000≈10σ p=1/16` / `AC7 0x26c6 N10k ≈4.1σ/5.0σ` / `sigmaBound 5σ` / `0x51ce+ceiling` / `DisplayRoll ±0.015≈5.2σ` + `σ=√(p(1-p)/N)` | Unit (doc) | P0 | `atdd P0-05` + `gateway [P0] header DW-57` | `[P0] AC header DW-57 σ-budget block present with derivations σ=√(p(1-p)/N)` | GREEN |
-| 6 | AC deterministic tripwires still pass with documented σ headroom (adaptive 15/15) | `weightedValue(rngOf(0.9),1)===3` deterministic + `sigmaBound(0.2,10k)` finite + `mulberry32(0xc31)` reseeds identically (authoritative 21/21 is `pot 6 + adaptive 15`) | Unit | P0 | `atdd P0-06` + `gateway [P0] deterministic` + `fixtures sigmaBudgetFor()` | `[P0] AC deterministic tripwires still pass with documented σ headroom (adaptive 15/15)` | GREEN |
-| 7 | P1 fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity PURITY_ROOTS | `engine.purity: PURITY_ROOTS src/engine+src/game` mirrored by `pot.test.ts: PURITY_ROOTS_FALLBACK src/engine+src/game` + `readdirSync withFileTypes:true` + `isDirectory()` recursion + `join(root,entry.name)` | Unit | P1 | `atdd P1-01` + `gateway [P1] scan correctness` + `umbrella E2E-01` | `[P1] Fallback scan correctness — PURITY_ROOTS_FALLBACK mirrors engine.purity.ts PURITY_ROOTS (src/engine+src/game)` | GREEN |
-| 8 | P1 fallback never-throw vs fail-closed — catch→null + primary return → ENOENT | `findFileSync try/catch→null` never-throws + `resolveWithFallback for(...PURITY_ROOTS_FALLBACK)` first-hit + `return primaryPath` fail-closed | Unit | P1 | `atdd P1-02` + `gateway [P1] never-throw` + `umbrella E2E-01` | `[P1] Fallback never-throw vs fail-closed — catch→null + primary return → ENOENT` | GREEN |
-| 9 | P1 engine.purity scanner stays green after readdirSync addition | `import { existsSync, readFileSync, readdirSync } from 'node:fs'` allowed (`node:fs` not forbidden), `pot.ts` still keys `spawnConfig`, `engine.purity` green | Integration | P1 | `atdd P1-03` + `gateway [P1] scanner green` + `umbrella E2E-03` | `[P1] engine.purity scanner stays green after readdirSync addition (no forbidden node:fs specifier)` | GREEN |
-| 10 | P1 no tolerance/band-math change — adaptive diff is comment-only, pot literals unchanged | `tol = 0.02` single site + `sigmaBound` call sites stable + `0xc31`/`0x26c6`/`0x51ce+ceiling`/`0x5eed+ceiling` seeds present + `FR7_LADDER` still present | Static | P1 | `atdd P1-04` + `gateway [P1] no tol change` + `umbrella E2E-02` | `[P1] No tolerance/band-math change — adaptive diff is comment-only, pot literals unchanged` | GREEN |
-| 11 | P1 ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched | `DW-54/57 status: done 2026-09-01` + `resolution: resolved by sweep bundle dw-purity-and-weight-doc-hardening` + `resolution-undo: 9a5dc3eb... 64-hex` (2 hits) + `DW-58 already resolved` | Static | P1 | `atdd P1-05` + `gateway [P1] ledger` + `umbrella E2E-03/E2E-05` | `[P1] Ledger resolution-undo 64-hex hash for DW-54/DW-57 done, sprint-status.yaml untouched` | GREEN |
-| 12 | P1 tsc clean both configs via Dirent cast as unknown as Dirent[] | `as unknown as import('node:fs').Dirent[]` + `withFileTypes:true` + `sigmaBound z=5` all present | Static | P1 | `atdd P1-06` + `gateway [P1] Dirent cast` + `umbrella E2E-05` | `[P1] tsc clean both configs via Dirent cast as unknown as Dirent[] (NonSharedBuffer guard)` | GREEN |
-| 13 | P2 single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail) | `PURITY_ROOTS` & `PURITY_ROOTS_FALLBACK` each `src/engine`+`src/game` (any third root or missing `src/game` is drift) | Static scan | P2 | `atdd P2-01` + `gateway [P2] mirror allowlist` + `umbrella E2E-04` | `[P2] SCAN single-root mirror allowlist — PURITY_ROOTS 2 roots each file (mirror drift fail)` | GREEN |
-| 14 | P2 no verbatim-oracle regression — readFileSync(potPath still 2 sites | `readFileSync(potPath) 1` + `readFileSync(indexPath) 1` + `extractSpecifiers` present + `potForTier` literal, no `import * as pot` fallback | Static scan | P2 | `atdd P2-02` + `gateway [P2] verbatim oracle` + `umbrella E2E-04` | `[P2] SCAN no verbatim-oracle regression — readFileSync(potPath still 2 sites` | GREEN |
-| 15 | P2 no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound count stable | `tol = 0.02` single + `σ-budget >=5` (header+4 inline) + `helpers function sigmaBound` defined | Static scan | P2 | `atdd P2-03` + `gateway [P2] no tol change` + `umbrella E2E-04` | `[P2] SCAN no tol/sigmaBound numeric change — tol 0.02 single, sigmaBound count stable` | GREEN |
-| 16 | P2 escape/symlink pin — findFileSync handles Dirent isDirectory deterministically | `entry.isDirectory()` recursion + `catch→null` guards `ENOTDIR` (no throw on symlink leaf) | Unit | P2 | `atdd P2-04` + `gateway [P2] escape/symlink` + `umbrella E2E-04` | `[P2] SCAN escape/symlink pin — findFileSync handles Dirent isDirectory deterministically` | GREEN |
-| 17 | P3 exploratory — fallback-miss simulation (temp-dir move) proves scan would locate pot.ts | `pot.ts` + `index.ts` exist at canonical path (primary-hit no-op), proving scan would locate under `src/engine` hypothetic move | Device exploratory (host `fs`) | P3 | `atdd P3-01` + `umbrella E2E-06` | `[P3] Exploratory — fallback-miss simulation (temp-dir move) proves scan would locate pot.ts` | GREEN |
-| 18 | P3 bench findFileSync scan 10k×50-file mock median <1 ms / p99 <2 ms (primary-hit existsSync only) | `2000× existsSync` `<500ms` (≈`<0.25ms` per call, primary-hit no scan) proves `<1 ms` fallback budget, no backtracking | Unit (bench) | P3 | `atdd P3-02` + `umbrella E2E-06 bench` + `fixtures fallbackBench()` | `[P3] BENCH findFileSync scan 10k×50-file mock median <1 ms / p99 <2 ms (primary-hit existsSync only)` | GREEN (observed 2.8 ms for 2k) |
-| 19 | P3 cross-cutting absent — no async fs/promises or deps in fallback seam | `async.*readdir`/`fs/promises` empty + stays in scope | Static | P3 | `atdd P3-03` + `umbrella E2E-06 scope` | `[P3] SCAN cross-cutting absent — no async fs/promises or deps in fallback seam` | GREEN |
+### Outputs Generated
 
-**Deduplication guard:** helper method spreads (ATDD covers contract, gateway re-pins as executable contract, umbrella asserts journey exit, `pot.test.ts 6` + `adaptive 15` cover finite regression) intentionally overlap on P0 fallback primary-hit + σ header — overlap is defense-in-depth per `test-levels-framework.md` "Critical paths requiring defense in depth" exception; non-critical `displayRoll 0.5` pad vs helper coverage is not duplicated.
+| File | Lines | Tests | Level | Priority | Status |
+|------|-------|-------|-------|----------|--------|
+| `_bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts` | ~273 | 16 (7 P0 + 5 P1 + 4 P2) | Unit (API gateway) | P0/P1/P2 | ✅ 16/16 pass (host, `cd triade && TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test ../_bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts`) |
+| `_bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts` | ~325 | 6 journeys (3 P1 + 1 P2 + 1 P1/P2 + 1 P3) | E2E (host through wiring→engine→CI) | P1/P2/P3 | ✅ 6/6 pass (host, `cd triade && TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test ../_bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts`) |
+| `_bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts` | ~215 | 12 helpers + bench `handleSwipeBench` | Fixture (composition + scan) | P0/P1/P2 | ✅ deterministic, no faker, reused via gateway/umbrella |
+| `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts` (pre-existing ATDD, 19 `it.skip` scaffolds) | ~272 | 19 (7 P0 + 5 P1 + 4 P2 + 3 P3) | Unit + Static-scan | P0/P1/P2/P3 | ✅ dormant 19 skip; activated `sed s/it.skip/it/g` → 19/19 pass (host, `153ms`) |
+
+**Total API/E2E TEA artifacts:** 22 contracts (16 gateway + 6 umbrella) + 12 fixture helpers + 19 ATDD scaffolds = 41 checks (19 dormant) mapping to 9 risks (3 high ≥6 mitigated) and 5 ACs (spec I-O matrix). ATDD `P0 7/7 + P1 5/5 + P2 4/4 + P3 3/3` all GREEN when activated — already implemented in working tree `HEAD 66d711d` vs baseline `fa68173`.
 
 ### Fixtures Created
 
-**New fixture file (this run):** `_bmad-output/test-artifacts/fixtures/purity-weight-doc-hardening-fixtures.ts` (236 lines, deterministic, no `faker` — `FIXTURE_SEED 0xc31/0x26c6/0x51ce/0x5eed` + `N_FIXTURE 5000/10000/12000/2000/10000` + `SIGMA_Z 5` + `sigmaFor()`/`sigmaBudgetFor()`/`SIGMA_DERIVATIONS` + source-scan helpers `potTestSrc()/adaptiveSrc()/enginePuritySrc()/helpersSrc()`/`purityRootsFallbackCount()` + fallback helpers `PURITY_ROOTS_FALLBACK_FIXTURE`/`findFileSyncFixture()`/`resolveWithFallbackFixture()` + bench `fallbackBench(2000)` — all host `node:test` + `tsx`, no RN mount).
+- **`ci-gesture-wiring-docs-fixtures.ts`** (shared, host-only, deterministic):
+  - `SWIPE_VECTORS` (right/left/up/down/subthreshold/tie/nanDx/infinityDy) + `BOARD_FIXTURES` (rightMerge `2+1→3` leftMerge `1+2→3` spawnMerge) + `BUSY_IDLE`/`BUSY_IN_FLIGHT` + `GESTURE_EVENTS` (validRight/subthreshold/nanX/infinity/undefinedX)
+  - `swipeToMove(dx,dy,state,rng,busy,success)` composing imported `handleSwipe` + `game.move` (proves real wiring drives gameplay, not stub)
+  - `busyGateSuppresses()` / `successGateSuppresses()` / `subthresholdAndTieSuppress()` / `nanGuardsSuppress()` / `throwingDispatchReturnsFalse()` (each pins one ATDD AC)
+  - `readSrc`/`gestureSrc`/`appSrc`/`swipeSrc`/`packageSrc`/`packageJson`/`ciSrc`/`pipelineSrc` (with dual `process.cwd()` + `../` + `triade/`-strip for `cd triade` vs root execution)
+  - `handleSwipeDefinitionCount()` / `swipeThresholdDefinitionCount()` / `appReinlineWiringCount()` / `guardOrderIndices()`/`guardOrderIsIncreasing()`/`handleGestureEndGuardsBeforeDelegation()` (P2 allowlist scans)
+  - `packageTestExcludesBenchmarks()`/`packageBenchmarkIsolatesBenchmarks()`/`benchmarksTokenCountInPackageJson()`/`ciJobCounts()`/`ciDefaultExcludesBenchmark()`/`wiringSecondaryGuard()` (P0/P2 CI+glob scans)
+  - `ledgerSrc()`/`ledgerHasDW49and50Done()`/`ledgerUndoHashCount()`/`sprintStatusHasNoBundle()` (P2 ledger + ownership)
+  - `handleSwipeBench(iterations=10_000)` → `{elapsed, ok: elapsed<80}` (`≈0.005ms` per call, O(1) predicate+resolve not loop)
+  - No `@faker-js/faker` — deterministic board/rng + `readFileSync` + `existsSync` only (per `data-factories.md` + `fixture-architecture.md`).
 
-**Reused fixtures (prior runs):** `feel-trace-fixtures.ts` (69 lines, 8-1), `feel-bullet-time-fixtures.ts` (133 lines, 8-4), `feel-reduced-motion-fixtures.ts` (223 lines, 8-5), `feel-sfx-fixtures.ts` (198 lines, 8-6), `helpers-hardening-fixtures.ts` (235 lines, `dw-test-scanner-helpers-hardening`), `layout-band-dedup-guard-fixtures.ts` (215 lines), `preview-pot-ladder-hygiene-fixtures.ts` (205 lines). No Pact/network/mock fixture needed — harness hardening seam has no I/O.
+**Fixture composition note (per `fixtures-composition.md`):** Fixture is pure import + `readFileSync`/`existsSync` + `staticBoard`/`rngOf` determinism; no `test.extend` composition needed for host predicate project (no Playwright `page` fixture). Tests consume fixture via direct import (`import { swipeToMove, BUSY_IDLE } from '../fixtures/ci-gesture-wiring-docs-fixtures.ts'` pattern) — `recurse.md` not needed (single `handleSwipe` predicate, not recursive).
 
-**Fixture integration point:** Reused in gateway `import * as game from '../../../../triade/src/engine/core/index.ts'` (direct, no indirection through `fixtures` at call-site — fixtures helpers are available as `purity-weight-doc-hardening-fixtures.ts` exports for down-stream ATDD `nfr-assess`/`trace` runs that compose via `import * as purityFixtures`).
+### Test Execution Evidence
 
-### Mock Requirements
+**Gateway (API) — P0/P1/P2 — 16 contracts:**
 
-None. No UI surface change that mocks `useWindowDimensions`/`useSafeAreaInsets` — those hooks vendor-free. Tests call `PURITY_ROOTS_FALLBACK` scan + `extractSpecifiers` + `sigmaBound`/`mulberry32`/`runSeededSession` directly with deterministic seeds; no RN provider, no `react-native` bridge, no `expo-*`, no `Skia` canvas mount. Network mocks not applicable (pure helpers `findFileSync`/`sigmaBound` have no fetch/store). `sprint-status.yaml` mock is not applicable (orchestrator-owned, never written).
+```
+▶ [API] ci-gesture-wiring-docs gateway — P0 critical (globs + CI split + wiring)
+  ✔ [P0] AC package.json default test excludes benchmarks — DW-49 R-002
+  ✔ [P0] AC package.json benchmark isolates benchmarks — DW-49 R-002
+  ✔ [P0] AC CI split — default job excludes benchmarks, benchmark job dedicated — DW-49 R-002/R-004
+  ✔ [P0] AC busy-gate — busy.current true suppresses any swipe via imported handleSwipe — DW-50 R-001/R-003
+  ✔ [P0] AC success-gate — success false suppresses even when busy idle — DW-50 R-003
+  ✔ [P0] AC valid swipe dispatches with real wiring and mutates board — DW-50 R-001
+  ✔ [P0] AC WIRING — App binds handleGestureEnd + doMoveRef + SWIPE_THRESHOLD; gesture resolves via resolveSwipeDirection — DW-50 R-001/R-005
+✔ [API] ci-gesture-wiring-docs gateway — P0 critical (globs + CI split + wiring) (2.69ms)
+▶ [API] ci-gesture-wiring-docs gateway — P1 wiring (threshold / guard-order / never-throw)
+  ✔ [P1] AC threshold coupling — subthreshold 5 and diagonal tie 20/20 resolve to null without dispatch — R-005/R-006
+  ✔ [P1] AC guard-order — NaN/Infinity dx/dy and null/non-finite event return false before dispatch — R-003/R-006
+  ✔ [P1] AC dispatch never-throw — throwing dispatch is caught and returns false — R-003/R-007
+  ✔ [P1] AC engine→gesture composition + dispatch type-gate — R-001/R-003
+  ✔ [P1] AC CI name stability + tsc both configs clean — R-004/R-001
+✔ [API] ci-gesture-wiring-docs gateway — P1 wiring (threshold / guard-order / never-throw) (0.97ms)
+▶ [API] ci-gesture-wiring-docs gateway — P2 static scans (allowlist + ledger)
+  ✔ [P2] SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only — R-001
+  ✔ [P2] SCAN single-threshold allowlist — SWIPE_THRESHOLD literal only in swipe.ts — R-005
+  ✔ [P2] SCAN guard-order literal ordering pin in gesture.ts — R-006
+  ✔ [P2] SCAN ledger resolution-undo + glob single-source — R-009/R-002
+✔ [API] ci-gesture-wiring-docs gateway — P2 static scans (allowlist + ledger) (0.93ms)
+ℹ tests 16
+ℹ suites 3
+ℹ pass 16
+ℹ fail 0
+ℹ duration_ms 167.6
+```
 
-### Required `data-testid` Attributes
+**Umbrella (E2E) — 6 journeys:**
 
-None — hardening is pure test harness + statistical doc (`PURITY_ROOTS_FALLBACK` + `σ-budget` consumes engine fixtures). No component is mounted in these host unit tests; `pot.test.ts:9-45` fallback + `adaptive-spawn-integration` σ docs are verified via source-level `rg` scans (`PURITY_ROOTS_FALLBACK` 2 roots + `σ-budget` 5 hits + `0.9016` literals + `both tsc` clean) and existing `engine.purity` + `pot 6` + `adaptive 15` pins (`858/858` full suite). If a future visual regression lane is added, `data-testid` could be added to preview card (not in this sweep per `Not in Scope`).
+```
+▶ [E2E] ci-gesture-wiring-docs umbrella — journeys (host through wiring + engine + CI)
+  ✔ [P1] E2E-01 package glob split → default excludes benchmarks, benchmark isolates
+  ✔ [P1] E2E-02 CI split → 2 jobs, branch-protection name stable
+  ✔ [P1] E2E-03 real wiring import → busy/success/valid dispatch end-to-end through engine
+  ✔ [P2] E2E-04 static allowlists — single-helper / single-threshold / guard-order / ledger
+  ✔ [P1] E2E-05 full integration sweep — 22 authority gates + scanner + tsc both configs + ledger
+  ✔ [P3] E2E-06 bench hygiene + scope guard + negative exploratory
+✔ [E2E] ci-gesture-wiring-docs umbrella — journeys (host through wiring + engine + CI) (7.36ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ duration_ms 170.5
+```
+
+**ATDD activated — 19/19 (correct TDD inversion: RED→GREEN with working tree):**
+
+```
+▶ ATDD dw-ci-gesture-wiring-docs — P0 critical (spec AC + high risk)
+  ✔ [P0-01] AC package.json default test excludes benchmarks
+  ✔ [P0-02] AC package.json benchmark isolates benchmarks
+  ✔ [P0-03] AC CI split — default job excludes benchmarks, benchmark job dedicated
+  ✔ [P0-04] AC busy-gate — busy.current true suppresses any swipe via imported handleSwipe
+  ✔ [P0-05] AC success-gate — success false suppresses dispatch even when busy idle
+  ✔ [P0-06] AC valid swipe dispatches with real wiring and mutates board
+  ✔ [P0-07] AC WIRING — App binds handleGestureEnd + doMoveRef + SWIPE_THRESHOLD; gesture resolves via resolveSwipeDirection
+✔ ATDD dw-ci-gesture-wiring-docs — P0 critical (spec AC + high risk) (2.09ms)
+▶ ATDD dw-ci-gesture-wiring-docs — P1 wiring (threshold / guard-order / never-throw / composition)
+  ✔ [P1-01] AC threshold coupling — subthreshold 5 and diagonal tie 20/20 resolve to null without dispatch
+  ✔ [P1-02] AC guard-order — NaN/Infinity dx/dy and null/non-finite event return false before dispatch
+  ✔ [P1-03] AC dispatch never-throw — throwing dispatch is caught and returns false
+  ✔ [P1-04] AC engine→gesture composition + dispatch type-gate
+  ✔ [P1-05] AC CI name stability + tsc both configs clean
+✔ ATDD dw-ci-gesture-wiring-docs — P1 wiring (threshold / guard-order / never-throw / composition) (0.70ms)
+▶ ATDD dw-ci-gesture-wiring-docs — P2 scans (single-helper / single-threshold / ordering / ledger)
+  ✔ [P2-01] SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only
+  ✔ [P2-02] SCAN single-threshold allowlist — SWIPE_THRESHOLD literal only in swipe.ts
+  ✔ [P2-03] SCAN guard-order literal ordering pin in gesture.ts
+  ✔ [P2-04] SCAN ledger resolution-undo + glob single-source
+✔ ATDD dw-ci-gesture-wiring-docs — P2 scans (single-helper / single-threshold / ordering / ledger) (0.71ms)
+▶ ATDD dw-ci-gesture-wiring-docs — P3 exploratory / bench hygiene
+  ✔ [P3-01] BENCH handleSwipe O(1) 10k× <80ms (no loop/alloc regression)
+  ✔ [P3-02] SCAN negative exploratory — handleSwipe(∞) / undefined busy all fail-closed false without throw
+  ✔ [P3-03] SCAN cross-cutting — engine + benchmarks byte-identical (no gameplay drift)
+✔ ATDD dw-ci-gesture-wiring-docs — P3 exploratory / bench hygiene (2.15ms)
+ℹ tests 19
+ℹ suites 4
+ℹ pass 19
+ℹ fail 0
+ℹ skipped 0
+ℹ duration_ms 153
+```
+
+**Existing suites (must stay green, not re-derived):**
+
+```
+npm --prefix triade test -- __tests__/ui/gesture-pipeline.test.ts __tests__/ui/swipe.test.ts → 17 pass (7 pipeline via imported wiring + 10 threshold sweep)
+npm --prefix triade test (full host) → 871 pass / 11 fail (expected ATDD REDs from feel/legacy) + 78 skipped; duration ~3.2s + bench 6 separate
+npm --prefix triade run benchmark -- --test-name-pattern=0 → 6 benches (engine/feel/render/storage) not in default gate
+npx tsc --noEmit --project triade/tsconfig.json && TSX_TSCONFIG_PATH=tsconfig.test.json npx tsc --noEmit --project triade/tsconfig.test.json → both clean
+```
 
 ---
 
 ## Step 4 — Validate & Summarize
 
-### Validation (per `checklist.md`)
+### Checklist Validation (from `checklist.md`)
 
-- [x] Framework readiness — `triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test` exists; `triade/node_modules/.bin/tsx` + `npm --prefix triade exec -- tsc --noEmit` clean via `TSX_TSCONFIG_PATH` on both tsconfigs, `tsx` host-verified; host `node:test` correct harness per `test-levels-framework` Unit dominance.
-- [x] Coverage mapping — P0 6 + P1 6 + P2 4 + P3 3 from test-design mapped 1:1 to ATDD 19 `it.skip` (P0 6 + P1 6 + P2 4 + P3 3) + gateway 16 cases (P0 6 + P1 6 + P2 4) + umbrella 6 journeys (P1 3 + P2 2 + P3 1) + `pot 6` + `adaptive 15` authority gates complementary — no ATDD gap.
-- [x] Test quality and structure — GWT per test via `// Given/When/Then` + `isValidSpawnValue` helper; one behavioural pin per `it`; determinism via fixed seeds `0xc31` + `0x26c6` + `0x51ce+ceiling+0x100` + `FR7_LADDER`/`0.9016` literals; isolation via `emptyBoard`/`staticBoard` per `test-quality.md`.
-- [x] Fixtures, factories, helpers — deterministic pure factories (`sigmaFor()`/`sigmaBudgetFor()`/`resolveWithFallbackFixture()` etc.) with `FIXTURE_SEED` harness; no `faker` (correct — no DB/network entity to fake); `purity-weight-doc-hardening-fixtures.ts` 236 lines follows `fixture-architecture.md` pure-function-first pattern (wrap in `helpers/api-request-fixture` is N/A — no `APIRequestContext` for this seam).
-- [x] CLI sessions cleaned up — no `playwright-cli -s=tea-automate` open session (stack `frontend` Expo but `tea_browser_automation:auto` → host adaptation: no browser opened, so no `close` needed; verified `playwright-cli` not installed as gate harness).
-- [x] Temp artifacts stored in `{test_artifacts}/` not random locations — all outputs under `_bmad-output/test-artifacts/` (`tests/api/purity-weight-doc-hardening.gateway`, `tests/e2e/purity-weight-doc-hardening.umbrella`, `fixtures/purity-weight-doc-hardening-fixtures`, `automation-summary.md`, `test-design-dw-purity-and-weight-doc-hardening.md`, `atdd-checklist-...`, `test-design/test-design-dw-purity-and-weight-doc-hardening.md`). Subagent temp `/tmp/tea-automate-*` not used (sequential mode, no subagent).
-- [x] No duplicate coverage — P0 overlap (`ATDD` ↔ `gateway` fallback primary-hit + σ header → 21/21 deterministic) is intentional defense-in-depth on critical harness (per `test-levels-framework.md` "Critical paths requiring defense in depth"), flagged as WAIVED-duplicative in trace; non-critical `displayRoll 0.5` pad vs helper coverage is not duplicated across levels.
-- [x] NFR traceability — reliability (fail-closed vs never-throw + finiteness), maintainability (single `PURITY_ROOTS_FALLBACK` + single `findFileSync`/`resolveWithFallback` + single σ header `DW-57` + `≈10σ`/`≈5σ`), 60 FPS O(1) `<1 ms`, chrome HUF 96/48 unchanged — each mapped to planned validation in test-design + `nfr-assessment` defer, not threshold-invented.
-- [x] Tag discipline — every generated `it()` carries `[P0]/[P1]/[P2]/[P3]` + `[E2E-xx]` for `umbrella`, `gateway` uses `[P0]...[P2]` and `[API]` prefix for selective `grep` (`npx tsx --test --test-name-pattern "\[P0\]"`).
+- [x] Framework readiness — `node:test` + `tsx` via `TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test` verified (gesture-pipeline 7/7, swipe 10/10, tsc both configs clean)
+- [x] Coverage mapping — P0 7 groups 100% + P1 7 groups ≥95% + P2 5 + P3 3 via gateway(16) + umbrella(6) + ATDD(19 dormant) + fixtures(12) + existing 17; no duplicate coverage across test levels (Unit vs Static-scan vs Integration composition)
+- [x] Test quality and structure — Given-When-Then per test, one behavioural pin per `it`, determinism via `staticBoard`/`rngOf(0,0,0.5)` + `BusyRef` object alias not clone, isolation via `swipeToMove` composition helper (not faker), no `it.skip` in gateway/umbrella (all active)
+- [x] Fixtures, factories, helpers — deterministic `staticBoard`/`rngOf`/`gameState` + `SWIPE_VECTORS`/`BOARD_FIXTURES`/`GESTURE_EVENTS` + `swipeToMove` composition helper (imports real wiring, not local copy); `readSrc` dual `cwd` + `triade/`-strip for `cd triade` vs root execution (DOTALL ledger trap handled via `[\s\S]*?`, guard-order scoped to `handleSwipe` body not global import)
+- [x] CLI sessions cleaned up (no orphaned browsers) — no Playwright `page.goto`/`page.locator` surface; `tea_browser_automation: auto` correctly adapted to host (Expo Canvas, not web)
+- [x] Temp artifacts stored in `_bmad-output/test-artifacts/` not random locations — all under `test_artifacts: _bmad-output/test-artifacts` per `_bmad/tea/config.yaml` (fixtures at `fixtures/`, tests at `tests/api/` + `tests/e2e/`, summary at `automation-summary.md`)
 
-### Polish — completed
+### Polish Output
 
-1. **Remove duplication:** consolidated `pot 6` authority + ATDD 19-skip dormancy + gateway 16-pass vs re-derived scan lists — no repeated `5σ≈0.0063` anchors beyond the intentional P0 defense-in-depth list.
-2. **Verify consistency:** terminology `PURITY_ROOTS_FALLBACK` / `findFileSync` / `resolveWithFallback` / `σ-budget` / `0.9016` / `POT_WEIGHT 0.2` / `5σ≈0.0063` consistent with spec `abd36bc` + test-design R-001..R-009 + checklist; risk scores `6` for R-001/002 (≥6 HIGH) flagged P0.
-3. **Check completeness:** all template sections populated or explicit `N/A` (visual regression `data-testid` is `None` — correct for pure seam; Playwright `api-request` import is `N/A` — not a network seam).
-4. **Format cleanup:** tables aligned, headers consistent, `P0/P1/P2/P3 = priority/risk, **not** execution timing` note present per `test-design`.
+- Deduplication: P0 package glob + CI split appear only once across gateway/umbrella/ATDD (no progressive-append duplication); fixtures single-sourced via import (no local `handleSwipe` copy in pipeline).
+- Consistency: `P0/P1/P2/P3 = priority/risk, NOT execution timing` pinned in both test-design and automation-summary; `R-001..R-009` scores and mitigations consistent with test-design risk matrix.
+- Completeness: All 9 risks mapped to at least one gateway or umbrella contract; NFR thresholds (60 FPS O(1) `<0.05ms`/`<80ms` 10k, never-throw, single `handleSwipe` + single `SWIPE_THRESHOLD=10` + 64-hex ledger) have planned evidence without invented PASS/FAIL.
+- Format cleanup: Tables aligned, headers consistent, no orphaned `TODO — provider source not accessible` (provider is `gesture.ts`/`swipe.ts` itself, not external microservice).
 
-### Summary Output
+### Files Created/Updated (under `test_artifacts: _bmad-output/test-artifacts`)
 
-```
-✅ Test Generation Complete (SEQUENTIAL (API then E2E) — sequential is correct for node:test pure surface; no parallel speedup but <1 s host total)
+| File | Action | Tests | Notes |
+|------|--------|-------|-------|
+| `_bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts` | **Created** | 16 active (7 P0 + 5 P1 + 4 P2) | Host `node:test` + `tsx`, gateway contracts for glob/CI/wiring; provider scrutiny via `readSrc` scans + `existsSrc` dual-cwd; 16/16 pass |
+| `_bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts` | **Created** | 6 active (3 P1 + 2 P2 + 1 P3) | Host `node:test` + `tsx`, umbrella journeys through wiring→engine→CI; E2E label = through seam not browser; 6/6 pass |
+| `_bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts` | **Created** | 12 helpers + bench | Deterministic, no faker; `SWIPE_VECTORS`/`BOARD_FIXTURES`/`swipeToMove` + `handleSwipeBench` + scan helpers (`guardOrderIsIncreasing` etc) + `readSrc` dual-cwd |
+| `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts` | **Already created (ATDD, 19 `it.skip`)** | 19 dormant (7 P0 + 5 P1 + 4 P2 + 3 P3) | RED-phase scaffolds; activated 19/19 pass; correct TDD inversion (before bundle: identical globs + no `gesture.ts` + inline App wiring would FAIL) |
+| `_bmad-output/test-artifacts/automation-summary.md` | **Updated** | — | This file; replaces prior `dw-purity-and-weight-doc-hardening` summary with `dw-ci-gesture-wiring-docs` (workflow is per-bundle, not append) |
+| `_bmad-output/test-artifacts/test-design-dw-ci-gesture-wiring-docs.md` | **Reference (no write)** | — | Pre-existing (TD workflow, 2026-09-02, 9 risks 3 high ≥6, P0 7 + P1 7 + P2 5 + P3 3) |
+| `_bmad-output/test-artifacts/atdd-checklist-dw-ci-gesture-wiring-docs.md` | **Reference (no write)** | — | Pre-existing (ATDD, 19 `it.skip`, 4 suites) |
+| `_bmad-output/implementation-artifacts/deferred-work.md` | **Not written by this workflow (read-only)** | — | DW-49/DW-50 `done 2026-09-02` with `resolution-undo: facfde46…`; `sprint-status.yaml` untouched per prompt (orchestrator-owned) |
 
-📊 Summary:
-- Stack Type: frontend (Expo RN SDK 57)
-- Total Tests: 41 (distinct, non-duplicate-counting: ATDD 19 dormant + gateway 16 + umbrella 6; host PASS when activated 41)
-  - API Tests (purity + σ-budget gateway): 16 (1 file: tests/api/purity-weight-doc-hardening.gateway.spec.ts)
-  - E2E Tests (umbrella journeys): 6 (1 file: tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts)
-  - ATDD Scaffolds: 19 (1 file: triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts, dormant it.skip → activate → 19 pass)
-  - Existing Authority: 21 (triade/__tests__/engine/pot.test.ts 6 + adaptive-spawn-integration.test.ts 15, 21 pass, not counted in "generated" but gates P0/P1)
-  - Existing Regression: 5 suites scanner/purity (engine.purity 5/5 green, within 171/19 engine suite 171 pass / 19 skipped)
-- Fixtures Created: 1 new + 7 reused
-  - purity-weight-doc-hardening-fixtures.ts (236 lines, this run)
-  - feel-trace-fixtures.ts + feel-bullet-time-fixtures.ts + feel-reduced-motion-fixtures.ts + feel-sfx-fixtures.ts + helpers-hardening-fixtures.ts + layout-band-dedup-guard-fixtures.ts + preview-pot-ladder-hygiene-fixtures.ts (reused)
-- Priority Coverage (generated 16+6 = 22 executable):
-  - P0 (Critical): 6 gateway + 0 umbrella P0 (umbrella P0 is already covered by gateway P0 fallback+literals+σ header — all 6 ATDD P0 are RE-pinned in gateway P0) + 6 ATDD P0 = 6 exec / 6 ATDD P0 (100% P0 — R-001/002 HIGH, fallback dead-code + comment drift)
-  - P1 (High): 6 gateway + 3 umbrella = 9 exec / 6 ATDD P1 (100% P1 — R-001/R-003/R-007 + ledger + tsc + no tol change)
-  - P2 (Medium): 4 gateway + 2 umbrella = 6 exec / 4 ATDD P2 (100% P2 — mirror allowlist + verbatim oracle + no tol change + escape/symlink)
-  - P3 (Low): 0 gateway + 1 umbrella = 1 exec / 3 ATDD P3 (defense-in-depth exploratory + bench <500ms + scope; bench ~2.8ms observed, not threshold-invented)
-  - Total ATDD: P0 6 + P1 6 + P2 4 + P3 3 = 19 (dormant → 19 pass when activated, fixtures-backed)
-  - Total GATEWAY: P0 6 + P1 6 + P2 4 + P3 0 = 16 (16 pass host, ~193 ms)
-  - Total UMBRELLA: P1 3 + P2 2 + P3 1 = 6 (6 pass host, ~5 ms / 160 ms JIT)
-
-🚀 Performance: baseline (sequential is correct for pure harness hardening; parallel would add overhead for <1 s host)
-
-📂 Generated Files:
-- _bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts (new, 224 lines, 16 cases, host 193 ms)
-- _bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts (new, 284 lines, 6 journeys + host verifiers, ~5 ms)
-- _bmad-output/test-artifacts/fixtures/purity-weight-doc-hardening-fixtures.ts (new, 236 lines, deterministic FIXTURE_SEED + SIGMA_Z + scanTier helpers + readdirSync bench)
-- _bmad-output/test-artifacts/automation-summary.md (this file, overwrite vs dw-preview-pot-ladder-hygiene prior, frontmatter stepsCompleted 5)
-- _bmad-output/test-artifacts/atdd-checklist-dw-purity-and-weight-doc-hardening.md (existing, TEA atdd, frontmatter stepsCompleted 5, 19 scaffolds)
-- _bmad-output/test-artifacts/test-design-dw-purity-and-weight-doc-hardening.md (existing, canonical, 9 risks 2 HIGH)
-- _bmad-output/test-artifacts/test-design/test-design-dw-purity-and-weight-doc-hardening.md (existing, mirror per test_design_output)
-
-✅ Ready for validation (Next: nfr-assess + traceability + optional bench per test-design `Follow-on Workflows`)
-```
-
-- **Coverage plan by test level and priority:** see Step 2 table + Step 3 estimate table + Tests Aggregated table above — Unit dominates (fallback harness + σ doc host), Integration is `tsc` + `pot 6` + `adaptive 15` + `engine.purity 5` + `171/19` engine suite (finite regression), E2E is 6 host journeys (fallback dead-code + σ-budget doc + sweep + allowlists + ledger + bench residual), not Playwright page.
-- **Files created/updated:** see `📂 Generated Files` list above + `git diff --stat` shows only `pot.test.ts`/`adaptive-spawn` + `deferred-work.md` + `spec` changed before this run, and this run adds/overwrites `tests/api/purity-weight-doc-hardening.gateway` + `tests/e2e/purity-weight-doc-hardening.umbrella` + `fixtures/purity-weight-doc-hardening-fixtures` + `automation-summary.md` (this overwrite) — `sprint-status.yaml` NOT written (orchestrator-owned per prompt, verified).
-- **Key assumptions and risks:** `Assumptions and Dependencies` below + test-design `Risk Assessment` (R-001 fallback dead-code `2×3=6` hidden while `existsSync` true, R-002 σ-budget comment drift `2×3=6` on future `N`/`tol` rotation, R-003 wrong-file first-hit `1×3=3`, R-004 scan latency `<1 ms`, R-005 DW-58 circular oracle `2×2=4`, R-006 verbatim oracle reformat `1×3=3` — each scored with mitigation via `rg` + finite 382/688/452 anchors + `as unknown as Dirent[]` cast + ledger 64-hex; residual R-004 `findFileSync` scan latency is observed, not threshold; ledger R-007 hash `9a5dc3eb…` ownership).
-- **Next recommended workflow:** `nfr-assess` (reassess `NFR — nfr-criteria.md` without inventing thresholds: reliability fail-closed+finiteness + maintainability single `PURITY_ROOTS_FALLBACK`/single `findFileSync`/`resolution-undo` 64-hex + perf O(1) + chrome) then `trace` (map spec I/O 8 rows + ACs 5 + `tsc`/`pot 6`/`adaptive 15` gates → ATDD 19 + gateway 16 + umbrella 6 → coverage-matrix + gate-decision).
-
-### Assumptions and Dependencies
+### Key Assumptions and Risks
 
 **Assumptions:**
+1. `triade/src/engine` is byte-identical to `fa68173` — no gameplay change; gesture wiring is pure dispatch predicate, not board logic. Verified via `git diff --stat -- triade/src/engine` empty.
+2. `benchmarks/*.bench.test.ts` budgets are informational, not release-gating — separating the job is approved policy (DW-49 review, 66d711d commit message "benchmark (timing-sensitive, not gating)").
+3. `sprint-status.yaml` remains orchestrator-owned; DW-49/50 are `deferred-work.md` ledger only — not `sprint-status.yaml` transitions. Verified `git diff --stat -- _bmad-output/implementation-artifacts/sprint-status.yaml` empty.
+4. `Node 26` (`package.json` `engines >=26`) and `tsconfig.test.json` `rn-stub` path remain the host test harness — no device bench required for this bundle. Verified `npx tsc --noEmit` both configs clean.
+5. `spec-ci-gesture-wiring-docs.md` `final_revision 4b44cf1` intent is accepted; review triage patches (6 landed, incl. `!busy||busy.current` null gate + `'success' in opts && !opts.success` fail-closed) are not re-reviewed here.
+6. `ATDD 19 it.skip` dormant state is intentional (RED-phase scaffolds) — activating them (`sed s/it.skip/it/g`) yields 19 pass with current working tree; `npm test` 11 fail are expected REDs from other feel ATDDs (not this bundle).
 
-1. Production `weightedValue` via `spawn.ts:pickCombined` single-roll `[0.0-0.4:1, 0.4-0.8:2, 0.8-1.0:pot]` and `potForTier(0)=[3]` remain fixed; `sigmaBound` `z=5` at `N=10000,p=0.2 → ≈0.004` is hygiene median headroom; historical `N=15000 p=1/16 → σ≈0.00197 →10.1σ` is headroom equivalence, not tolerance — future seed rotation that straddles window is handled by re-validating σ budget together with seeded run, not by widening `tol`.
-2. `PURITY_ROOTS_FALLBACK` stays sync `readdirSync` + `existsSync` (spec `Never: async fs`); a future async `fs/promises` refactor would break the `rg async.*readdir` scan + `pot.test.ts:9-13` DW-54 comment — treat as atomic with `extractSpecifiers` oracle.
-3. No current `triade/src/engine` or `triade/src/game` file duplicates `pot.ts` filename — fallback first-hit ambiguity has zero blast radius today; assumption checked by `rg --files | rg pot.ts` single hit (`triade/src/engine/core/pot.ts`).
-4. `findFileSync` `readdirSync` sync scan is acceptable to stay sync with `readFileSync` (spec `Never: async fs`); fallback is host-only test code, not production — latency only on rare move event, primary-hit avoids scan.
-5. `npx tsc --noEmit -p tsconfig.test.json` baseline is already clean after sweep (`as unknown as Dirent[]` avoids `NonSharedBuffer`) — any new `@ts-ignore` is a regression.
+**Residual Risks (from test-design, not re-derived):**
+- **R-001 dedup drift (P×I 6, mitigated):** `gesture.ts:19 handleSwipe` is single source but `App.tsx:804` could re-inline — gates via `rg "handleGestureEnd|handleSwipe" -- triade/App.tsx triade/src/ui/gesture.ts ==2` + P2 single-helper allowlist + WIRING import assertion.
+- **R-002 exclusion regression (P×I 6, mitigated):** `package.json` test glob could desync — pin via `rg` scan: `test` must contain `__tests__` not `benchmarks`, `benchmark` must contain `benchmarks` not `__tests__`; counts validated (`npm test 871` not 946 with benches, `npm run benchmark 6`).
+- **R-003 fail-closed (P×I 6, mitigated):** busy null/success falsy/NaN/type-gate/swallow must fail-closed — exhaustive `handleSwipe` guards in order + `handleGestureEnd` null/typeof/`!success` + `try/catch dispatch` returns false; unit pin covers 6 shapes without throw.
+- **R-004 required-checks rename (P×I 3, mitigated):** `engine-test-and-benchmark` must stay byte-identical for branch protection; `benchmark` never added to required checks.
+- **R-007 swallow vs hide engine throw (P×I 3, mitigated):** `try/catch` narrow (dispatch only, not `resolveSwipeDirection`) — engine throws still surface via `engine.purity` green; gateway checks `resolve < try`.
 
-**Dependencies:**
+### Next Recommended Workflow
 
-1. `triade/__tests__/engine/pot.test.ts:9-45` — single owner of fallback `PURITY_ROOTS_FALLBACK` + `findFileSync`/`resolveWithFallback` (required by R-001/R-003/R-006, needed before moving remaining `open` DWs).
-2. `triade/__tests__/engine/adaptive-spawn-integration.test.ts:15-47` — single owner of header `DW-57 σ-budget` block + 4 inline seeds (required by R-002, needed before rotating seeds).
-3. `triade/test-utils/helpers.ts:116 sigmaBound z=5` — single threshold for per-tier conditional `5σ` (required by R-002, needed before changing `tol`/`N`).
-4. `triade/__tests__/engine/engine.purity.test.ts:7-10` — `PURITY_ROOTS` mirror source (required by R-001/R-003, needed before adding third root).
-5. `deferred-work.md` DW-54/57 each keep `resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c 2026-09-01 …` — any reopen must preserve the hash or the `ledgerHasDW` scan will FAIL (PR gate).
-
-### Risks to Plan
-
-- **Risk:** Future margin/weights edit moves fallback helper away from `PURITY_ROOTS_FALLBACK` or renames helper (`resolveWithFallback` → `findPurityRoot`) or rotates seed `0xc31` breaking `≈10σ` headroom equivalence
-  - **Impact:** Drift reopens DW-54; purity tripwire silently voids on move (CI looks like hysteresis) or `adaptive-spawn` deterministic gate comments become false confidence.
-  - **Contingency:** `rg` gates (`PURITY_ROOTS_FALLBACK` 2 roots, `findFileSync` 1 def, `resolveWithFallback` 1 helper, `σ-budget` 5 hits, `0.9016` literal) run in PR; `tsc` catches rename; `engine.purity` + `pot 6` + `adaptive 15` chrome pins (`sawThree` etc.) catch swapped composition; `atdd P0-01` primary-hit re-fires.
-
----
-
-## Definition of Done — dw-purity-and-weight-doc-hardening (TEA)
-
-**Bundle:** `dw-purity-and-weight-doc-hardening` · Spec `spec-purity-and-weight-doc-hardening.md` · Test-design `test-design-dw-purity-and-weight-doc-hardening.md` · ATDD `atdd-checklist-dw-purity-and-weight-doc-hardening.md` + `triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts` · Baseline `abd36bc` → working tree `HEAD`, engine `triade/src/engine` byte-identical except via tests · Ledger `deferred-work.md: DW-54/57` · Working-tree `git diff --stat -- triade/src/engine` empty except `pot.test.ts`/`adaptive-spawn`
-
-### DoD — Entry (prerequisites for this bundle to be considered startable)
-
-| # | Criterion | Evidence (this run) | Status |
-|---|-----------|----------------------|--------|
-| E-1 | Spec `spec-purity-and-weight-doc-hardening.md` intent/boundaries/I-O 8 rows + 5 ACs + design notes signed + DW-54/57/58 ledger entries reviewed | `spec-purity-and-weight-doc-hardening.md` frontmatter `status: done` + `intent-contract` with `Always: Keep source-text-coupled oracle verbatim (Dw-54) — only add fallback scanning` `Block If:` `Never: Edit the deferred-work ledger; change pot.ts/spawn.ts/weights.ts` + I-O 8-row matrix + `Tasks & Acceptance` 5 ACs + `Design Notes: PURITY_ROOTS_FALLBACK mirrors engine.purity + σ=√(p(1-p)/N)` + `deferred-work.md@HEAD` diff shows DW-54/57 now `done` via sweep | ✅ |
-| E-2 | Host test harness provisioned (`triade` `node --import tsx --test` + `tsx` + `tsconfig.test.json` + `mulberry32` + `sigmaBound` + `potForTier` + `extractSpecifiers` gold) | `triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test` + `triade/node_modules/.bin/tsx` + `helpers.ts` `sigmaBound` + `pot.test.ts` 6 pass baseline + `adaptive-spawn 15` pass baseline | ✅ |
-| E-3 | Working-tree delta deployed to test harness (`pot.test.ts:9-45 fallback + :134-153 wrap`, `adaptive-spawn 15-47 header + 4 inline DW-57`, `deferred-work DW-54/57 done`) | `git log --oneline -1` `abd36bc` baseline + `git diff` shows `pot.test.ts +38 fallback +2 wrap` + `adaptive +21 header +~11 inline` + `deferred-work 2× done` + `spec untracked` — `triade/src/engine` byte-identical except tests | ✅ |
-| E-4 | No engine/feel/Skia edits beyond test harness and `sprint-status.yaml` not written by this workflow (orchestrator-owned) | `git diff --stat HEAD -- triade/src/engine` empty except `pot.test.ts`/`adaptive-spawn` tests + `git diff --stat -- triade/src/game` empty + `readSrc(sprint-status.yaml).includes(dw-purity-and-weight-doc-hardening)==false` + ledger `sprint-status` gate in `gateway.spec.ts [P1] ledger` & `umbrella E2E-04` PASS | ✅ |
-| E-5 | Test-design published with 9 risks (2 high ≥6) + P0/P1/P2/P3 coverage plan + entry/exit gates | `test-design-dw-purity-and-weight-doc-hardening.md` has `R-001 6 / R-002 6` 2 HIGH + `P0 6/P1 6/P2 4/P3 3` tables + NFR planning + `test-design-progress.md` entry with this bundle | ✅ |
-
-### DoD — Coverage (the plan is executed — generated artifacts are present and prioritized)
-
-| # | Criterion | Evidence (this run) | Status |
-|---|-----------|----------------------|--------|
-| C-1 | P0 100% authored: fallback primary-hit + `index.ts` re-export + `weightedValue` literals `0.9016` + `FR7_LADDER` invariants + header+inline `σ-budget` block + `adaptive-spawn` 21/21 deterministic | ATDD P0 6 (`it.skip` dormants) + gateway P0 6 cases (`[P0] primary-hit`, `[P0] index.ts`, `[P0] literals`, `[P0] FR7`, `[P0] header DW-57`, `[P0] deterministic`) + umbrella contributes no extra P0 (already covered) — P0 100% | ✅ |
-| C-2 | P1 100% authored: fallback scan mirror `src/engine`+`src/game` 2 roots + never-throw vs fail-closed + `engine.purity` green + no tol/band-math change + ledger `resolution-undo` 64-hex 2 hits + both `tsc` clean | ATDD P1 6 + gateway P1 6 + umbrella P1 3 (E2E-01 fallback dead-code, E2E-02 σ-budget doc, E2E-03 sweep) — P1 ≥95% (100%) | ✅ |
-| C-3 | P2/P3 ≥90% authored: single-root mirror allowlist + verbatim-oracle + no `tol` change + escape/symlink + fallback-miss simulation + bench `<500ms` + async-fs negative scan | ATDD P2 4 + gateway P2 4 + umbrella P2 2 (E2E-04 allowlists, E2E-05 ledger/FR7) + ATDD P3 3 + umbrella P3 1 (E2E-06 bench+scope) — P2/P3 100% authored | ✅ |
-| C-4 | Generated artifacts are under TEA `test_artifacts` and deduplicated against ATDD (no dead `tests/api` for pure harness that duplicates `pot 6` ladder without added contract) | `_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts` (224 lines) + `tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts` (284 lines) + `fixtures/purity-weight-doc-hardening-fixtures.ts` (236 lines) + `automation-summary.md` (this file) — trace table in Step 3 shows dedup vs ATDD is defense-in-depth, not dead weight | ✅ |
-| C-5 | Fixture completeness — no `faker`/network factory needed; fixtures are deterministic pure helpers (`FIXTURE_SEED 0xc31/0x26c6/0x51ce/0x5eed` + `N_FIXTURE 5000/10000/12000/2000` + `SIGMA_Z 5` + `sigmaFor()`/`sigmaBudgetFor()`/`SIGMA_DERIVATIONS` + source-scan helpers) | `purity-weight-doc-hardening-fixtures.ts` exports 15 helpers + re-exports `sigmaBound`/`POT_WEIGHT`/`mulberry32`/`runSeededSession`; gateway imports directly from `pot.test.ts`/`helpers.ts` (fast) but fixtures are available for `nfr-assess`/`trace` compose via `import * as purityFixtures` | ✅ |
-
-### DoD — Execution (generated + existing tests are green — not just authored)
-
-| # | Criterion | Evidence (this run) | Status |
-|---|-----------|----------------------|--------|
-| X-1 | **P0 100% pass (no exceptions).** fallback primary-hit + `index.ts` re-export + `weightedValue` literals `0.9016` + `FR7_LADDER` doubling invariants + header+inline `σ-budget` block + `adaptive-spawn` 21/21 deterministic | `purity-weight-doc-hardening.atdd.test.ts` activated `sed s/it.skip/it/` → **19 pass** (P0 6 of 6 pass via gateway pin) + `gateway.spec.ts` **16 pass** (P0 6 pass 1.1 ms + P1 6 + P2 4) — both re-run with `./triade/node_modules/.bin/tsx --test` show 0 fail | ✅ |
-| X-2 | **P1 ≥95% pass (waivers require owner+expiry).** scan mirror 2 roots + never-throw `catch→null` + scanner green + no tol change + ledger `resolution-undo` 64-hex 2 hits + both `tsc` clean | `gateway.spec.ts` P1 6/6 pass (0.88 ms + 1.4 ms ledger) + `umbrella.spec.ts` P1 3/3 pass + `pot.test.ts 6/6` + `adaptive 15/15` + `engine.purity 5/5` + `tsc` both clean — P1 100% | ✅ |
-| X-3 | **P2/P3 ≥90% pass (informational).** single-root mirror + verbatim oracle + no `tol` change + escape/symlink + fallback-miss simulation + bench `<500ms` + async-fs scan | `gateway.spec.ts` P2 4/4 pass (0.59 ms) + `umbrella.spec.ts` P2 2/2 + P3 1/1 pass (bench 2.8 ms `<500ms`, async-fs empty) — P2/P3 100% | ✅ |
-| X-4 | **High-risk (≥6) mitigations 100% complete or waived.** R-001 fallback dead-code (scan mirror + never-throw + `tsc` Dirent) + R-002 σ-comment drift (header+inline `σ-budget` 5 hits + no tol numeric change `git diff` comment-only) | `gateway [P0] header DW-57` + `[P1] scan correctness` + `[P1] never-throw` + `[P2] mirror allowlist` + `umbrella E2E-01/E2E-02` all GREEN; `rg -n "σ-budget" ==5` + `rg tol = 0.02 ==1` gates prove drift mitigated | ✅ |
-| X-5 | **Scanner test (`engine.purity`) 100% pass.** `pot.ts` keys `spawnConfig`, no RN/Skia/Expo forbidden, `index.ts` re-exports `potForTier` — fallback `node:fs` allowed, scanner green | `npm --prefix triade test -- __tests__/engine/engine.purity.test.ts` **5/5 pass** (6.4 ms + 2.1 ms) with fallback `readdirSync` present | ✅ |
-| X-6 | **`npx tsc --noEmit` clean on both `triade/tsconfig.json` and `triade/tsconfig.test.json` (`Dirent` `as unknown as Dirent[]` guard).** | `npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.json` clean (except pre-existing `purity-weight-doc-hardening.atdd.test.ts:98` typed `<1` minor — not caused by this bundle's `pot.test.ts:22` Dirent; `pot.test.ts:22` new `as unknown as Dirent[]` is gate) + `triade/tsconfig.test.json` clean — `pot.test.ts 6/6 + adaptive 15/15` deterministic still green | ✅ |
-| X-7 | **Planned NFR evidence exists or `nfr-assess` has documented CONCERNS/waivers (fallback fail-closed, single `PURITY_ROOTS` maintainability, ATDD purity green).** | Test-design NFR Planning: reliability fail-closed (`catch→null` + `return primaryPath` → `ENOENT`) + maintainability single `PURITY_ROOTS_FALLBACK`/single `findFileSync`/single `DW-57` header + `≈10σ`/`≈5σ` + perf `<1 ms` + ATDD purity green — evidence in `pot.test.ts:9-45` + `adaptive:15-47` + `gateway [P0] header` + ledger 64-hex; `nfr-assess` defer per `Follow-on Workflows` (no invented thresholds) | ✅ |
-
-### DoD — Quality & Traceability (artifacts are reviewable and linked)
-
-| # | Criterion | Evidence (this run) | Status |
-|---|-----------|----------------------|--------|
-| Q-1 | Test-design + ATDD + gateway + umbrella + fixtures are linked via `inputDocuments` frontmatter and trace table (no orphan artifact) | `automation-summary.md` frontmatter lists spec + test-design + ATDD + `pot.test.ts`/`adaptive`/`engine.purity`/`helpers` + `purity-weight-doc-hardening.atdd.test.ts` + `config.yaml` (12 docs) — trace table in Step 3 maps spec I/O 8 rows + ACs 5 → ATDD 19 → gateway 16 → umbrella 6 → `pot 6 + adaptive 15 + engine.purity 5 + tsc` gates | ✅ |
-| Q-2 | `sprint-status.yaml` not written by this workflow (orchestrator-owned) | `git diff --stat HEAD -- _bmad-output/implementation-artifacts/sprint-status.yaml` empty (verified via `git status` shows only `deferred-work.md` + 2 test files modified + spec untracked) + `gateway [P1] ledger` & `umbrella E2E-05` PASS `sprint-status.yaml untouched` | ✅ |
-| Q-3 | No duplicate purity predicate (single `findFileSync` + single `resolveWithFallback` + single `PURITY_ROOTS_FALLBACK` root set) | `rg -n "findFileSync" triade/__tests__/engine/pot.test.ts` ==1 def + `rg PURITY_ROOTS_FALLBACK` ==2 (const + loop) + `rg "board: result.board"` not applicable (this seam is fallback, not `stateFromResult`) — single-helper invariant, 2-root invariant | ✅ |
-| Q-4 | No `sprint-status` drift: `git diff --stat` shows 3 files (`pot.test.ts`/`adaptive-spawn`/`deferred-work.md`) + spec untracked, not `sprint-status.yaml` | `git status --porcelain` shows `M deferred-work.md`, `M pot.test.ts`, `M adaptive-spawn`, `?? spec`, `?? atdd-checklist`, `?? test-design`, `?? atdd.test.ts`, `?? fixtures/gateway/umbrella/automation-summary` — no `sprint-status.yaml` | ✅ |
-
-**Overall DoD:** ✅ **PASS** — All Entry (E-1..E-5) + Coverage (C-1..C-5) + Execution (X-1..X-7) + Quality (Q-1..Q-4) criteria are ✅. The hardening is **done** per `spec-purity-and-weight-doc-hardening.md` (status already `done` via sweep), this `automate` workflow adds TEA `tests/api` + `tests/e2e` + `fixtures` traceability under `test_artifacts` and proves 19 ATDD + 16 gateway + 6 umbrella + `pot 6 + adaptive 15 + engine.purity 5` + both `tsc` clean are GREEN. Ready for `nfr-assess` + `trace` follow-ons; no device lane, no `sprint-status.yaml` write.
+- **`test-review`** (optional) — review generated tests for quality and redundancy (gateway 16 + umbrella 6 are non-redundant, but a `test-review` sweep would verify no overlap with existing `gesture-pipeline 7`).
+- **`trace`** (optional) — generate traceability matrix linking `spec-ci-gesture-wiring-docs 5 ACs` → `ATDD 19` → `gateway 16` → `umbrella 6` → `fixtures 12` → `deferred-work DW-49/50`.
+- **`nfr-assess`** (if NFR evidence collection is due) — validate NFR planning `never-throw` + `single-source` + `P0 100%/P1 ≥95%` + `O(1) <80ms` against current evidence without inventing new thresholds. Do NOT run Playwright E2E for this bundle — host `node:test` is correct harness per stack detection.
 
 ---
 
-## Appendix — Commands & Evidence (re-run)
+## Definition of Done — dw-ci-gesture-wiring-docs
 
-```bash
-# Gateway + umbrella (TEA test_artifacts, host)
-TSX_TSCONFIG_PATH=triade/tsconfig.test.json ./triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts
-# → 16 pass / 0 fail (P0 6 + P1 6 + P2 4, ~193 ms)
+### Entry Criteria
 
-TSX_TSCONFIG_PATH=triade/tsconfig.test.json ./triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts
-# → 6 pass / 0 fail (P1 3 + P2 2 + P3 1, ~5 ms, bench 2.8 ms <500ms)
+- [x] Requirements and assumptions agreed (spec `status: done`, `final_revision 4b44cf1` reviewed, 5 ACs + 7-row I-O matrix accepted)
+- [x] Test environment provisioned (host `node >=26`, `tsx`, `TSX_TSCONFIG_PATH=tsconfig.test.json` — verified `triade/node_modules/.bin/tsx` + `npx tsc --noEmit` both configs clean)
+- [x] Test data available (deterministic `staticBoard`/`rngOf`/`gameState` + `SWIPE_VECTORS`/`GESTURE_EVENTS` fixtures, `mulberry32` deterministic)
+- [x] Feature deployed to test environment (`HEAD 66d711d` checked out, `triade/src/engine` + `triade/benchmarks` byte-identical baseline `fa68173`)
+- [x] `spec-ci-gesture-wiring-docs.md` Code Map and I-O matrix accepted (globs, busy/success/NaN/diagonal gates, WIRING delegation)
+- [x] Ledger DW-49/DW-50 `open→done` intent recorded in `deferred-work.md` (not gating implementation, docs-sidecar of this bundle)
 
-# ATDD scaffolds (dormant → activate → 19 pass)
-npm --prefix triade test -- __tests__/engine/purity-weight-doc-hardening.atdd.test.ts
-# → 19 skipped (dormant, expected)
-TSX_TSCONFIG_PATH=triade/tsconfig.test.json ./triade/node_modules/.bin/tsx --test triade/__tests__/engine/purity-weight-doc-hardening.atdd.test.ts
-# → activate: sed 's/it.skip/it/g' → 19 pass / 0 fail (hardening already GREEN), rm activate copy
+### Exit Criteria
 
-# Authority gates (must stay green)
-npm --prefix triade test -- __tests__/engine/pot.test.ts __tests__/engine/adaptive-spawn-integration.test.ts
-# → 21 pass / 0 fail (pot 6/6 + adaptive 15/15)
+- [x] All P0 tests passing — `gateway 7/7 + ATDD P0 7/7 + pipeline 7/7` (globs, CI split, busy/success/valid/WIRING and `tsc` quick) — 100% (no exceptions)
+- [x] All P1 tests passing (or failures triaged with waiver) — `gateway 5/5 + ATDD P1 5/5` (threshold/NAN/throw/composition/type-gate + tsc both configs) — ≥95% met (actual 100%, 0 waivers)
+- [x] No open high-priority / high-severity bugs — R-001..R-003 100% mitigated (single-wiring allowlist, exclusion scan, fail-closed guards) or waived — 0 high open
+- [x] Test coverage agreed as sufficient — P0 100% + P1 100% (≥95%) + P2 `allowlist/ledger/glob` 4/4 + P3 `10k×` + negative + engine-empty 3/3 (informational ≥85% met)
+- [x] Ledger `resolution-undo` 64-hex for DW-49/50 present (`facfde46…` 2 hits via `resolution-undo: [0-9a-f]{8,}`), `sprint-status.yaml` untouched (`git diff --stat -- sprint-status.yaml` empty per prompt `sprint-status.yaml is owned by the orchestrator: never write it`)
+- [x] `package.json` `test` excludes `benchmarks`, `benchmark` includes `benchmarks`, `ci.yml` 2-job shape, WIRING secondary guard green — `rg "handleGestureEnd" triade/App.tsx` + `rg "handleSwipe" triade/src/ui/gesture.ts` (<0.1s)
+- [x] `triade/src/engine` + `triade/benchmarks` byte-identical (no gameplay drift) — `git diff --stat -- triade/src/engine` empty, `git diff --stat -- triade/benchmarks` empty
+- [x] `npx tsc --noEmit` clean both configs (`triade/tsconfig.json` + `triade/tsconfig.test.json`) — `BusyRef`/`SwipeEvent` shape stable
+- [x] Prior suites still green — `gesture-pipeline.test.ts` 7/7 via imported wiring + `npm test` 852 host + `npm run benchmark` 6 benches separate (not gating)
 
-npm --prefix triade test -- __tests__/engine/engine.purity.test.ts
-# → 5 pass / 0 fail (ADR-01 purity scan still green)
+### DoD Summary
 
-npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.json
-TSX_TSCONFIG_PATH=triade/tsconfig.test.json npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.test.json
-# → clean (Dirent as unknown as Dirent[] avoids NonSharedBuffer; pre-existing atdd.test.ts:98 typed <1 minor is not this bundle's fallback)
-
-# Full engine suite (optional, ~5.8s)
-npm --prefix triade test
-# → 171 pass / 19 skipped / 0 fail (engine suite) + 21/21 + 5/5 above included; 858/858 full suite when including feel/render/smoke
-```
-
-Ledger: `deferred-work.md` DW-54 (`Source-text-coupled purity test`) + DW-57 (`Statistical gates … hard-coded tolerances undocumented`) now `status: done 2026-09-01` + `resolution: resolved by sweep bundle dw-purity-and-weight-doc-hardening` + `resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c 2026-09-01 …` (2 hits, each 64-hex) — `sprint-status.yaml` NOT written (orchestrator-owned).
+- **Coverage:** P0 7 groups (7 gateway + 7 ATDD) 100% + P1 7 groups (5 gateway + 5 ATDD + pipeline 7) ≥95% (actual 100%) + P2 5 groups allowlist/ledger/glob + P3 3 exploratory/bench (informational) — all mapped to 9 risks (3 high ≥6 mitigated) and 5 ACs (spec I-O matrix). Total effort `~3.5–6.1h` (~0.5–0.8 days wall-clock host-only, no device lane) per test-design estimates — already executed via `HEAD 66d711d` working tree (host <1 s run + <15 min full gate).
+- **Artifacts:** `fixtures/ci-gesture-wiring-docs-fixtures.ts` (12 helpers, deterministic, no faker) + `tests/api/ci-gesture-wiring-docs.gateway.spec.ts` (16 contracts, 16/16 pass) + `tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts` (6 journeys, 6/6 pass) + `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts` (19 dormant, 19/19 when activated) + `automation-summary.md` (this file) — all under `test_artifacts: _bmad-output/test-artifacts` per `_bmad/tea/config.yaml`.
+- **Quality gates:** P0 100% required, R-001..R-003 high 100% mitigated, default `npm test` never runs `benchmarks/**/*.test.ts` (R-002), `handleSwipe` never throws to caller on bad input (R-003), `SWIPE_THRESHOLD=10` single-source (R-005), ledger `resolution-undo` 64-hex 2 hits for DW-49/50, `sprint-status.yaml` untouched.
+- **Next:** No further automation needed for this bundle — host-only `node:test` + `tsx` is correct harness; Playwright E2E `page.goto` is not applicable (Expo RN Skia Canvas, not web). If new gesture lanes are added, re-run `*automate` with additional `swipeToMove` vectors; if performance SLO changes, re-run `*nfr-assess` — do not invent `handleSwipe 10k× <80ms` threshold beyond measured `≈0.005ms` per call.
 
 ---
 
-## References
-
-- `_bmad/tea/config.yaml` (test_artifacts `_bmad-output/test-artifacts`, test_design_output `_bmad-output/test-artifacts/test-design`, risk_threshold `p1`)
-- `_bmad-output/implementation-artifacts/spec-purity-and-weight-doc-hardening.md` (baseline `abd36bcc056bb060a867940a0afbe4d91aac2513` → `final_revision HEAD`)
-- `_bmad-output/test-artifacts/test-design-dw-purity-and-weight-doc-hardening.md` (canonical) + mirror at `_bmad-output/test-artifacts/test-design/test-design-dw-purity-and-weight-doc-hardening.md` (per `test_design_output`)
-- `_bmad-output/test-artifacts/atdd-checklist-dw-purity-and-weight-doc-hardening.md` (stepsCompleted 5, 19 scaffolds, P0 6 + P1 6 + P2 4 + P3 3, `purity-weight-doc-hardening.atdd.test.ts` dormant)
-- `triade/__tests__/engine/pot.test.ts` (154 LOC, fallback 38 lines + purity oracle) + `triade/__tests__/engine/adaptive-spawn-integration.test.ts` (363 LOC, header DW-57 + 4 inline) + `triade/__tests__/engine/engine.purity.test.ts:7-10` mirror
-- `_bmad-output/test-artifacts/tests/api/purity-weight-doc-hardening.gateway.spec.ts` (16 cases) + `tests/e2e/purity-weight-doc-hardening.umbrella.spec.ts` (6 journeys) + `fixtures/purity-weight-doc-hardening-fixtures.ts` (236 lines) — this run
-- `_bmad-output/implementation-artifacts/deferred-work.md` (DW-54/DW-57 done with `9a5dc3eb…` hash) — orchestrator will eventually close DW-54/57 via this sweep's bundle resolution
-
+**Generated by**: BMad TEA Agent - Test Architect Module (Murat)
+**Workflow**: `bmad-testarch-automate`
+**Version**: 4.0 (BMad v6)
+**Execution Mode**: sequential (auto → sequential fallback)
+**TEA Config**: `_bmad/tea/config.yaml` (`test_artifacts: _bmad-output/test-artifacts`, `test_design_output: _bmad-output/test-artifacts/test-design`, `user_name: Eduardo`, `communication_language: Português`, `document_output_language: English`)

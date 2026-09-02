@@ -359,14 +359,18 @@ resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)"), 2026-09-01
 location: triade/package.js
 reason: Benchmarks timing-sensitive continuam no run default do CI — script `benchmark` idêntico a `test`, mantendo benchmarks no caminho padrão (`triade/package.json`). Recomendação pré-existente do review R1 (mover benchmarks para fora do run default) ainda não atendida.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-ci-gesture-wiring-docs
+resolution-undo: facfde462834d7761c72189990cd308263bb12d1d706a13cdb222057e454067f 2026-09-02 7374617475733a206f70656e
 
 ### DW-50: Testes de busy-gate de `gesture-pipeline.test.ts` exercitam uma cópia local do contrato `handleSwipe`, não o wiring real de `App.tsx` (`triade/__tests__/ui/gesture-pipeline.test.ts`). Regex WIRING + suíte do pipeline cobrem o essencial; extrair handler para módulo testável é refactor para story futura. (Re-review 2026-08-21)
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)"), 2026-09-01
 location: gesture-pipeline.test.ts
 reason: Testes de busy-gate de `gesture-pipeline.test.ts` exercitam uma cópia local do contrato `handleSwipe`, não o wiring real de `App.tsx` (`triade/__tests__/ui/gesture-pipeline.test.ts`). Regex WIRING + suíte do pipeline cobrem o essencial; extrair handler para módulo testável é refactor para story futura. (Re-review 2026-08-21)
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-ci-gesture-wiring-docs
+resolution-undo: facfde462834d7761c72189990cd308263bb12d1d706a13cdb222057e454067f 2026-09-02 7374617475733a206f70656e
 
 ### DW-51: Tier not wired into `spawnTile`/`move()` — the pot feature is dead via real gameplay until the tier is plumbed.
 

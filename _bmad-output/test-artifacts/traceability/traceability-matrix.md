@@ -2,37 +2,43 @@
 stepsCompleted: ['step-01-load-context', 'step-02-discover-tests', 'step-03-map-criteria', 'step-04-analyze-gaps', 'step-05-gate-decision']
 lastStep: 'step-05-gate-decision'
 lastSaved: '2026-09-02'
-tempCoverageMatrixPath: '_bmad-output/test-artifacts/traceability/coverage-matrix-dw-layout-band-dedup-and-guard.json'
+tempCoverageMatrixPath: '_bmad-output/test-artifacts/traceability/coverage-matrix-dw-ci-gesture-wiring-docs.json'
 workflowType: 'testarch-trace'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md'
-  - 'triade/src/ui/layout.ts'
+  - '_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/test-design-dw-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/atdd-checklist-dw-ci-gesture-wiring-docs.md'
+  - 'triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts'
+  - 'triade/__tests__/ui/gesture-pipeline.test.ts'
+  - 'triade/src/ui/gesture.ts'
+  - 'triade/src/ui/swipe.ts'
   - 'triade/App.tsx'
-  - 'triade/src/ui/Hud.tsx'
-  - 'triade/__tests__/ui/layout.test.ts'
-  - '_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md'
-  - '_bmad-output/implementation-artifacts/deferred-work.md#DW-5/DW-10'
+  - 'triade/package.json'
+  - '.github/workflows/ci.yml'
+  - '_bmad-output/implementation-artifacts/deferred-work.md#DW-49/DW-50'
+  - '_bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts'
+  - '_bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts'
+  - '_bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts'
+  - '_bmad-output/test-artifacts/automation-summary.md'
 coverageBasis: 'acceptance_criteria'
 oracleConfidence: 'high'
 oracleResolutionMode: 'formal_requirements'
 oracleSources:
-  - '_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md'
-  - 'triade/src/ui/layout.ts'
-  - 'triade/App.tsx'
-  - 'triade/src/ui/Hud.tsx'
-  - 'triade/__tests__/ui/layout.test.ts'
-  - '_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md'
+  - '_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/test-design-dw-ci-gesture-wiring-docs.md'
+  - '_bmad-output/test-artifacts/atdd-checklist-dw-ci-gesture-wiring-docs.md'
+  - 'triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts'
 externalPointerStatus: 'not_used'
 ---
 
-# Traceability Matrix & Gate Decision - dw-layout-band-dedup-and-guard
+# Traceability Matrix & Gate Decision - dw-ci-gesture-wiring-docs — split benchmark from default test + extract gesture wiring to testable module
 
-**Target:** dw-layout-band-dedup-and-guard — layoutFor NaN/Infinity guard + band-height dedup (DW-5/DW-10)
+**Target:** dw-ci-gesture-wiring-docs — split benchmark from default test + extract gesture wiring to testable module
 **Date:** 2026-09-02
 **Evaluator:** Eduardo (TEA Agent)
 **Coverage Oracle:** acceptance_criteria
 **Oracle Confidence:** high
-**Oracle Sources:** `_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md`, `triade/src/ui/layout.ts`, `triade/App.tsx`, `triade/src/ui/Hud.tsx`, `triade/__tests__/ui/layout.test.ts`
+**Oracle Sources:** `_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md`, `test-design-dw-ci-gesture-wiring-docs.md`, `atdd-checklist-dw-ci-gesture-wiring-docs.md`, `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts`
 
 ---
 
@@ -44,11 +50,11 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 | Priority  | Total Criteria | FULL Coverage | Coverage % | Status       |
 | --------- | -------------- | ------------- | ---------- | ------------ |
-| P0        | 4              | 4             | 100%  | ✅ PASS       |
-| P1        | 5              | 5             | 100%  | ✅ PASS       |
-| P2        | 3              | 3             | 100%  | ✅ PASS       |
-| P3        | 2              | 2             | 100%  | ✅ PASS       |
-| **Total** | **14**             | **14**             | **100%** | **✅ PASS** |
+| P0        | 7              | 7             | 100%  | ✅ PASS       |
+| P1        | 7              | 7             | 100%  | ✅ PASS       |
+| P2        | 5              | 5             | 100%  | ✅ PASS       |
+| P3        | 3              | 3             | 100%  | ✅ PASS       |
+| **Total** | **22**             | **22**             | **100%** | **✅ PASS** |
 
 **Legend:**
 
@@ -60,399 +66,482 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 ### Detailed Mapping
 
-#### AC-01: NaN/Infinity guard — 6-field Number.isFinite degrades to boardSize:0 finite, no NaN propagation, no throw (DW-5, I/O NaN width / Infinity insets.top) (P0)
+#### P0-01: AC package.json default test excludes benchmarks — DW-49 R-002 (glob __tests__ only) (P0)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P0-01` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:37 (unit, skipped) — RED-phase scaffold it.skip — active coverage via gateway
-    - **Given:** [P0-01] AC NaN/Infinity guard — 6-field Number.isFinite degrades to boardSize:0 finite
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-guard-6field` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:63 (api, active)
-    - **Given:** [P0] AC NaN/Infinity guard — 6-field Number.isFinite degrades to boardSize:0 finite
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-guard-extra` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:85 (api, active)
-    - **Given:** [P0] guard also covers -Infinity and each inset edge Infinity
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-sweep-finite` - triade/__tests__/ui/layout.test.ts:212 (unit, active)
-    - **Given:** all layoutFor outputs are finite and board never negative (sweep)
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P0-01` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:51 [unit (skipped)]
+    - **Given:** AC package.json default test excludes benchmarks — DW-49 R-002
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-01-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:79 [api]
+    - **Given:** AC package.json default test excludes benchmarks — DW-49 R-002
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-01-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:192 [e2e]
+    - **Given:** AC package.json default test excludes benchmarks — umbrella E2E-01
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (defense-in-depth across ATDD dormant + gateway + umbrella + rg gate)
+
+---
+
+#### P0-02: AC package.json benchmark isolates benchmarks — DW-49 R-002 (glob benchmarks only) (P0)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P0-02` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:60 [unit (skipped)]
+    - **Given:** AC package.json benchmark isolates benchmarks — DW-49 R-002
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-02-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:88 [api]
+    - **Given:** AC package.json benchmark isolates benchmarks — DW-49 R-002
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-02-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:192 [e2e]
+    - **Given:** AC package.json benchmark isolates benchmarks — umbrella E2E-01
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### AC-02: Finite byte-identical — portrait 390x844 width-bounded 358 / landscape 844x390 height-bounded 310 / golden 414x896→382 1024x768→688 500x580→452 + maximized square 96/48 (DW-5 finite path) (P0)
+#### P0-03: AC CI split — engine-test-and-benchmark keeps name, excludes benchmarks; benchmark job dedicated — DW-49 R-002/R-004 (P0)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P0-03` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:73 (unit, skipped) — RED-phase scaffold
-    - **Given:** [P0-03] AC finite portrait 390×844 byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-04` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:82 (unit, skipped) — 
-    - **Given:** [P0-04] AC finite landscape 844×390 byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-05` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:94 (unit, skipped) — 
-    - **Given:** [P0-05] AC finite golden anchors byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-portrait` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:101 (api, active)
-    - **Given:** [P0] finite portrait 390×844 byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-landscape` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:110 (api, active)
-    - **Given:** [P0] finite landscape 844×390 byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-golden` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:120 (api, active)
-    - **Given:** [P0] finite golden anchors byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-portrait` - triade/__tests__/ui/layout.test.ts:41 (unit, active)
-    - **Given:** layoutFor on a portrait phone 390x844 reports isLandscape=false
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-landscape` - triade/__tests__/ui/layout.test.ts:58 (unit, active)
-    - **Given:** layoutFor on a landscape phone 844x390 reports isLandscape=true
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-golden-382-688` - triade/__tests__/ui/layout.test.ts:114 (unit, active)
-    - **Given:** golden anchors: 414x896 portrait and 1024x768 landscape
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-golden-452` - triade/__tests__/ui/layout.test.ts:140 (unit, active)
-    - **Given:** golden anchor: 500x580 portrait is height-bounded
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-sweep` - triade/__tests__/ui/layout.test.ts:90 (unit, active)
-    - **Given:** boardSize is the maximized square for a sweep of containers
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-02` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:191 (e2e, active)
-    - **Given:** [P1][E2E-02] finite byte-identical through App bandTop + Hud heights
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P0-03` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:67 [unit (skipped)]
+    - **Given:** AC CI split — engine-test-and-benchmark keeps name, excludes benchmarks; benchmark job dedicated
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-03-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:97 [api]
+    - **Given:** AC CI split — engine-test-and-benchmark keeps name, excludes benchmarks; benchmark job dedicated
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-03-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:204 [e2e]
+    - **Given:** AC CI split — umbrella E2E-02
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### AC-03: Degenerate insets exceed container clamp to 0 and stay finite — layout.test.ts:232 defensive clamp path vs guard Infinity path both collapse to 0 finite (DW-5 degenerate) (P0)
+#### P0-04: AC busy-gate — busy.current true suppresses any swipe via imported handleSwipe — DW-50 R-001/R-003 (P0)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P0-06` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:100 (unit, skipped) — 
-    - **Given:** [P0-06] AC degenerate-clamp layout.test.ts:232
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-degenerate` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:132 (api, active)
-    - **Given:** [P0] degenerate-clamp layout.test.ts:232 — insets exceed container clamps to 0
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-degenerate` - triade/__tests__/ui/layout.test.ts:232 (unit, active)
-    - **Given:** degenerate insets that exceed the container clamp the board to 0
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-finite-sweep` - triade/__tests__/ui/layout.test.ts:212 (unit, active)
-    - **Given:** all layoutFor outputs are finite and board never negative
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-small-screen` - triade/__tests__/ui/layout.test.ts:188 (unit, active)
-    - **Given:** small screen (320x480) yields a positive board that never overlaps HUD
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P0-04` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:80 [unit (skipped)]
+    - **Given:** AC busy-gate — busy.current true suppresses any swipe via imported handleSwipe
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-04-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:109 [api]
+    - **Given:** AC busy-gate — busy.current true suppresses any swipe via imported handleSwipe
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-04-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:30 [unit]
+    - **Given:** GESTURE: the in-flight busy gate suppresses swipes mid-animation (T3.4)
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-04-fixture-busyGateSuppresses` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:86 [unit]
+    - **Given:** busyGateSuppresses helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (includes composition swipeToMove via game.move null)
+
+---
+
+#### P0-05: AC success-gate — success false suppresses dispatch even when busy idle — DW-50 R-003 (P0)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P0-05` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:92 [unit (skipped)]
+    - **Given:** AC success-gate — success false suppresses dispatch even when busy idle
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-05-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:121 [api]
+    - **Given:** AC success-gate — success false suppresses dispatch even when busy idle
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-05-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:50 [unit]
+    - **Given:** GESTURE: success=false suppresses dispatch even when busy is idle
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-05-fixture-successGate` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:90 [unit]
+    - **Given:** successGateSuppresses helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (covers opts 'success' in opts && !success fail-closed)
+
+---
+
+#### P0-06: AC valid swipe dispatches with real wiring and mutates board (2+1→3 right, 1+2→3 left) — DW-50 R-001 (P0)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P0-06` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:105 [unit (skipped)]
+    - **Given:** AC valid swipe dispatches with real wiring and mutates board
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-06-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:133 [api]
+    - **Given:** AC valid swipe dispatches with real wiring and mutates board
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-06-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:15 [unit]
+    - **Given:** GESTURE: a right swipe dispatches a right move that mutates the board
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-06-fixture-validSwipe` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:70 [unit]
+    - **Given:** validSwipeMutates helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (composition handleSwipe→game.move proves import seam)
+
+---
+
+#### P0-07: AC WIRING — App binds handleGestureEnd + doMoveRef + SWIPE_THRESHOLD; gesture resolves via resolveSwipeDirection — DW-50 R-001/R-005 (P0)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P0-07` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:120 [unit (skipped)]
+    - **Given:** AC WIRING — App binds handleGestureEnd + doMoveRef + SWIPE_THRESHOLD; gesture resolves via resolveSwipeDirection
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-07-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:146 [api]
+    - **Given:** AC WIRING — App binds handleGestureEnd + doMoveRef + SWIPE_THRESHOLD; gesture resolves via resolveSwipeDirection
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-07-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:60 [unit]
+    - **Given:** WIRING: App.tsx binds the pan gesture end to handleGestureEnd + doMove
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P0-07-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:216 [e2e]
+    - **Given:** E2E-03 real wiring import → busy/success/valid dispatch end-to-end through engine
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (secondary guard retained per spec Always)
+
+---
+
+#### P1-01: AC threshold coupling — subthreshold 5 and diagonal tie 20/20 resolve to null without dispatch — R-005/R-006 (P1)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P1-01` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:132 [unit (skipped)]
+    - **Given:** AC threshold coupling — subthreshold 5 and diagonal tie 20/20 resolve to null without dispatch
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-01-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:166 [api]
+    - **Given:** AC threshold coupling — subthreshold 5 and diagonal tie 20/20 resolve to null without dispatch
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-01-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:20 [unit]
+    - **Given:** GESTURE: a sub-threshold swipe resolves to no move (gate below activation)
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### AC-04: Band helper single-source dedup — getBandTop(insets,bandHeight)=insets.top+SAFE_MARGIN+bandHeight exported from layout.ts; App.tsx bandTop + Hud.tsx 2× height use helper, no duplicated formula, SAFE_MARGIN=16 single constant (DW-10) (P0)
+#### P1-02: AC guard-order — NaN/Infinity dx/dy and null/non-finite event return false before dispatch — R-003/R-006 (P1)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P0-07` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:110 (unit, skipped) — 
-    - **Given:** [P0-07] AC getBandTop dedup — App.tsx bandTop + Hud.tsx 2× height use single helper
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-08` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:128 (unit, skipped) — 
-    - **Given:** [P0-08] AC getBandTop pure arithmetic — insets.top + SAFE_MARGIN + bandHeight byte-identic
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-dedup` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:143 (api, active)
-    - **Given:** [P0] getBandTop dedup — App.tsx bandTop + Hud.tsx 2× height use single helper
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-pure` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:161 (api, active)
-    - **Given:** [P0] getBandTop pure arithmetic — insets.top + SAFE_MARGIN + bandHeight byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P0-API-early-guard` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:170 (api, active)
-    - **Given:** [P0] early-guard invariant — Number.isFinite guard is first statement
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-SAFE-MARGIN` - triade/__tests__/ui/layout.test.ts:183 (unit, active)
-    - **Given:** SAFE_MARGIN is exactly 16pt
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-05` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:225 (e2e, active)
-    - **Given:** [P2][E2E-05] static allowlists — single constant/helper/no duplicate/early guard
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P1-02` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:148 [unit (skipped)]
+    - **Given:** AC guard-order — NaN/Infinity dx/dy and null/non-finite event return false before dispatch
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-02-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:186 [api]
+    - **Given:** AC guard-order — NaN/Infinity dx/dy and null/non-finite event return false before dispatch
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-02-fixture-nanGuards` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:97 [unit]
+    - **Given:** nanGuardsSuppress helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P1-01: Band pins — PORTRAIT 96 / LANDSCAPE 48 and landscape collapses 96>48, board dominates thin band at 2000×200, fits pause hit target ≥44 (D-006 chrome) (P1)
+#### P1-03: AC dispatch never-throw — throwing dispatch caught returns false — R-003/R-007 (P1)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P1-01` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:138 (unit, skipped) — 
-    - **Given:** [P1-01] band pins — PORTRAIT 96 / LANDSCAPE 48 and landscape collapses
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-band-pins` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:188 (api, active)
-    - **Given:** [P1] band pins — PORTRAIT 96 / LANDSCAPE 48 and landscape collapses
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-band-pinned` - triade/__tests__/ui/layout.test.ts:126 (unit, active)
-    - **Given:** band heights are pinned exactly: portrait 96 and landscape 48
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-collapse` - triade/__tests__/ui/layout.test.ts:76 (unit, active)
-    - **Given:** the landscape HUD collapses: bandHeight(landscape) strictly smaller
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-extreme` - triade/__tests__/ui/layout.test.ts:202 (unit, active)
-    - **Given:** extreme landscape aspect (2000x200) yields a positive board with thin band
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-01` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:178 (e2e, active)
-    - **Given:** [P1][E2E-01] chrome band 96/48 pinned and board dominates thin band
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P1-03` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:164 [unit (skipped)]
+    - **Given:** AC dispatch never-throw — throwing dispatch caught returns false
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-03-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:202 [api]
+    - **Given:** AC dispatch never-throw — throwing dispatch caught returns false
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-03-fixture-throwing` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:105 [unit]
+    - **Given:** throwingDispatchReturnsFalse helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (narrow try/catch dispatch only, not resolve)
+
+---
+
+#### P1-04: AC engine→gesture composition + dispatch type-gate (typeof dispatch !== function) — R-001/R-003 (P1)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P1-04` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:172 [unit (skipped)]
+    - **Given:** AC engine→gesture composition + dispatch type-gate
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-04-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:216 [api]
+    - **Given:** AC engine→gesture composition + dispatch type-gate
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P1-02: isLandscape single-source — layoutFor.isLandscape agrees with orientation.ts width>height, square→portrait, exactly one isLandscape() delegation in layout.ts (P1)
+#### P1-05: AC CI name stability + tsc both configs clean (branch protection) — R-004/R-001 (P1)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P1-02` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:148 (unit, skipped) — 
-    - **Given:** [P1-02] isLandscape single-source — layoutFor.isLandscape agrees with orientation.ts
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-isLandscape` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:198 (api, active)
-    - **Given:** [P1] isLandscape single-source — layoutFor.isLandscape agrees with orientation.ts
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-isLandscape` - triade/__tests__/ui/layout.test.ts:246 (unit, active)
-    - **Given:** layoutFor.isLandscape agrees with isLandscape(width, height) — single source
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-04` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:211 (e2e, active)
-    - **Given:** [P1][E2E-04] orientation delegation end-to-end
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P1-05` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:186 [unit (skipped)]
+    - **Given:** AC CI name stability + tsc both configs clean
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-05-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:227 [api]
+    - **Given:** AC CI name stability + tsc both configs clean
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-05-tsc` - host `npx tsc --noEmit` both configs [unit]
+    - **Given:** tsc clean both configs
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (both tsconfigs clean)
+
+---
+
+#### P1-06: AC App pipeline import seam — gesture-pipeline.test.ts imports real handleSwipe (no local copy) — R-001 (P1)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P1-06` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:201 [unit (skipped)]
+    - **Given:** AC App pipeline import seam — gesture-pipeline.test.ts imports real handleSwipe
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-06-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:238 [api]
+    - **Given:** pipeline must import real handleSwipe
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-06-pipeline` - triade/__tests__/ui/gesture-pipeline.test.ts:1 [unit]
+    - **Given:** import { handleSwipe } from '../../src/ui/gesture.ts'
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P1-03: Per-edge insets bind asymmetrically — horizontal shrinks width-bounded 390×844 358→338, vertical shrinks height-bounded 500×580 452→371, SAFE_MARGIN 16 single constant (P1)
+#### P1-07: AC SWIPE_THRESHOLD invariant 10 preserved via swipe.ts (activeOffset coupling) — R-005 (P1)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P1-03` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:166 (unit, skipped) — 
-    - **Given:** [P1-03] per-edge insets bind asymmetrically
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-asymmetry` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:216 (api, active)
-    - **Given:** [P1] per-edge insets bind asymmetrically — horizontal vs vertical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-asymmetry` - triade/__tests__/ui/layout.test.ts:267 (unit, active)
-    - **Given:** per-edge insets bind asymmetrically: vertical shrinks height-bounded
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-board-bounds` - triade/__tests__/ui/layout.test.ts:159 (unit, active)
-    - **Given:** boardSize never exceeds safe-margin-bounded available width or height
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-SAFE-constant` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:229 (api, active)
-    - **Given:** [P1] SAFE_MARGIN single-constant and getBandTop single-export invariant
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P1-07` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:209 [unit (skipped)]
+    - **Given:** AC SWIPE_THRESHOLD invariant 10 preserved via swipe.ts
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P1-07-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:178 [api]
+    - **Given:** SWIPE_THRESHOLD still 10
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P1-04: Finiteness sweep never-throw — all layoutFor outputs finite across sizes/insets, tsc clean both configs, engine.purity/ui.norolls stay green, tiny board positive finite (P1)
+#### P2-01: SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only — R-001 (P2)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P1-05` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:191 (unit, skipped) — 
-    - **Given:** [P1-05] finiteness sweep — all layoutFor outputs finite
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-finiteness` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:242 (api, active)
-    - **Given:** [P1] finiteness sweep — all layoutFor outputs finite across sizes
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-finite` - triade/__tests__/ui/layout.test.ts:212 (unit, active)
-    - **Given:** all layoutFor outputs are finite and board never negative
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-floor` - triade/__tests__/ui/layout.test.ts:296 (unit, active)
-    - **Given:** min-tile floor (AC-1, UX-DR-18): landscape container that can fit floor keeps boardSize >=
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-floor-edge` - triade/__tests__/ui/layout.test.ts:306 (unit, active)
-    - **Given:** min-tile floor edge (AC-1): container too small to fit floor yields valid positive finite 
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P2-01` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:201 [unit (skipped)]
+    - **Given:** SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-01-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:248 [api]
+    - **Given:** SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-01-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:251 [e2e]
+    - **Given:** SCAN single-helper allowlist — handleSwipe definition count==1 in gesture.ts only
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-01-fixture-count` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:120 [unit]
+    - **Given:** handleSwipeDefinitionCount helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (rg handleSwipe exactly 1 in gesture.ts, App has 0 re-inline)
+
+---
+
+#### P2-02: SCAN single-threshold allowlist — SWIPE_THRESHOLD literal only in swipe.ts — R-005 (P2)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P2-02` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:209 [unit (skipped)]
+    - **Given:** SCAN single-threshold allowlist — SWIPE_THRESHOLD literal only in swipe.ts
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-02-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:256 [api]
+    - **Given:** SCAN single-threshold allowlist — SWIPE_THRESHOLD literal only in swipe.ts
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-02-fixture-threshold` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:128 [unit]
+    - **Given:** swipeThresholdDefinitionCount helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P1-05: Ledger DW-5/DW-10 done with resolution-undo 64-hex 6f4ef234… + sprint-status.yaml untouched (orchestrator-owned, OPS R-008) (P1)
+#### P2-03: SCAN guard-order literal ordering pin !busy→success→isFinite→typeof→resolve→try — R-006 (P2)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P1-06` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:214 (unit, skipped) — 
-    - **Given:** [P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P1-API-ledger` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:273 (api, active)
-    - **Given:** [P1] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status.yaml untouched
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-03` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:202 (e2e, active)
-    - **Given:** [P1][E2E-03] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status untouched
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P2-03` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:216 [unit (skipped)]
+    - **Given:** SCAN guard-order literal ordering pin !busy→success→isFinite→typeof→resolve→try
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-03-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:264 [api]
+    - **Given:** SCAN guard-order literal ordering pin !busy→success→isFinite→typeof→resolve→try
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-03-fixture-guardOrder` - _bmad-output/test-artifacts/fixtures/ci-gesture-wiring-docs-fixtures.ts:140 [unit]
+    - **Given:** guardOrderIsIncreasing helper
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (scoped to handleSwipe body, import not poison)
+
+---
+
+#### P2-04: SCAN ledger resolution-undo 64-hex DW-49/50 done + status: done — R-009 (P2)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P2-04` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:235 [unit (skipped)]
+    - **Given:** SCAN ledger resolution-undo 64-hex DW-49/50 done + status: done
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-04-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:281 [api]
+    - **Given:** SCAN ledger resolution-undo 64-hex DW-49/50 done + status: done
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-04-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:251 [e2e]
+    - **Given:** SCAN ledger resolution-undo 64-hex DW-49/50 done + status: done
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (DOTALL [\s\S]*? ledger, 2 hits facfde46)
+
+---
+
+#### P2-05: SCAN glob single-source — benchmarks token appears once (benchmark script only), test not containing benchmarks — R-002 (P2)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P2-05` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:235 [unit (skipped)]
+    - **Given:** SCAN glob single-source — benchmarks token appears once
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P2-05-gateway` - _bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts:281 [api]
+    - **Given:** SCAN glob single-source — benchmarks token appears once
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P2-01: Single helper allowlist — getBandTop 1 export + App 1× + Hud 2× height uses, SAFE_MARGIN single definition in layout.ts, isLandscape single call (P2)
+#### P3-01: BENCH handleSwipe O(1) 10k× <80ms (no loop/alloc regression) — R-008 (P3)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P2-01` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:230 (unit, skipped) — 
-    - **Given:** [P2-01] SCAN single helper allowlist — getBandTop 1 export + 3 uses
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P2-API-allowlist` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:289 (api, active)
-    - **Given:** [P2] single helper allowlist — getBandTop 1 export + 3 height uses + no duplicate formula
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-05` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:225 (e2e, active)
-    - **Given:** [P2][E2E-05] static allowlists — single constant/helper/no duplicate/early guard
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
+  - `P3-01` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:248 [unit (skipped)]
+    - **Given:** BENCH handleSwipe O(1) 10k× <80ms
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P3-01-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:298 [e2e]
+    - **Given:** BENCH handleSwipe O(1) 10k× <80ms
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (~0.005ms per call, 1.6ms for 10k)
+
+---
+
+#### P3-02: SCAN negative exploratory — Infinity/undefined busy/translation/dispatch fail-closed false — R-003 (P3)
+
+- **Coverage:** FULL ✅
+- **Tests:**
+  - `P3-02` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:259 [unit (skipped)]
+    - **Given:** SCAN negative exploratory — Infinity/undefined busy/translation/dispatch fail-closed false
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P3-02-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:298 [e2e]
+    - **Given:** SCAN negative exploratory — Infinity/undefined busy/translation/dispatch fail-closed false
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
 - **Recommendation:** none — fully covered
 
 ---
 
-#### P2-02: No duplicate formula — App/Hud band height not via inline + SAFE_MARGIN, Hud keeps SAFE_MARGIN only for padding locals, topPad+bandHeight 0 (P2)
+#### P3-03: SCAN cross-cutting — engine + benchmarks byte-identical, gesture.ts <4000 chars (no gameplay drift) — R-008 (P3)
 
 - **Coverage:** FULL ✅
 - **Tests:**
-  - `P2-02` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:241 (unit, skipped) — 
-    - **Given:** [P2-02] SCAN no duplicate formula
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P2-API-no-dup` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:300 (api, active)
-    - **Given:** [P2] no duplicate formula — App/Hud band height not via inline + SAFE_MARGIN for band
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-- **Recommendation:** none — fully covered
+  - `P3-03` - triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts:266 [unit (skipped)]
+    - **Given:** SCAN cross-cutting — engine + benchmarks byte-identical, gesture.ts <4000 chars
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+  - `P3-03-umbrella` - _bmad-output/test-artifacts/tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts:298 [e2e]
+    - **Given:** SCAN cross-cutting — engine + benchmarks byte-identical, gesture.ts <4000 chars
+    - **When:** Trace seam executed (host harness `node:test+tsx`)
+    - **Then:** Assertion pinned (see test file)
+- **Gaps:** none
+- **Recommendation:** none — fully covered (git diff --stat -- triade/src/engine empty)
 
 ---
 
-#### P2-03: BOARD_SIZE_FLOOR 216 + floor-clamp availBoard < FLOOR ? availBoard : max(availBoard,FLOOR) + total-height invariant boardSize+bandHeight ≤ availHeight (UX-DR-18) (P2)
-
-- **Coverage:** FULL ✅
-- **Tests:**
-  - `P2-04` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:261 (unit, skipped) — 
-    - **Given:** [P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P2-03` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:250 (unit, skipped) — 
-    - **Given:** [P2-03] SCAN early-guard invariant — Number.isFinite guard is first statement
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P2-API-floor` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:310 (api, active)
-    - **Given:** [P2] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `P2-API-total-height` - _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts:326 (api, active)
-    - **Given:** [P2] total-height invariant — boardSize + bandHeight does not exceed availHeight
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-06` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:237 (e2e, active)
-    - **Given:** [P2][E2E-06] floor + clamp seam
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `layout-board-bounds` - triade/__tests__/ui/layout.test.ts:159 (unit, active)
-    - **Given:** boardSize never exceeds safe-margin-bounded available width or height
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-- **Recommendation:** none — fully covered
-
----
-
-#### P3-01: Exploratory residual — getBandTop({top:NaN},48)→NaN pure arithmetic propagation is spec-allowed while layoutFor guard keeps bandHeight finite (R-006 residual) (P3)
-
-- **Coverage:** FULL ✅
-- **Tests:**
-  - `P3-01` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:285 (unit, skipped) — 
-    - **Given:** [P3-01] exploratory — getBandTop non-finite residual is pure arithmetic NaN→NaN per spec
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-07` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:248 (e2e, active)
-    - **Given:** [P3][E2E-07] residual getBandTop NaN→NaN + O(1) bench <50 ms + no scope leakage
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-- **Recommendation:** none — fully covered
-
----
-
-#### P3-02: Hygiene — layout scope stays pure (no RevenueCat/AdMob/music/bgm), O(1) <1ms per call 10k <80ms bench, never-throw helpers (R-002/R-003 perf/maintainability) (P3)
-
-- **Coverage:** FULL ✅
-- **Tests:**
-  - `P3-02` - triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts:297 (unit, skipped) — 
-    - **Given:** [P3-02] hygiene — layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-  - `E2E-07b` - _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts:248 (e2e, active)
-    - **Given:** [P3][E2E-07] residual getBandTop NaN→NaN + O(1) bench <50 ms + no scope leakage (hygiene h
-    - **When:** layoutFor / getBandTop / ledger scan executed
-    - **Then:** Covered by active host host-verifiable assertion
-- **Recommendation:** none — fully covered
-
----
 
 ### Gap Analysis
 
 #### Critical Gaps (BLOCKER) ❌
 
-0 gaps found. **Do not release until resolved.** — No P0 uncovered.
+0 gaps found. **No P0 blockers.**
 
 #### High Priority Gaps (PR BLOCKER) ⚠️
 
-0 gaps found. **Address before PR merge.** — No P1 uncovered.
+0 gaps found. **No P1 gaps.**
 
 #### Medium Priority Gaps (Nightly) ⚠️
 
-0 gaps found. — No P2 uncovered.
+0 gaps found. **P2 5/5 FULL.**
 
 #### Low Priority Gaps (Optional) ℹ️
 
-0 gaps found. — No P3 uncovered.
+0 gaps found. **P3 3/3 FULL (exploratory + bench hygiene).**
 
 ---
 
@@ -460,15 +549,26 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 #### Endpoint Coverage Gaps
 
-- Endpoints without direct API tests: 0 — Pure layout seam has no HTTP API; layoutFor/getBandTop pure gateway is the API.
+- Endpoints without direct API tests: 0
+- API seam `handleSwipe`/`handleGestureEnd` + `resolveSwipeDirection` + `package.json` globs + `ci.yml` 2-job shape covered via `ci-gesture-wiring-docs.gateway.spec.ts` 16 checks.
 
 #### Auth/Authz Negative-Path Gaps
 
-- Criteria missing denied/invalid-path tests: 0 — No auth in scope.
+- Criteria missing denied/invalid-path tests: 0 — not applicable (gesture + CI seam, no auth).
+- Success-gate negative path (`success false → no dispatch`) explicitly covered in `[P0-05]` + `[P1-02]`.
 
 #### Happy-Path-Only Criteria
 
-- Criteria missing error/edge scenarios: 0 — All P0 have negative-path NaN/Infinity guard + degenerate 0-clamp.
+- Criteria missing error/edge scenarios: 0
+- Fail-closed edge explicitly covered in `[P1-02]` (NaN/Infinity/null busy/dispatch/event) + `[P1-03]` (throwing dispatch) + `[P3-02]` (Infinity/undefined).
+
+#### UI Journey Coverage Gaps
+
+- Not applicable — host-only gesture seam (no RN mount). Umbrella journeys are host `node:test` E2E through wiring + engine + CI.
+
+#### UI State Coverage Gaps
+
+- Not applicable.
 
 ---
 
@@ -478,21 +578,19 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 **BLOCKER Issues** ❌
 
-- None
+- none
 
 **WARNING Issues** ⚠️
 
-- None — all active tests <2ms; no 90s threshold breach; no 300-line file breach.
+- none
 
 **INFO Issues** ℹ️
 
-- `triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts` — 20 it.skip RED-phase scaffolds — INFO only: active coverage exists via gateway/e2e; activate for defense-in-depth.
-
----
+- 19 ATDD scaffolds are `it.skip` dormant (intentional RED-phase). Activated run is 19/19 pass; gateway+umbrella are the active gate.
 
 #### Tests Passing Quality Gates
 
-**46/64 tests (71%) active host-verifiable meet all quality criteria** — 18 skipped are RED-phase ATDD scaffolds intentionally not active; 46 active = 18 layout.test.ts + 19 api gateway + 7 e2e umbrella + 2 fixture unconditional coverage via imports. If counting only active gate: **46/46 (100%) pass**.
+**29/29 active tests (100%) meet all quality criteria** ✅ — plus 19 dormant ATDD (19/19 when activated) = 48 total. All 16 gateway + 6 umbrella + 7 pipeline + fixtures helpers clean.
 
 ---
 
@@ -500,13 +598,13 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 #### Acceptable Overlap (Defense in Depth)
 
-- AC-01: NaN/Infinity guard tested at api gateway (6-field) and unit atdd scaffold and finiteness sweep at layout.test.ts ✅
-- AC-02: Finite byte-identical tested at api gateway golden anchors and unit layout.test.ts golden anchors and e2e byte-identical journey ✅
-- AC-04: Band helper tested at api gateway dedup grep and e2e umbrella static allowlist ✅
+- `P0-04`/`P0-05`/`P1-02`/`P1-03`: ATDD dormant + gateway `[P0]`/`[P1]` + pipeline `gesture-pipeline 7` all assert busy/success/NaN/throw — intentional wiring seam hardening.
+- `P0-01`/`P0-02`/`P2-05`: package.json globs + ci.yml 2-job shape — ATDD + gateway + umbrella all pin same `test` vs `benchmark` divergence.
+- `P0-07`/`P2-01`/`P2-02`: WIRING + single-helper + single-threshold — ATDD + gateway + umbrella defense-in-depth.
 
 #### Unacceptable Duplication ⚠️
 
-- None
+- none — no dead `tests/api` duplication beyond sanctioned gateway (16) mirroring ATDD `19` authority gates; `tests/e2e` umbrella (6) journeys are host journeys through wiring seam, not browser duplication.
 
 ---
 
@@ -514,11 +612,13 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 | Test Level | Tests             | Criteria Covered     | Coverage %       |
 | ---------- | ----------------- | -------------------- | ---------------- |
-| E2E        | 8       | 9       | 64%       |
-| API        | 19      | 12      | 85%       |
-| Component  | 0       | 0       | 0%       |
-| Unit       | 37      | 14      | 100%       |
-| **Total**  | **64** | **14** | **100%** |
+| E2E        | 6       | 22     | 100%       |
+| API        | 16       | 22     | 100%       |
+| Component  | 0       | 0     | —      |
+| Unit       | 26 (+19 dormant)       | 22     | 100%      |
+| **Total**  | **48 (29 active + 19 dormant)** | **22** | **100%** |
+
+*Unit 26 active = pipeline 7 + fixtures helpers indirect + api/e2e counted separately; unique deduplicated active cases = 29 (16+6+7). With dormant ATDD, total 48.*
 
 ---
 
@@ -526,16 +626,17 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 #### Immediate Actions (Before PR Merge)
 
-1. **Activate ATDD scaffolds** - Flip `triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts` 20 `it.skip → it` for full defense-in-depth; gateway/e2e already green so activation is zero-risk and yields 64/64 pass.
+1. **No blocker** — merge eligible.
 
 #### Short-term Actions (This Milestone)
 
-1. **Keep grep gates in CI** - `rg -n "insets.top + SAFE_MARGIN + bandHeight" triade/App.tsx triade/src/ui/Hud.tsx ==0` and `rg -n "topPad + bandHeight" ==0` and `rg -n "getBandTop" App 2 + Hud 3 ==5` pin single-helper invariant (R-002).
-2. **Preserve ledger undo hash** - Any reopen of DW-5/DW-10 must keep `resolution-undo: 6f4ef234…` 64-hex; `git diff --stat` must never show `sprint-status.yaml` (orchestrator-owned).
+1. **Monitor R-001/R-003** — keep `rg handleSwipe 1 def + SWIPE_THRESHOLD 1 def + guard-order pin` green in CI; any future `gesture.ts` change must preserve `!busy → success → isFinite → typeof → resolve → try` order.
+2. **Monitor R-002/R-008** — keep `rg benchmarks token 1` + `rg test not containing benchmarks` green; any future test dir addition must be `__tests__` prefixed.
 
 #### Long-term Actions (Backlog)
 
-1. **Optional 15-min rotation smoke** - Portrait 390×844 → rotate 844×390, band 96→48, board height-bounded, no NaN, no overlap `boardSize+bandHeight ≤ availHeight`; mark WAIVED if not run this cycle (host pins sufficient for refactor).
+1. **NFR follow-on `*nfr-assess` already planned** — reliability never-throw, single `handleSwipe` maintainability, O(1) perf, ledger 64-hex compliance.
+2. **No device lane** — host-only seam per test-design.
 
 ---
 
@@ -550,23 +651,22 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 #### Test Execution Results
 
-- **Total Tests**: 64 (64 discovered, 46 active, 18 skipped RED-phase)
-- **Passed**: 46 (100% of active)
+- **Total Tests**: 29 active (+19 ATDD dormant =48 total)
+- **Passed**: 29 (100%)
 - **Failed**: 0 (0%)
-- **Skipped**: 18 (28% — 20 ATDD scaffolds `it.skip`, 2 implied fixture-only)
-- **Duration**: ~120ms per suite (gateway 125ms, e2e 120ms, layout.test.ts 124ms, host-only `node --import tsx --test`)
-- **Source**: `npm --prefix triade test -- __tests__/ui/layout.test.ts` 18/18, `npm --prefix triade exec -- tsx --test _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts` 19/19, `npm --prefix triade exec -- tsx --test _bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts` 7/7
+- **Skipped**: 19 (ATDD `it.skip` dormant — 19/19 pass when activated)
+- **Duration**: ~0.35s host (gateway 16 ~0.14s, umbrella 6 ~0.14s, pipeline 7 ~0.12s, ATDD activated 19 ~0.13s; benchmark 6 ~0.27s separate)
 
 **Priority Breakdown:**
 
-- **P0 Tests**: 26/26 passed (100%) ✅
-- **P1 Tests**: 15/15 passed (100%) ✅
-- **P2 Tests**: 7/7 passed (100%) informational
-- **P3 Tests**: 2/2 passed (100%) informational
+- **P0 Tests**: 7/7 passed (100%) ✅ — `P0-01..07` all FULL via gateway `[P0]` 7 + umbrella + pipeline 7
+- **P1 Tests**: 7/7 passed (100%) ✅ — threshold/NaN/throw/composition/type-gate + tsc both configs
+- **P2 Tests**: 5/5 passed (100%) ✅
+- **P3 Tests**: 3/3 passed (100%) ✅ (bench 10k× 1.58ms `<80ms` + negative exploratory)
 
-**Overall Pass Rate**: 100% of active (46/46) ✅
+**Overall Pass Rate**: 100% ✅
 
-**Test Results Source**: local `npm --prefix triade` run 2026-09-02; `npx tsc --noEmit` clean for both `triade/tsconfig.json` and `triade/tsconfig.test.json`
+**Test Results Source**: local `node --import tsx --test` (see `automation-summary.md` Appendix — Commands & Evidence)
 
 ---
 
@@ -574,38 +674,33 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 **Requirements Coverage:**
 
-- **P0 Acceptance Criteria**: 4/4 covered (100%) ✅
-- **P1 Acceptance Criteria**: 5/5 covered (100%) ✅
-- **P2 Acceptance Criteria**: 3/3 covered (100%) informational
+- **P0 Acceptance Criteria**: 7/7 covered (100%) ✅
+- **P1 Acceptance Criteria**: 7/7 covered (100%) ✅
+- **P2 Acceptance Criteria**: 5/5 covered (100%) ✅
+- **P3 Acceptance Criteria**: 3/3 covered (100%) ✅
 - **Overall Coverage**: 100%
 
 **Code Coverage** (if available):
 
-- **Line Coverage**: N/A — Pure layout seam `layout.ts` 62 LOC is 100% exercised via host unit/gateway (branch: guard 6-field + floor-clamp + degenerate 0 path all hit)
-- **Branch Coverage**: guard true/false + floor `availBoard < BOARD_SIZE_FLOOR` true/false + landscape true/false all hit
-- **Function Coverage**: `layoutFor` + `getBandTop` + `isLandscape` delegation 100%
+- **Line Coverage**: not instrumented (host TS harness, not PRD threshold)
+- **Branch Coverage**: not instrumented
+- **Function Coverage**: not instrumented
 
-**Coverage Source**: `_bmad-output/test-artifacts/traceability/coverage-matrix-dw-layout-band-dedup-and-guard.json`
+**Coverage Source**: `coverage-matrix-dw-ci-gesture-wiring-docs.json`
 
 ---
 
 #### Non-Functional Requirements (NFRs)
 
-**Security**: NOT_ASSESSED — No auth/data boundary; layout pure arithmetic not a security surface.
+**Security**: PASS ✅ — no auth/data exposure; `gesture.ts` predicate is pure dispatch, no I/O.
 
-**Performance**: PASS ✅
+**Performance**: PASS ✅ — `handleSwipe 10k× 1.58ms <80ms` (~0.005ms per call) O(1) predicate+resolve, no loop; CI split parallelism not gate-prolonged.
 
-- 60 FPS / frame budget unchanged — layout `O(1)` arithmetic `<0.01ms` observed `<0.65ms` P0 guard, `<0.2ms` golden anchors; 10k `layoutFor` bench `2.5ms` on e2e `<80ms`; `npm --prefix triade test` full gate <15 min spec Verification
+**Reliability**: PASS ✅ — never-throw (`Number.isFinite` + `typeof dispatch` + `try/catch dispatch` only) + `handleGestureEnd` null/typeof/!success; engine byte-identical (`git diff --stat -- triade/src/engine` empty); benchmarks 6/6 separate.
 
-**Reliability**: PASS ✅
+**Maintainability**: PASS ✅ — single `handleSwipe` + single `handleGestureEnd` + single `resolveSwipeDirection` consumer + single `SWIPE_THRESHOLD=10` + single `benchmarks` token (benchmark script only); `gesture.ts 49 LOC <4000`.
 
-- never-throw + finiteness: every `layoutFor` returns boardSize>=0 finite, bandHeight finite >0, isLandscape boolean for NaN/Infinity/huge-finite/zero/negative; `getBandTop` never throws (pure `+` NaN→NaN spec-allowed); `npx tsc --noEmit` clean both configs
-
-**Maintainability**: PASS ✅
-
-- Single helper `export function getBandTop` 1 site `layout.ts:33` + 3 height uses (App `const bandTop = getBandTop` 1 + Hud 2× `height: getBandTop`); `SAFE_MARGIN=16` single constant 1 definition; `Number.isFinite` guard 6-field single early return before `isLandscape`; `resolution-undo` 64-hex `6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec7467` per DW-5/DW-10; `isLandscape` delegation single call `layout.ts:48`
-
-**NFR Source**: host `npm test` + `npx tsc` + `rg` scans + `_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md` NFR Planning
+**NFR Source**: `test-design-dw-ci-gesture-wiring-docs.md` Section NFR Planning + `automation-summary.md` DoD Execution/Quality
 
 ---
 
@@ -613,11 +708,11 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 **Burn-in Results** (if available):
 
-- **Burn-in Iterations**: N/A — deterministic host pure functions (`layoutFor`/`getBandTop`) with no `Math.random`/`Date.now`/`setTimeout`
+- **Burn-in Iterations**: not run (deterministic `staticBoard`/`rngOf(0,0,0.5)` + fixed 30/2 vectors; 10k bench deterministic)
 - **Flaky Tests Detected**: 0 ✅
-- **Stability Score**: 100%
+- **Stability Score**: 100% (29/29 deterministic, `npm test` vs `npm run benchmark` counts fixed)
 
-**Burn-in Source**: not_available (deterministic unit/api/e2e host)
+**Burn-in Source**: not_available (deterministic host suite)
 
 ---
 
@@ -643,7 +738,7 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 | ---------------------- | ------------------------- | -------------------- | -------- |
 | P1 Coverage            | ≥90%       | 100%       | ✅ PASS |
 | P1 Test Pass Rate      | ≥95%      | 100%      | ✅ PASS |
-| Overall Test Pass Rate | ≥90% | 100% | ✅ PASS |
+| Overall Test Pass Rate | ≥95% | 100% | ✅ PASS |
 | Overall Coverage       | ≥80%          | 100%  | ✅ PASS |
 
 **P1 Evaluation**: ✅ ALL PASS
@@ -665,9 +760,7 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*aut
 
 ### Rationale
 
-All P0 criteria met with 100% coverage (4/4 ACs) and 100% pass rates across critical guard/finite/degenerate/helper paths. All P1 criteria exceeded thresholds with 100% P1 coverage (5/5) and 100% overall coverage (14/14) and 100% overall pass rate (46/46 active). No security issues, no critical NFR failures, no flaky tests. The working-tree delta `a09e6ed` vs baseline `80dc5c1` (production `triade/src/ui/layout.ts` `getBandTop` + 6-field `Number.isFinite` guard, `triade/App.tsx` `bandTop = getBandTop`, `triade/src/ui/Hud.tsx` 2× `height: getBandTop`, ledger DW-5/DW-10 `done` with `resolution-undo` 64-hex `6f4ef234…`, `sprint-status.yaml` untouched) is fully pinned by deterministic host suites: 18 `layout.test.ts` + 19 gateway + 7 e2e umbrella all green, both `tsc` clean, `rg` allowlists green. ATDD scaffolds 20 `it.skip` are intentionally RED-phase and covered by active gateway/e2e; their activation would be defense-in-depth but is not required to pass the deterministic gate per `coverageBasis=acceptance_criteria` high confidence. Feature is ready for production with standard monitoring; no waiver needed.
-
-**Residual R-006** `getBandTop({top:NaN},48)→NaN` is spec-allowed pure arithmetic (helper not guard-owned) with zero current blast radius because production `useSafeAreaInsets` is always finite; the `layoutFor` guard already keeps `bandHeight` finite so the HUD band height stays finite even though `bandTop` would be NaN only if a future non-finite `insets.top` bypassed `layoutFor` and hit `getBandTop` directly — doc-only, no gate impact.
+All P0 criteria met with 100% coverage (7/7) and 100% pass rates across critical glob + WIRING + busy/success/valid paths. All P1 criteria exceeded thresholds with 100% P1 coverage (7/7) and 100% overall coverage (22/22) and 100% overall pass rate (29/29 active; 19 ATDD dormant are 19/19 when activated). No security issues, no critical NFR failures, no flaky tests. Working-tree delta `fa68173 → 66d711d` (package.json test/benchmark split, ci.yml 2-job split, gesture.ts 49 LOC, App.tsx delegate, pipeline import seam, deferred-work DW-49/50 done facfde46) is fully pinned by deterministic host suites 16 gateway + 6 umbrella + 7 pipeline + ATDD 19 dormant, both `tsc` clean, `rg` allowlists green (`handleSwipe` 1 def, `SWIPE_THRESHOLD` 1 def, `benchmarks` token 1, `engine-test-and-benchmark` 1, `npm run benchmark` 1), ledger `DW-49/50` done with `64-hex facfde46` (2 hits), `sprint-status.yaml` untouched. Ready for prod merge and `nfr-assess` follow-on (thresholds already planned, not invented).
 
 ---
 
@@ -676,16 +769,20 @@ All P0 criteria met with 100% coverage (4/4 ACs) and 100% pass rates across crit
 #### For PASS Decision ✅
 
 1. **Proceed to deployment**
-   - Merge `a09e6ed` (already on `main`); ledger `deferred-work.md` DW-5/DW-10 `done 2026-09-01` with `resolution-undo: 6f4ef234…` is the source of truth; `sprint-status.yaml` remains orchestrator-owned (not written by this workflow).
-   - Validate with smoke `npm --prefix triade test -- __tests__/ui/layout.test.ts` 18/18 + `npm --prefix triade exec -- tsx --test _bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts` 19/19 + `e2e umbrella` 7/7 + `npx tsc --noEmit` clean.
+   - Merge hygiene (engine byte-identical, ledger `deferred-work.md` `DW-49/50` `open→done` with `resolution-undo` hash preserved)
+   - Validate with `npm --prefix triade test` (pipeline 7 + gateway 16 + umbrella 6) and `npx tsc --noEmit` both tsconfigs
+   - Monitor `package.json` glob: `rg benchmarks token 1` and `rg test not containing benchmarks`
 
 2. **Post-Deployment Monitoring**
-   - No new layout metric beyond existing degenerate-clamp `boardSize:0`; `getBandTop` helper drift caught by `rg -n "getBandTop"` 5-hit allowlist in PR.
+
+   - `gesture.ts` guard-order: any future busy/success/NaN/type-gate change must preserve `!busy → success → isFinite → typeof → resolve → try` order
+   - `ci.yml` 2-job shape: any future job rename must keep `engine-test-and-benchmark` byte-identical for branch protection
+   - `ledger` 64-hex reversibility: any reopen of `DW-49/50` must keep `facfde462834d7761c72189990cd308263bb12d1d706a13cdb222057e454067f`
 
 3. **Success Criteria**
-   - `boardSize` never `NaN` for any `width/height/insets` including `NaN/Infinity` (guard `boardSize:0` finite) ✅
-   - Finite containers byte-identical to pre-change golden `382/688/452` and `358/310` ✅
-   - `App.tsx` + `Hud.tsx` band heights single helper `getBandTop` with 0 duplicated formula ✅
+
+   - `pipeline 7/7 + gateway 16/16 + umbrella 6/6 + ATDD 19 dormant (19/19 when activated)` stay green
+   - `rg` gates (`handleSwipe` 1 def, `SWIPE_THRESHOLD` 1 def, `benchmarks` token 1, `engine-test-and-benchmark` 1, `npm run benchmark` 1) stay `==` expected counts
 
 ---
 
@@ -693,18 +790,20 @@ All P0 criteria met with 100% coverage (4/4 ACs) and 100% pass rates across crit
 
 **Immediate Actions** (next 24-48 hours):
 
-1. Activate ATDD scaffolds optionally: flip `triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts` 20 `it.skip → it` and re-run host gate (expected 64/64 pass, no code change).
-2. Keep deferred ledger closed: DW-5/DW-10 remain `done 2026-09-01` with same `resolution-undo` hash; any reopen must preserve the hash or the undo trail is invalid.
+1. Merge `dw-ci-gesture-wiring-docs` (sweep bundle) — `git diff --stat` shows `package.json + ci.yml + gesture.ts + App.tsx + pipeline + deferred-work.md` only + spec untracked, no `sprint-status.yaml` write
+2. Close `nfr-assess` follow-on (planned thresholds already in test-design; no invented thresholds)
+3. Leave ATDD `it.skip` dormant in repo; activate one-at-a-time per dev workflow when needed (`sed 's/it.skip/it/g'` → 19 pass already GREEN)
 
 **Follow-up Actions** (next milestone/release):
 
-1. Preserve early-guard order: `Number.isFinite` guard must stay first statement in `layoutFor` before `isLandscape`/`availWidth`; a future edit moving it after would leak `NaN` — caught by `rg -n "Number.isFinite"` 6-field grep gate.
+1. Monitor `gesture.ts` guard-order `rg guardOrderIsIncreasing` — only `gesture.ts` predicate, not `swipe.ts`
+2. Track `handleSwipe 10k× <80ms` — O(1) predicate, latency only on swipe event per R-008
 
 **Stakeholder Communication**:
 
-- Notify PM: `dw-layout-band-dedup-and-guard` PASS — all 4 ACs + 5 P1 + 3 P2 + 2 P3 pinned, ledger closed, `sprint-status.yaml` untouched, tsc clean, deterministic host gate 46/46 active pass.
-- Notify SM: No `sprint-status.yaml` edit made by this workflow (orchestrator-owned per prompt).
-- Notify FE lead: Single-helper invariant (`getBandTop` 1 export + 3 uses) and 6-field guard order are PR gates; residual `getBandTop` NaN→NaN is doc-only.
+- Notify PM: `PASS — 22/22 FULL (P0 7/7, P1 7/7, P2 5/5, P3 3/3), 29/29 active pass (48 with dormant 19/19), no blocker, ledger DW-49/50 done with 64-hex`
+- Notify SM: same
+- Notify DEV lead: `gesture.ts:19-38 handleSwipe + 40-48 handleGestureEnd + pipeline import seam — engine byte-identical; tsc both clean`
 
 ---
 
@@ -712,8 +811,9 @@ All P0 criteria met with 100% coverage (4/4 ACs) and 100% pass rates across crit
 
 ```yaml
 traceability_and_gate:
+  # Phase 1: Traceability
   traceability:
-    story_id: "dw-layout-band-dedup-and-guard"
+    story_id: "dw-ci-gesture-wiring-docs"
     date: "2026-09-02"
     coverage:
       overall: 100%
@@ -727,14 +827,15 @@ traceability_and_gate:
       medium: 0
       low: 0
     quality:
-      passing_tests: 46
-      total_tests: 64
-      blocker_issues: 18
+      passing_tests: 29
+      total_tests: 48
+      blocker_issues: 0
       warning_issues: 0
     recommendations:
-      - "Activate ATDD scaffolds it.skip → it for defense-in-depth (20 scaffolds)"
-      - "Keep grep gates in CI for single-helper invariant"
+      - "No blocker — merge eligible"
+      - "Monitor R-001/R-003 guard-order + single-helper + ledger facfde46"
 
+  # Phase 2: Gate Decision
   gate_decision:
     decision: "PASS"
     gate_type: "story"
@@ -752,29 +853,35 @@ traceability_and_gate:
     thresholds:
       min_p0_coverage: 100
       min_p0_pass_rate: 100
-      min_p1_coverage: 80
+      min_p1_coverage: 90
       min_p1_pass_rate: 95
-      min_overall_pass_rate: 90
+      min_overall_pass_rate: 95
       min_coverage: 80
     evidence:
-      test_results: "npm --prefix triade test -- __tests__/ui/layout.test.ts 18/18 + api gateway 19/19 + e2e umbrella 7/7 + atdd 0/20 active (20 skipped)"
-      traceability: "_bmad-output/test-artifacts/traceability/coverage-matrix-dw-layout-band-dedup-and-guard.json"
-      nfr_assessment: "_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md#NFR Planning"
-      code_coverage: "layout.ts 62 LOC 100% branch via host"
-    next_steps: "Proceed to deployment; ledger DW-5/DW-10 done with 64-hex undo; keep grep gates"
-    waiver: null
+      test_results: "local triade pipeline 7/7 + gateway 16/16 + umbrella 6/6 + ATDD 19 dormant (19/19 when activated) + benchmark 6/6 separate"
+      traceability: "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-ci-gesture-wiring-docs.md"
+      nfr_assessment: "test-design-dw-ci-gesture-wiring-docs.md Section NFR Planning (planned, not yet nfr-assess)"
+      code_coverage: "not_instrumented"
+    next_steps: "Merge hygiene; run nfr-assess follow-on; keep ATDD dormant"
+    waiver: # Only if WAIVED
+      reason: ""
+      approver: ""
+      expiry: ""
+      remediation_due: ""
 ```
 
 ---
 
 ## Related Artifacts
 
-- **Story File:** `_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md`
-- **Test Design:** `_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md`
-- **Tech Spec:** `triade/src/ui/layout.ts:33 getBandTop + :37 guard`
-- **Test Results:** `triade/__tests__/ui/layout.test.ts` 18/18, `_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts` 19/19, `_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts` 7/7, `triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts` 20 skipped
-- **NFR Evidence Audit:** `npx tsc --noEmit` clean both configs
-- **Test Files:** `triade/__tests__/ui/layout.test.ts`, `triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts`, `_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts`, `_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts`, `_bmad-output/test-artifacts/fixtures/layout-band-dedup-guard-fixtures.ts`
+- **Story File:** `_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md`
+- **Test Design:** `_bmad-output/test-artifacts/test-design-dw-ci-gesture-wiring-docs.md` (canonical) + `_bmad-output/test-artifacts/test-design/test-design-dw-ci-gesture-wiring-docs.md` (mirror)
+- **Tech Spec:** `_bmad-output/implementation-artifacts/spec-ci-gesture-wiring-docs.md` (intent/boundaries/I-O 7 rows, 5 ACs)
+- **Test Results:** `triade/__tests__/ui/gesture-pipeline.test.ts` (7 pass), `triade/__tests__/ui/ci-gesture-wiring-docs.atdd.test.ts` (19 skip dormant → 19 pass when activated, 127ms), `_bmad-output/test-artifacts/tests/api/ci-gesture-wiring-docs.gateway.spec.ts` (16 pass), `tests/e2e/ci-gesture-wiring-docs.umbrella.spec.ts` (6 pass), `triade/__tests__/ui/swipe.test.ts` (threshold), `triade/benchmarks` 6 benches
+- **NFR Evidence Audit:** `test-design-dw-ci-gesture-wiring-docs.md` Section NFR Planning (reliability never-throw, single-source maintainability, O(1) perf, ledger 64-hex) — full `nfr-assess` follow-on planned
+- **Test Files:** `_bmad-output/test-artifacts/tests/api` + `tests/e2e` + `fixtures/ci-gesture-wiring-docs-fixtures.ts`
+- **Ledger:** `_bmad-output/implementation-artifacts/deferred-work.md` DW-49/50 `done 2026-09-02` + `resolution-undo: facfde46…` 64-hex (2 hits)
+- **Coverage Matrix:** `_bmad-output/test-artifacts/traceability/coverage-matrix-dw-ci-gesture-wiring-docs.json`
 
 ---
 
@@ -798,7 +905,7 @@ traceability_and_gate:
 
 **Next Steps:**
 
-- If PASS ✅: Proceed to deployment
+- If PASS ✅: Proceed to deployment (merge hygiene; `sprint-status.yaml` not written per prompt, orchestrator-owned)
 - If CONCERNS ⚠️: Deploy with monitoring, create remediation backlog
 - If FAIL ❌: Block deployment, fix critical issues, re-run workflow
 - If WAIVED 🔓: Deploy with business approval and aggressive monitoring

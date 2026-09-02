@@ -27,10 +27,31 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
-      - name: Run tests + deterministic benchmark gate (tsx + react-native stub)
-        run: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test
+      - name: Run tests (benchmarks excluded — see benchmark job)
+        run: npm test
 
       - name: Coverage report (informational — never gates)
-        run: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**' --test-coverage-include='src/ui/**'
+        run: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test "__tests__/**/*.test.ts" --experimental-test-coverage --test-coverage-include='src/engine/**' --test-coverage-include='src/game/**' --test-coverage-include='src/render/**' --test-coverage-include='src/services/**' --test-coverage-include='src/ui/**'
         continue-on-error: true
+
+  benchmark:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: triade
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: triade/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run benchmark gate (timing-sensitive, separate from default test)
+        run: npm run benchmark
 

@@ -29,7 +29,8 @@ import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
 import { layoutFor, getBandTop } from './src/ui/layout.ts';
-import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
+import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
+import { handleGestureEnd } from './src/ui/gesture.ts';
 import { Hud } from './src/ui/Hud';
 import { laneFromIndex, profileForLaneId } from './src/game/lanes.ts';
 import {
@@ -800,10 +801,7 @@ function AppContent() {
         .activeOffsetY([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
         .runOnJS(true)
         .onEnd((event, success) => {
-          if (busyRef.current) return;
-          if (!success) return;
-          const dir = resolveSwipeDirection({ dx: event.translationX, dy: event.translationY });
-          if (dir) doMoveRef.current(dir);
+          handleGestureEnd(event, success, busyRef, (dir) => doMoveRef.current(dir));
         }),
     [],
   );
