@@ -397,7 +397,9 @@ resolution: CLOSED by story 2.6: pickCombined builds [FIXED_WEIGHTS[1], FIXED_WE
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-3-pot-tierizado-por-teto (2026-08-21)"), 2026-09-01
 location: pot.test.ts
 reason: Source-text-coupled purity test (`readFileSync` + import-specifier/export regex in `pot.test.ts`) is brittle under file moves/reformats. Documented ATDD purity/`spawnConfig`-keying check; revisit if it becomes a maintenance burden.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-purity-and-weight-doc-hardening
+resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c 2026-09-01 7374617475733a206f70656e
 
 ### DW-55: `pickIndex` lets NaN rolls through both clamps (`NaN < 0` and `NaN >= len` both false) → `NaN` index.
 
@@ -419,7 +421,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-22)"), 2026-09-01
 location: adaptive-spawn-integration.test.ts
 reason: Statistical gates in `adaptive-spawn-integration.test.ts` use fixed per-test seeds (AC2 uniformity `0xc31` at N=15000, ±2% absolute ≈ ~10σ; AC7 session `0x26c6`; ceiling-ordering derived from `0x51ce + ceiling`). Deterministic tripwires today, but brittle to any future seed rotation or rng switch; document the σ budget next time these tests are touched. (Numbers corrected by the third-pass review 2026-08-23: previously said "±2% at N=10k, ~4–5σ". In that same pass the AC7 frequency gates were switched to sigma-scaled 5σ bounds — see sigmaBound in the test file — eliminating the seed-starvation/knife-edge coupling for those specific gates; AC2 and the aggregate 40/40/20 window remain absolute.)
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-purity-and-weight-doc-hardening
+resolution-undo: 9a5dc3ebc3271f91a92a90436074f7eef0b497f2dcd57ca181503f028285fe7c 2026-09-01 7374617475733a206f70656e
 
 ### DW-58: Circular-oracle risk in rewritten `pot.test.ts`: cumulative bands are recomputed from the same formula as the implementation, so a consistently-wrong formula passes both sides; only the hand-computed inline boundary comments are independent. Fix = hand-computed expected-value table (triade/__tests__/engine/pot.test.ts).
 
