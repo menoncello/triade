@@ -5,7 +5,8 @@
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-4-curva-halving-decay-normalizada (2026-08-21)"), 2026-09-01
 location: spawn.ts:18-21
 reason: `weightedValue` retorna `undefined` para pot vazio — a composição em `spawn.ts:18-21` guarda só `pot.length === 1`; se `potForTier` retornasse `[]`, `normalizeTo(POT_WEIGHT, [])` → `[]` → `weightedPicker([], rng)` → `0` → `pot[0]` → `undefined` silencioso de função tipada `number`. Inalcançável hoje: `potForTier` sempre retorna ≥ 1 elemento (pot.ts:8); caminho antigo via `pickIndex` igualmente quebrava em pot vazio. Pre-existing, latente para callers futuros de `potForTier`.
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/src/engine/core/spawn.ts:16-22 pickCombined handles pot=[] via FIXED_WEIGHTS bands so weightedValue never returns undefined; pot.ts:7-8 always >=1
 
 ### DW-2: Preview placeholder (76×76) overlaps the centered "TEMP move harness" hint text on devices with `insets.bottom === 0` (visual only — card is `pointerEvents="none"`) (`triade/src/ui/Hud.tsx:53`, `triade/App.tsx:131`). Temp harness is replaced by real swipe input in story 1.6.
 
@@ -127,14 +128,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci (2026-08-10)"), 2026-09-01
 location: n/a
 reason: pickIndex lets NaN slip through both clamps and crashes spawnTile
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/src/engine/core/spawn.ts:45 Number.isFinite(idx) guard degrades NaN to 0 — fixed in story 2.6
 
 ### DW-19: pickIndex returns -1 when len===0
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: pickIndex returns -1 when len===0
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/src/engine/core/spawn.ts:40 len<=0 return 0 replaces former return -1 — fixed in story 2.6
 
 ### DW-20: shiftLine/move/boardFromLines assume 4x4 and crash on shorter input
 
@@ -219,7 +222,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13)"), 2026-09-01
 location: triade/__tests__/engine/engine.purity.test.ts:12-16
 reason: Purity scan blind spots — `PURITY_FILES` is a hand-maintained explicit list (a new pure file in `src/render` silently escapes the ADR-01/05 scan until edited); `FORBIDDEN_PREFIXES` misses a hypothetical bare `reanimated`/`skia` import (`triade/__tests__/engine/engine.purity.test.ts:12-16`). Current files are covered; maintenance hardening only.
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/__tests__/engine/engine.purity.test.ts:7-27 PURITY_ROOTS auto-scan via collectTsFiles plus FORBIDDEN_PREFIXES includes bare reanimated/skia — blind spots closed
 
 ### DW-32: AC-5 (60 FPS / 10-min session) has no completed rendering-side evidence — only the planner micro-benchmark exists; the simulator/device frame-rate reading stays open as "Manual validation remaining" (project rule: Skia animation is manual validation; informative only). Trigger to close: run the temporary move harness in App.tsx on the iOS simulator/device and record fps·p99.
 
@@ -332,7 +336,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)"), 2026-09-01
 location: triade/src/engine/config/spawnConfig.ts:3
 reason: `Readonly<Record<1|2, number>>` é somente compile-time; o objeto é mutável em runtime (sem `Object.freeze`) (`triade/src/engine/config/spawnConfig.ts:3`). Hardening trivial; revisitar quando 2.5 tornar `spawnConfig` configurável.
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/src/engine/config/spawnConfig.ts:13,17 Object.freeze on FIXED_WEIGHTS and POT_CURVE — runtime mutability hardened
 
 ### DW-48: Fallback de `rngOf` retorna 0.5 para sempre — um rng sub-provisionado num teste de `spawnTile` produz silenciosamente valor 2 em vez de falhar rápido (`triade/test-utils/helpers.ts:17-23`). Pre-existente ao diff.
 
@@ -413,7 +418,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: pot.test.ts
 reason: Circular-oracle risk in rewritten `pot.test.ts`: cumulative bands are recomputed from the same formula as the implementation, so a consistently-wrong formula passes both sides; only the hand-computed inline boundary comments are independent. Fix = hand-computed expected-value table (triade/__tests__/engine/pot.test.ts).
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/__tests__/engine/pot.test.ts:48-64 hand-computed literal thresholds for weightedValue vs recomputed oracle — circular-oracle closed
 
 ### DW-59: `spyRng` in `adaptive-spawn-integration.test.ts` silently serves `0.5` forever once its supplied values are exhausted instead of throwing — a regression that over-draws can pass frequency-style assertions unnoticed; exact `calls` deep-equal pins cover the P0 paths (triade/__tests__/engine/adaptive-spawn-integration.test.ts:16-24).
 
@@ -484,7 +490,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-2-preview-card-no-hud-60-40-nas-duas-pistas (2026-08-24)"), 2026-09-01
 location: n/a
 reason: `contiguousWindowContaining` returns `[value]` for any out-of-ladder value, which `PreviewCard` renders identically to an `exact` (single-element range shows as plain `"99"`) — the defensive "range" is indistinguishable from exact in the UI. Content/ambiguity semantics ("always contains truth", N3) are owned by Story 7.3 — deferred.
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/src/game/preview.ts:62-65 ambiguousRange now returns centered 3-window slice not defensive [value] — indistinguishable UI fixed
 
 ### DW-69: `Hud` throws if the `previews` prop is omitted by a caller (`previews.clean`/`previews.accelerated` accessed unconditionally). No current caller omits it; pre-existing robustness gap — deferred.
 
@@ -582,7 +589,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-1-overlay-de-game-over-com-stats-imediatos (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: tsconfig.test.js
 reason: Facade `rn-stub` + `tsconfig.test.json` fecha waiver TS5101 de duas camadas (`baseUrl` deprecation + 3 erros de tipagem `useWindowDimensions`/`GestureHandlerRootViewProps`/`Platform`) — `triade/test-utils/rn-stub.ts` agora exporta `useWindowDimensions`/`Platform`/`Dimensions`/`StyleSheet.flatten`/`ViewStyle` e `triade/tsconfig.test.json` adiciona `ignoreDeprecations: "6.0"`; `npx tsc --noEmit` e `-p tsconfig.test.json` ambos clean live 2026-08-26. Mudança fora do escopo 6.1 mas correta; defer como hygiene fechada.
-status: open
+status: done 2026-09-01
+resolution: already resolved: triade/test-utils/rn-stub.ts:80-114 exports useWindowDimensions/Platform/Dimensions plus triade/tsconfig.test.json:5 ignoreDeprecations 6.0 — both tsc clean since 2026-08-26
 
 ### DW-83: Testes 7.4 acoplados no mesmo branch: 4 pins de isolamento/snapshot/noop/direction-agnostic em `pending-spawn-contract.test.ts` + inclusão de `GameOverOverlay.tsx` no guard `ui.thinview.test.ts` — engine byte-identical, preview byte-identical; correto mas escopo cruzado com Epic 7, já deferido em `## Deferred from: code review of story 7-4...`.
 
