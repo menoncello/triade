@@ -28,7 +28,7 @@ import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
-import { layoutFor, SAFE_MARGIN } from './src/ui/layout.ts';
+import { layoutFor, getBandTop } from './src/ui/layout.ts';
 import { SWIPE_THRESHOLD, resolveSwipeDirection } from './src/ui/swipe.ts';
 import { Hud } from './src/ui/Hud';
 import { laneFromIndex, profileForLaneId } from './src/game/lanes.ts';
@@ -98,7 +98,7 @@ function AppContent() {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { boardSize, bandHeight, isLandscape } = layoutFor({ width, height, insets });
-  const bandTop = insets.top + SAFE_MARGIN + bandHeight;
+  const bandTop = getBandTop(insets, bandHeight);
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);

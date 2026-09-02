@@ -30,7 +30,21 @@ export interface LayoutResult {
   isLandscape: boolean;
 }
 
+export function getBandTop(insets: EdgeInsets, bandHeight: number): number {
+  return insets.top + SAFE_MARGIN + bandHeight;
+}
+
 export function layoutFor({ width, height, insets }: LayoutInput): LayoutResult {
+  if (
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    !Number.isFinite(insets.top) ||
+    !Number.isFinite(insets.bottom) ||
+    !Number.isFinite(insets.left) ||
+    !Number.isFinite(insets.right)
+  ) {
+    return { boardSize: 0, bandHeight: PORTRAIT_BAND_HEIGHT, isLandscape: false };
+  }
   const landscape = isLandscape(width, height);
   const bandHeight = landscape ? LANDSCAPE_BAND_HEIGHT : PORTRAIT_BAND_HEIGHT;
   const availWidth = width - insets.left - insets.right - 2 * SAFE_MARGIN;

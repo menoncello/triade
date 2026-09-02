@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { HIT_TARGET, PauseButton } from './PauseButton';
-import { SAFE_MARGIN } from './layout';
+import { SAFE_MARGIN, getBandTop } from './layout';
 import type { EdgeInsets } from './layout';
 import { PreviewCard, type Preview } from './PreviewCard.tsx';
 
@@ -64,7 +64,7 @@ export function Hud({
   if (isLandscape) {
     return (
       <View pointerEvents="box-none" style={styles.overlay}>
-        <View style={[styles.landscapeBand, { height: topPad + bandHeight, paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
+        <View style={[styles.landscapeBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
           <View style={styles.landscapeLeft}>
             <Text style={styles.scoreLandscape} numberOfLines={1}>
               {score}
@@ -110,7 +110,7 @@ export function Hud({
 
   return (
     <View pointerEvents="box-none" style={styles.overlay}>
-      <View style={[styles.portraitBand, { height: topPad + bandHeight, paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
+      <View style={[styles.portraitBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
         <View style={styles.pauseSlot} />
         <View style={styles.scoreWrap}>
           <Text style={styles.scorePortrait} numberOfLines={1}>

@@ -1,10 +1,10 @@
 {
   "phase": "PHASE_1_COMPLETE",
-  "generated_at": "2026-09-02T00:22:19.807320+00:00",
+  "generated_at": "2026-09-02T01:56:15.027408+00:00",
   "trace_target": {
     "type": "story",
-    "id": "dw-test-scanner-helpers-hardening",
-    "label": "dw-test-scanner-helpers-hardening \u2014 Test-tooling scanner & RNG helpers hardening"
+    "id": "dw-layout-band-dedup-and-guard",
+    "label": "dw-layout-band-dedup-and-guard \u2014 layoutFor NaN/Infinity guard + band-height dedup (DW-5/DW-10)"
   },
   "collection_mode": "contract_static",
   "allow_gate": true,
@@ -14,52 +14,57 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-test-scanner-helpers-hardening.md",
-      "_bmad-output/test-artifacts/test-design-dw-test-scanner-helpers-hardening.md",
-      "_bmad-output/test-artifacts/atdd-checklist-dw-test-scanner-helpers-hardening.md",
-      "triade/test-utils/helpers.ts",
-      "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
-      "triade/__tests__/engine/game.test.ts",
-      "triade/__tests__/render/transitionPlan.test.ts",
-      "triade/__tests__/ui/gesture-pipeline.test.ts",
-      "triade/__tests__/engine/engine.purity.test.ts",
-      "triade/__tests__/ui/ui.norolls.test.ts",
-      "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-      "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-      "_bmad-output/test-artifacts/fixtures/helpers-hardening-fixtures.ts"
+      "_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md",
+      "triade/src/ui/layout.ts",
+      "triade/App.tsx",
+      "triade/src/ui/Hud.tsx",
+      "triade/__tests__/ui/layout.test.ts",
+      "_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-5/DW-10",
+      "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+      "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
   },
   "requirements": [
     {
-      "id": "DW-AC-01",
-      "description": "rngOf throws on exhaustion with 'exhausted after N scripted draw(s)' (no silent 0.5, DW-48)",
+      "id": "AC-01",
+      "description": "NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite, no NaN propagation, no throw (DW-5, I/O NaN width / Infinity insets.top)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-01",
-          "title": "[P0-01] AC rngOf throws",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 44,
+          "title": "[P0-01] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 37,
           "level": "unit",
           "status": "skipped",
-          "skip_reason": "RED-phase scaffold it.skip \u2014 activate to green"
+          "skip_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway"
         },
         {
-          "id": "P0-API-01",
-          "title": "[P0] rngOf throws",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 62,
+          "id": "P0-API-guard-6field",
+          "title": "[P0] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 63,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "game-3draw",
-          "title": "adaptive-spawn spy hardened",
-          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
-          "line": 16,
+          "id": "P0-API-guard-extra",
+          "title": "[P0] guard also covers -Infinity and each inset edge Infinity",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 85,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "layout-sweep-finite",
+          "title": "all layoutFor outputs are finite and board never negative (sweep)",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 212,
           "level": "unit",
           "status": "active"
         }
@@ -68,170 +73,112 @@
       "recommendation": "",
       "heuristics": {
         "endpoint": "present",
-        "auth": "present",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-AC-02",
-      "description": "spyRng (shared helpers.ts) throws on exhaustion + records calls exactly (DW-48)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-02",
-          "title": "[P0-02] AC spyRng shared throws",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 55,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-API-02",
-          "title": "[P0] spyRng shared throws",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 70,
-          "level": "api",
-          "status": "active"
-        },
-        {
-          "id": "P1-API-calls",
-          "title": "[P1] spyRng calls exact",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 176,
-          "level": "api",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-AC-03",
-      "description": "spyRng local in adaptive-spawn-integration.test.ts throws (no 0.5 fallback, DW-59)",
+      "id": "AC-02",
+      "description": "Finite byte-identical \u2014 portrait 390x844 width-bounded 358 / landscape 844x390 height-bounded 310 / golden 414x896\u2192382 1024x768\u2192688 500x580\u2192452 + maximized square 96/48 (DW-5 finite path)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-03",
-          "title": "[P0-03] AC local spyRng throws",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 66,
+          "title": "[P0-03] AC finite portrait 390\u00d7844 byte-identical",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 73,
           "level": "unit",
-          "status": "skipped"
+          "status": "skipped",
+          "skip_reason": "RED-phase scaffold"
         },
-        {
-          "id": "P0-API-03",
-          "title": "local spyRng file scan",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 202,
-          "level": "api",
-          "status": "active"
-        },
-        {
-          "id": "adaptive-spy",
-          "title": "local spyRng hardened",
-          "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
-          "line": 16,
-          "level": "unit",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-AC-04",
-      "description": "stripComments preserves string // and /* (comment-only stripping, blankStrings=false, DW-3)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
         {
           "id": "P0-04",
-          "title": "[P0-04] AC stripComments preserves // and /*",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 80,
+          "title": "[P0-04] AC finite landscape 844\u00d7390 byte-identical",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 82,
           "level": "unit",
           "status": "skipped"
         },
-        {
-          "id": "P0-API-04",
-          "title": "[P0] stripComments preserves string // and /*",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 79,
-          "level": "api",
-          "status": "active"
-        },
-        {
-          "id": "E2E-01",
-          "title": "[P1] E2E-01 scanner tripwire preserved",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 190,
-          "level": "e2e",
-          "status": "active"
-        },
-        {
-          "id": "engine-purity",
-          "title": "engine.purity ADR-01 green",
-          "file": "triade/__tests__/engine/engine.purity.test.ts",
-          "line": 12,
-          "level": "unit",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-AC-05",
-      "description": "stripComments escaped-quote edge + not blanking strings (DW-3, R-002/R-009)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
         {
           "id": "P0-05",
-          "title": "[P0-05] AC stripComments escaped-quote edge",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 102,
+          "title": "[P0-05] AC finite golden anchors byte-identical",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 94,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-API-05",
-          "title": "[P0] stripComments escaped-quote",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 98,
+          "id": "P0-API-portrait",
+          "title": "[P0] finite portrait 390\u00d7844 byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 101,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-05-esc",
-          "title": "[P2] E2E-05 escaped-quote pin",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 243,
+          "id": "P0-API-landscape",
+          "title": "[P0] finite landscape 844\u00d7390 byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 110,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-API-golden",
+          "title": "[P0] finite golden anchors byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 120,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "layout-portrait",
+          "title": "layoutFor on a portrait phone 390x844 reports isLandscape=false",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 41,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-landscape",
+          "title": "layoutFor on a landscape phone 844x390 reports isLandscape=true",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-golden-382-688",
+          "title": "golden anchors: 414x896 portrait and 1024x768 landscape",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 114,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-golden-452",
+          "title": "golden anchor: 500x580 portrait is height-bounded",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 140,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-sweep",
+          "title": "boardSize is the maximized square for a sweep of containers",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 90,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "E2E-02",
+          "title": "[P1][E2E-02] finite byte-identical through App bandTop + Hud heights",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 191,
           "level": "e2e",
           "status": "active"
         }
@@ -240,48 +187,56 @@
       "recommendation": "",
       "heuristics": {
         "endpoint": "present",
-        "auth": "present",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-AC-06",
-      "description": "gameState defaults via defaultPendingSpawn() factory (fresh object, single literal, DW-60)",
+      "id": "AC-03",
+      "description": "Degenerate insets exceed container clamp to 0 and stay finite \u2014 layout.test.ts:232 defensive clamp path vs guard Infinity path both collapse to 0 finite (DW-5 degenerate)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-06",
-          "title": "[P0-06] AC gameState factory",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 114,
+          "title": "[P0-06] AC degenerate-clamp layout.test.ts:232",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 100,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-API-06",
-          "title": "[P0] gameState factory",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 108,
+          "id": "P0-API-degenerate",
+          "title": "[P0] degenerate-clamp layout.test.ts:232 \u2014 insets exceed container clamps to 0",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 132,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "P1-04",
-          "title": "[P1-04] explicit pendingSpawn",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 198,
+          "id": "layout-degenerate",
+          "title": "degenerate insets that exceed the container clamp the board to 0",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 232,
           "level": "unit",
-          "status": "skipped"
+          "status": "active"
         },
         {
-          "id": "E2E-03",
-          "title": "[P1] E2E-03 ledger + factory wiring",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 216,
-          "level": "e2e",
+          "id": "layout-finite-sweep",
+          "title": "all layoutFor outputs are finite and board never negative",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 212,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-small-screen",
+          "title": "small screen (320x480) yields a positive board that never overlaps HUD",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 188,
+          "level": "unit",
           "status": "active"
         }
       ],
@@ -289,39 +244,71 @@
       "recommendation": "",
       "heuristics": {
         "endpoint": "present",
-        "auth": "present",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-AC-07",
-      "description": "stripCommentsAndStrings doc Known limitation \u2014 regex literals mode-desync false NEGATIVE (DW-66, R-003)",
+      "id": "AC-04",
+      "description": "Band helper single-source dedup \u2014 getBandTop(insets,bandHeight)=insets.top+SAFE_MARGIN+bandHeight exported from layout.ts; App.tsx bandTop + Hud.tsx 2\u00d7 height use helper, no duplicated formula, SAFE_MARGIN=16 single constant (DW-10)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-07",
-          "title": "[P0-07] AC regex doc",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 132,
+          "title": "[P0-07] AC getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 110,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-API-07",
-          "title": "[P0] regex doc",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 124,
+          "id": "P0-08",
+          "title": "[P0-08] AC getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 128,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-API-dedup",
+          "title": "[P0] getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 143,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-06",
-          "title": "[P2] E2E-06 regex residual",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 260,
+          "id": "P0-API-pure",
+          "title": "[P0] getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 161,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-API-early-guard",
+          "title": "[P0] early-guard invariant \u2014 Number.isFinite guard is first statement",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 170,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "layout-SAFE-MARGIN",
+          "title": "SAFE_MARGIN is exactly 16pt",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 183,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "E2E-05",
+          "title": "[P2][E2E-05] static allowlists \u2014 single constant/helper/no duplicate/early guard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 225,
           "level": "e2e",
           "status": "active"
         }
@@ -330,293 +317,267 @@
       "recommendation": "",
       "heuristics": {
         "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-AC-08",
-      "description": "scanner guards stay green on clean codebase (engine.purity + ui.norolls, delegation no naive fallback)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-08",
-          "title": "[P0-08] scanner guards green",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 148,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-API-08",
-          "title": "[P0] scanner guards green",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 137,
-          "level": "api",
-          "status": "active"
-        },
-        {
-          "id": "E2E-01-again",
-          "title": "engine.purity + ui.norolls suites",
-          "file": "triade/__tests__/ui/ui.norolls.test.ts",
-          "line": 99,
-          "level": "unit",
-          "status": "active"
-        },
-        {
-          "id": "laneSelect",
-          "title": "laneSelect + app.restart + gameOverOverlay",
-          "file": "triade/__tests__/engine/engine.purity.test.ts",
-          "line": 12,
-          "level": "unit",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-P1-01",
-      "description": "effective move draw-budget 3: move(...,rngOf(0,0,0.5)) succeeds, rngOf(0,0) throws (R-001/R-004)",
+      "id": "P1-01",
+      "description": "Band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses 96>48, board dominates thin band at 2000\u00d7200, fits pause hit target \u226544 (D-006 chrome)",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-01",
-          "title": "[P1-01] effective move 3-draw",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 164,
+          "title": "[P1-01] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 138,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-API-09",
-          "title": "[P1] effective move 3-draw",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 160,
+          "id": "P1-API-band-pins",
+          "title": "[P1] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 188,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-02",
-          "title": "[P1] E2E-02 draw-budget",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 204,
-          "level": "e2e",
+          "id": "layout-band-pinned",
+          "title": "band heights are pinned exactly: portrait 96 and landscape 48",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 126,
+          "level": "unit",
           "status": "active"
         },
         {
-          "id": "game-move",
-          "title": "game.test.ts 20-site migration 3-draw",
-          "file": "triade/__tests__/engine/game.test.ts",
-          "line": 32,
+          "id": "layout-collapse",
+          "title": "the landscape HUD collapses: bandHeight(landscape) strictly smaller",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 76,
           "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-extreme",
+          "title": "extreme landscape aspect (2000x200) yields a positive board with thin band",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 202,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "E2E-01",
+          "title": "[P1][E2E-01] chrome band 96/48 pinned and board dominates thin band",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 178,
+          "level": "e2e",
           "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_state": "present"
       }
     },
     {
-      "id": "DW-P1-02",
-      "description": "newGame 20-draw budget: rngOf(0,0, 9\u00d70, 9\u00d70.5) \u2192 9 tiles, short throws (R-006)",
+      "id": "P1-02",
+      "description": "isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts width>height, square\u2192portrait, exactly one isLandscape() delegation in layout.ts",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-02",
-          "title": "[P1-02] newGame 20-draw",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 176,
+          "title": "[P1-02] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 148,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-API-10",
-          "title": "[P1] newGame 20-draw",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 168,
+          "id": "P1-API-isLandscape",
+          "title": "[P1] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 198,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-02b",
-          "title": "E2E-02 newGame part",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 204,
-          "level": "e2e",
+          "id": "layout-isLandscape",
+          "title": "layoutFor.isLandscape agrees with isLandscape(width, height) \u2014 single source",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 246,
+          "level": "unit",
           "status": "active"
         },
         {
-          "id": "game-new",
-          "title": "game.test.ts newGame 20-draw",
-          "file": "triade/__tests__/engine/game.test.ts",
-          "line": 9,
-          "level": "unit",
+          "id": "E2E-04",
+          "title": "[P1][E2E-04] orientation delegation end-to-end",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 211,
+          "level": "e2e",
           "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P1-03",
-      "description": "extractSpecifiers / extractNamedImports still see real specifiers after hardening (R-002)",
+      "id": "P1-03",
+      "description": "Per-edge insets bind asymmetrically \u2014 horizontal shrinks width-bounded 390\u00d7844 358\u2192338, vertical shrinks height-bounded 500\u00d7580 452\u2192371, SAFE_MARGIN 16 single constant",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-03",
-          "title": "[P1-03] extractSpecifiers",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 187,
+          "title": "[P1-03] per-edge insets bind asymmetrically",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 166,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-API-08b",
-          "title": "[P0] extractSpecifiers",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 145,
+          "id": "P1-API-asymmetry",
+          "title": "[P1] per-edge insets bind asymmetrically \u2014 horizontal vs vertical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 216,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-01-spec",
-          "title": "E2E-01 specifiers",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 190,
-          "level": "e2e",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-P1-04",
-      "description": "gameState explicit pendingSpawn drives realistic flow (tiered 9 vs default 1, R-010)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-04",
-          "title": "[P1-04] explicit pendingSpawn",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 198,
+          "id": "layout-asymmetry",
+          "title": "per-edge insets bind asymmetrically: vertical shrinks height-bounded",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 267,
           "level": "unit",
-          "status": "skipped"
+          "status": "active"
         },
         {
-          "id": "E2E-03b",
-          "title": "E2E-03 explicit tiered",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 216,
-          "level": "e2e",
+          "id": "layout-board-bounds",
+          "title": "boardSize never exceeds safe-margin-bounded available width or height",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 159,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-API-SAFE-constant",
+          "title": "[P1] SAFE_MARGIN single-constant and getBandTop single-export invariant",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 229,
+          "level": "api",
           "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P1-05",
-      "description": "spyRng calls recording exact per draw (no drift, R-001)",
+      "id": "P1-04",
+      "description": "Finiteness sweep never-throw \u2014 all layoutFor outputs finite across sizes/insets, tsc clean both configs, engine.purity/ui.norolls stay green, tiny board positive finite",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-05",
-          "title": "[P1-05] spyRng calls exact",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 210,
+          "title": "[P1-05] finiteness sweep \u2014 all layoutFor outputs finite",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 191,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-API-11",
-          "title": "[P1] spyRng calls exact",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 176,
+          "id": "P1-API-finiteness",
+          "title": "[P1] finiteness sweep \u2014 all layoutFor outputs finite across sizes",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 242,
           "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "layout-finite",
+          "title": "all layoutFor outputs are finite and board never negative",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 212,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-floor",
+          "title": "min-tile floor (AC-1, UX-DR-18): landscape container that can fit floor keeps boardSize >= BOARD_SIZE_FLOOR",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 296,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "layout-floor-edge",
+          "title": "min-tile floor edge (AC-1): container too small to fit floor yields valid positive finite board",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 306,
+          "level": "unit",
           "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P1-06",
-      "description": "ledger DW-3/48/59/60/66 done with resolution-undo hash, sprint-status.yaml untouched (R-008)",
+      "id": "P1-05",
+      "description": "Ledger DW-5/DW-10 done with resolution-undo 64-hex 6f4ef234\u2026 + sprint-status.yaml untouched (orchestrator-owned, OPS R-008)",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-06",
-          "title": "[P1-06] ledger",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 221,
+          "title": "[P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 214,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-API-12",
-          "title": "[P1] ledger",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 187,
+          "id": "P1-API-ledger",
+          "title": "[P1] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status.yaml untouched",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 273,
           "level": "api",
           "status": "active"
         },
         {
-          "id": "E2E-03c",
-          "title": "E2E-03 ledger",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 216,
+          "id": "E2E-03",
+          "title": "[P1][E2E-03] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 202,
           "level": "e2e",
           "status": "active"
         }
@@ -624,40 +585,40 @@
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P2-01",
-      "description": "no 0.5 fallback literal scan in helpers.ts or local spy (R-001)",
+      "id": "P2-01",
+      "description": "Single helper allowlist \u2014 getBandTop 1 export + App 1\u00d7 + Hud 2\u00d7 height uses, SAFE_MARGIN single definition in layout.ts, isLandscape single call",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P2-01",
-          "title": "[P2-01] SCAN no 0.5 fallback",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 242,
+          "title": "[P2-01] SCAN single helper allowlist \u2014 getBandTop 1 export + 3 uses",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 230,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P2-API-13",
-          "title": "[P2] no 0.5 fallback",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 202,
+          "id": "P2-API-allowlist",
+          "title": "[P2] single helper allowlist \u2014 getBandTop 1 export + 3 height uses + no duplicate formula",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 289,
           "level": "api",
           "status": "active"
         },
         {
           "id": "E2E-05",
-          "title": "[P2] E2E-05 allowlists",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 243,
+          "title": "[P2][E2E-05] static allowlists \u2014 single constant/helper/no duplicate/early guard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 225,
           "level": "e2e",
           "status": "active"
         }
@@ -665,139 +626,130 @@
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P2-02",
-      "description": "single parser allowlist + length-preserving blank() (3-site, blankStrings split, R-002)",
+      "id": "P2-02",
+      "description": "No duplicate formula \u2014 App/Hud band height not via inline + SAFE_MARGIN, Hud keeps SAFE_MARGIN only for padding locals, topPad+bandHeight 0",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P2-02",
-          "title": "[P2-02] single parser",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 255,
+          "title": "[P2-02] SCAN no duplicate formula",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 241,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P2-API-14",
-          "title": "[P2] single parser",
-          "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-          "line": 210,
+          "id": "P2-API-no-dup",
+          "title": "[P2] no duplicate formula \u2014 App/Hud band height not via inline + SAFE_MARGIN for band",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 300,
           "level": "api",
           "status": "active"
-        },
-        {
-          "id": "E2E-05b",
-          "title": "E2E-05 parser",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 243,
-          "level": "e2e",
-          "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P2-03",
-      "description": "template interpolation ${} counted, over-brace not early-close (R-009)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-03",
-          "title": "[P2-03] template interp",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 263,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "E2E-05c",
-          "title": "E2E-05 template interp",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 243,
-          "level": "e2e",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "DW-P2-04",
-      "description": "quote-in-regex exploratory \u2014 no scanned file contains /'/ pattern (DW-66 residual complement, R-003)",
+      "id": "P2-03",
+      "description": "BOARD_SIZE_FLOOR 216 + floor-clamp availBoard < FLOOR ? availBoard : max(availBoard,FLOOR) + total-height invariant boardSize+bandHeight \u2264 availHeight (UX-DR-18)",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P2-04",
-          "title": "[P2-04] quote-in-regex exploratory",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 274,
+          "title": "[P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 261,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "E2E-06b",
-          "title": "E2E-06 exploratory",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 260,
+          "id": "P2-03",
+          "title": "[P2-03] SCAN early-guard invariant \u2014 Number.isFinite guard is first statement",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 250,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-API-floor",
+          "title": "[P2] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 310,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-API-total-height",
+          "title": "[P2] total-height invariant \u2014 boardSize + bandHeight does not exceed availHeight",
+          "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+          "line": 326,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "E2E-06",
+          "title": "[P2][E2E-06] floor + clamp seam",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 237,
           "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "layout-board-bounds",
+          "title": "boardSize never exceeds safe-margin-bounded available width or height",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 159,
+          "level": "unit",
           "status": "active"
         }
       ],
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P3-01",
-      "description": "cross-cutting concern absent in helpers (no music/RevenueCat/AdMob) \u2014 scope hygiene",
+      "id": "P3-01",
+      "description": "Exploratory residual \u2014 getBandTop({top:NaN},48)\u2192NaN pure arithmetic propagation is spec-allowed while layoutFor guard keeps bandHeight finite (R-006 residual)",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P3-01",
-          "title": "[P3-01] cross-cutting absent",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 282,
+          "title": "[P3-01] exploratory \u2014 getBandTop non-finite residual is pure arithmetic NaN\u2192NaN per spec",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 285,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "E2E-07-scope",
-          "title": "[P3] E2E-07 scope guard",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 269,
+          "id": "E2E-07",
+          "title": "[P3][E2E-07] residual getBandTop NaN\u2192NaN + O(1) bench <50 ms + no scope leakage",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 248,
           "level": "e2e",
           "status": "active"
         }
@@ -805,32 +757,32 @@
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     },
     {
-      "id": "DW-P3-02",
-      "description": "stripComments O(n) single-pass <500ms for 10k source (bench smoke, P3)",
+      "id": "P3-02",
+      "description": "Hygiene \u2014 layout scope stays pure (no RevenueCat/AdMob/music/bgm), O(1) <1ms per call 10k <80ms bench, never-throw helpers (R-002/R-003 perf/maintainability)",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P3-02",
-          "title": "[P3-02] bench",
-          "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-          "line": 286,
+          "title": "[P3-02] hygiene \u2014 layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms",
+          "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+          "line": 297,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "E2E-07-bench",
-          "title": "[P3] E2E-07 bench",
-          "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-          "line": 269,
+          "id": "E2E-07b",
+          "title": "[P3][E2E-07] residual getBandTop NaN\u2192NaN + O(1) bench <50 ms + no scope leakage (hygiene half)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+          "line": 248,
           "level": "e2e",
           "status": "active"
         }
@@ -838,34 +790,34 @@
       "gaps": [],
       "recommendation": "",
       "heuristics": {
-        "endpoint": "present",
-        "auth": "present",
-        "error_path": "present",
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
         "ui_journey": "not_applicable",
         "ui_state": "not_applicable"
       }
     }
   ],
   "coverage_statistics": {
-    "total_requirements": 20,
-    "fully_covered": 20,
+    "total_requirements": 14,
+    "fully_covered": 14,
     "partially_covered": 0,
     "uncovered": 0,
     "overall_coverage_percentage": 100,
     "priority_breakdown": {
       "P0": {
-        "total": 8,
-        "covered": 8,
+        "total": 4,
+        "covered": 4,
         "percentage": 100
       },
       "P1": {
-        "total": 6,
-        "covered": 6,
+        "total": 5,
+        "covered": 5,
         "percentage": 100
       },
       "P2": {
-        "total": 4,
-        "covered": 4,
+        "total": 3,
+        "covered": 3,
         "percentage": 100
       },
       "P3": {
@@ -899,27 +851,27 @@
   },
   "test_inventory": {
     "summary": {
-      "files": 7,
-      "cases": 58,
-      "skipped_cases": 20,
+      "files": 4,
+      "cases": 64,
+      "skipped_cases": 18,
       "fixme_cases": 0,
       "pending_cases": 0,
       "by_level": {
         "e2e": {
-          "tests": 15,
-          "criteria_covered": 15
+          "tests": 8,
+          "criteria_covered": 9
         },
         "api": {
-          "tests": 16,
-          "criteria_covered": 15
+          "tests": 19,
+          "criteria_covered": 12
         },
         "component": {
           "tests": 0,
           "criteria_covered": 0
         },
         "unit": {
-          "tests": 27,
-          "criteria_covered": 20
+          "tests": 37,
+          "criteria_covered": 14
         },
         "other": {
           "tests": 0,
@@ -930,21 +882,21 @@
     "tests": [
       {
         "id": "P0-01",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 44,
-        "title": "[P0-01] AC rngOf throws",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 37,
+        "title": "[P0-01] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
         "fixme": false,
         "pending": false,
-        "blocker_reason": "RED-phase scaffold it.skip \u2014 activate to green"
+        "blocker_reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway"
       },
       {
-        "id": "P0-API-01",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 62,
-        "title": "[P0] rngOf throws",
+        "id": "P0-API-guard-6field",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 63,
+        "title": "[P0] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -953,47 +905,23 @@
         "blocker_reason": ""
       },
       {
-        "id": "game-3draw",
-        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
-        "line": 16,
-        "title": "adaptive-spawn spy hardened",
+        "id": "P0-API-guard-extra",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 85,
+        "title": "[P0] guard also covers -Infinity and each inset edge Infinity",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-sweep-finite",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 212,
+        "title": "all layoutFor outputs are finite and board never negative (sweep)",
         "level": "unit",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P0-02",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 55,
-        "title": "[P0-02] AC spyRng shared throws",
-        "level": "unit",
-        "status": "skipped",
-        "skipped": true,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P0-API-02",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 70,
-        "title": "[P0] spyRng shared throws",
-        "level": "api",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P1-API-calls",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 176,
-        "title": "[P1] spyRng calls exact",
-        "level": "api",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1002,93 +930,33 @@
       },
       {
         "id": "P0-03",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 66,
-        "title": "[P0-03] AC local spyRng throws",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 73,
+        "title": "[P0-03] AC finite portrait 390\u00d7844 byte-identical",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
         "fixme": false,
         "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P0-API-03",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 202,
-        "title": "local spyRng file scan",
-        "level": "api",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "adaptive-spy",
-        "file": "triade/__tests__/engine/adaptive-spawn-integration.test.ts",
-        "line": 16,
-        "title": "local spyRng hardened",
-        "level": "unit",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
+        "blocker_reason": "RED-phase scaffold"
       },
       {
         "id": "P0-04",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 80,
-        "title": "[P0-04] AC stripComments preserves // and /*",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 82,
+        "title": "[P0-04] AC finite landscape 844\u00d7390 byte-identical",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P0-API-04",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 79,
-        "title": "[P0] stripComments preserves string // and /*",
-        "level": "api",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "E2E-01",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 190,
-        "title": "[P1] E2E-01 scanner tripwire preserved",
-        "level": "e2e",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "engine-purity",
-        "file": "triade/__tests__/engine/engine.purity.test.ts",
-        "line": 12,
-        "title": "engine.purity ADR-01 green",
-        "level": "unit",
-        "status": "active",
-        "skipped": false,
         "fixme": false,
         "pending": false,
         "blocker_reason": ""
       },
       {
         "id": "P0-05",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 102,
-        "title": "[P0-05] AC stripComments escaped-quote edge",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 94,
+        "title": "[P0-05] AC finite golden anchors byte-identical",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1097,10 +965,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P0-API-05",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 98,
-        "title": "[P0] stripComments escaped-quote",
+        "id": "P0-API-portrait",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 101,
+        "title": "[P0] finite portrait 390\u00d7844 byte-identical",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1109,10 +977,94 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-05-esc",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 243,
-        "title": "[P2] E2E-05 escaped-quote pin",
+        "id": "P0-API-landscape",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 110,
+        "title": "[P0] finite landscape 844\u00d7390 byte-identical",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-golden",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 120,
+        "title": "[P0] finite golden anchors byte-identical",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-portrait",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 41,
+        "title": "layoutFor on a portrait phone 390x844 reports isLandscape=false",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-landscape",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 58,
+        "title": "layoutFor on a landscape phone 844x390 reports isLandscape=true",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-golden-382-688",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 114,
+        "title": "golden anchors: 414x896 portrait and 1024x768 landscape",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-golden-452",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 140,
+        "title": "golden anchor: 500x580 portrait is height-bounded",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-sweep",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 90,
+        "title": "boardSize is the maximized square for a sweep of containers",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 191,
+        "title": "[P1][E2E-02] finite byte-identical through App bandTop + Hud heights",
         "level": "e2e",
         "status": "active",
         "skipped": false,
@@ -1122,9 +1074,9 @@
       },
       {
         "id": "P0-06",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 114,
-        "title": "[P0-06] AC gameState factory",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 100,
+        "title": "[P0-06] AC degenerate-clamp layout.test.ts:232",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1133,10 +1085,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P0-API-06",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 108,
-        "title": "[P0] gameState factory",
+        "id": "P0-API-degenerate",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 132,
+        "title": "[P0] degenerate-clamp layout.test.ts:232 \u2014 insets exceed container clamps to 0",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1145,23 +1097,35 @@
         "blocker_reason": ""
       },
       {
-        "id": "P1-04",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 198,
-        "title": "[P1-04] explicit pendingSpawn",
+        "id": "layout-degenerate",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 232,
+        "title": "degenerate insets that exceed the container clamp the board to 0",
         "level": "unit",
-        "status": "skipped",
-        "skipped": true,
+        "status": "active",
+        "skipped": false,
         "fixme": false,
         "pending": false,
         "blocker_reason": ""
       },
       {
-        "id": "E2E-03",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 216,
-        "title": "[P1] E2E-03 ledger + factory wiring",
-        "level": "e2e",
+        "id": "layout-finite-sweep",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 212,
+        "title": "all layoutFor outputs are finite and board never negative",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-small-screen",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 188,
+        "title": "small screen (320x480) yields a positive board that never overlaps HUD",
+        "level": "unit",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1170,45 +1134,21 @@
       },
       {
         "id": "P0-07",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 132,
-        "title": "[P0-07] AC regex doc",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 110,
+        "title": "[P0-07] AC getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "P0-API-07",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 124,
-        "title": "[P0] regex doc",
-        "level": "api",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "E2E-06",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 260,
-        "title": "[P2] E2E-06 regex residual",
-        "level": "e2e",
-        "status": "active",
-        "skipped": false,
         "fixme": false,
         "pending": false,
         "blocker_reason": ""
       },
       {
         "id": "P0-08",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 148,
-        "title": "[P0-08] scanner guards green",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 128,
+        "title": "[P0-08] AC getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1217,10 +1157,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P0-API-08",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 137,
-        "title": "[P0] scanner guards green",
+        "id": "P0-API-dedup",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 143,
+        "title": "[P0] getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1229,10 +1169,34 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-01-again",
-        "file": "triade/__tests__/ui/ui.norolls.test.ts",
-        "line": 99,
-        "title": "engine.purity + ui.norolls suites",
+        "id": "P0-API-pure",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 161,
+        "title": "[P0] getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-API-early-guard",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 170,
+        "title": "[P0] early-guard invariant \u2014 Number.isFinite guard is first statement",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-SAFE-MARGIN",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 183,
+        "title": "SAFE_MARGIN is exactly 16pt",
         "level": "unit",
         "status": "active",
         "skipped": false,
@@ -1241,11 +1205,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "laneSelect",
-        "file": "triade/__tests__/engine/engine.purity.test.ts",
-        "line": 12,
-        "title": "laneSelect + app.restart + gameOverOverlay",
-        "level": "unit",
+        "id": "E2E-05",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 225,
+        "title": "[P2][E2E-05] static allowlists \u2014 single constant/helper/no duplicate/early guard",
+        "level": "e2e",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1254,9 +1218,9 @@
       },
       {
         "id": "P1-01",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 164,
-        "title": "[P1-01] effective move 3-draw",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 138,
+        "title": "[P1-01] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1265,10 +1229,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P1-API-09",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 160,
-        "title": "[P1] effective move 3-draw",
+        "id": "P1-API-band-pins",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 188,
+        "title": "[P1] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1277,11 +1241,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-02",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 204,
-        "title": "[P1] E2E-02 draw-budget",
-        "level": "e2e",
+        "id": "layout-band-pinned",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 126,
+        "title": "band heights are pinned exactly: portrait 96 and landscape 48",
+        "level": "unit",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1289,11 +1253,35 @@
         "blocker_reason": ""
       },
       {
-        "id": "game-move",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 32,
-        "title": "game.test.ts 20-site migration 3-draw",
+        "id": "layout-collapse",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 76,
+        "title": "the landscape HUD collapses: bandHeight(landscape) strictly smaller",
         "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-extreme",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 202,
+        "title": "extreme landscape aspect (2000x200) yields a positive board with thin band",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "E2E-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 178,
+        "title": "[P1][E2E-01] chrome band 96/48 pinned and board dominates thin band",
+        "level": "e2e",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1302,9 +1290,9 @@
       },
       {
         "id": "P1-02",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 176,
-        "title": "[P1-02] newGame 20-draw",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 148,
+        "title": "[P1-02] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1313,10 +1301,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P1-API-10",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 168,
-        "title": "[P1] newGame 20-draw",
+        "id": "P1-API-isLandscape",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 198,
+        "title": "[P1] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1325,11 +1313,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-02b",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 204,
-        "title": "E2E-02 newGame part",
-        "level": "e2e",
+        "id": "layout-isLandscape",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 246,
+        "title": "layoutFor.isLandscape agrees with isLandscape(width, height) \u2014 single source",
+        "level": "unit",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1337,11 +1325,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "game-new",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 9,
-        "title": "game.test.ts newGame 20-draw",
-        "level": "unit",
+        "id": "E2E-04",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 211,
+        "title": "[P1][E2E-04] orientation delegation end-to-end",
+        "level": "e2e",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1350,9 +1338,9 @@
       },
       {
         "id": "P1-03",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 187,
-        "title": "[P1-03] extractSpecifiers",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 166,
+        "title": "[P1-03] per-edge insets bind asymmetrically",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1361,10 +1349,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P0-API-08b",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 145,
-        "title": "[P0] extractSpecifiers",
+        "id": "P1-API-asymmetry",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 216,
+        "title": "[P1] per-edge insets bind asymmetrically \u2014 horizontal vs vertical",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1373,11 +1361,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-01-spec",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 190,
-        "title": "E2E-01 specifiers",
-        "level": "e2e",
+        "id": "layout-asymmetry",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 267,
+        "title": "per-edge insets bind asymmetrically: vertical shrinks height-bounded",
+        "level": "unit",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1385,11 +1373,23 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-03b",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 216,
-        "title": "E2E-03 explicit tiered",
-        "level": "e2e",
+        "id": "layout-board-bounds",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 159,
+        "title": "boardSize never exceeds safe-margin-bounded available width or height",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P1-API-SAFE-constant",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 229,
+        "title": "[P1] SAFE_MARGIN single-constant and getBandTop single-export invariant",
+        "level": "api",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1398,9 +1398,9 @@
       },
       {
         "id": "P1-05",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 210,
-        "title": "[P1-05] spyRng calls exact",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 191,
+        "title": "[P1-05] finiteness sweep \u2014 all layoutFor outputs finite",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1409,11 +1409,47 @@
         "blocker_reason": ""
       },
       {
-        "id": "P1-API-11",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 176,
-        "title": "[P1] spyRng calls exact",
+        "id": "P1-API-finiteness",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 242,
+        "title": "[P1] finiteness sweep \u2014 all layoutFor outputs finite across sizes",
         "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-finite",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 212,
+        "title": "all layoutFor outputs are finite and board never negative",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-floor",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 296,
+        "title": "min-tile floor (AC-1, UX-DR-18): landscape container that can fit floor keeps boardSize >= BOARD_SIZE_FLOOR",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "layout-floor-edge",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 306,
+        "title": "min-tile floor edge (AC-1): container too small to fit floor yields valid positive finite board",
+        "level": "unit",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1422,9 +1458,9 @@
       },
       {
         "id": "P1-06",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 221,
-        "title": "[P1-06] ledger",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 214,
+        "title": "[P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1433,10 +1469,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P1-API-12",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 187,
-        "title": "[P1] ledger",
+        "id": "P1-API-ledger",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 273,
+        "title": "[P1] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status.yaml untouched",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1445,10 +1481,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-03c",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 216,
-        "title": "E2E-03 ledger",
+        "id": "E2E-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 202,
+        "title": "[P1][E2E-03] ledger DW-5/DW-10 done with resolution-undo 64-hex, sprint-status untouched",
         "level": "e2e",
         "status": "active",
         "skipped": false,
@@ -1458,9 +1494,9 @@
       },
       {
         "id": "P2-01",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 242,
-        "title": "[P2-01] SCAN no 0.5 fallback",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 230,
+        "title": "[P2-01] SCAN single helper allowlist \u2014 getBandTop 1 export + 3 uses",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1469,23 +1505,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "P2-API-13",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 202,
-        "title": "[P2] no 0.5 fallback",
+        "id": "P2-API-allowlist",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 289,
+        "title": "[P2] single helper allowlist \u2014 getBandTop 1 export + 3 height uses + no duplicate formula",
         "level": "api",
-        "status": "active",
-        "skipped": false,
-        "fixme": false,
-        "pending": false,
-        "blocker_reason": ""
-      },
-      {
-        "id": "E2E-05",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 243,
-        "title": "[P2] E2E-05 allowlists",
-        "level": "e2e",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1494,9 +1518,9 @@
       },
       {
         "id": "P2-02",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 255,
-        "title": "[P2-02] single parser",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 241,
+        "title": "[P2-02] SCAN no duplicate formula",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1505,10 +1529,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "P2-API-14",
-        "file": "_bmad-output/test-artifacts/tests/api/helpers.hardening.gateway.spec.ts",
-        "line": 210,
-        "title": "[P2] single parser",
+        "id": "P2-API-no-dup",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 300,
+        "title": "[P2] no duplicate formula \u2014 App/Hud band height not via inline + SAFE_MARGIN for band",
         "level": "api",
         "status": "active",
         "skipped": false,
@@ -1517,22 +1541,22 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-05b",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 243,
-        "title": "E2E-05 parser",
-        "level": "e2e",
-        "status": "active",
-        "skipped": false,
+        "id": "P2-04",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 261,
+        "title": "[P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
         "fixme": false,
         "pending": false,
         "blocker_reason": ""
       },
       {
         "id": "P2-03",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 263,
-        "title": "[P2-03] template interp",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 250,
+        "title": "[P2-03] SCAN early-guard invariant \u2014 Number.isFinite guard is first statement",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1541,11 +1565,11 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-05c",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 243,
-        "title": "E2E-05 template interp",
-        "level": "e2e",
+        "id": "P2-API-floor",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 310,
+        "title": "[P2] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical",
+        "level": "api",
         "status": "active",
         "skipped": false,
         "fixme": false,
@@ -1553,22 +1577,22 @@
         "blocker_reason": ""
       },
       {
-        "id": "P2-04",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 274,
-        "title": "[P2-04] quote-in-regex exploratory",
-        "level": "unit",
-        "status": "skipped",
-        "skipped": true,
+        "id": "P2-API-total-height",
+        "file": "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
+        "line": 326,
+        "title": "[P2] total-height invariant \u2014 boardSize + bandHeight does not exceed availHeight",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
         "fixme": false,
         "pending": false,
         "blocker_reason": ""
       },
       {
-        "id": "E2E-06b",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 260,
-        "title": "E2E-06 exploratory",
+        "id": "E2E-06",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 237,
+        "title": "[P2][E2E-06] floor + clamp seam",
         "level": "e2e",
         "status": "active",
         "skipped": false,
@@ -1578,9 +1602,9 @@
       },
       {
         "id": "P3-01",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 282,
-        "title": "[P3-01] cross-cutting absent",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 285,
+        "title": "[P3-01] exploratory \u2014 getBandTop non-finite residual is pure arithmetic NaN\u2192NaN per spec",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1589,10 +1613,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-07-scope",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 269,
-        "title": "[P3] E2E-07 scope guard",
+        "id": "E2E-07",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 248,
+        "title": "[P3][E2E-07] residual getBandTop NaN\u2192NaN + O(1) bench <50 ms + no scope leakage",
         "level": "e2e",
         "status": "active",
         "skipped": false,
@@ -1602,9 +1626,9 @@
       },
       {
         "id": "P3-02",
-        "file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "line": 286,
-        "title": "[P3-02] bench",
+        "file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "line": 297,
+        "title": "[P3-02] hygiene \u2014 layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms",
         "level": "unit",
         "status": "skipped",
         "skipped": true,
@@ -1613,10 +1637,10 @@
         "blocker_reason": ""
       },
       {
-        "id": "E2E-07-bench",
-        "file": "_bmad-output/test-artifacts/tests/e2e/helpers.hardening.umbrella.spec.ts",
-        "line": 269,
-        "title": "[P3] E2E-07 bench",
+        "id": "E2E-07b",
+        "file": "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
+        "line": 248,
+        "title": "[P3][E2E-07] residual getBandTop NaN\u2192NaN + O(1) bench <50 ms + no scope leakage (hygiene half)",
         "level": "e2e",
         "status": "active",
         "skipped": false,
@@ -1629,142 +1653,128 @@
       {
         "id": "P0-01",
         "severity": "high",
-        "reason": "RED-phase scaffold it.skip \u2014 activate to green",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-01] AC rngOf throws"
-      },
-      {
-        "id": "P0-02",
-        "severity": "high",
-        "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-02] AC spyRng shared throws"
+        "reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway",
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-01] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite"
       },
       {
         "id": "P0-03",
         "severity": "high",
-        "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-03] AC local spyRng throws"
+        "reason": "RED-phase scaffold",
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-03] AC finite portrait 390\u00d7844 byte-identical"
       },
       {
         "id": "P0-04",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-04] AC stripComments preserves // and /*"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-04] AC finite landscape 844\u00d7390 byte-identical"
       },
       {
         "id": "P0-05",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-05] AC stripComments escaped-quote edge"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-05] AC finite golden anchors byte-identical"
       },
       {
         "id": "P0-06",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-06] AC gameState factory"
-      },
-      {
-        "id": "P1-04",
-        "severity": "high",
-        "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-04] explicit pendingSpawn"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-06] AC degenerate-clamp layout.test.ts:232"
       },
       {
         "id": "P0-07",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-07] AC regex doc"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-07] AC getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper"
       },
       {
         "id": "P0-08",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P0-08] scanner guards green"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P0-08] AC getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical"
       },
       {
         "id": "P1-01",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-01] effective move 3-draw"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P1-01] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses"
       },
       {
         "id": "P1-02",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-02] newGame 20-draw"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P1-02] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts"
       },
       {
         "id": "P1-03",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-03] extractSpecifiers"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P1-03] per-edge insets bind asymmetrically"
       },
       {
         "id": "P1-05",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-05] spyRng calls exact"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P1-05] finiteness sweep \u2014 all layoutFor outputs finite"
       },
       {
         "id": "P1-06",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P1-06] ledger"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex"
       },
       {
         "id": "P2-01",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P2-01] SCAN no 0.5 fallback"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single helper allowlist \u2014 getBandTop 1 export + 3 uses"
       },
       {
         "id": "P2-02",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P2-02] single parser"
-      },
-      {
-        "id": "P2-03",
-        "severity": "high",
-        "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P2-03] template interp"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P2-02] SCAN no duplicate formula"
       },
       {
         "id": "P2-04",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P2-04] quote-in-regex exploratory"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical"
+      },
+      {
+        "id": "P2-03",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P2-03] SCAN early-guard invariant \u2014 Number.isFinite guard is first statement"
       },
       {
         "id": "P3-01",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P3-01] cross-cutting absent"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P3-01] exploratory \u2014 getBandTop non-finite residual is pure arithmetic NaN\u2192NaN per spec"
       },
       {
         "id": "P3-02",
         "severity": "high",
         "reason": "Test marked skipped",
-        "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-        "test_title": "[P3-02] bench"
+        "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+        "test_title": "[P3-02] hygiene \u2014 layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms"
       }
     ]
   },
@@ -1772,171 +1782,131 @@
     {
       "id": "P0-01",
       "severity": "high",
-      "reason": "RED-phase scaffold it.skip \u2014 activate to green",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-01] AC rngOf throws"
-    },
-    {
-      "id": "P0-02",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-02] AC spyRng shared throws"
+      "reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway",
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-01] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite"
     },
     {
       "id": "P0-03",
       "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-03] AC local spyRng throws"
+      "reason": "RED-phase scaffold",
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-03] AC finite portrait 390\u00d7844 byte-identical"
     },
     {
       "id": "P0-04",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-04] AC stripComments preserves // and /*"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-04] AC finite landscape 844\u00d7390 byte-identical"
     },
     {
       "id": "P0-05",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-05] AC stripComments escaped-quote edge"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-05] AC finite golden anchors byte-identical"
     },
     {
       "id": "P0-06",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-06] AC gameState factory"
-    },
-    {
-      "id": "P1-04",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-04] explicit pendingSpawn"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-06] AC degenerate-clamp layout.test.ts:232"
     },
     {
       "id": "P0-07",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-07] AC regex doc"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-07] AC getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper"
     },
     {
       "id": "P0-08",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P0-08] scanner guards green"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P0-08] AC getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical"
     },
     {
       "id": "P1-01",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-01] effective move 3-draw"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P1-01] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses"
     },
     {
       "id": "P1-02",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-02] newGame 20-draw"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P1-02] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts"
     },
     {
       "id": "P1-03",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-03] extractSpecifiers"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P1-03] per-edge insets bind asymmetrically"
     },
     {
       "id": "P1-05",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-05] spyRng calls exact"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P1-05] finiteness sweep \u2014 all layoutFor outputs finite"
     },
     {
       "id": "P1-06",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P1-06] ledger"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex"
     },
     {
       "id": "P2-01",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P2-01] SCAN no 0.5 fallback"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P2-01] SCAN single helper allowlist \u2014 getBandTop 1 export + 3 uses"
     },
     {
       "id": "P2-02",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P2-02] single parser"
-    },
-    {
-      "id": "P2-03",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P2-03] template interp"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P2-02] SCAN no duplicate formula"
     },
     {
       "id": "P2-04",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P2-04] quote-in-regex exploratory"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical"
+    },
+    {
+      "id": "P2-03",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P2-03] SCAN early-guard invariant \u2014 Number.isFinite guard is first statement"
     },
     {
       "id": "P3-01",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P3-01] cross-cutting absent"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P3-01] exploratory \u2014 getBandTop non-finite residual is pure arithmetic NaN\u2192NaN per spec"
     },
     {
       "id": "P3-02",
       "severity": "high",
       "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/test-utils/helpers.hardening.atdd.test.ts",
-      "test_title": "[P3-02] bench"
+      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
+      "test_title": "[P3-02] hygiene \u2014 layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms"
     }
   ],
   "recommendations": [
-    {
-      "priority": "MEDIUM",
-      "action": "Activate 20 ATDD scaffolds it.skip \u2192 it (RED-phase, already green when de-skipped at 20/20)",
-      "requirements": [
-        "DW-AC-01",
-        "DW-AC-02",
-        "DW-AC-03",
-        "DW-AC-04",
-        "DW-AC-05",
-        "DW-AC-06",
-        "DW-AC-07",
-        "DW-AC-08",
-        "DW-P1-01",
-        "DW-P1-02",
-        "DW-P1-03",
-        "DW-P1-04",
-        "DW-P1-05",
-        "DW-P1-06",
-        "DW-P2-01",
-        "DW-P2-02",
-        "DW-P2-03",
-        "DW-P2-04",
-        "DW-P3-01",
-        "DW-P3-02"
-      ]
-    },
     {
       "priority": "LOW",
       "action": "Run /bmad:tea:test-review to assess test quality",
@@ -1944,9 +1914,12 @@
     },
     {
       "priority": "MEDIUM",
-      "action": "Revisit deferred regex lexer DW-66 when scanned sources adopt regex with quote",
+      "action": "Activate RED-phase ATDD scaffolds it.skip \u2192 it (20 scaffolds) for full defense-in-depth \u2014 active gateway/e2e already green",
       "requirements": [
-        "DW-AC-07"
+        "AC-01",
+        "AC-02",
+        "AC-03",
+        "AC-04"
       ]
     }
   ]

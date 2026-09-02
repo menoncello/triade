@@ -37,7 +37,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: triade/__tests__/ui/layout.test.ts:189
 reason: NaN/Infinity inputs propagate NaN through `layoutFor` despite the "all finite" test sweeping only finite sizes (`triade/__tests__/ui/layout.test.ts:189`). Runtime inputs from `useWindowDimensions` are always finite.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-layout-band-dedup-and-guard
+resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec7467 2026-09-01 7374617475733a206f70656e
 
 ### DW-6: Rotation race: `useSafeAreaInsets` lags `useWindowDimensions` by a frame → board can flash to 0; `SafeAreaProvider` mounts without `initialMetrics`; ScrollView offset persists across rotation (`triade/App.tsx:28-30,103`). Native polish, manual-validation domain.
 
@@ -73,7 +75,9 @@ resolution: CLOSED by story 1.6 (2026-08-18): T3.1 removed the DirButton control
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: App.tsx
 reason: Band height formula duplicated between `App.tsx` (`bandTop`) and `Hud.tsx` (`topPad + bandHeight`) — drift risk on future margin changes (`triade/App.tsx:31`).
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-layout-band-dedup-and-guard
+resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec7467 2026-09-01 7374617475733a206f70656e
 
 ### DW-11: Story doc T2 note says "12 layout tests"; final suite is 14 (clamp-path + golden-anchor tests added in the 2026-08-17 review fixes). Doc-only.
 

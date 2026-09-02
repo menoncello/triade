@@ -1,22 +1,22 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-09-01T20:45:00.000Z",
+  "evaluated_at": "2026-09-02T01:56:23.244460+00:00",
   "repo": "3-clone",
   "target": {
     "type": "story",
-    "id": "8-6",
-    "label": "8-6 SFX haptics — expo-audio thock coupled with haptics, swappable gateway, Reduced Motion keeps sound (Epic 8, S8.6)"
+    "id": "dw-layout-band-dedup-and-guard",
+    "label": "dw-layout-band-dedup-and-guard \u2014 layoutFor NaN/Infinity guard + band-height dedup (DW-5/DW-10)"
   },
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
-  "gate_status": "CONCERNS",
-  "rationale": "P0 100% (4/4) and P1 100% (1/1) and overall 100% (6/6) with P0 host 20/20 (10 ATDD P0 + 10 sfx.test P0 + mapped api P0) and P1 host 17/17 (5 ATDD P1 + 2 sfx.test cross-check + 10 api P1) and overall host 52/54 (96.3% raw, 100% waivers excluded) exceed deterministic PASS thresholds (P0 100%, P1 ≥90%, overall ≥80%), but 1 P2 EXPECTED RED with waiver remains (P2-06 placeholder mastering absent — triade/assets/sfx/ 3 wavs not yet landed, degrade to silent no-op is current ship path per spec Residual risks + test-design R-003; also E2E-10 same) plus manual device smoke P1 E2E-08 pending 15-min pre-merge lane (thock rank 0.45/0.65/1.0 + spawn 0.35 + gameOver 0.9 + FR-30 ON flat while audible). Deterministic gate rules would yield PASS, but deferred P2 low + pending device lane downgrade to CONCERNS per risk-governance — waived per deferred-work + spec Residual risks, same precedent as 8-4/8-5 CONCERNS (1 P2 RED + pending device). Risk LOW; fix is asset drop only (no code change) + device ear pass before Epic 8 close.",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%).",
   "p0_status": "MET",
   "p1_status": "MET",
   "overall_status": "MET",
   "critical_open": 0,
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-8-6-sfx-haptics.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-layout-band-dedup-and-guard.md",
     "trace_report_url": "",
     "artifact_url": "",
     "journey_evidence_url": ""
