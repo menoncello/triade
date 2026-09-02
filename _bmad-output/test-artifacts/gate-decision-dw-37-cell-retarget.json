@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T00:00:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-decision-dw-37",
+    "label": "dw-decision-dw-37 — DW-37 orientation resize cell retarget (stale pixel SharedValues)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (required: 100%), P1 coverage is 100% (target: 90%, minimum: 80%), and overall coverage is 100% (minimum: 80%). All 15 criteria FULL via host unit (gateway 10 + umbrella 9 + unit 15 + triade oracle 15+9). No uncovered P0/P1. Single-source allowlists verified (DW-37 1, },[cell]) 1, pixel(to,cell) 1, x.value=next.x 1, withSpring(next.x 1, withSpring(toPos.x 1, Math.max 1, setTilesState 1, tilesRef 1, function pixel 1, 9f25aea8 1) + ledger 9f25aea8 1 hit + sprint-status untouched. Full triade gate 926 pass / 0 fail / 346 skipped still green (24 dormant from this bundle). Simulator resize+swipe remains manual P3 device smoke per spec. 2 high risks R-001/R-002 mitigated via DW-37 // marker + pixel(to,cell) + snap vs spring branches + byCell re-plan + hold/slide behavioral.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "risks": {
+    "total": 9,
+    "high": 2,
+    "high_mitigated": 2,
+    "medium": 4,
+    "low": 3
+  },
+  "coverage": {
+    "p0": "6/6 100%",
+    "p1": "3/3 100%",
+    "p2": "4/4 100%",
+    "p3": "2/2 100%",
+    "overall": "15/15 100%"
+  },
+  "artifacts": {
+    "fixture": "_bmad-output/test-artifacts/fixtures/dw-37-cell-retarget-fixtures.ts",
+    "gateway": "_bmad-output/test-artifacts/tests/api/dw-37-cell-retarget.gateway.spec.ts (10 pass ~179ms)",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/dw-37-cell-retarget.umbrella.spec.ts (9 pass ~158ms)",
+    "unit": "_bmad-output/test-artifacts/tests/unit/dw-37-cell-retarget.atdd.test.ts (15 pass ~168ms)",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary-dw-37-cell-retarget.md",
+    "coverage_matrix": "_bmad-output/test-artifacts/coverage-matrix-dw-37-cell-retarget.json",
+    "e2e_trace": "_bmad-output/test-artifacts/e2e-trace-summary-dw-37-cell-retarget.json"
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-37-cell-retarget.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

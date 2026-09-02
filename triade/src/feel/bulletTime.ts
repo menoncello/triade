@@ -11,9 +11,9 @@ export function maxMergeValue(trace: readonly TraceEntry[] | undefined | null): 
     if (!Array.isArray(trace) || trace.length === 0) return null;
     let max: number | null = null;
     for (const entry of trace) {
-      if (!entry || entry.spawned) continue;
+      if (!entry || entry.spawned !== false) continue;
       if (!Array.isArray(entry.from) || entry.from.length !== 2) continue;
-      if (!Number.isFinite(entry.value)) continue;
+      if (!Number.isFinite(entry.value) || entry.value < 3) continue;
       if (max === null || entry.value > max) max = entry.value;
     }
     return max;

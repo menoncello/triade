@@ -1,0 +1,190 @@
+/**
+ * TEA Automate — Unit ATDD Combined Mirror for dw-7-status-bar-dark-landscape (DW-7)
+ * Location: _bmad-output/test-artifacts/tests/unit/dw-7-status-bar-dark-landscape.atdd.test.ts
+ * Runner: node:test + tsx (host-only, no Playwright)
+ * Mirrors triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts (18 it.skip RED-phase, P0 8 + P1 6 + P2 4 + P3 2)
+ *        + triade/__tests__/ui/statusBar.test.ts (3 pass: false→auto, true→dark, purity)
+ * This file is the TEA artifact under test_artifacts/tests/unit per _bmad/tea/config.yaml.
+ * All tests are it.skip RED-phase mirrors — dormant 18 skip → 18 pass when activated (python3 it.skip→it).
+ * Triade oracle (triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts) is canonical green; this mirror is compliance copy.
+ *
+ * Execute dormant (expect 18 skipped):
+ *   npm --prefix triade test -- ../_bmad-output/test-artifacts/tests/unit/dw-7-status-bar-dark-landscape.atdd.test.ts
+ * Activate (expect 18 pass):
+ *   python3 -c "import pathlib; p=pathlib.Path('_bmad-output/test-artifacts/tests/unit/dw-7-status-bar-dark-landscape.atdd.test.ts'); t=p.read_text(); p2=p.read_text().replace('it.skip','it'); p.write_text(p2)" && npm --prefix triade test -- ../_bmad-output/test-artifacts/tests/unit/dw-7-status-bar-dark-landscape.atdd.test.ts
+ */
+
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { statusBarStyle } from '../../../../triade/src/ui/statusBar.ts';
+
+// mirrors triade/__tests__/ui/dw-7-status-bar-dark-landscape.atdd.test.ts verbatim but path depth differs
+const appSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/App.tsx', import.meta.url)), 'utf8');
+const statusBarSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/src/ui/statusBar.ts', import.meta.url)), 'utf8');
+const layoutSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/src/ui/layout.ts', import.meta.url)), 'utf8');
+const useSyncedSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/src/ui/useSyncedLayout.ts', import.meta.url)), 'utf8');
+const appJsonSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/app.json', import.meta.url)), 'utf8');
+
+describe('ATDD DW-7 status bar legibility — P0 critical (AC + 4-branch propagation)', () => {
+  it.skip('[P0-01] statusBarStyle(false) returns auto — portrait unchanged', () => {
+    assert.equal(statusBarStyle(false), 'auto');
+    assert.equal(statusBarStyle(false), 'auto', 'deterministic portrait');
+  });
+  it.skip('[P0-02] statusBarStyle(true) returns dark — landscape on #fff', () => {
+    assert.equal(statusBarStyle(true), 'dark');
+    assert.equal(statusBarStyle(true), 'dark', 'deterministic landscape');
+  });
+  it.skip('[P0-03] helper pure and deterministic both branches (idempotent)', () => {
+    assert.equal(statusBarStyle(false), statusBarStyle(false), 'portrait pure');
+    assert.equal(statusBarStyle(true), statusBarStyle(true), 'landscape pure');
+    assert.ok(!statusBarSrc.includes('useColorScheme'), 'helper must not branch on useColorScheme');
+    assert.ok(!statusBarSrc.includes('useState'), 'helper must be pure (no React state)');
+  });
+  it.skip('[P0-04] App.tsx replaces all 4 StatusBar mounts with statusBarStyle(isLandscape)', () => {
+    const hits = (appSrc.match(/statusBarStyle\(isLandscape\)/g) ?? []).length;
+    assert.equal(hits, 4, `statusBarStyle(isLandscape) hits ${hits} expected 4 (!ready/tone/laneSelect/playing)`);
+    const statusBarHits = (appSrc.match(/<StatusBar/g) ?? []).length;
+    assert.equal(statusBarHits, 4, `StatusBar mounts ${statusBarHits} expected 4`);
+    const bareAuto = (appSrc.match(/style="auto"/g) ?? []).length;
+    assert.equal(bareAuto, 0, `bare style="auto" literals ${bareAuto} expected 0 after sweep`);
+    const propHits = (appSrc.match(/style=\{statusBarStyle\(isLandscape\)\}/g) ?? []).length;
+    assert.equal(propHits, 4, `style={statusBarStyle(isLandscape)} prop hits ${propHits} expected 4`);
+  });
+  it.skip('[P0-05] App.tsx imports statusBarStyle helper once from src/ui/statusBar', () => {
+    assert.ok(appSrc.includes("from './src/ui/statusBar"), 'App.tsx must import from src/ui/statusBar');
+    const importHits = (appSrc.match(/statusBarStyle/g) ?? []).length;
+    assert.equal(importHits, 5, `statusBarStyle hits ${importHits} expected 5 (1 import specifier + 4 calls)`);
+    const statusBarImportLine = (appSrc.match(/import \{ statusBarStyle \}/g) ?? []).length;
+    assert.equal(statusBarImportLine, 1, 'single import { statusBarStyle } line');
+  });
+  it.skip('[P0-06] helper file declares StatusBarStyle = auto|dark and exports statusBarStyle signature', () => {
+    assert.ok(statusBarSrc.includes("export type StatusBarStyle"), 'must export type StatusBarStyle');
+    assert.ok(statusBarSrc.includes("'auto'") && statusBarSrc.includes("'dark'"), 'StatusBarStyle must be \'auto\'|\'dark\'');
+    assert.ok(statusBarSrc.includes('export function statusBarStyle'), 'must export function statusBarStyle');
+    assert.ok(statusBarSrc.includes('isLandscape: boolean'), 'signature must be (isLandscape: boolean)');
+    assert.ok(statusBarSrc.includes('isLandscape ?'), 'must ternary on isLandscape');
+    assert.ok(statusBarSrc.includes("'dark'") && statusBarSrc.includes("'auto'"), 'literals dark/auto must appear');
+    assert.equal((statusBarSrc.match(/export function statusBarStyle/g) ?? []).length, 1, 'single export function statusBarStyle');
+  });
+  it.skip('[P0-07] App.tsx container backgroundColor stays #fff (light premise for dark text)', () => {
+    const bgHits = (appSrc.match(/backgroundColor: '#fff'/g) ?? []).length;
+    assert.equal(bgHits, 1, `container #fff hits ${bgHits} expected 1`);
+    assert.ok(appSrc.includes("backgroundColor: '#fff'"), 'container must stay #fff');
+    assert.equal((appSrc.match(/useColorScheme/g) ?? []).length, 0, 'App.tsx must not use useColorScheme');
+    assert.equal((appSrc.match(/Theme/g) ?? []).length, 0, 'App.tsx must not introduce Theme');
+  });
+  it.skip('[P0-08] existing statusBar.test.ts 3 probes still hold (false→auto, true→dark, purity)', () => {
+    assert.equal(statusBarStyle(false), 'auto', 'probe false→auto');
+    assert.equal(statusBarStyle(true), 'dark', 'probe true→dark');
+    assert.equal(statusBarStyle(false), statusBarStyle(false), 'probe purity false');
+    assert.equal(statusBarStyle(true), statusBarStyle(true), 'probe purity true');
+    const committed = fs.readFileSync(fileURLToPath(new URL('../../../../triade/__tests__/ui/statusBar.test.ts', import.meta.url)), 'utf8');
+    const itCount = (committed.match(/\bit\(/g) ?? []).length;
+    assert.equal(itCount, 3, `committed statusBar.test.ts it( hits ${itCount} expected 3`);
+  });
+});
+
+describe('ATDD DW-7 status bar legibility — P1 wiring (isLandscape + helper purity + ledger)', () => {
+  it.skip('[P1-01] helper file has no RN/expo import — pure TS (no expo-status-bar coupling)', () => {
+    assert.equal((statusBarSrc.match(/from 'expo/g) ?? []).length, 0, 'statusBar.ts must not import expo');
+    assert.equal((statusBarSrc.match(/from 'react-native/g) ?? []).length, 0, 'statusBar.ts must not import react-native');
+    assert.equal((statusBarSrc.match(/import.*expo-status-bar/g) ?? []).length, 0, 'must not import expo-status-bar');
+    assert.equal((statusBarSrc.match(/import/g) ?? []).length, 0, 'helper file should have zero imports (pure)');
+  });
+  it.skip('[P1-02] App.tsx isLandscape comes from useSyncedLayout single source (not re-derived w>h)', () => {
+    const destructured = appSrc.includes('isLandscape') && appSrc.includes('useSyncedLayout');
+    assert.ok(destructured, 'isLandscape must come from useSyncedLayout');
+    const syncedHits = (appSrc.match(/useSyncedLayout/g) ?? []).length;
+    assert.equal(syncedHits, 3, `useSyncedLayout hits ${syncedHits} expected 3 (specifier+path+call)`);
+    assert.ok(layoutSrc.includes('isLandscape(width, height)'), 'layout.ts isLandscape(w>h) canonical');
+  });
+  it.skip('[P1-03] rotation flip deterministic: auto ↔ dark on isLandscape flip', () => {
+    assert.equal(statusBarStyle(false), 'auto', 'portrait before flip is auto');
+    assert.equal(statusBarStyle(true), 'dark', 'after flip to landscape is dark');
+    assert.equal(statusBarStyle(false), 'auto', 'flip back to portrait is auto');
+    assert.equal(statusBarStyle(true), 'dark', 'second flip to landscape is dark');
+    const a = statusBarStyle(false);
+    const b = statusBarStyle(true);
+    const a2 = statusBarStyle(false);
+    assert.equal(a, 'auto');
+    assert.equal(b, 'dark');
+    assert.equal(a2, 'auto', 'no state retained between calls');
+  });
+  it.skip('[P1-04] DEFAULT_DEBOUNCE_MS 32 debounce unchanged (stability via useSyncedLayout hold)', () => {
+    assert.ok(useSyncedSrc.includes('DEFAULT_DEBOUNCE_MS = 32'), 'DEFAULT_DEBOUNCE_MS must stay 32');
+    const defHits = (useSyncedSrc.match(/DEFAULT_DEBOUNCE_MS/g) ?? []).length;
+    assert.equal(defHits, 2, `DEFAULT_DEBOUNCE_MS hits ${defHits} expected 2 (const+param default)`);
+    assert.ok(useSyncedSrc.includes('debounceMs: number = DEFAULT_DEBOUNCE_MS'), 'param default must be DEFAULT_DEBOUNCE_MS');
+    assert.ok(useSyncedSrc.includes('effectiveLayout.isLandscape') || useSyncedSrc.includes('effectiveLayout'), 'isLandscape should come from effectiveLayout');
+  });
+  it.skip('[P1-05] app.json has zero statusBar/style override (component prop is source of truth)', () => {
+    const statusBarKeyHits = (appJsonSrc.match(/"statusBar"/g) ?? []).length;
+    assert.equal(statusBarKeyHits, 0, `app.json statusBar key hits ${statusBarKeyHits} expected 0 (no override)`);
+    assert.ok(!appJsonSrc.includes('"userInterfaceStyle": "dark"'), 'app.json must not force dark userInterfaceStyle');
+    assert.ok(appJsonSrc.includes('"userInterfaceStyle": "automatic"'), 'app.json userInterfaceStyle automatic is expected');
+  });
+  it.skip('[P1-06] layoutFor / orientation single source still pure (triade/src/ui/layout.ts & orientation.ts)', () => {
+    const orientationSrc = fs.readFileSync(fileURLToPath(new URL('../../../../triade/src/ui/orientation.ts', import.meta.url)), 'utf8');
+    assert.ok(orientationSrc.includes('isLandscape'), 'orientation.ts must define isLandscape');
+    assert.ok(orientationSrc.includes('width > height'), 'orientation isLandscape must be width > height');
+    assert.ok(layoutSrc.includes('isLandscape(width, height)'), 'layout.ts must delegate to orientation isLandscape');
+    assert.equal((layoutSrc.match(/export function isLandscape/g) ?? []).length, 0, 'layout.ts should import isLandscape not redeclare');
+  });
+});
+
+describe('ATDD DW-7 status bar legibility — P2 static scans (allowlists + isolation + ledger)', () => {
+  it.skip('[P2-01] SCAN single-source helper: statusBar.ts 1 def + 1 type + single #fff invariant', () => {
+    assert.equal((statusBarSrc.match(/export function statusBarStyle/g) ?? []).length, 1, 'single export function statusBarStyle');
+    assert.equal((statusBarSrc.match(/export type StatusBarStyle/g) ?? []).length, 1, 'single export type StatusBarStyle');
+    assert.equal((appSrc.match(/backgroundColor: '#fff'/g) ?? []).length, 1, 'single container #fff');
+    const lines = statusBarSrc.trim().split('\n').length;
+    assert.ok(lines >= 3 && lines <= 10, `statusBar.ts lines ${lines} expected 3-10 (tiny pure helper)`);
+  });
+  it.skip('[P2-02] SCAN StatusBar mounts vs helper calls parity: 4 mounts ↔ 4 calls', () => {
+    const mountHits = (appSrc.match(/<StatusBar/g) ?? []).length;
+    const callHits = (appSrc.match(/statusBarStyle\(isLandscape\)/g) ?? []).length;
+    assert.equal(mountHits, 4, `StatusBar mounts ${mountHits} expected 4`);
+    assert.equal(callHits, 4, `statusBarStyle(isLandscape) calls ${callHits} expected 4`);
+    assert.equal(mountHits, callHits, 'mounts must equal helper calls (every branch covered)');
+    assert.equal((appSrc.match(/from '.\/src\/ui\/statusBar/g) ?? []).length, 1, 'single src/ui/statusBar import');
+  });
+  it.skip('[P2-03] SCAN engine/feel isolation: no engine/feel/layout geometry change (git pins from test-design)', () => {
+    assert.equal(layoutSrc.includes('useWindowDimensions') ? 1 : 0, 0, 'layout.ts must stay pure (no hooks)');
+    assert.ok(!appSrc.includes('FROZEN'), 'App.tsx must not touch spawnConfig freeze (engine Not in Scope)');
+    assert.ok(layoutSrc.includes('LANDSCAPE_BAND_HEIGHT = 48'), 'layout geometry 48 must stay (spec Never)');
+    assert.ok(layoutSrc.includes('PORTRAIT_BAND_HEIGHT = 96'), 'layout portrait 96 must stay');
+    assert.equal((appSrc.match(/useColorScheme/g) ?? []).length, 0, 'no theme switching');
+  });
+  it.skip('[P2-04] ledger DW-7 done + resolution-undo 0fca7499 64-hex + decision prefix + sprint-status untouched', () => {
+    const deferred = fs.readFileSync(fileURLToPath(new URL('../../../../_bmad-output/implementation-artifacts/deferred-work.md', import.meta.url)), 'utf8');
+    assert.ok(deferred.includes('DW-7'), 'deferred-work.md must contain DW-7');
+    assert.ok(deferred.includes('status: done 2026-09-02') || deferred.includes('status: done'), 'DW-7 should be status: done');
+    assert.ok(deferred.includes('0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422'), 'resolution-undo 0fca7499… 64-hex must be present');
+    const undoCount = (deferred.match(new RegExp('0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422', 'g')) ?? []).length;
+    assert.equal(undoCount, 1, `resolution-undo 0fca7499 hits ${undoCount} expected 1`);
+    assert.ok(deferred.includes('Force dark status bar'), 'decision prefix Force dark status bar must be present');
+    assert.ok(deferred.includes('resolved by sweep bundle dw-decision-dw-7'), 'resolution sweep bundle dw-decision-dw-7 must be present');
+  });
+});
+
+describe('ATDD DW-7 status bar legibility — P3 exploratory / residual / hygiene', () => {
+  it.skip('[P3-01] exploratory notch still dark: non-zero left inset + landscape still forces dark', () => {
+    assert.equal(statusBarStyle(true), 'dark', 'notch landscape still dark');
+    assert.equal(statusBarStyle(false), 'auto', 'notch portrait still auto (no dark)');
+  });
+  it.skip('[P3-02] hygiene: helper never throws on coercible boolean, rejects literal typo light', () => {
+    assert.doesNotThrow(() => statusBarStyle(true), 'statusBarStyle(true) must not throw');
+    assert.doesNotThrow(() => statusBarStyle(false), 'statusBarStyle(false) must not throw');
+    assert.ok(Number.isFinite(statusBarStyle(true).length), 'dark literal finite');
+    assert.ok(Number.isFinite(statusBarStyle(false).length), 'auto literal finite');
+    assert.equal((appSrc.match(/style="light"/g) ?? []).length, 0, 'App.tsx must not use style="light" typo');
+    assert.equal((appSrc.match(/\bstyle:.*'light'/g) ?? []).length, 0, 'no light style in App');
+    const t0 = performance.now();
+    for (let i = 0; i < 10_000; i++) statusBarStyle(i % 2 === 0);
+    const dt = performance.now() - t0;
+    assert.ok(dt < 50, `10k× statusBarStyle should be <50ms got ${dt}ms`);
+    assert.equal(/from 'react-native-reanimated|from '@shopify\/react-native-skia|ceilingDetector|tierForCeiling|potForTier/.test(statusBarSrc) ? 1 : 0, 0, 'helper must not import Skia/Reanimated/engine');
+  });
+});

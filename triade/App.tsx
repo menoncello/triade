@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
 import { newGame, move, isGameOver, ceilingDetector, tierForCeiling, stateFromResult } from './src/engine/core/index.ts';
@@ -28,7 +28,8 @@ import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
-import { layoutFor, getBandTop } from './src/ui/layout.ts';
+import { useSyncedLayout } from './src/ui/useSyncedLayout.ts';
+import { statusBarStyle } from './src/ui/statusBar.ts';
 import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
 import { handleGestureEnd } from './src/ui/gesture.ts';
 import { Hud } from './src/ui/Hud';
@@ -83,7 +84,7 @@ import { useTranslation } from 'react-i18next';
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
-      <SafeAreaProvider>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics ?? undefined}>
         <AppContent />
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -96,10 +97,7 @@ type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; se
 
 function AppContent() {
   const { t } = useTranslation();
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const { boardSize, bandHeight, isLandscape } = layoutFor({ width, height, insets });
-  const bandTop = getBandTop(insets, bandHeight);
+  const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
@@ -876,7 +874,7 @@ function AppContent() {
     return (
       <View style={styles.container}>
         <Text style={styles.stats}>preloading bundled assets…</Text>
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -885,7 +883,7 @@ function AppContent() {
     return (
       <View style={styles.container}>
         <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -905,7 +903,7 @@ function AppContent() {
           language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
           onLanguageChange={handleLanguageChange}
         />
-        <StatusBar style="auto" />
+        <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
   }
@@ -1024,7 +1022,7 @@ function AppContent() {
           onContinueCancel={handleContinueCancel}
         />
       ) : null}
-      <StatusBar style="auto" />
+      <StatusBar style={statusBarStyle(isLandscape)} />
     </View>
   );
 }

@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-02T00:00:00+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "eb11b56",
+  "target": {
+    "type": "story",
+    "id": "dw-decision-dw-37",
+    "label": "dw-decision-dw-37 — DW-37 orientation resize cell retarget (stale pixel SharedValues)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-dw-37-cell-retarget.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-37-cell-retarget.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-decision-dw-37.md",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/render/transitionPlan.ts",
+      "triade/__tests__/render/dw-37-cell-retarget.atdd.test.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-37-cell-retarget.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 15,
+      "total": 15,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "pct": 100
+      },
+      "P1": {
+        "total": 3,
+        "covered": 3,
+        "pct": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "pct": 100
+      }
+    }
+  },
+  "e2e": {
+    "mapped": 9,
+    "total": 9,
+    "pct": 100,
+    "tests": [
+      "[P2-UMB-01] no-resize stability: only one [cell] and one [toPos.x,toPos.y,kind] effect",
+      "[P2-UMB-02] cell NaN guard edge width=0 → cell===1 and pixel([0,0],1) in-bounds",
+      "[P2-UMB-03] spring config unchanged damping:14 stiffness:260 mass:0.8 shared by both effects",
+      "[P2-UMB-04] reducedMotion still independent of cell retarget (board-only)",
+      "[P2-UMB-05] SCAN single-source allowlists: game constants and ledger invariants",
+      "[P3-UMB-01] exploratory resize+swipe manual: spec documents no-jump check",
+      "[P3-UMB-02] ledger DW-37 single 64-hex + resolution + sprint-status untouched",
+      "[P3-UMB-03] BENCH: host timing smoke (no new lane) + engine byte-identical",
+      "[P3-UMB-04] cross-cutting: no spurious new deps or board geometry change"
+    ]
+  },
+  "api": {
+    "mapped": 10,
+    "total": 10,
+    "pct": 100,
+    "tests": [
+      "[P0-GW-01] DW-37 marker + [cell] dep + pixel(to,cell) + all-kinds branch present",
+      "[P0-GW-02] existing move/vanish toPos spring [toPos.x,toPos.y,kind] still present (regression)",
+      "[P0-GW-03] planTileTransitions !moved→[] invariant and hold/slide still holds",
+      "[P0-GW-04] cell derivation still uses Math.max(...,1) guard",
+      "[P0-GW-05] syncTiles single writer invariant still holds",
+      "[P0-GW-06] pixel helper unchanged BOARD_PADDING + col*(cell+CELL_GAP)",
+      "[P1-GW-01] vanish fade schedule not broken by retarget (no withDelay in [cell] effect)",
+      "[P1-GW-02] applyPlan still routes via syncTiles and byCell(cellKey(t.to))",
+      "[P1-GW-03] SCAN exactly one cell-change retarget effect keyed on [cell] and one DW-37 marker",
+      "[P1-GW-04] ledger DW-37 done + resolution-undo 9f25aea8 64-hex + decision prefix"
+    ]
+  },
+  "fixtures": {
+    "fixture_file": "_bmad-output/test-artifacts/fixtures/dw-37-cell-retarget-fixtures.ts",
+    "scan_strings": 26,
+    "ledger_hash": "9f25aea808d8c07c4a91d21389fa0b4ec65f823bdd6305ae53edd9ee4804693c",
+    "assert_helpers": ["assertBoardGuard", "assertNoRegression", "assertInvariants", "assertLedger"]
+  },
+  "ledger": {
+    "dw": "DW-37",
+    "status": "done 2026-09-02",
+    "resolution": "resolved by sweep bundle dw-decision-dw-37",
+    "resolution_undo": "9f25aea808d8c07c4a91d21389fa0b4ec65f823bdd6305ae53edd9ee4804693c",
+    "decision": "2026-09-02 Retarget all kinds on cell change",
+    "sprint_status_touched": false
+  }
+}

@@ -22,7 +22,12 @@ export function weightedPicker(weights: readonly number[], rng: Rng): number {
   if (!(total > 0)) return weights.length > 0 ? weights.length - 1 : 0;
   const roll = rng();
   if (typeof roll !== 'number' || Number.isNaN(roll)) return weights.length - 1;
-  const scaled = roll * total;
+  // DW-56 hardening: clamp malformed rng deterministically instead of collapsing
+  // via fallthrough. roll >=1 (including Infinity) is clamped to the top pot
+  // slot (1 - EPSILON guarantees scaled < total); roll <0 clamps to 0 (first
+  // band). NaN already degraded to last index above per AC5 engine-never-throws.
+  const safeRoll = Math.min(Math.max(roll, 0), 1 - Number.EPSILON);
+  const scaled = safeRoll * total;
   let acc = 0;
   for (let i = 0; i < weights.length; i++) {
     acc += weights[i];

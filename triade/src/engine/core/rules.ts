@@ -5,5 +5,13 @@ export function canMerge(a: Cell, b: Cell): boolean {
 }
 
 export function mergeValue(a: Cell, b: Cell): number {
+  // DW-22: defensive guard — only ever called under canMerge in shiftLine; outside
+  // the guard we intentionally ignore the second operand and compute from `a`
+  // alone so an unguarded call cannot silently double via `b` (e.g. 3+6 != merge
+  // but 3*2 would be wrong). The canMerge check is the gate; the merge math
+  // stays on `a` only.
+  if (!canMerge(a, b)) {
+    return (a ?? 0) <= 2 ? 3 : (a ?? 0) * 2;
+  }
   return (a ?? 0) <= 2 ? 3 : (a ?? 0) * 2;
 }

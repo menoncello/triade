@@ -46,14 +46,20 @@ resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec746
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: triade/App.tsx:28-30
 reason: Rotation race: `useSafeAreaInsets` lags `useWindowDimensions` by a frame → board can flash to 0; `SafeAreaProvider` mounts without `initialMetrics`; ScrollView offset persists across rotation (`triade/App.tsx:28-30,103`). Native polish, manual-validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-6
+resolution-undo: 61d4ee9e5c27fb2394f9073e803812b744e157c97ba4ad6b783f48aa9529ea48 2026-09-02 7374617475733a206f70656e
+decision: 2026-09-02 Add initialMetrics plus synced hook — Provide SafeAreaProvider initialMetrics and synced insets effect that debounces rotation so board never flashes to 0; verify on simulator landscape rotation.
 
 ### DW-7: Status bar legibility / band-under-status-bar on non-notch landscape (light UI + `StatusBar style="auto"`). Manual validation domain.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: n/a
 reason: Status bar legibility / band-under-status-bar on non-notch landscape (light UI + `StatusBar style="auto"`). Manual validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-7
+resolution-undo: 0fca74990eec61dcdc0ddb42ec0e67898120b24fce4833ecc178f18ed2a2d422 2026-09-02 7374617475733a206f70656e
+decision: 2026-09-02 Force dark status bar — Set StatusBar style dark on landscape light backgrounds and verify contrast on device.
 
 ### DW-8: Preview placeholder Views aren't a11y-hidden (`accessible={false}`), and the raw score lacks a thousands separator vs the mockup's "3.240" (`triade/src/ui/Hud.tsx:26,48`). Out of scope — preview data is Epic 7, a11y is Epic 9.
 
@@ -84,7 +90,9 @@ resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec746
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: n/a
 reason: Story doc T2 note says "12 layout tests"; final suite is 14 (clamp-path + golden-anchor tests added in the 2026-08-17 review fixes). Doc-only.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-doc-layout-test-count-sync
+resolution-undo: 8080feef418d24a73dc5a7b01b78628dc71e4042ec6e3e2c3dc1393a3aa9a6eb 2026-09-02 7374617475733a206f70656e
 
 ### DW-12: Landscape rotation visual pass on the simulator
 
@@ -159,14 +167,18 @@ resolution-undo: 26a75af183b8ffbe96535a58ff2c6ec6f12a3a000117765a9f94e84b21702c6
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: Noop moves return a full trace of stationary tiles
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-trace-merge-guards
+resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b 2026-09-02 7374617475733a206f70656e
 
 ### DW-22: mergeValue ignores its second operand outside the canMerge guard
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: mergeValue ignores its second operand outside the canMerge guard
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-trace-merge-guards
+resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b 2026-09-02 7374617475733a206f70656e
 
 ### DW-23: spawnTile mutates its input board and returns the same reference
 
@@ -216,7 +228,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13)"), 2026-09-01
 location: GameBoard.tsx:171-175
 reason: `moveResult === null` after a previous non-null leaves tile state stale in `GameBoard.tsx:171-175` — unreachable today (App never resets); latent for the future new-game/reset path.
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/render/GameBoard.tsx:449-465 rebuildTilesFromBoard on moveResult null after non-null plus settle timer clear — stale tile state after App reset is now rebuilt, verified in current tree
 
 ### DW-29: Temp harness `doMove` stale board closure drops rapid same-frame moves (`triade/App.tsx:20-27`) — temporary code replaced by real input in story 1.6.
 
@@ -255,7 +268,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10, re-review)"), 2026-09-01
 location: n/a
 reason: `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/game/matchScore.ts:21-23 isNewRecord uses sessionStartBest + triade/App.tsx:112,180,215-217 sessionStartBestByLaneRef/hydrationOkByLaneRef now correctly scopes per-lane persisted best — contract documented and tested, app-storage revisit from 1.4 closed
 
 ### DW-34: Parity suite has no multi-move / full-game seeded differential — sequence-level divergences (spawn-position loops, repeated-move score accumulation) are invisible. Deferred; unit suite + parity matrix cover the I/O matrix.
 
@@ -289,7 +303,10 @@ resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:98-112
 reason: Orientation/resize mid-animation leaves shared values in stale pixel space (`triade/src/render/GameBoard.tsx:98-112, 174-175, 250-269`): rest tiles never re-target on `cell` change; a swipe accepted right after a resize re-plans and tiles visibly jump. Pre-existing render bug that the story 1.6 re-plan path now triggers. Manual-validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-37
+resolution-undo: 9f25aea808d8c07c4a91d21389fa0b4ec65f823bdd6305ae53edd9ee4804693c 2026-09-02 7374617475733a206f70656e
+decision: 2026-09-02 Retarget all kinds on cell change — Add cell-change effect retargeting x/y shared values for rest/vanish/move tiles to new pixel grid.
 
 ### DW-38: `tilesRef` remains a second source of truth for tile state (`triade/src/render/GameBoard.tsx:205, 257-258, 285-287`): re-confirmed during the story 1.6 re-review that both writers (`applyPlan`, `onVanish`) keep the ref in sync, but any future `setTilesState` writer that forgets to sync the ref would desync rendering from the plan. Latent maintenance risk (same class as Df2).
 
@@ -452,7 +469,10 @@ resolution: CLOSED by story 2.6 code review (2026-08-22): Number.isFinite guard 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-22)"), 2026-09-01
 location: n/a
 reason: Malformed-rng hardening without crash: a roll ≥ 1 in `weightedPicker` collapses deterministically to the top pot slot (no clamp to a valid band), and a NaN third draw is copied unvalidated into `pendingSpawn.displayRoll` (breaking the documented `[0,1)` contract silently). Pre-existing trust-the-rng class — the engine assumes well-behaved `[0,1)` rngs; only crash-capable paths (see `pickIndex` patch) were fixed this story.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-rng-trust-hardening
+resolution-undo: 0eb6ce6190c5acb9d12bf8a40d8fc456689ad334464c5ec964b0f6963b0d421e 2026-09-02 7374617475733a206f70656e
+decision: 2026-09-02 Clamp roll and validate displayRoll — Clamp roll with Math.min and replace NaN displayRoll with 0.5 fallback.
 
 ### DW-57: Statistical gates in `adaptive-spawn-integration.test.ts` use fixed per-test seeds (AC2 uniformity `0xc31` at N=15000, ±2% absolute ≈ ~10σ; AC7 session `0x26c6`; ceiling-ordering derived from `0x51ce + ceiling`). Deterministic tripwires today, but brittle to any future seed rotation or rng switch; document the σ budget next time these tests are touched. (Numbers corrected by the third-pass review 2026-08-23: previously said "±2% at N=10k, ~4–5σ". In that same pass the AC7 frequency gates were switched to sigma-scaled 5σ bounds — see sigmaBound in the test file — eliminating the seed-starvation/knife-edge coupling for those specific gates; AC2 and the aggregate 40/40/20 window remain absolute.)
 
@@ -581,21 +601,27 @@ resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-25)"), 2026-09-01
 location: n/a
 reason: `pickIndex` / `weightedPicker` degradam NaN/Infinity para índice 0 em vez de lançar — trust-the-rng, já documentado em deferred 2-6; `spawnTile` com pool vazio retorna `nulls` com 0 draws (engine-never-throws) enquanto `move()` assume AC4 (pool sempre não-vazio quando `moved===true`), então o orçamento de 3 draws cairia para 2 no branch inalcançável mas guardado. Pre-existing.
-status: open
+status: done 2026-09-02
+resolution: closed by human decision: Accept degrade as intentional
+decision: 2026-09-02 Keep degrade-to-0 — Accept degrade as intentional
 
 ### DW-72: Sem validação de limites/tipo em `candidates` (OOB `[4,0]`, `null`, `[r]` sem `c`) — intencionalmente não guardado por spec `spawn.ts:58-67` "add guard only if second caller"; produção garante in-bounds via `game.ts:53-64` opposite-edge. Pre-existing design decision, segunda caller dispara guard (`r>=0 && r<GRID_SIZE && board[r]?.[c]===null`).
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: spawn.ts:58-67
 reason: Sem validação de limites/tipo em `candidates` (OOB `[4,0]`, `null`, `[r]` sem `c`) — intencionalmente não guardado por spec `spawn.ts:58-67` "add guard only if second caller"; produção garante in-bounds via `game.ts:53-64` opposite-edge. Pre-existing design decision, segunda caller dispara guard (`r>=0 && r<GRID_SIZE && board[r]?.[c]===null`).
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-candidates-validation
+resolution-undo: 365ffe33e51d4b7fa2e9623dfbd7d90efa61c409764e73db7e6521d8c5c73be2 2026-09-02 7374617475733a206f70656e
 
 ### DW-73: Duplicatas em `candidates` inflariam `pool` e enviesariam `pickIndex` (célula duplicada 2x mais provável, quebra uniforme AC3) — não alcançável via `game.ts` (push distinto por linha/coluna), só via API direta/teste.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: game.ts
 reason: Duplicatas em `candidates` inflariam `pool` e enviesariam `pickIndex` (célula duplicada 2x mais provável, quebra uniforme AC3) — não alcançável via `game.ts` (push distinto por linha/coluna), só via API direta/teste.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-candidates-validation
+resolution-undo: 365ffe33e51d4b7fa2e9623dfbd7d90efa61c409764e73db7e6521d8c5c73be2 2026-09-02 7374617475733a206f70656e
 
 ### DW-74: Compactação single-pass falha para linhas com múltiplos gaps (`[null,null,null,2]` → `[null,null,2,null]` em vez de `[2,null,null,null]`) em `shiftLine` loop `dest=i-1` — pre-existing em `line.ts:46-64`, não causado por 12.1 (só `moved` adicionado); exposição limitada porque board é sempre compactado por direção.
 
@@ -620,7 +646,9 @@ resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: `pickIndex`/`weightedPicker` degradam NaN/Infinity para 0 / clamp e `pool=[]` retorna `nulls` 0 draws — trust-the-rng, branch inalcançável mas guardado per AC5 engine-never-throws.
-status: open
+status: done 2026-09-02
+resolution: closed by human decision: Close DW-76 and track via DW-71
+decision: 2026-09-02 Close as duplicate of DW-71 — Close DW-76 and track via DW-71
 
 ### DW-77: Acoplamento `GRID_SIZE` fixo 4x4 (`line.ts` assume 4, `helpers.ts:15` `SIZE=4`) — contrato `Board` é fixo, não configurável por nível.
 
@@ -628,6 +656,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-s
 location: line.ts
 reason: Acoplamento `GRID_SIZE` fixo 4x4 (`line.ts` assume 4, `helpers.ts:15` `SIZE=4`) — contrato `Board` é fixo, não configurável por nível.
 status: open
+decision: 2026-09-02 Make configurable — Introduce BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/{line,spawn,types}.ts and triade/test-utils/helpers.ts with validation and migrate tests to use the param, enabling level-specific sizes.
 decision: 2026-09-02 Make configurable — Introduce a BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/line.ts, spawn.ts, types.ts and triade/test-utils/helpers.ts so levels can specify size; add validation and migrate tests.
 
 ### DW-78: ULP no boundary 0.6 — `preview.ts:80` `if (roll < 0.6)` pode flipar por 1 ULP (`0.5999999999999999` vs `0.6000000000000001` ou `0.6 - EPSILON/2` que arredonda para 0.6), quebrando invariante 60/40 por um double representável; teste atual pinna `0.599` exact / `0.6` range mas não EPSILON. Pre-existing, tolerância float do spec; engine assume `
@@ -704,6 +733,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-re
 location: triade/App.tsx:104
 reason: Forfeited-continue vacuous (comment-only discard) — `triade/App.tsx:104` `// AC6/7 forfeited continue dies` sem state para descartar; futuro `continueCredit/reviveCount` burla `!continueBudget` — vacuous hoje (Clean single-lane) mas pin frágil — deferred, low.
 status: open
+decision: 2026-09-02 Implement forfeitedContinue state — Add explicit forfeitedContinue flag that dies on continue attempt.
 
 ### DW-87: Persist race + degraded hydration discards live best — `triade/App.tsx:75-82 + 103-110` `initialScore(persistedBest)` `[persistedBest]` only; `saveBest` async vs restart pode perder record; `hydrationOkRef=false` zera best — trade-off spec para não vazar `match.best` — deferred, medium.
 
@@ -711,6 +741,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-re
 location: triade/App.tsx:75-82
 reason: Persist race + degraded hydration discards live best — `triade/App.tsx:75-82 + 103-110` `initialScore(persistedBest)` `[persistedBest]` only; `saveBest` async vs restart pode perder record; `hydrationOkRef=false` zera best — trade-off spec para não vazar `match.best` — deferred, medium.
 status: open
+decision: 2026-09-02 Serialize saveBest before restart — Await saveBest before handleRestart and gate isNewRecord on hydrationOkRef.
 
 ### DW-88: Tiles corrupt after restart (null moveResult never rebuilds) — `triade/src/render/GameBoard.tsx:262-265` `if(!moveResult) return` deixa tiles stale 16->9 — não causado por 6.3 (`render` byte-identical), já deferido em 1-3 — deferred, high (pre-existing).
 
@@ -745,6 +776,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-re
 location: triade/src/ui/GameOverOverlay.tsx:26-50
 reason: Reduced-motion branch stale across remounts — `triade/src/ui/GameOverOverlay.tsx:26-50` `useRef` captura só 1º mount — não alcançável hoje `reducedMotion={false}` — deferred, low.
 status: open
+decision: 2026-09-02 Recreate Animated.Value on toggle — Add effect that recreates or re-targets value on reducedMotion toggle.
 
 ### DW-92: insets undefined / rotation during fade — `triade/src/ui/GameOverOverlay.tsx:17-20` defensivo `?.top ??0` — edge tablet — deferred, low.
 
@@ -752,6 +784,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-re
 location: triade/src/ui/GameOverOverlay.tsx:17-20
 reason: insets undefined / rotation during fade — `triade/src/ui/GameOverOverlay.tsx:17-20` defensivo `?.top ??0` — edge tablet — deferred, low.
 status: open
+decision: 2026-09-02 Clamp insets to finite >=0 — Add clamp for insets top/bottom to finite >=0.
 
 ### DW-93: RNG determinism discontinuity never reseeded — `triade/App.tsx:40` `mulberry32(20260808)` único — deferred, low.
 
@@ -759,6 +792,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-re
 location: triade/App.tsx:40
 reason: RNG determinism discontinuity never reseeded — `triade/App.tsx:40` `mulberry32(20260808)` único — deferred, low.
 status: open
+decision: 2026-09-02 Reseed RNG per game — Reseed rngRef on each newGame with Date.now or increment.
 
 ### DW-94: AvailablePot fan-out stale com deflate — `triade/App.tsx:152` + `preview.ts:55-65` — FR-43 edge — deferred, low.
 
@@ -791,6 +825,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: Hydration failure `ok:false` falso-positivo: `loadBest()` degradado retorna `{best:0,ok:false}` mas `sessionStartBestRef=0` faz `isNewRecord(0,50)=true` acender recorde indevido para usuário com recorde 500. Pré-existente (App byte-identical), fora de escopo 6.4 verify-only; reavaliar em Epic 9/storage quando `hydrationOkRef` bloquear highlight.
 status: open
+decision: 2026-09-02 Gate highlight on hydrationOk — Only compute isNewRecord when hydrationOkByLaneRef true.
 
 ### DW-98: Stale `sessionStartBestRef` multi-jogo: após recorde 150, segundo jogo 120 com `sessionStartBestRef 100` ainda acende (`100<120`) mesmo `persistedBest` já 150 — semântica cross-restart ambígua; spec mantém ref na sessão para não vazar `match.best`, mas sem update pós-persist. Pré-existente, Epic 3/6 follow-up.
 
@@ -798,6 +833,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: Stale `sessionStartBestRef` multi-jogo: após recorde 150, segundo jogo 120 com `sessionStartBestRef 100` ainda acende (`100<120`) mesmo `persistedBest` já 150 — semântica cross-restart ambígua; spec mantém ref na sessão para não vazar `match.best`, mas sem update pós-persist. Pré-existente, Epic 3/6 follow-up.
 status: open
+decision: 2026-09-02 Update ref on save resolution — Update sessionStartBestByLaneRef to persistedBest after save resolves.
 
 ### DW-99: Corrida async `saveBest`: `handleRestart` com `persistedBest` stale se restart antes de `saveBest` resolver; `initialScore(persistedBest)` captura 100 não 150. Pré-existente, manual-validation.
 
@@ -805,6 +841,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: Corrida async `saveBest`: `handleRestart` com `persistedBest` stale se restart antes de `saveBest` resolver; `initialScore(persistedBest)` captura 100 não 150. Pré-existente, manual-validation.
 status: open
+decision: 2026-09-02 Await saveBest before restart — Make handleRestart await pending saveBest promises.
 
 ### DW-100: Entradas não-finitas/corrompidas: `previousBest -5/NaN/Infinity` ou `score NaN/Infinity` → highlight ou render `"NaN"` sem `Number.isFinite` guard; `parseBest` já rejeita mas bypass via MMKV nativo possível. Contrato `MatchScore` garante finitos.
 
@@ -812,6 +849,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: Entradas não-finitas/corrompidas: `previousBest -5/NaN/Infinity` ou `score NaN/Infinity` → highlight ou render `"NaN"` sem `Number.isFinite` guard; `parseBest` já rejeita mas bypass via MMKV nativo possível. Contrato `MatchScore` garante finitos.
 status: open
+decision: 2026-09-02 Add isFinite guards — Add Number.isFinite guards in matchScore and render.
 
 ### DW-101: Overflow layout: `score >1e9` estoura `row space-between` sem `numberOfLines/ellipsizeMode/flexShrink` no `GameOverOverlay`. Pré-existente, fora de MVP.
 
@@ -819,6 +857,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: Overflow layout: `score >1e9` estoura `row space-between` sem `numberOfLines/ellipsizeMode/flexShrink` no `GameOverOverlay`. Pré-existente, fora de MVP.
 status: open
+decision: 2026-09-02 Add ellipsize and flexShrink — Add numberOfLines=1 ellipsizeMode tail flexShrink.
 
 ### DW-102: `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual.
 
@@ -826,6 +865,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual.
 status: open
+decision: 2026-09-02 Bundle overlay carriers — Make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering (overlay 2 vs Hud 1) in an integration render test, and clear/restart cleanly on unmount mid-fade.
 decision: 2026-09-02 Bundle overlay carriers — Fix GameOverOverlay carriers in one pass: make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering in an integration render test, and ensure unmount mid-fade clears and restarts cleanly.
 
 ### DW-103: Ladder ceiling não pinado end-to-end: novo teste varia só `stats.maxTile` prop (thin-view correto), não cadeia `ceilingDetector→tierForCeiling→potForTier`; `isNewRecord(match.best,…)` leak via alias não Runtime-pinado. Thin-view é intencional per spec; cadeia é `engine.purity`/`preview-invariant`.
@@ -856,7 +896,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-3-screen-shake (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: Rapid second swipe before first shake 130ms completes overwrites withSequence without cancelAnimation — truncated overlap/jank
-status: open
+status: done 2026-09-02
+resolution: closed by human decision: Accept jank as low
+decision: 2026-09-02 Keep truncated overlap as acceptable — Accept jank as low
 
 ### DW-107: Board shake 5-8px at edges clipped by parent View overflow hidden
 
@@ -864,6 +906,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 8-3-sc
 location: n/a
 reason: Board shake 5-8px at edges clipped by parent View overflow hidden
 status: open
+decision: 2026-09-02 Set overflow visible during shake — Toggle overflow visible during shake or add padding.
 
 ### DW-108: BulletTime spawned undefined gap — trace entry without spawned field misclassified as merge
 
@@ -871,6 +914,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bu
 location: n/a
 reason: BulletTime spawned undefined gap — trace entry without spawned field misclassified as merge
 status: open
+decision: 2026-09-02 Check spawned === true explicitly — Filter with entry.spawned === true or in entry check.
 
 ### DW-109: BulletTime value <3 not filtered — 0 or negative finite pollutes sessionBestMerge
 
@@ -878,6 +922,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bu
 location: n/a
 reason: BulletTime value <3 not filtered — 0 or negative finite pollutes sessionBestMerge
 status: open
+decision: 2026-09-02 Add value >=3 guard — Add value>=3 filter before max update.
 
 ### DW-110: GameBoard width unvalidated for bullet flash overlay — NaN width propagates to overlay style
 
@@ -885,10 +930,13 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bu
 location: n/a
 reason: GameBoard width unvalidated for bullet flash overlay — NaN width propagates to overlay style
 status: open
+decision: 2026-09-02 Validate width finite fallback 1 — Clamp width to Math.max(1, finiteWidth) for overlay.
 
 ### DW-111: doMove identity invalidates on every sessionBestMerge change — gesture stability claim weakened
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bullet-time (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: doMove identity invalidates on every sessionBestMerge change — gesture stability claim weakened
-status: open
+status: done 2026-09-02
+resolution: closed by human decision: Keep current, functional updater avoids stale
+decision: 2026-09-02 Keep deps as stability still functional — Keep current, functional updater avoids stale

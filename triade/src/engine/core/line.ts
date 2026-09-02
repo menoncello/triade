@@ -70,6 +70,9 @@ export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number
   return { line: out, score, moved };
 }
 
+// DW-21: boardFromLines always returns a full placement trace; the noop
+// contract (empty trace) is enforced in game.move after the boardsEqual check
+// so effective-move traces stay meaningful and noop traces stay empty.
 export function boardFromLines(lines: ShiftedCell[][], dir: Direction): { board: Board; trace: TraceEntry[] } {
   const board = emptyBoard();
   const trace: TraceEntry[] = [];

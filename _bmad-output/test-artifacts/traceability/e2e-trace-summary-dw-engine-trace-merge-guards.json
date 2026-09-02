@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-02T13:40:00+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "35c9d1c",
+  "target": {
+    "type": "story",
+    "id": "dw-engine-trace-merge-guards",
+    "label": "dw-engine-trace-merge-guards \u2014 trace empty on noop and mergeValue guard (DW-21, DW-22)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/test-design-dw-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-trace-merge-guards.md",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/__tests__/engine/line.test.ts",
+      "triade/__tests__/engine/rules.test.ts",
+      "triade/__tests__/render/transitionPlan.test.ts",
+      "triade/__tests__/game/preview-invariant.test.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/rules.ts",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/types.ts",
+      "triade/src/render/transitionPlan.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-trace-merge-guards-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-engine-trace-merge-guards.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 32,
+      "total": 32,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 11,
+        "covered": 11,
+        "pct": 100
+      },
+      "P1": {
+        "total": 9,
+        "covered": 9,
+        "pct": 100
+      },
+      "P2": {
+        "total": 7,
+        "covered": 7,
+        "pct": 100
+      },
+      "P3": {
+        "total": 5,
+        "covered": 5,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 5,
+        "criteria_covered": 5
+      },
+      "api": {
+        "tests": 7,
+        "criteria_covered": 7
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 49,
+        "criteria_covered": 32
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 9,
+    "cases": 61,
+    "skipped_cases": 44,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure engine math \u2014 mergeValue a-only tautology, trace is data math, not auth boundary; negative-path is canMerge false + null Cell never-throw)",
+    "error_path": "present (noop trace 0 vs effective meaningful, mergeValue a-only vs guarded 1+2\u21923/3+3\u21926, draw-budget 0/3, ledger hashes, HOLD vs STATIONARY taxonomy)",
+    "ui_journey": "not_applicable (pure engine \u2014 no routes/screens; journey is move\u2192boardFromLines\u2192planTileTransitions chain host unit)",
+    "ui_state": "not_applicable (no UI in this bundle \u2014 state is TraceEntry spawned false/true, score 0, pendingSpawn shallow-copy)"
+  },
+  "gate_criteria": {
+    "p0_coverage_required": 100,
+    "p0_coverage_actual": 100,
+    "p0_status": "MET",
+    "p1_coverage_target": 90,
+    "p1_coverage_minimum": 80,
+    "p1_coverage_actual": 100,
+    "p1_status": "MET",
+    "overall_coverage_minimum": 80,
+    "overall_coverage_actual": 100,
+    "overall_status": "MET"
+  },
+  "gate_status": "PASS",
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "P2",
+      "action": "Keep single-guard invariant \u2014 any second if (!moved) trace=[] or reintroduced const trace = built.trace must fail rg allowlists",
+      "requirements": [
+        "P2-01",
+        "P2-02"
+      ]
+    },
+    {
+      "priority": "P3",
+      "action": "Consider stricter mergeValue fail-fast (throw on non-mergeable) vs current tautology a-only \u2014 would require migrating rules.test.ts expects mergeValue(1,1)\u21923; until then document tautology as intentional (Review Triage 11 reject)",
+      "requirements": [
+        "P0-06",
+        "R-002"
+      ]
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-trace-merge-guards.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  },
+  "execution_evidence": {
+    "gateway_tests_skipped": "tests/api/engine-trace-merge-guards.gateway.spec.ts 12 skipped (RED dormant \u2014 activate to green)",
+    "umbrella_tests_skipped": "tests/e2e/engine-trace-merge-guards.umbrella.spec.ts 10 skipped (RED dormant)",
+    "unit_atdd_skipped": "tests/unit/engine-trace-merge-guards.atdd.test.ts 29 skipped (RED dormant \u2014 activate to 29 pass)",
+    "triade_active": "triade/__tests__/engine/game.test.ts 33 pass + line.test.ts 7+ + rules.test.ts 6 + transitionPlan.test.ts 13 + preview-invariant.test.ts:373 0 vs 16 stationary tightened \u2014 total 60+ pass / 0 fail",
+    "full_suite": "npm --prefix triade test \u2192 910 pass / 0 fail / 238 skipped (238 includes 51 dormant artifact suites) \u2014 11 expected RED deferred low only (shake/bulletTime/punch/reducedMotion/app.restore) \u2014 no new RED from this bundle",
+    "tsc": "npx tsc --noEmit --project triade/tsconfig.json clean + npx tsc --noEmit --project triade/tsconfig.test.json clean (both via TSX_TSCONFIG_PATH)",
+    "rg": "rg -n 'let trace = built.trace' triade/src/engine/core/game.ts \u21921 | rg -n 'if \\(!moved\\) trace = \\[\\]' \u21921 | rg -n 'trace.push' \u21921 inside if(moved) | rg -n 'if \\(!canMerge' triade/src/engine/core/rules.ts \u21921 | rg -n 'DW-21: boardFromLines always returns' triade/src/engine/core/line.ts \u21921 | rg -n 'b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b' deferred-work.md \u21922 hits",
+    "ledger": "deferred-work.md DW-21/DW-22 open\u2192done 2026-09-02 + resolution: resolved by sweep bundle dw-engine-trace-merge-guards + resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b (64-hex, 2 hits)",
+    "sprint_status": "git diff -- _bmad-output/implementation-artifacts/sprint-status.yaml \u2192 empty (never write, never revert \u2014 orchestrator-owned, verified)",
+    "git_stat_engine": "git diff --stat -- triade/src/engine \u2192 game.ts + rules.ts + line.ts(doc) only \u2014 no engine/spawn/weights/ceiling change"
+  }
+}

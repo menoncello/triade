@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T16:30:00.000000+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-engine-rng-trust-hardening",
+    "label": "dw-engine-rng-trust-hardening — malformed-RNG trust hardening (weightedPicker clamp + displayRoll normalization) — DW-56"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-rng-trust-hardening.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "evidence": {
+    "gateway": "14/14 pass",
+    "umbrella": "9/9 pass",
+    "atdd": "20/20 pass when activated (20 dormant it.skip)",
+    "host_gate": "910 pass / 0 fail / 291 skipped dormant → 930 pass activated; tsc both configs clean beyond 8 pre-existing",
+    "scans": "safeRoll 1/2, normalizeDisplayRoll 3, EPSILON 2, return 0.5 1, bare 0, while rng 0, ledger 0eb6ce61 1",
+    "working_tree": "game.ts + weights.ts only vs baseline 2e91c12; sprint-status.yaml untouched"
+  }
+}

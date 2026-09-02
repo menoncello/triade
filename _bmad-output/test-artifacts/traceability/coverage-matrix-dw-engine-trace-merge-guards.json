@@ -1,0 +1,1671 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T13:40:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-trace-merge-guards",
+    "label": "dw-engine-trace-merge-guards \u2014 trace empty on noop and mergeValue guard (DW-21, DW-22)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/test-design-dw-engine-trace-merge-guards.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-trace-merge-guards.md",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/__tests__/engine/line.test.ts",
+      "triade/__tests__/engine/rules.test.ts",
+      "triade/__tests__/render/transitionPlan.test.ts",
+      "triade/__tests__/game/preview-invariant.test.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/rules.ts",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/types.ts",
+      "triade/src/render/transitionPlan.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-trace-merge-guards-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-engine-trace-merge-guards.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "3bcf38cc7734c79f133e9b1619f765b32679fa02 -> 35c9d1c fix(engine): trace empty on noop and mergeValue guard (DW-21/DW-22)",
+    "head": "35c9d1c (35c9d1ca4006652e142e41a66fd45a98c31dcf1b)",
+    "working_tree_ledger": "2\u00d7 DW-21/DW-22 open\u2192done 2026-09-02 + resolution: resolved by sweep bundle dw-engine-trace-merge-guards + resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b (rg 2 hits, sprint-status.yaml untouched \u2014 orchestrator-owned)",
+    "production_files": [
+      "triade/src/engine/core/game.ts:50-57 let trace = built.trace; const moved = !boardsEqual(state.board, effectiveBoard); if (!moved) trace=[]; (was const trace = built.trace with no emptying) \u2014 enforces empty trace on noop (DW-21). Spawn trace.push only inside if (moved)",
+      "triade/src/engine/core/rules.ts:5-17 if (!canMerge(a,b)) return (a??0)<=2?3:(a??0)*2; return (a??0)<=2?3:(a??0)*2; plus JSDoc DW-22: defensive guard \u2014 only ever called under canMerge; outside we intentionally ignore second operand (both branches same a-only, tautology explicit)",
+      "triade/src/engine/core/line.ts:73-76 doc DW-21: boardFromLines always returns a full placement trace; noop contract enforced in game.move after boardsEqual check \u2014 still pushes every v!==null ShiftedCell regardless of moved",
+      "triade/__tests__/game/preview-invariant.test.ts:373 tightened assert.strictEqual(noopRes.trace.length, 0, 'noop trace must be empty') (was 16 stationary)",
+      "triade/__tests__/render/transitionPlan.test.ts:108 tightened assert.strictEqual(result.trace.length, 0, 'DW-21: noop trace must be empty') + title noop move \u2026 empty trace (DW-21) (was trace still describes stationary board)",
+      "triade/src/engine/core/types.ts:43-57 unchanged TraceEntry {value,to,from,spawned} + MoveResult + GRID_SIZE=4 rectangular contract preserved",
+      "triade/src/render/transitionPlan.ts:21-54 byte-identical planTileTransitions already short-circuits if (!result.moved) return []",
+      "triade/src/engine byte-identical except game.ts+rules.ts+line.ts(doc) \u2014 git diff --stat -- triade/src/engine shows 5-line hardening, triade/src/render byte-identical"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-trace-merge-guards.md status: done baseline 3bcf38cc \u2192 final e325bab (intent/boundaries/I-O matrix 5 rows + 4 tasks 5 ACs)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "DW-21 noop left full non-mergeable \u2192 trace 0, moved false, score 0, no spawned, pending unchanged (AC noop \u2014 boardWith [[1,3,6,12]\u00d74] left)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01-triade",
+          "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 373,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "[P0-API-01] gateway noop left trace 0 moved false score 0 no spawned pending unchanged",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 19,
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-unit",
+          "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 36,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-01-game",
+          "title": "game.test.ts noop \u2192 no spawned (tightened to trace 0 via preview-invariant)",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 198,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "DW-21 noop 4-dir same board \u2192 all trace 0 up/right/down (wall-agnostic movementLines + boardsEqual \u2192 !moved \u2192 [])",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02-gateway",
+          "title": "[P0-API-02] gateway noop 4-dir same board trace 0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 26,
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-unit",
+          "title": "[P0-02] DW-21 noop 4-dir same board \u2192 all trace 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 47,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-02-e2e",
+          "title": "[P0-E2E-01] spec boundaries GRID_SIZE 4 + noop trace contract",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "line": 8,
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "DW-21 effective [1,2,null,null] left \u2192 moved true, score 3, trace merged 3 at [0,0] from [[0,0],[0,1]] + spawned at [0,3] opposite edge",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03-unit",
+          "title": "[P0-03] DW-21 effective [1,2,null,null] left \u2192 merged 3 + spawn",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "[P0-API-03] gateway effective [1,2,null,null] left \u2192 merged 3 + spawn",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 34,
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-03-game",
+          "title": "game.test.ts HAPPY_PATH 1+2\u21923",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 45,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-previewInv",
+          "title": "preview-invariant blocked swarm noop vs effective",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 120,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "DW-21 effective with gaps [3,null,3,null] left \u2192 moved true, trace 2 slides + spawn (not emptied \u2014 filter lives in game.ts not line.ts)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04-unit",
+          "title": "[P0-04] DW-21 effective with gaps [3,null,3,null] left \u2192 2 slides + spawn",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 76,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-line",
+          "title": "line.test.ts gap [3,null,3,null]\u2192[3,3,null,null] moved true",
+          "file": "triade/__tests__/engine/line.test.ts",
+          "line": 22,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "DW-21 HOLD vs STATIONARY packed [1,3,6,12] row left stays noop trace 0 not 4 holds (shiftLine.moved value-based)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05-unit",
+          "title": "[P0-05] DW-21 packed [1,3,6,12] row left stays noop trace 0 not 4 holds",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 86,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-05-line",
+          "title": "line.test.ts shiftLine([1,3,6,12]).moved === false",
+          "file": "triade/__tests__/engine/line.test.ts",
+          "line": 31,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-transPlan",
+          "title": "transitionPlan hold stationary \u2192 hold vs noop []",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 45,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "DW-22 mergeValue tautology unguarded: (1,1)->3 (2,2)->3 (3,6)->6 (null,3)->6 a-only no throw (canMerge 3,6 false proves b ignored)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06-unit",
+          "title": "[P0-06] DW-22 mergeValue tautology unguarded a-only no throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 94,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "[P0-API-06] gateway mergeValue tautology a-only",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 52,
+          "level": "api",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-06-rules",
+          "title": "rules.test.ts mergeValue(1,1)\u21923 / (2,2)\u21923 / (3,null)\u21926",
+          "file": "triade/__tests__/engine/rules.test.ts",
+          "line": 28,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "DW-22 mergeValue guarded still correct: (1,2)->3 (2,1)->3 (3,3)->6 (6,6)->12 (12,12)->24 \u2014 canMerge true paths",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07-unit",
+          "title": "[P0-07] DW-22 mergeValue guarded still correct",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 104,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-rules",
+          "title": "rules.test.ts mergeValue(1,2)\u21923 / (3,3)\u21926",
+          "file": "triade/__tests__/engine/rules.test.ts",
+          "line": 35,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-08",
+      "description": "DW-21 boardFromLines boundary full-placement vs game.move noop empty (holds survive on effective partial)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-08-unit",
+          "title": "[P0-08] DW-21 boardFromLines full-placement vs game.move noop empty boundary",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 114,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-08-lineDoc",
+          "title": "line.ts DW-21 doc boardFromLines always returns full placement trace",
+          "file": "triade/src/engine/core/line.ts",
+          "line": 73,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-umbrella",
+          "title": "[E2E-P1-01] line.ts DW-21 doc only meaningful trace via game.move not line.ts filter",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "line": 18,
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-09",
+      "description": "DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not (filter in game.ts not line.ts)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-09-unit",
+          "title": "[P0-09] DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 134,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-10",
+      "description": "DW-21 trace spawned never on noop, exactly 1 on effective opposite edge (if (moved) { spawnTile\u2026trace.push(spawn) } ordering)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-10-unit",
+          "title": "[P0-10] DW-21 trace spawned never on noop, exactly 1 on effective",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 144,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-10-game",
+          "title": "game.test.ts spawn at opposite edge candidates[0]",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 88,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-11",
+      "description": "DW-21/22 manual 3-log probe: noop [] false + merge 3 + guard a-only (spec Verification single node --loader tsx command)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-11-unit",
+          "title": "[P0-11] DW-21/22 manual 3-log probe noop [] false + merge 3 + guard a-only",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 153,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-11-gateway",
+          "title": "[P0-API-11] gateway manual probe",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 78,
+          "level": "api",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "existing pipeline still green: game.test.ts 33 + preview-invariant + transitionPlan 60 pass (byte-identical valid-path guard)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01-unit",
+          "title": "[P1-01] P1 game.test.ts 33 suites still green alongside noop fix",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 168,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-game",
+          "title": "game.test.ts 33 pass",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-transPlan",
+          "title": "transitionPlan.test.ts 13 pass",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "line.test.ts holds survive on effective partial not filtered (shiftLine gap-fill 2 slides)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] P1 line.test.ts holds survive on effective partial not filtered",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 172,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-line",
+          "title": "line.test.ts effective partial",
+          "file": "triade/__tests__/engine/line.test.ts",
+          "line": 15,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "rules.test.ts 6 cases still green: canMerge + mergeValue 1+2/3+3 (tautology keeps 1,1\u21923 expected)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] P1 rules.test.ts 6 cases still green",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 179,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-rules",
+          "title": "rules.test.ts 6 pass",
+          "file": "triade/__tests__/engine/rules.test.ts",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "transitionPlan noop empty plan and hold stationary pair (moved:false\u2192[] short-circuit compatible)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] P1 transitionPlan noop empty plan and hold stationary pair",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 186,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-transPlan",
+          "title": "transitionPlan noop empty plan",
+          "file": "triade/__tests__/render/transitionPlan.test.ts",
+          "line": 108,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "preview-invariant noop trace must be empty tightened at 35c9d1c (assert.strictEqual 0 not 16 stationary)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] P1 preview-invariant noop trace must be empty",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 197,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-preview",
+          "title": "preview-invariant.test.ts:373 tightened noopRes.trace.length 0",
+          "file": "triade/__tests__/game/preview-invariant.test.ts",
+          "line": 373,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "draw-budget preserved: effective 3 draws, noop 0 (spyRng + rngOf throw-on-exhaust pin)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] P1 draw-budget preserved effective 3 draws noop 0",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 202,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "[P1-API-06-draw] gateway draw-budget 3/0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 68,
+          "level": "api",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-07",
+      "description": "moved divergence convergence: shiftLine.moved (value-based out.some) vs game.move.moved (!boardsEqual)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07-unit",
+          "title": "[P1-07] P1 moved divergence convergence",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 216,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-08",
+      "description": "ledger resolution-undo b4557fd 2 hits DW-21/22 done 2026-09-02 (resolution + hash coupling)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-08-unit",
+          "title": "[P1-08] P1 ledger resolution-undo b4557fd 2 hits DW-21/22 done",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 228,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-08-umbrella",
+          "title": "[E2E-P2-01] ledger resolution-undo",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-09",
+      "description": "engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green (occupiedCells + resultingTiles chain)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-09-unit",
+          "title": "[P1-09] P1 engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 235,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "single-guard allowlist game.ts let trace 1 + if (!moved) trace=[] 1 + trace.push inside if(moved) 1 (no const trace)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] single-guard allowlist game.ts let trace + if (!moved)",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 240,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-gateway",
+          "title": "[P2-API-01] gateway single-guard allowlist game.ts",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "single-guard allowlist rules.ts if (!canMerge 1 + canMerge(a,b) 2 + (a ?? 0) <=2 2 tautology both branches same a-only",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-unit",
+          "title": "[P2-02] single-guard allowlist rules.ts tautology",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 249,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "DW-21 doc on boardFromLines always returns full placement trace (line.ts:73) + game.ts if (!moved) trace=[] 1 hit + no filter in line.ts",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] DW-21 doc on boardFromLines always returns full placement trace",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 256,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "[E2E-P2-02] line.ts DW-21 doc",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "line": 28,
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "no bare trace = built.trace after moved check \u2014 moved is single gate not trace.length (alias benign transient)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] no bare trace = built.trace after moved check",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 263,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-05",
+      "description": "trace shape GRID_SIZE 4 + TraceEntry {value,to,from,spawned} + MoveResult trace:TraceEntry[] unchanged",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05-unit",
+          "title": "[P2-05] trace shape GRID_SIZE 4 + TraceEntry unchanged",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 269,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-06",
+      "description": "ledger + spec hashes: resolution-undo b4557fd 2 hits + final_revision e325bab + baseline 3bcf38cc",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-06-unit",
+          "title": "[P2-06] ledger + spec hashes",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 278,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-07",
+      "description": "sprint-status.yaml ownership diff empty never write never revert (orchestrator-owned)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-07-unit",
+          "title": "[P2-07] sprint-status.yaml ownership diff empty",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 286,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-07-umbrella",
+          "title": "[E2E-P3-04] sprint-status ownership",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "line": 58,
+          "level": "e2e",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "exploratory ragged board still moved via movementLines pad (if ported) \u2014 DW-20/41 already hardens short boards",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] exploratory ragged board",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 291,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "exploratory one-cell [3,null,3,null] left \u2192 2 slides trace 2+spawn not dropped (future filter guard)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] exploratory one-cell 2 slides not dropped",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 298,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "exploratory mergeValue domain stress all Cell\u00d72 finite no throw ([-1..Infinity]\u00d72 a-only)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] exploratory mergeValue domain stress finite no throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 305,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-04",
+      "description": "exploratory moved:false short-circuits planTileTransitions before classify even if trace non-empty",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-04-unit",
+          "title": "[P3-04] exploratory moved:false short-circuits planTileTransitions",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 314,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-05",
+      "description": "bench 10k\u00d7 move/mergeValue median <0.01 ms O(1) guard (no while infinite, tsc <5s)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-05-unit",
+          "title": "[P3-05] bench 10k\u00d7 move/mergeValue O(1)",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "line": 322,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "summary": {
+    "total": 32,
+    "full": 32,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 11,
+        "full": 11,
+        "pct": 100
+      },
+      "P1": {
+        "total": 9,
+        "full": 9,
+        "pct": 100
+      },
+      "P2": {
+        "total": 7,
+        "full": 7,
+        "pct": 100
+      },
+      "P3": {
+        "total": 5,
+        "full": 5,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": [],
+    "partial": [],
+    "unit_only": []
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_gaps": 0,
+    "happy_path_only_gaps": 0,
+    "ui_journey_gaps": 0,
+    "ui_state_gaps": 0,
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "quality": {
+    "blockers": [],
+    "warnings": [],
+    "info": []
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-trace-merge-guards.md"
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 9,
+      "cases": 61,
+      "skipped_cases": 44,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 5,
+          "criteria_covered": 5
+        },
+        "api": {
+          "tests": 7,
+          "criteria_covered": 7
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 49,
+          "criteria_covered": 32
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-01-triade",
+        "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
+        "file": "triade/__tests__/game/preview-invariant.test.ts",
+        "line": 373,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-01-gateway",
+        "title": "[P0-API-01] gateway noop left trace 0 moved false score 0 no spawned pending unchanged",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 19,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-unit",
+        "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 36,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-game",
+        "title": "game.test.ts noop \u2192 no spawned (tightened to trace 0 via preview-invariant)",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 198,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-02-gateway",
+        "title": "[P0-API-02] gateway noop 4-dir same board trace 0",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 26,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-02-unit",
+        "title": "[P0-02] DW-21 noop 4-dir same board \u2192 all trace 0",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 47,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-02-e2e",
+        "title": "[P0-E2E-01] spec boundaries GRID_SIZE 4 + noop trace contract",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "line": 8,
+        "level": "e2e",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-unit",
+        "title": "[P0-03] DW-21 effective [1,2,null,null] left \u2192 merged 3 + spawn",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 58,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-gateway",
+        "title": "[P0-API-03] gateway effective [1,2,null,null] left \u2192 merged 3 + spawn",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 34,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-game",
+        "title": "game.test.ts HAPPY_PATH 1+2\u21923",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 45,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-03-previewInv",
+        "title": "preview-invariant blocked swarm noop vs effective",
+        "file": "triade/__tests__/game/preview-invariant.test.ts",
+        "line": 120,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-04-unit",
+        "title": "[P0-04] DW-21 effective with gaps [3,null,3,null] left \u2192 2 slides + spawn",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 76,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-04-line",
+        "title": "line.test.ts gap [3,null,3,null]\u2192[3,3,null,null] moved true",
+        "file": "triade/__tests__/engine/line.test.ts",
+        "line": 22,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-05-unit",
+        "title": "[P0-05] DW-21 packed [1,3,6,12] row left stays noop trace 0 not 4 holds",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 86,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-05-line",
+        "title": "line.test.ts shiftLine([1,3,6,12]).moved === false",
+        "file": "triade/__tests__/engine/line.test.ts",
+        "line": 31,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-05-transPlan",
+        "title": "transitionPlan hold stationary \u2192 hold vs noop []",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 45,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-unit",
+        "title": "[P0-06] DW-22 mergeValue tautology unguarded a-only no throw",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 94,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-gateway",
+        "title": "[P0-API-06] gateway mergeValue tautology a-only",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 52,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-rules",
+        "title": "rules.test.ts mergeValue(1,1)\u21923 / (2,2)\u21923 / (3,null)\u21926",
+        "file": "triade/__tests__/engine/rules.test.ts",
+        "line": 28,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-07-unit",
+        "title": "[P0-07] DW-22 mergeValue guarded still correct",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 104,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-rules",
+        "title": "rules.test.ts mergeValue(1,2)\u21923 / (3,3)\u21926",
+        "file": "triade/__tests__/engine/rules.test.ts",
+        "line": 35,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-unit",
+        "title": "[P0-08] DW-21 boardFromLines full-placement vs game.move noop empty boundary",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 114,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-lineDoc",
+        "title": "line.ts DW-21 doc boardFromLines always returns full placement trace",
+        "file": "triade/src/engine/core/line.ts",
+        "line": 73,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-umbrella",
+        "title": "[E2E-P1-01] line.ts DW-21 doc only meaningful trace via game.move not line.ts filter",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "line": 18,
+        "level": "e2e",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-09-unit",
+        "title": "[P0-09] DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 134,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-10-unit",
+        "title": "[P0-10] DW-21 trace spawned never on noop, exactly 1 on effective",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 144,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-10-game",
+        "title": "game.test.ts spawn at opposite edge candidates[0]",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 88,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-11-unit",
+        "title": "[P0-11] DW-21/22 manual 3-log probe noop [] false + merge 3 + guard a-only",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 153,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-11-gateway",
+        "title": "[P0-API-11] gateway manual probe",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 78,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-01-unit",
+        "title": "[P1-01] P1 game.test.ts 33 suites still green alongside noop fix",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 168,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-01-game",
+        "title": "game.test.ts 33 pass",
+        "file": "triade/__tests__/engine/game.test.ts",
+        "line": 1,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-transPlan",
+        "title": "transitionPlan.test.ts 13 pass",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 1,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-02-unit",
+        "title": "[P1-02] P1 line.test.ts holds survive on effective partial not filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 172,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-line",
+        "title": "line.test.ts effective partial",
+        "file": "triade/__tests__/engine/line.test.ts",
+        "line": 15,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-unit",
+        "title": "[P1-03] P1 rules.test.ts 6 cases still green",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 179,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-rules",
+        "title": "rules.test.ts 6 pass",
+        "file": "triade/__tests__/engine/rules.test.ts",
+        "line": 1,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-04-unit",
+        "title": "[P1-04] P1 transitionPlan noop empty plan and hold stationary pair",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 186,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-transPlan",
+        "title": "transitionPlan noop empty plan",
+        "file": "triade/__tests__/render/transitionPlan.test.ts",
+        "line": 108,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-05-unit",
+        "title": "[P1-05] P1 preview-invariant noop trace must be empty",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 197,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-05-preview",
+        "title": "preview-invariant.test.ts:373 tightened noopRes.trace.length 0",
+        "file": "triade/__tests__/game/preview-invariant.test.ts",
+        "line": 373,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-06-unit",
+        "title": "[P1-06] P1 draw-budget preserved effective 3 draws noop 0",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 202,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-06-gateway",
+        "title": "[P1-API-06-draw] gateway draw-budget 3/0",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 68,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-07-unit",
+        "title": "[P1-07] P1 moved divergence convergence",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 216,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-08-unit",
+        "title": "[P1-08] P1 ledger resolution-undo b4557fd 2 hits DW-21/22 done",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 228,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-08-umbrella",
+        "title": "[E2E-P2-01] ledger resolution-undo",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "line": 38,
+        "level": "e2e",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-09-unit",
+        "title": "[P1-09] P1 engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 235,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-01-unit",
+        "title": "[P2-01] single-guard allowlist game.ts let trace + if (!moved)",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 240,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-01-gateway",
+        "title": "[P2-API-01] gateway single-guard allowlist game.ts",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "line": 88,
+        "level": "api",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-02-unit",
+        "title": "[P2-02] single-guard allowlist rules.ts tautology",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 249,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-03-unit",
+        "title": "[P2-03] DW-21 doc on boardFromLines always returns full placement trace",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 256,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-03-umbrella",
+        "title": "[E2E-P2-02] line.ts DW-21 doc",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "line": 28,
+        "level": "e2e",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-04-unit",
+        "title": "[P2-04] no bare trace = built.trace after moved check",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 263,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-05-unit",
+        "title": "[P2-05] trace shape GRID_SIZE 4 + TraceEntry unchanged",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 269,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-06-unit",
+        "title": "[P2-06] ledger + spec hashes",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 278,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-07-unit",
+        "title": "[P2-07] sprint-status.yaml ownership diff empty",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 286,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-07-umbrella",
+        "title": "[E2E-P3-04] sprint-status ownership",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "line": 58,
+        "level": "e2e",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-01-unit",
+        "title": "[P3-01] exploratory ragged board",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 291,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-02-unit",
+        "title": "[P3-02] exploratory one-cell 2 slides not dropped",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 298,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-03-unit",
+        "title": "[P3-03] exploratory mergeValue domain stress finite no throw",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 305,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-04-unit",
+        "title": "[P3-04] exploratory moved:false short-circuits planTileTransitions",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 314,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-05-unit",
+        "title": "[P3-05] bench 10k\u00d7 move/mergeValue O(1)",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "line": 322,
+        "level": "unit",
+        "status": "skipped"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T13:40:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-engine-trace-merge-guards",
+    "label": "dw-engine-trace-merge-guards \u2014 trace empty on noop and mergeValue guard (DW-21, DW-22)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (required: 100%), P1 coverage is 100% (target: 90%, minimum: 80%), and overall coverage is 100% (minimum: 80%). All 32 criteria FULL via host unit + API gateway + E2E umbrella (17 active + 44 skipped dormant RED that are green when activated). No uncovered P0/P1. Single-guard allowlists (let trace 1, if !moved 1, if !canMerge 1, DW-21 doc 1) + ledger b4557fd 2 hits + sprint-status untouched verified. Full triade gate 910 pass / 0 fail / 238 skipped still green (11 expected RED deferred low only).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-trace-merge-guards.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T14:05:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-engine-spawn-candidates-validation",
+    "label": "dw-engine-spawn-candidates-validation \u2014 single-source pool validation + dedup for second callers (DW-72, DW-73)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%). All critical requirements covered; working-tree delta loop+Set validated via 20 ATDD (activated 20 pass) + 14 gateway + 9 e2e + 27 active hardened (spawn-candidates.unit 12 + spawn-placement 11 + directional integration); full host suite 910 pass / 0 fail confirms no regression; ledger DW-72/73 done.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-spawn-candidates-validation.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

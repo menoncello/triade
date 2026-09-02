@@ -1,0 +1,472 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T17:00:00.000000+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-doc-layout-test-count-sync",
+    "label": "dw-doc-layout-test-count-sync — story-doc test-count sync (DW-11) + co-located engine RNG note (DW-56 hygiene)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/1-5-layout-portrait-e-landscape.md",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-11",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-56",
+      "_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-doc-layout-test-count-sync.md",
+      "_bmad-output/test-artifacts/test-design-dw-doc-layout-test-count-sync.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-doc-layout-test-count-sync.md",
+      "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+      "triade/__tests__/ui/layout.test.ts",
+      "triade/src/ui/layout.ts",
+      "triade/src/ui/orientation.ts",
+      "triade/App.tsx",
+      "triade/src/ui/Hud.tsx",
+      "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/doc-layout-test-count-sync-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-doc-layout-test-count-sync.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC T2/T5/ATDD counts synced — All 14 layout tests (12 original + clamp-path + golden-anchor) + 14 layout unit tests + 14 tests P0/P1 vs stale All 12/12 unit/12 P0/P1 gone (R-001,R-003)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-01",
+          "title": "[P0-GW-01] doc T2/T5/ATDD counts synced — 14 labels present and stale 12 gone (R-001,R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-atdd",
+          "title": "[P0-01] AC story doc T2/T5/ATDD counts synced — 14 labels present and stale 12 gone (R-001,R-003)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC file truth ≥14 + golden anchors — layout.test.ts 18 test( invocations vs doc 14 floor ≥14 pinned + 382/688/452 anchors present (R-001)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-02",
+          "title": "[P0-GW-02] layout.test.ts file truth — count >=14 (18) + golden anchors 382/688/452 (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-atdd",
+          "title": "[P0-02] AC layout.test.ts file truth — count ≥14 (observed 18) + golden anchors 382/688/452 still present (R-001)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-layout-test",
+          "title": "layout.test.ts 18 pass — 382/688/452 anchors + clamp-path + golden-anchor",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC ledger DW-11 done + 64-hex — deferred-work.md DW-11 status: done 2026-09-02 + resolution resolved by sweep bundle dw-doc-layout-test-count-sync + resolution-undo 8080feef 64-hex + tail 7374617475733a206f70656e single (R-002)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-03",
+          "title": "[P0-GW-03] ledger DW-11 done + 64-hex 8080feef... + resolution string (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-atdd",
+          "title": "[P0-03] AC ledger DW-11 done + resolution-undo single 64-hex + resolution string (R-002)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC no prod layout code changed + engine isolated — triade/src/ui diff empty vs engine game.ts/weights.ts Not-in-Scope already gated by dw-engine-rng design; SAFE_MARGIN 16/96/48/216 + 358/382/688/452/0 + getBandTop dedup + Number.isFinite >=6 pinned (R-005,R-EXT-01)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-04",
+          "title": "[P0-GW-04] no prod layout code changed for DW-11 + engine delta isolated via source-identity (R-005,R-EXT-01)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-atdd",
+          "title": "[P0-05] AC no prod layout code changed for DW-11 + engine delta isolated via source-identity (R-005, R-EXT-01)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC ledger DW-56 hygiene co-located — deferred-work.md DW-56 done 2026-09-02 + resolution-undo 0eb6ce61 + decision Clamp roll and validate displayRoll — hygiene only here, functional engine gate lives in dw-engine-rng design (R-002)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-05",
+          "title": "[P0-GW-05] ledger DW-56 hygiene co-located — done + 0eb6ce61 distinct, not orphaned (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-atdd",
+          "title": "[P0-04] AC ledger DW-56 hygiene co-located — done + 8080feef sister hash vs 0eb6ce61 distinct (Not-in-Scope isolation)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-E2E-04",
+          "title": "[P2-E2E-04] ledger DW-11+DW-56 done + 64-hex + decision line hygiene (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "P1 Auto Run Result singleton — 1-5-layout-portrait-e-landscape.md ## Auto Run Result exactly 1 + tail Status: done 1 + orientation unlocked/SafeAreaProvider/tsc --noEmit/Story 1.5 (R-004)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-06",
+          "title": "[P1-GW-06] Auto Run Result singleton — exactly one ## Auto Run Result and Status: done inside it (R-004)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-atdd",
+          "title": "[P1-01] Auto Run Result singleton — exactly one ## Auto Run Result block and Status: done inside it (R-004)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "P1 ATDD label cross-pin — atdd-checklist-1-5 still referenced + 127/127 pass preserved + plus clamp-path and golden-anchor cases added in the 2026-08-17 review fixes qualification vs stale 12 gone (R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-E2E-01",
+          "title": "[P1-E2E-01] ATDD label cross-pin — atdd-checklist reference + 127/127 + qualification intact (R-003)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-atdd",
+          "title": "[P1-02] ATDD label cross-pin — no stale 12 label remains outside defer, verification 127/127 text preserved (R-003)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "P1 orchestrator ownership — sprint-status.yaml untouched (orchestrator-owned) + deferred-work.md never mentions sprint-status (R-EXT-02)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-07",
+          "title": "[P1-GW-07] orchestrator ownership — deferred-work.md never mentions sprint-status.yaml (R-EXT-02)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-atdd",
+          "title": "[P1-03] orchestrator ownership — sprint-status.yaml not written by this workflow (R-EXT-02)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "P1 gate preservation — layoutFor never throws, every boardSize/bandHeight finite across 320/390/414/500/844/1024/2000, constants pinned, layout.test.ts 18 pass + both tsc clean beyond pre-existing 8 spawn-candidates errors (R-005)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-08",
+          "title": "[P1-GW-08] gate preservation — layoutFor never throws, every boardSize/bandHeight finite, constants pinned (R-005)",
+          "file": "_bmad-output/test-artifacts/tests/api/doc-layout-test-count-sync.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-atdd",
+          "title": "[P1-04] gate preservation — layout.test.ts 18 pass + both tsc clean (doc edit must not regress layout suite)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-layout-gate",
+          "title": "layout.test.ts 18 pass + tsc clean beyond pre-existing",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "P2 residual 14→18 documented — design pins ≥14 not ==14 + 14→18 drift as accepted not-a-defect, file 18 vs doc 14 intentional +4 floor/degenerate/min-tile (R-001)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-03",
+          "title": "[P2-E2E-03] residual 14→18 documented — design pins >=14 not ==14 and 14→18 drift (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-atdd",
+          "title": "[P2-01] residual 14→18 note — doc says 14 but file is 18, accepted as not-a-defect with documentation (R-001)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "P2 single-helper / dedup invariants — getBandTop exactly 1 in layout vs 0 in App/Hud + Number.isFinite >=6 + duplicated formula insets.top + SAFE_MARGIN + bandHeight 1 vs 0 + spec final_revision a09e6ed not bumped (R-005,R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-E2E-02",
+          "title": "[P1-E2E-02] single-helper / single-constant / early-guard invariants still pinned (R-005,R-006)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-atdd",
+          "title": "[P2-02] SCAN doc style hygiene — doc sweep stayed in scope, no cross-cutting formula not reintroduced (R-005,R-006)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "P3 exploratory waivable — full npm --prefix triade test 910 pass / 10 EXPECTED RED felt-atdd waivable, host layout.test.ts 18 smoke proves <10 min gate (P3)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-atdd",
+          "title": "[P3-01] exploratory — full npm --prefix triade test waivable, but host layout.test.ts essential (P3)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-E2E-07",
+          "title": "[P3-E2E-07] exploratory — file truth 18 vs doc 14 is accepted residual, not a-defect reopen (P3)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "P3 bench + cross-cutting — 10k layoutFor <50ms O(1) + layout.ts pure no mulberry32/RevenueCat/AdMob/bgm + story doc no Music/bgm/RevenueCat/AdMob leakage + spec a09e6ed intact (R-005,R-006)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-E2E-05",
+          "title": "[P3-E2E-05] exploratory — doc style hygiene: no Music/bgm/RevenueCat/AdMob leakage (P3)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-E2E-06",
+          "title": "[P3-E2E-06] bench — 10k layoutFor <50ms O(1), doc sync adds no worklet (P3)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/doc-layout-test-count-sync.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-atdd",
+          "title": "[P3-02] exploratory — style scan: no duplicate formula not reintroduced and O(1) <1 ms bench (P3 hygiene)",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ]
+}

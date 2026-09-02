@@ -99,7 +99,27 @@ export function spawnTile(
     next[cell[0]][cell[1]] = value;
     return { board: next, cell, value };
   }
-  const pool = candidates.filter(([r, c]) => r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE && board[r][c] === null);
+  // DW-72/73: single-source validation for second callers (direct-API/tests).
+  // Production `game.ts:53-78` already guarantees distinct in-bounds empties,
+  // but direct callers may pass OOB `[4,0]`, `null`, `[r]` without `c`, or
+  // duplicates that would inflate pool and bias pickIndex (break AC3).
+  // Filter strictly: array-of-2 integers in bounds, empty on board, deduped.
+  if (!Array.isArray(candidates)) return { board: next, cell: null, value: null };
+  const seen = new Set<string>();
+  const pool: Array<[number, number]> = [];
+  for (const entry of candidates as unknown as unknown[]) {
+    if (!Array.isArray(entry) || entry.length < 2) continue;
+    const r = (entry as unknown[])[0];
+    const c = (entry as unknown[])[1];
+    if (typeof r !== 'number' || typeof c !== 'number') continue;
+    if (!Number.isInteger(r) || !Number.isInteger(c)) continue;
+    if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) continue;
+    if (board[r]?.[c] !== null) continue;
+    const key = `${r},${c}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    pool.push([r, c]);
+  }
   if (pool.length === 0) return { board: next, cell: null, value: null };
   const cell = pool[pickIndex(pool.length, rng)];
   next[cell[0]][cell[1]] = value;
