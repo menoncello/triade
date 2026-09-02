@@ -1,0 +1,745 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T16:30:00.000000+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-engine-rng-trust-hardening",
+    "label": "dw-engine-rng-trust-hardening — malformed-RNG trust hardening (weightedPicker clamp + displayRoll normalization) — DW-56"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-56",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-rng-trust-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-rng-trust-hardening.md",
+      "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+      "triade/__tests__/engine/weights.test.ts",
+      "triade/__tests__/engine/game.test.ts",
+      "triade/__tests__/engine/spawn.test.ts",
+      "triade/src/engine/core/weights.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/types.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-rng-trust-hardening-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-engine-rng-trust-hardening.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC negative clamp — weightedPicker([1,0.5], rngOf(-0.5)/-Infinity/-1) → 0 first band via max(roll,0) not fallthrough (R-001)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-01",
+          "title": "[P0-GW-01] weightedPicker negative clamp → first band 0, not NaN fallthrough (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-01-atdd",
+          "title": "[P0-01] weightedPicker negative clamp → first band (0), not NaN fallthrough (R-001)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC ≥1/Infinity clamp — weightedPicker([1,0.5], rngOf(1)/1.5/Infinity) → last via 1-EPSILON valid band (scaled < total) not fallthrough (R-001)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-02",
+          "title": "[P0-GW-02] weightedPicker ≥1 / Infinity clamp → last via valid band 1-EPSILON, not fallthrough (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-02-atdd",
+          "title": "[P0-02] weightedPicker ≥1 / Infinity clamp → last via valid band 1-EPSILON, not fallthrough (R-001)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC NaN/non-number guard still last — weightedPicker([1,1], NaN/undefined/\"0.5\"/null/{}) → last via explicit typeof !== number || NaN before clamp (R-001,R-006)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-03",
+          "title": "[P0-GW-03] weightedPicker NaN / non-number guard still last (R-001,R-006)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-03-atdd",
+          "title": "[P0-03] weightedPicker NaN / non-number guard still last (R-001,R-006)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC normalizeDisplayRoll non-finite/non-number → 0.5 midpoint, not 0 — NaN/Infinity/-Infinity/undefined/null/\"bad\"/{} → 0.5 via !finite/non-number branch (R-002,R-005)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-04",
+          "title": "[P0-GW-04] normalizeDisplayRoll non-finite / non-number → 0.5 midpoint, not 0 (R-002,R-005)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-04-atdd",
+          "title": "[P0-04] normalizeDisplayRoll non-finite / non-number → 0.5 midpoint, not 0 (R-002,R-005)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC normalizeDisplayRoll finite clamp — -0.5/-1→0, 0→0, 0.5→0.5, 0.999→0.999, 1/1.5→1-EPSILON; <0→0 vs >=1→1-EPSILON strict (R-002,R-004,R-007)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-05",
+          "title": "[P0-GW-05] normalizeDisplayRoll finite clamp: -0.5/-1→0, 0→0, 0.5→0.5, 1/1.5→1-EPSILON, valid kept (R-002,R-004,R-007)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-05-atdd",
+          "title": "[P0-05] normalizeDisplayRoll finite clamp: -0.5/-1→0, 0→0, 0.5→0.5, 1/1.5→1-EPSILON, valid kept (R-002,R-004,R-007)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "AC newGame malformed third draw still valid [0,1) + 9 tiles + value finite — NaN/Infinity/1/1.5/-0.5 → displayRoll normalized, 20 draws, 9 tiles (R-002)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-06",
+          "title": "[P0-GW-06] newGame malformed third draw still valid [0,1) + 9 tiles + value finite (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-atdd",
+          "title": "[P0-06] newGame malformed third draw still valid [0,1) + 9 tiles + value finite (R-002)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "AC move effective malformed third draw still valid + spawn deterministic — rngOf(0,0.2,NaN)→0.5, Infinity→0.5, 1→1-EPSILON, -0.5→0; moved true, trace spawned, 3 draws (R-002,R-007)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-07",
+          "title": "[P0-GW-07] move effective malformed third draw still valid + spawn deterministic (R-002,R-007)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-07-atdd",
+          "title": "[P0-07] move effective malformed third draw still valid + spawn deterministic (R-002,R-007)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-08",
+      "description": "AC draw-budget preserved — weightedPicker malformed 1 draw, newGame with malformed 20, effective move with malformed 3, noop 0, no while rng re-roll (R-003)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-08",
+          "title": "[P0-GW-08] draw-budget preserved — no re-roll loop, 1-draw per picker/displayRoll (R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-08-atdd",
+          "title": "[P0-08] draw-budget preserved — no re-roll loop, 1-draw per picker/displayRoll (R-003)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-09",
+      "description": "AC bare site eliminated — no displayRoll: rng() bare, no const scaled = roll * total bare; safeRoll exists, normalizeDisplayRoll exists (R-001,R-002)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-09",
+          "title": "[P0-GW-09] bare site eliminated — no displayRoll: rng() bare, no roll*total bare scaled (R-001,R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-09-atdd",
+          "title": "[P0-09] bare site eliminated — no displayRoll: rng() bare, no roll*total bare scaled (R-001,R-002)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-E2E-02",
+          "title": "[P2-E2E-02] SCAN no bare scale / no bare displayRoll / no re-roll loop (R-001,R-002,R-003)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-10",
+      "description": "AC [0,1) invariant holds — 1→1-EPSILON not 1, NaN/Infinity/\"bad\"→0.5 not 0, -0.5→0 not 0.5; epsilon exact Number.EPSILON, window strict >=0 && <1 (R-002,R-004)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-GW-10",
+          "title": "[P0-GW-10] [0,1) invariant holds: 1.0 → 1-EPSILON not 1, NaN/Infinity→0.5 not 0, -0.5→0 not 0.5 (R-002,R-004)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-10-atdd",
+          "title": "[P0-10] [0,1) invariant holds: 1.0 → 1-EPSILON not 1, NaN/Infinity→0.5 not 0, -0.5→0 not 0.5 (R-002,R-004)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "P1 engine→spawn pipeline — weightedValue via weightedPicker still 40/40/20 via valid band: 0.39→1, 0.4→2, 0.8→3, 0.99→3, 1→3, Infinity→3 (R-001)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-01",
+          "title": "[P1-GW-01] engine→spawn pipeline: resolveSpawn/weightedValue via weightedPicker still 40/40/20 via valid band (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-atdd",
+          "title": "[P1-01] engine→spawn pipeline: resolveSpawn/weightedValue via weightedPicker still 40/40/20 via valid band (R-001)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "P1 game.move 4 suites + newGame/effective/noop draw-budget still green — move HAPPY_PATH/noop + game.test 32 pass + budget 20/3/0 (R-002,R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-02",
+          "title": "[P1-GW-02] game.move 4 suites + newGame/effective/noop draw-budget still green (R-002,R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-atdd",
+          "title": "[P1-02] game.move 4 suites + newGame/effective/noop draw-budget still green (R-002,R-003)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-game",
+          "title": "game.move 32 pass — 20/3/0/1 draw-budget pins",
+          "file": "triade/__tests__/engine/game.test.ts",
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "P1 pending-spawn-contract N3 pipeline still green — runSeededSession(0x1234,20) N3 promised===materialized via guarded displayRoll (R-002,R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-03",
+          "title": "[P1-GW-03] pending-spawn-contract N3 pipeline still green (R-002,R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-atdd",
+          "title": "[P1-03] pending-spawn-contract N3 pipeline still green (R-002,R-003)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "P1 adaptive-spawn-integration 5 suites + ledger DW-56 done with resolution-undo + sprint-status untouched (R-001,R-009)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-GW-04",
+          "title": "[P1-GW-04] adaptive-spawn-integration 5 suites + ledger DW-56 done with resolution-undo + sprint-status untouched (R-009)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-atdd",
+          "title": "[P1-04] adaptive-spawn-integration 5 suites + ledger DW-56 done with resolution-undo + sprint-status untouched (R-009)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "P2 SCAN single-clamp / single-normalize / single-epsilon / single-midpoint allowlists — safeRoll 1/2, normalizeDisplayRoll 3, EPSILON 1+1=2, return 0.5 game1 weights0 (R-001,R-004,R-005)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-01",
+          "title": "[P2-E2E-01] SCAN single-clamp / single-normalize / single-epsilon / single-midpoint allowlists (R-001,R-004,R-005)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-atdd",
+          "title": "[P2-01] SCAN single-clamp / single-normalize / single-epsilon / single-midpoint allowlists (R-001,R-004,R-005)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "P2 SCAN no bare scale / no bare displayRoll / no re-roll loop — const scaled=roll*total 0, displayRoll:rng() 0, while rng 0, Math.min(Math.max(roll 1, weights rng()1 (R-001,R-002,R-003)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-02",
+          "title": "[P2-E2E-02] SCAN no bare scale / no bare displayRoll / no re-roll loop (R-001,R-002,R-003)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-02-atdd",
+          "title": "[P2-02] SCAN no bare scale / no bare displayRoll / no re-roll loop (R-001,R-002,R-003)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "P2 SCAN epsilon exactness + midpoint coupling — 1 - Number.EPSILON 1 per file, no 1e-9, typeof+isNaN guards present (R-004,R-005,R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-03",
+          "title": "[P2-E2E-03] SCAN epsilon exactness + midpoint neutrality coupling — 1 - Number.EPSILON per file (R-004,R-005,R-006)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-03-atdd",
+          "title": "[P2-03] SCAN epsilon exactness + midpoint neutrality coupling — 1 - Number.EPSILON per file (R-004,R-005,R-006)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "P2 SCAN window strict [0,1) — sanitizePending dr>=0 && dr<1 1 + normalizeDisplayRoll raw>=1 1 + raw<0 return 0 1 (R-002,R-007)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-04",
+          "title": "[P2-E2E-04] SCAN board pendingSpawn displayRoll window strict [0,1) — sanitizePending + normalizeDisplayRoll (R-002,R-007)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P2-04-atdd",
+          "title": "[P2-04] SCAN board pendingSpawn displayRoll window strict [0,1) — sanitizePending + normalizeDisplayRoll (R-002,R-007)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-05",
+      "description": "P2 ledger + hygiene — DW-56 0eb6ce61 1 hit done 2026-09-02 + resolved by sweep + Math.random 2 defaults only + sprint-status untouched (R-009)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-E2E-05",
+          "title": "[P2-E2E-05] SCAN ledger DW-56 hash + sprint-status untouched + Math.random defaults only (R-009,R-008)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "P3 exploratory malformed sequence sweep — newGame NaN→0.5 then move -0.5→0 vs 1.5→1-EPSILON chain stays valid [0,1) (R-002 residual)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-E2E-01",
+          "title": "[P3-E2E-01] exploratory — malformed sequence sweep: newGame + move malformed chain stays valid (R-002 residual)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-01-atdd",
+          "title": "[P3-01] exploratory — malformed sequence sweep: newGame + move malformed chain stays valid (R-002 residual)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "P3 bench + cross-cutting hygiene — weightedPicker 10k + normalizeDisplayRoll 10k <500ms O(1) no while + no Music/bgm/RevenueCat leakage (R-008)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-E2E-02",
+          "title": "[P3-E2E-02] bench — weightedPicker 10k + normalizeDisplayRoll 10k <500ms median, no loop, cross-cutting scan (R-008)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-02-atdd",
+          "title": "[P3-02] bench — weightedPicker 10k + normalizeDisplayRoll 10k <0.05ms median, no loop, cross-cutting scan (R-008)",
+          "file": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "P3 micro-zero + epsilon boundary — weightedPicker 0/0.39/0.4 + normalizeDisplayRoll 0/0.599/0.999 complements 40/40 boundary (R-001)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-E2E-03",
+          "title": "[P3-E2E-03] micro-zero — weightedPicker 0/0.39/0.4 + normalizeDisplayRoll 0/0.599/0.6/0.999 complements 40/40 boundary (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-04",
+      "description": "P3 cross-cutting negative scan — no Music/bgm/RevenueCat/AdMob leaked + ledger 0eb6ce61 1 + hex tail 7374617475733a206f70656e (R-008,R-009)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-E2E-04",
+          "title": "[P3-E2E-04] cross-cutting negative scan — no Music/bgm/RevenueCat/AdMob leaked + ledger hash exact (R-008,R-009)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-02T16:30:00.000000+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "2e91c12",
+  "target": {
+    "type": "story",
+    "id": "dw-engine-rng-trust-hardening",
+    "label": "dw-engine-rng-trust-hardening — malformed-RNG trust hardening (weightedPicker clamp + displayRoll normalization) — DW-56"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-56",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-rng-trust-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-rng-trust-hardening.md",
+      "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts",
+      "triade/src/engine/core/weights.ts",
+      "triade/src/engine/core/game.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/engine-rng-trust-hardening-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-engine-rng-trust-hardening.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 10,
+      "total": 10,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 10,
+        "covered": 10,
+        "pct": 100
+      },
+      "P1": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      },
+      "P2": {
+        "total": 5,
+        "covered": 5,
+        "pct": 100
+      },
+      "P3": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 9,
+        "criteria_covered": 9
+      },
+      "api": {
+        "tests": 14,
+        "criteria_covered": 14
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 20,
+        "criteria_covered": 20
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 43,
+    "skipped_cases": 20,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-rng-trust-hardening.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "evidence": {
+    "gateway": "_bmad-output/test-artifacts/tests/api/engine-rng-trust-hardening.gateway.spec.ts 14/14 pass (~196ms)",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/engine-rng-trust-hardening.umbrella.spec.ts 9/9 pass (~177ms)",
+    "atdd_triade": "triade/__tests__/engine/rng-trust-hardening.atdd.test.ts 20/20 pass when activated (~62ms) — 20 dormant it.skip counted as skipped_cases",
+    "unit_mirror": "_bmad-output/test-artifacts/tests/unit/engine-rng-trust-hardening.atdd.test.ts 20 dormant → 20 pass when activated",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/engine-rng-trust-hardening-fixtures.ts",
+    "host_gate": "npm --prefix triade test 910 pass / 0 fail / 291 skipped (dormant) → 930 pass / 0 fail / 271 skipped when activated; tsc both configs clean beyond 8 pre-existing spawn-candidates errors",
+    "scans": "safeRoll 1 (def) /2 total + normalizeDisplayRoll 3 + Number.EPSILON 1+1=2 + return 0.5 game 1 weights 0 + displayRoll: rng() 0 + const scaled = roll * total 0 + while rng 0 + Math.min(Math.max(roll 1 + rng() weights 1 + dr >=0 && dr <1 1 + raw >=1 1 + raw<0 1 + 0eb6ce61 1 + 7374617475733a206f70656e + Math.random game 2 weights 0",
+    "working_tree": "triade/src/engine/core/game.ts:8-18 normalizeDisplayRoll + :34 newGame + :110 move effective path; triade/src/engine/core/weights.ts:20-37 safeRoll clamp; _bmad-output/implementation-artifacts/deferred-work.md DW-56 done 2026-09-02 0eb6ce61; git diff --stat shows game.ts+weights.ts only vs baseline 2e91c12; sprint-status.yaml untouched"
+  }
+}

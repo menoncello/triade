@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T17:00:00.000000+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-doc-layout-test-count-sync",
+    "label": "dw-doc-layout-test-count-sync — story-doc test-count sync (DW-11) + co-located engine RNG note (DW-56 hygiene)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-doc-layout-test-count-sync.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "evidence": {
+    "gateway": "8/8 pass",
+    "umbrella": "7/7 pass",
+    "atdd": "13/13 pass when activated (13 dormant it.skip)",
+    "host_gate": "910 pass / 0 fail / 291 skipped dormant → 923 pass activated; tsc both configs clean beyond 8 pre-existing",
+    "scans": "All 14 1 + All 12 0 + file 18 + anchors 382/688/452 1 + ledger 8080feef 1 + 0eb6ce61 1 + Auto Run 1 + sprint-status 0 + layout.ts formula 1 vs 0",
+    "working_tree": "_bmad-output/implementation-artifacts/1-5-layout-portrait-e-landscape.md:177,180,201 doc 12→14 + deferred-work.md DW-11/DW-56 done 2026-09-02; git diff --stat -- triade/src/ui empty; sprint-status.yaml untouched"
+  }
+}

@@ -86,7 +86,9 @@ resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec746
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: n/a
 reason: Story doc T2 note says "12 layout tests"; final suite is 14 (clamp-path + golden-anchor tests added in the 2026-08-17 review fixes). Doc-only.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-doc-layout-test-count-sync
+resolution-undo: 8080feef418d24a73dc5a7b01b78628dc71e4042ec6e3e2c3dc1393a3aa9a6eb 2026-09-02 7374617475733a206f70656e
 
 ### DW-12: Landscape rotation visual pass on the simulator
 
@@ -461,7 +463,9 @@ resolution: CLOSED by story 2.6 code review (2026-08-22): Number.isFinite guard 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-22)"), 2026-09-01
 location: n/a
 reason: Malformed-rng hardening without crash: a roll ≥ 1 in `weightedPicker` collapses deterministically to the top pot slot (no clamp to a valid band), and a NaN third draw is copied unvalidated into `pendingSpawn.displayRoll` (breaking the documented `[0,1)` contract silently). Pre-existing trust-the-rng class — the engine assumes well-behaved `[0,1)` rngs; only crash-capable paths (see `pickIndex` patch) were fixed this story.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-rng-trust-hardening
+resolution-undo: 0eb6ce6190c5acb9d12bf8a40d8fc456689ad334464c5ec964b0f6963b0d421e 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Clamp roll and validate displayRoll — Clamp roll with Math.min and replace NaN displayRoll with 0.5 fallback.
 
 ### DW-57: Statistical gates in `adaptive-spawn-integration.test.ts` use fixed per-test seeds (AC2 uniformity `0xc31` at N=15000, ±2% absolute ≈ ~10σ; AC7 session `0x26c6`; ceiling-ordering derived from `0x51ce + ceiling`). Deterministic tripwires today, but brittle to any future seed rotation or rng switch; document the σ budget next time these tests are touched. (Numbers corrected by the third-pass review 2026-08-23: previously said "±2% at N=10k, ~4–5σ". In that same pass the AC7 frequency gates were switched to sigma-scaled 5σ bounds — see sigmaBound in the test file — eliminating the seed-starvation/knife-edge coupling for those specific gates; AC2 and the aggregate 40/40/20 window remain absolute.)

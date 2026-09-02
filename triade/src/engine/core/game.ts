@@ -5,6 +5,18 @@ import { movementLines, shiftLine, boardFromLines } from './line.ts';
 import { ceilingDetector } from './ceiling.ts';
 import { pickIndex, weightedValue, resolveSpawn, spawnTile } from './spawn.ts';
 
+function normalizeDisplayRoll(raw: unknown): number {
+  // DW-56 hardening: third draw (displayRoll) must honor [0,1) contract even
+  // with a malformed rng. NaN/Infinity/non-number degrade to 0.5 midpoint
+  // (not 0, to keep preview distribution neutral); finite out-of-range values
+  // are clamped deterministically: <0 -> 0, >=1 -> 1 - EPSILON (range branch
+  // but still valid), preserving the 1-draw budget (no re-roll).
+  if (typeof raw !== 'number' || !Number.isFinite(raw)) return 0.5;
+  if (raw < 0) return 0;
+  if (raw >= 1) return 1 - Number.EPSILON;
+  return raw;
+}
+
 export function newGame(rng: Rng = Math.random): GameState {
   const board = emptyBoard();
   const empty: Array<[number, number]> = [];
@@ -19,7 +31,7 @@ export function newGame(rng: Rng = Math.random): GameState {
   // the starting tiles) + a separate displayRoll for Epic 7's preview.
   const pendingSpawn: PendingSpawn = {
     value: resolveSpawn(ceilingDetector(board), rng),
-    displayRoll: rng()
+    displayRoll: normalizeDisplayRoll(rng())
   };
   return { board, pendingSpawn };
 }
@@ -95,7 +107,7 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     }
     pendingSpawn = {
       value: resolveSpawn(ceiling, rng),
-      displayRoll: rng()
+      displayRoll: normalizeDisplayRoll(rng())
     };
   } else {
     // Shallow copy keeps snapshots structurally independent (ADR-06): a
