@@ -262,7 +262,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-2-port-completo-do-engine-de-regras-para-typescript (2026-08-10, re-review)"), 2026-09-01
 location: n/a
 reason: `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/game/matchScore.ts:21-23 isNewRecord uses sessionStartBest + triade/App.tsx:112,180,215-217 sessionStartBestByLaneRef/hydrationOkByLaneRef now correctly scopes per-lane persisted best — contract documented and tested, app-storage revisit from 1.4 closed
 
 ### DW-34: Parity suite has no multi-move / full-game seeded differential — sequence-level divergences (spawn-position loops, repeated-move score accumulation) are invisible. Deferred; unit suite + parity matrix cover the I/O matrix.
 
