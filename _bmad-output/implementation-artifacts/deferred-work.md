@@ -303,7 +303,9 @@ resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:98-112
 reason: Orientation/resize mid-animation leaves shared values in stale pixel space (`triade/src/render/GameBoard.tsx:98-112, 174-175, 250-269`): rest tiles never re-target on `cell` change; a swipe accepted right after a resize re-plans and tiles visibly jump. Pre-existing render bug that the story 1.6 re-plan path now triggers. Manual-validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-37
+resolution-undo: 9f25aea808d8c07c4a91d21389fa0b4ec65f823bdd6305ae53edd9ee4804693c 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Retarget all kinds on cell change — Add cell-change effect retargeting x/y shared values for rest/vanish/move tiles to new pixel grid.
 
 ### DW-38: `tilesRef` remains a second source of truth for tile state (`triade/src/render/GameBoard.tsx:205, 257-258, 285-287`): re-confirmed during the story 1.6 re-review that both writers (`applyPlan`, `onVanish`) keep the ref in sync, but any future `setTilesState` writer that forgets to sync the ref would desync rendering from the plan. Latent maintenance risk (same class as Df2).

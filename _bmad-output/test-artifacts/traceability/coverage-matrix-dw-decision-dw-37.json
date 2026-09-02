@@ -1,0 +1,131 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T00:00:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-decision-dw-37",
+    "label": "dw-decision-dw-37 — DW-37 orientation resize cell retarget (stale pixel SharedValues)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-dw-37-cell-retarget.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-37-cell-retarget.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-decision-dw-37.md",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/render/transitionPlan.ts",
+      "triade/__tests__/render/dw-37-cell-retarget.atdd.test.ts",
+      "triade/__tests__/render/cell-retarget.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/dw-37-cell-retarget.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/dw-37-cell-retarget.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/dw-37-cell-retarget.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-37-cell-retarget-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-37-cell-retarget.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "0b81c678dbbc819b0ab0cc78bd6f10bba19895cb -> working-tree dw-decision-dw-37",
+    "head": "eb11b56 (eb11b56b4f30845531a2ba121c9bbf9e0605d71f)",
+    "working_tree_ledger": "DW-37 open→done 2026-09-02 + decision: 2026-09-02 Retarget all kinds on cell change — Add cell-change effect retargeting x/y shared values for rest/vanish/move tiles to new pixel grid. + resolution-undo: 9f25aea808d8c07c4a91d21389fa0b4ec65f823bdd6305ae53edd9ee4804693c 2026-09-02 7374617475733a206f70656e (rg 1 hit, sprint-status.yaml untouched — orchestrator-owned)",
+    "production_files": [
+      "triade/src/render/GameBoard.tsx:82-88 pixel() helper BOARD_PADDING + col*(cell+CELL_GAP) byte-identical — rg 1 hit",
+      "triade/src/render/GameBoard.tsx:180-195 NEW // DW-37 cell-change retarget useEffect at 180-195 keyed on [cell] that re-projects x/y onto new pixel grid: const next = pixel(to, cell) then rest|appear → x.value=next.x; y.value=next.y immediate snap vs move|vanish → x.value=withSpring(next.x,spring); y.value=withSpring(next.y,spring) — spring {damping:14 stiffness:260 mass:0.8} shared — rg DW-37 1, }, [cell]) 1, pixel(to,cell) 1, x.value=next.x 1, withSpring(next.x 1, withSpring(next.y 1",
+      "triade/src/render/GameBoard.tsx:315-316 cell = Math.max((width - BOARD_PADDING*2 - CELL_GAP*(GRID-1))/GRID, 1) guard unchanged — rg Math.max 1",
+      "triade/src/render/GameBoard.tsx:358-361 syncTiles single writer still setTilesState(next) 1 + tilesRef.current=next 1 — rg 1 each",
+      "triade/src/render/GameBoard.tsx:400-463 applyPlan byCell(cellKey(t.to)) re-plan uses logical to so retarget composes — rg byCell.set 1, syncTiles(next) 1, function cellKey 1",
+      "triade/src/render/transitionPlan.ts:1-60 byte-identical — if (!result.moved) return [] + hold/slide contract — rg 1 hit + 13 pass transitionPlan.test.ts",
+      "triade/__tests__/render/cell-retarget.atdd.test.ts:1-143 NEW 9 ATDD scans (6 P0 +3 P1) pinning DW-37 marker, [cell] dep, pixel(to,cell), snap/spring branches, toPos regression, !moved→[] hold/slide, Math.max, syncTiles 1+1, pixel helper — 9 pass at eb11b56",
+      "triade/__tests__/render/dw-37-cell-retarget.atdd.test.ts:1-199 NEW 15 RED-phase scaffolds (6 P0 +3 P1 +4 P2 +2 P3) it.skip host node:test — dormant but green when activated (10 gateway + 9 umbrella + 15 unit when de-skipped)",
+      "_bmad-output/test-artifacts/fixtures/dw-37-cell-retarget-fixtures.ts:1-240 NEW 240 LOC host-only deterministic boardHold/boardEmpty/cloneBoard + SCAN_STRINGS 26 + LEDGER 9f25aea8 + scan helpers readSource/countMatches + validation helpers assertBoardGuard/assertNoRegression/assertInvariants/assertLedger",
+      "_bmad-output/test-artifacts/tests/api/dw-37-cell-retarget.gateway.spec.ts:1-137 NEW 10 gateway tests (6 P0 +4 P1) — DW-37 marker+[cell]+pixel(to,cell)+snap/spring+toPos regression+!moved hold/slide+Math.max+syncTiles+pixel+vanish fade+byCell+DW-37 1+},[cell])1+spring 1+ledger — 10 pass ~179ms",
+      "_bmad-output/test-artifacts/tests/e2e/dw-37-cell-retarget.umbrella.spec.ts:1-117 NEW 9 umbrella tests (5 P2 +4 P3) — no-resize stability 1+1+Math.max+spring 14/260/0.8+reducedMotion board-only+single-source allowlists SLIDE_MS 160/TILE_FADE 120/EARLY 0.3/GRID 4/BOARD_PADDING 8/CELL_GAP 8+exploratory Resize simulator+ledger 9f25aea8+bench 1e-9 0+cross-cutting — 9 pass ~158ms",
+      "_bmad-output/test-artifacts/tests/unit/dw-37-cell-retarget.atdd.test.ts:1-156 NEW 15 unit mirror (6 P0+3 P1+4 P2+2 P3) — 15 pass ~168ms"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-dw-37-cell-retarget.md status: done baseline 0b81c67 -> final eb11b56 (intent/boundaries/I-O 6 rows + 4 ACs + Code Map 6 + Design Notes + Verification 9/9 + 926 pass + Auto Run Result Status:done)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "description": "rest tile resize immediate snap — Given rest at cell A, when width/cell changes to B, then x/y snap to pixel(to,B)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": ["[P0-GW-01] DW-37 marker + [cell] dep + pixel(to,cell) + all-kinds", "[P0-01] AnimatedTile has cell-change effect (all kinds)"]
+    },
+    {
+      "id": "AC-2",
+      "description": "move/vanish mid-spring spring retarget — Given move/vanish mid-withSpring(toPos) when cell changes, then x/y spring to new pixel(to,B)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": ["[P0-GW-01] snap vs spring branches", "[P0-02] toPos spring regression"]
+    },
+    {
+      "id": "AC-3",
+      "description": "resize+re-plan no visible jump — Given resize re-projects rest, when applyPlan re-plans next swipe byCell(cellKey(t.to))+syncTiles, then from:src.to uses logical to in new pixel space → no jump; planTileTransitions !moved→[] + hold/slide holds",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": ["[P0-GW-03] planTileTransitions !moved→[] + hold/slide", "[P1-GW-02] byCell + syncTiles"]
+    },
+    {
+      "id": "AC-4",
+      "description": "appear tile snap + no-resize no spurious effect — Given appear or no cell change, when toPos changes without cell change, then existing move|vanish spring still triggers and [cell] effect does not fire spuriously (single [cell] dep, single [toPos.x,toPos.y,kind] dep)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": ["[P1-GW-01] vanish fade not broken", "[P2-UMB-01] no-resize stability 1+1"]
+    },
+    {
+      "id": "AC-5",
+      "description": "invariants preserved — syncTiles single writer 1+1, pixel helper BOARD_PADDING+cell[1/0]*(cell+CELL_GAP), cell guard Math.max(...,1), SLIDE_MS 160/TILE_FADE_MS 120/EARLY 84, vanish fade delay+SLIDE_MS→100ms",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": ["[P0-GW-04] cell Math.max", "[P0-GW-05] syncTiles single writer", "[P0-GW-06] pixel helper", "[P1-GW-01] vanish fade", "[P2-UMB-05] single-source allowlists"]
+    },
+    {
+      "id": "AC-6",
+      "description": "ledger + ownership — deferred-work DW-37 status:done 2026-09-02 + decision Retarget all kinds + resolution-undo 9f25aea8 64-hex; spec Status:done / 9/9 ATDD / 926 pass; sprint-status.yaml not written",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": ["[P1-GW-04] ledger DW-37 done + 64-hex", "[P3-UMB-02] ledger 9f25aea8 + spec Status:done"]
+    }
+  ],
+  "coverage": {
+    "inventory": {
+      "covered": 15,
+      "total": 15,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 6,
+        "covered": 6,
+        "pct": 100
+      },
+      "P1": {
+        "total": 3,
+        "covered": 3,
+        "pct": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "pct": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": [],
+  "generated_by": "bmad-testarch-automate dw-decision-dw-37 sequential",
+  "notes": "All 15 criteria FULL via host unit (gateway 10 + umbrella 9 + unit 15 + triade oracle 15+9). No uncovered P0/P1. Single-source allowlists verified (DW-37 1, },[cell]) 1, pixel(to,cell) 1, x.value=next.x 1, withSpring(next.x 1, withSpring(toPos.x 1, Math.max 1, setTilesState 1, tilesRef 1, function pixel 1, 9f25aea8 1) + ledger 9f25aea8 1 hit + sprint-status untouched. Full triade gate 926 pass / 0 fail / 346 skipped still green (24 dormant from this bundle). Simulator resize+swipe remains manual P3 device smoke per spec."
+}

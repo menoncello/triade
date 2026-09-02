@@ -177,6 +177,23 @@ function AnimatedTile({
     }
   }, [delay, kind, onVanish, id]);
 
+  // DW-37 cell-change retarget: re-project x/y onto new pixel grid so
+  // orientation/resize mid-animation does not leave stale coordinates.
+  // Retarget all kinds per human decision 2026-09-02 — rest/appear snap
+  // immediately; move/vanish spring to new target so in-flight motion
+  // continues smoothly. Next swipe's re-plan then starts from consistent
+  // logical `to` in new pixel space (no visible jump).
+  useEffect(() => {
+    const next = pixel(to, cell);
+    if (kind === 'rest' || kind === 'appear') {
+      x.value = next.x;
+      y.value = next.y;
+    } else if (kind === 'move' || kind === 'vanish') {
+      x.value = withSpring(next.x, spring);
+      y.value = withSpring(next.y, spring);
+    }
+  }, [cell]);
+
   const translate = useDerivedValue(() => [{ translateX: x.value }, { translateY: y.value }]);
   const scaleTransform = useDerivedValue(() => [{ scale: scale.value }]);
 
