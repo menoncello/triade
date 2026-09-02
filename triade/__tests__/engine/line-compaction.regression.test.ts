@@ -8,22 +8,22 @@ function refLine(...vs: Array<number | null>): CellRef[] {
   return vs.map((v, c) => ({ v, r: 0, c }));
 }
 
-// DW-74: multi-gap compaction must be fully compact in single pass
-test('DW-74 regression: [null,null,null,2] compacts to [2,null,null,null]', () => {
+// DW-74 reverted: GDD one-cell — each tile moves at most one cell per swipe (Threes authentic)
+test('DW-74 regression: [null,null,null,2] one-cell to [null,null,2,null]', () => {
   const { line, moved } = shiftLine(refLine(null, null, null, 2));
-  assert.deepStrictEqual(line.map((c) => c.v), [2, null, null, null]);
+  assert.deepStrictEqual(line.map((c) => c.v), [null, null, 2, null]);
   assert.strictEqual(moved, true);
-  assert.deepStrictEqual(line[0].from, [[0, 3]]);
+  assert.deepStrictEqual(line[2].from, [[0, 3]]);
 });
 
-test('DW-74 regression: [null,2,null,4] compacts to [2,4,null,null]', () => {
+test('DW-74 regression: [null,2,null,4] one-cell to [2,null,4,null]', () => {
   const { line } = shiftLine(refLine(null, 2, null, 4));
-  assert.deepStrictEqual(line.map((c) => c.v), [2, 4, null, null]);
+  assert.deepStrictEqual(line.map((c) => c.v), [2, null, 4, null]);
 });
 
-test('DW-74 regression: [null,null,3,null] compacts to [3,null,null,null]', () => {
+test('DW-74 regression: [null,null,3,null] one-cell to [null,3,null,null]', () => {
   const { line } = shiftLine(refLine(null, null, 3, null));
-  assert.deepStrictEqual(line.map((c) => c.v), [3, null, null, null]);
+  assert.deepStrictEqual(line.map((c) => c.v), [null, 3, null, null]);
 });
 
 test('DW-74 regression: [null,null,null,null] stays empty without throw', () => {

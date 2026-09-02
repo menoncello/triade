@@ -52,10 +52,8 @@ export function shiftLine(line: CellRef[]): { line: ShiftedCell[]; score: number
     const dest = i - 1;
     if (dest < 0 || dest >= n) continue;
     if (out[dest].v === null) {
-      let target = dest;
-      while (target > 0 && out[target - 1].v === null) target--;
-      out[target].v = t.v;
-      out[target].from = [[t.r, t.c] as [number, number]];
+      out[dest].v = t.v;
+      out[dest].from = [[t.r, t.c] as [number, number]];
       out[i].v = null;
       out[i].from = [];
     } else if (canMerge(out[dest].v, t.v)) {
