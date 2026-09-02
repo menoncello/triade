@@ -1,16 +1,16 @@
 {
   "schema_version": "0.1.0",
-  "snapshot_at": "2026-09-02T11:57:37.238777+00:00",
+  "snapshot_at": "2026-09-02T12:30:00+00:00",
   "repo": "3-clone",
   "collection_mode": "contract_static",
   "collection_status": "COLLECTED",
   "inventory_basis": "acceptance_criteria",
   "gate_basis": "priority_thresholds",
-  "source_sha": "8f62b44",
+  "source_sha": "e329d35",
   "target": {
     "type": "story",
-    "id": "dw-engine-parity-hardening",
-    "label": "dw-engine-parity-hardening \u2014 spawn-nothing / blind-spot / multi-move / ladder-ceiling chain (DW-25, DW-26, DW-34, DW-103)"
+    "id": "dw-hud-preview-hardening",
+    "label": "dw-hud-preview-hardening — Hud resilient to omitted/partial previews (DW-69)"
   },
   "decision_mode": "deterministic",
   "evaluator": "Eduardo",
@@ -19,25 +19,22 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-engine-parity-hardening.md",
-      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-parity-hardening.md",
-      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-parity-hardening.md",
-      "triade/__tests__/engine/engine.parity-hardening.atdd.test.ts",
-      "triade/__tests__/game/ladder-ceiling-chain.atdd.test.ts",
-      "triade/__tests__/engine/game.test.ts",
-      "triade/src/engine/core/spawn.ts",
-      "triade/src/engine/core/game.ts",
-      "triade/src/engine/core/ceiling.ts",
-      "triade/src/engine/core/pot.ts",
-      "triade/src/engine/config/spawnConfig.ts",
-      "triade/src/game/matchStats.ts",
-      "triade/src/game/matchScore.ts",
-      "triade/test-utils/helpers.ts",
-      "_bmad-output/test-artifacts/tests/api/engine-parity-hardening.gateway.spec.ts",
-      "_bmad-output/test-artifacts/tests/e2e/engine-parity-hardening.umbrella.spec.ts",
-      "_bmad-output/test-artifacts/tests/unit/engine-parity-hardening.atdd.test.ts",
-      "_bmad-output/test-artifacts/fixtures/engine-parity-hardening-fixtures.ts",
-      "_bmad-output/implementation-artifacts/deferred-work.md#DW-25,26,34,103",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-69",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-hud-preview-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-hud-preview-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-hud-preview-hardening.md",
+      "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+      "triade/__tests__/ui/components/hud.test.ts",
+      "triade/__tests__/ui/components/hud.previewWiring.test.ts",
+      "triade/__tests__/ui/components/previewCard.test.ts",
+      "triade/src/ui/Hud.tsx",
+      "triade/src/ui/PreviewCard.tsx",
+      "triade/src/game/preview.ts",
+      "triade/App.tsx",
+      "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/hud-preview-hardening-fixtures.ts",
       "_bmad-output/test-artifacts/automation-summary.md"
     ],
     "external_pointer_status": "not_used",
@@ -45,24 +42,24 @@
   },
   "coverage": {
     "inventory": {
-      "covered": 29,
-      "total": 29,
+      "covered": 20,
+      "total": 20,
       "pct": 100
     },
     "priority_breakdown": {
       "P0": {
-        "total": 11,
-        "covered": 11,
+        "total": 7,
+        "covered": 7,
         "pct": 100
       },
       "P1": {
-        "total": 8,
-        "covered": 8,
+        "total": 6,
+        "covered": 6,
         "pct": 100
       },
       "P2": {
-        "total": 7,
-        "covered": 7,
+        "total": 4,
+        "covered": 4,
         "pct": 100
       },
       "P3": {
@@ -73,20 +70,20 @@
     },
     "by_level": {
       "e2e": {
-        "tests": 10,
-        "criteria_covered": 10
+        "tests": 9,
+        "criteria_covered": 8
       },
       "api": {
-        "tests": 12,
-        "criteria_covered": 10
+        "tests": 14,
+        "criteria_covered": 13
       },
       "component": {
         "tests": 0,
         "criteria_covered": 0
       },
       "unit": {
-        "tests": 44,
-        "criteria_covered": 29
+        "tests": 64,
+        "criteria_covered": 20
       },
       "other": {
         "tests": 0,
@@ -95,50 +92,71 @@
     }
   },
   "tests": {
-    "files": 5,
-    "cases": 66,
-    "skipped_cases": 51,
+    "files": 6,
+    "cases": 87,
+    "skipped_cases": 40,
     "fixme_cases": 0,
     "pending_cases": 0
   },
-  "risk_summary": {
-    "critical_open": 0,
-    "high_open": 0,
-    "medium_open": 0,
-    "low_open": 0
+  "gaps": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": []
   },
   "heuristics": {
     "endpoint_gaps": 0,
-    "auth_negative_path_status": "present",
-    "error_path_status": "present",
-    "ui_journey_status": "not_applicable",
-    "ui_state_status": "not_applicable"
+    "auth_negative_path": "not_applicable (pure Hud seam, no auth — negative-path is never-throw + null via ?. not throw)",
+    "error_path": "present (omitted/partial/null/zero/opposite never-throw + distinct lanes + ledger + bare 0 + bench + hygiene)",
+    "ui_journey": "present (portrait 76×76 + landscape 60×44 + activeLaneId clean/accelerated gate via host unit + umbrella scans)",
+    "ui_state": "present (empty fallback \"\" + a11y Próxima (Clean): + chrome 76×76/60×44 + freeze advisory)"
+  },
+  "gate_criteria": {
+    "p0_coverage_required": 100,
+    "p0_coverage_actual": 100,
+    "p0_status": "MET",
+    "p1_coverage_target": 90,
+    "p1_coverage_minimum": 80,
+    "p1_coverage_actual": 100,
+    "p1_status": "MET",
+    "overall_coverage_minimum": 80,
+    "overall_coverage_actual": 100,
+    "overall_status": "MET"
   },
   "blockers": [],
   "recommendations": [
     {
-      "priority": "LOW",
-      "action": "Run /bmad:tea:test-review to assess test quality",
-      "requirements": []
+      "priority": "P1",
+      "action": "Freeze FALLBACK_PREVIEW singleton — add Object.freeze(FALLBACK_PREVIEW) + Object.freeze(FALLBACK_PREVIEW.values) in Hud.tsx:9 follow-on (R-004) — current singleton mutable but PreviewCard reads via filter without mutation; no caller mutates today.",
+      "requirements": [
+        "P1-06",
+        "R-004"
+      ]
+    },
+    {
+      "priority": "P3",
+      "action": "Consider empty fallback UX placeholder — decide whether empty chip should render '—' vs \"\" for R-002 BUS; until then empty \"\" + border 76×76/60×44 is accepted as defensive least-lying fallback.",
+      "requirements": [
+        "P3-01",
+        "R-002"
+      ]
     }
   ],
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-parity-hardening.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-hud-preview-hardening.md",
     "trace_report_url": "",
-    "artifact_url": "",
-    "journey_evidence_url": ""
+    "artifact_url": ""
   },
-  "gate_status": "PASS",
-  "gate_criteria": {
-    "p0_coverage_required": "100%",
-    "p0_coverage_actual": "100%",
-    "p0_status": "MET",
-    "p1_coverage_target": "90%",
-    "p1_coverage_minimum": "80%",
-    "p1_coverage_actual": "100%",
-    "p1_status": "MET",
-    "overall_coverage_minimum": "80%",
-    "overall_coverage_actual": "100%",
-    "overall_status": "MET"
+  "execution_evidence": {
+    "gateway": "bash -c \"cd _bmad-output/test-artifacts && TSX_TSCONFIG_PATH=../../triade/tsconfig.test.json NODE_PATH=../../triade/node_modules node --import ../../triade/node_modules/tsx/dist/loader.mjs --test tests/api/hud-preview-hardening.gateway.spec.ts\" → 14/14 GREEN (~210ms)",
+    "umbrella": "bash -c \"cd _bmad-output/test-artifacts && TSX_TSCONFIG_PATH=../../triade/tsconfig.test.json NODE_PATH=../../triade/node_modules node --import ../../triade/node_modules/tsx/dist/loader.mjs --test tests/e2e/hud-preview-hardening.umbrella.spec.ts\" → 9/9 GREEN (~240ms)",
+    "triade_atdd_dormant": "bash -c \"cd triade && TSX_TSCONFIG_PATH=tsconfig.test.json node --import ./node_modules/tsx/dist/loader.mjs --test __tests__/ui/hud-preview-hardening.atdd.test.ts\" → 4 suites pass / 20 skipped (RED dormant correct)",
+    "triade_atdd_activated": "python3 -c \"import pathlib; p=pathlib.Path('triade/__tests__/ui/hud-preview-hardening.atdd.test.ts'); pathlib.Path('triade/__tests__/ui/hud-preview-hardening.atdd.active.test.ts').write_text(p.read_text().replace('it.skip','it'))\" && bash -c \"cd triade && TSX_TSCONFIG_PATH=tsconfig.test.json node --import ./node_modules/tsx/dist/loader.mjs --test __tests__/ui/hud-preview-hardening.atdd.active.test.ts\" → 24 pass (4 suites +20 inner) /0 fail (~240ms) + rm active",
+    "tsc": "bash -c \"cd triade && npx tsc --noEmit --project tsconfig.json && npx tsc --noEmit --project tsconfig.test.json\" → clean (both tsconfigs)",
+    "rg": "rg -n FALLBACK_PREVIEW triade/src/ui/Hud.tsx → 2 hits (def+use) | rg previews?: →1 | rg ?? FALLBACK_PREVIEW →1 | rg previews.clean bare →0 | rg previews.accelerated bare →0 | rg da2f401d deferred-work.md →1 hit",
+    "full_suite": "npm --prefix triade test → ℹ tests 1148 / ℹ pass 910 / ℹ fail 10 (expected RED feel: punch/shake/bulletTime reducedMotion + app.restore) / ℹ skipped 228 (20 dormant hud) — activated 930 pass (+20) / 10 fail / 208 skipped — no new RED",
+    "ledger": "deferred-work.md DW-69 open→done 2026-09-02 + resolution: resolved by sweep bundle dw-hud-preview-hardening + resolution-undo: da2f401d914ad8d1fe9be186da75f4326210361c55b0d58a3cf199fda88f29ce (64-hex, 1 hit)",
+    "sprint_status": "git diff -- _bmad-output/implementation-artifacts/sprint-status.yaml → empty (never write, never revert — orchestrator-owned, verified)",
+    "engine_byte_identical": "git diff --stat -- triade/src/engine → empty | git diff --stat -- triade/src/game/preview.ts → empty"
   }
 }

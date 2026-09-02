@@ -6,6 +6,8 @@ import { PreviewCard, type Preview } from './PreviewCard.tsx';
 
 type LaneId = 'clean' | 'accelerated';
 
+const FALLBACK_PREVIEW: Preview = { kind: 'range', values: [] };
+
 export interface HudProps {
   score: number;
   best: number;
@@ -15,7 +17,10 @@ export interface HudProps {
   // FR-45: the lane-agnostic preview is fanned out to both lanes (Clean /
   // Accelerated). The engine owns a single `pendingSpawn`; each lane shows the
   // same pre-resolved preview today — Epic 3 differentiates per-lane boards later.
-  previews: { clean: Preview; accelerated: Preview };
+  // DW-69 hardening: previews is optional — omitted or partial previews fall back
+  // to an empty preview so Hud never throws (backward compatible; callers always
+  // provide it today).
+  previews?: { clean?: Preview; accelerated?: Preview };
   // 3.2 Clean lane purity: only the active lane preview is DISPLAYED; the fan-out shape is kept
   // so 7.2 previewWiring tests migrate via `activeLaneId` gate rather than a breaking prop change.
   activeLaneId?: LaneId;
@@ -56,8 +61,10 @@ export function Hud({
   const rightPad = insets.right + SAFE_MARGIN;
   const bottomPad = insets.bottom + SAFE_MARGIN;
   // 3.2: Clean lane purity — display exactly one preview for the active lane
+  // DW-69: defensive guard — previews may be omitted or partial; fall back to empty preview
   const activeId: LaneId = activeLaneId === 'accelerated' ? 'accelerated' : 'clean';
-  const activePreview = activeId === 'accelerated' ? previews.accelerated : previews.clean;
+  const activePreview: Preview =
+    (activeId === 'accelerated' ? previews?.accelerated : previews?.clean) ?? FALLBACK_PREVIEW;
   const activeLabel = activeId === 'accelerated' ? 'Accelerated' : 'Clean';
   const showAssistance = activeId === 'accelerated';
 

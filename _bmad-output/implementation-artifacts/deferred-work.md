@@ -563,7 +563,9 @@ resolution: already resolved: triade/src/game/preview.ts:62-65 ambiguousRange no
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-2-preview-card-no-hud-60-40-nas-duas-pistas (2026-08-24)"), 2026-09-01
 location: n/a
 reason: `Hud` throws if the `previews` prop is omitted by a caller (`previews.clean`/`previews.accelerated` accessed unconditionally). No current caller omits it; pre-existing robustness gap — deferred.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-hud-preview-hardening
+resolution-undo: da2f401d914ad8d1fe9be186da75f4326210361c55b0d58a3cf199fda88f29ce 2026-09-02 7374617475733a206f70656e
 
 ### DW-70: `spawnTile` muta o board de entrada e retorna a mesma referência (`board[cell[0]][cell[1]] = value; return { board, cell, value }`) — pre-existing (js/game.js idêntico), documentado desde 1-1; `move()` só passa board recém-construído por `boardFromLines`, então aliases não vazam. Não causado por 12.1, latente para callers futuros que reutilizem o board.
 

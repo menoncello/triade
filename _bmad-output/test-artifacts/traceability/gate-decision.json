@@ -1,22 +1,37 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-09-02T11:57:37.238777+00:00",
+  "evaluated_at": "2026-09-02T12:30:00+00:00",
   "repo": "3-clone",
   "target": {
     "type": "story",
-    "id": "dw-engine-parity-hardening",
-    "label": "dw-engine-parity-hardening \u2014 spawn-nothing / blind-spot / multi-move / ladder-ceiling chain (DW-25, DW-26, DW-34, DW-103)"
+    "id": "dw-hud-preview-hardening",
+    "label": "dw-hud-preview-hardening — Hud resilient to omitted/partial previews (DW-69)"
   },
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
   "gate_status": "PASS",
-  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%).",
+  "rationale": "P0 coverage is 100% (7/7), P1 coverage is 100% (target 90%, minimum 80%), overall 100% (minimum 80%). All 2 high risks R-001 silent fallback masks wiring + R-002 empty chip a11y mitigated via dual assertion (omitted/partial/null never-throw + score preserved + populated distinct clean 3 vs 3/6/12 + PreviewCard []→\"\" + App fan-out previewFor==2 + rg allowlists FALLBACK==2/previews?==1/?? FALLBACK==1/bare 0). Medium risks R-003 lane swap + R-004 mutable singleton + R-005 null + R-006 single-source also covered (activeLaneId gate both lanes, 76×76/60×44 chrome, freeze advisory documented). No engine mutation (git diff --stat -- triade/src/engine empty, triade/src/game/preview.ts empty), tsc --noEmit clean (both tsconfigs), host gate 910 pass +10 expected RED (feel) + 228 skipped dormant (930 pass when activated) + 14 gateway +9 umbrella GREEN, ledger 1× da2f401d done 2026-09-02, sprint-status.yaml untouched. De-skipped ATDD 20+24 pass confirms RED→GREEN inversion. NFR PASS across 7 categories (perf <1ms, security no auth/PII, reliability never-throw, maintainability single FALLBACK, scale O1, compliance thin-view, offline no native). No blockers.",
   "p0_status": "MET",
   "p1_status": "MET",
   "overall_status": "MET",
   "critical_open": 0,
+  "nfr_status": "PASS",
+  "nfr_assessment_path": "_bmad-output/test-artifacts/nfr-assessment-dw-hud-preview-hardening.md",
+  "categories": {
+    "performance": "PASS",
+    "security": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS",
+    "scalability": "PASS",
+    "compliance": "PASS",
+    "offline": "PASS"
+  },
+  "adr_score": "28/29",
+  "concerns": 1,
+  "blockers": false,
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-parity-hardening.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-hud-preview-hardening.md",
+    "nfr_report_path": "_bmad-output/test-artifacts/nfr-assessment-dw-hud-preview-hardening.md",
     "trace_report_url": "",
     "artifact_url": "",
     "journey_evidence_url": ""

@@ -1,10 +1,10 @@
 {
   "phase": "PHASE_1_COMPLETE",
-  "generated_at": "2026-09-02T12:00:00+00:00",
+  "generated_at": "2026-09-02T12:30:00+00:00",
   "trace_target": {
     "type": "story",
-    "id": "dw-render-gate-hardening",
-    "label": "dw-render-gate-hardening — App/GameBoard input gate and tile-state invariants (DW-35,36,38,39,88,89,90,96)"
+    "id": "dw-hud-preview-hardening",
+    "label": "dw-hud-preview-hardening — Hud resilient to omitted/partial previews (DW-69)"
   },
   "collection_mode": "contract_static",
   "collection_status": "COLLECTED",
@@ -15,72 +15,81 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-render-gate-hardening.md",
-      "_bmad-output/test-artifacts/test-design/test-design-dw-render-gate-hardening.md",
-      "_bmad-output/test-artifacts/test-design-dw-render-gate-hardening.md",
-      "_bmad-output/test-artifacts/atdd-checklist-dw-render-gate-hardening.md",
-      "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-      "triade/__tests__/render/transitionPlan.test.ts",
-      "triade/__tests__/render/render.smoke.test.ts",
-      "triade/__tests__/engine/game.test.ts",
-      "triade/src/render/GameBoard.tsx",
-      "triade/src/render/transitionPlan.ts",
-      "triade/src/engine/core/types.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-69",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-hud-preview-hardening.md",
+      "_bmad-output/test-artifacts/test-design-dw-hud-preview-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-hud-preview-hardening.md",
+      "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+      "triade/__tests__/ui/components/hud.test.ts",
+      "triade/__tests__/ui/components/hud.previewWiring.test.ts",
+      "triade/__tests__/ui/components/previewCard.test.ts",
+      "triade/src/ui/Hud.tsx",
+      "triade/src/ui/PreviewCard.tsx",
+      "triade/src/game/preview.ts",
       "triade/App.tsx",
-      "triade/test-utils/helpers.ts",
-      "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-      "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-      "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-      "_bmad-output/test-artifacts/fixtures/render-gate-hardening-fixtures.ts",
-      "_bmad-output/implementation-artifacts/deferred-work.md#DW-35,36,38,39,88,89,90,96",
+      "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/hud-preview-hardening-fixtures.ts",
       "_bmad-output/test-artifacts/automation-summary.md"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
   },
   "working_tree_delta": {
-    "baseline": "818be0de81e5b5d2c30e1889267b166d622a288d",
-    "head": "0cfd046180a98b8f5e457705c05f1ea3ae473c00",
-    "working_tree_ledger": "8× DW-35,36,38,39,88,89,90,96 open→done 2026-09-02 + resolution 8× 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c (rg 8 hits, sprint-status.yaml untouched)",
+    "baseline": "4f674b4 -> 4f674b4 (Hud guard at 4f674b4 + e329d35 package-lock sync)",
+    "head": "e329d35 (e329d35)",
+    "working_tree_ledger": "1× DW-69 open→done 2026-09-02 + resolution 1× da2f401d914ad8d1fe9be186da75f4326210361c55b0d58a3cf199fda88f29ce (rg 1 hit, sprint-status.yaml untouched — orchestrator-owned)",
     "production_files": [
-      "triade/App.tsx:103-107 restartSeqRef,gestureStartSeqRef,fallbackBusyTimerRef; 248-263 applyLaneSelection seq bump+clear; 311-315 handleSkipTutorial bump+clear; 363-371 doMove arms 420ms fallback (clear before arm, busyRef=true); 445-457 handleRestart bump+clear; 489-493 handleUndo clear; 545-550,580-585 handleContinue clear; 726,763-772 handleContinueAd/Iap clear; 795-806 onMoveSettled clear fallback before busyRef=false; 839-871 panGesture onBegin snapshot + onEnd seq guard runOnJS(true)",
-      "triade/src/render/GameBoard.tsx:38-45 constants SLIDE_MS 160 TILE_FADE_MS 120 MAX 280 EARLY 0.3→84 preserved; 298-360 helpers rebuildTilesFromBoard 4×4 GRID rest nextId + syncTiles; 365-379 unmount cleanup clearTimeout+null+onMoveSettledRef; 449-466 !moveResult null-rebuild one-shot prevMoveResultRef!==null (clear+rebuild+sync+bursts); 530-546 timer re-arm dual fallback plan.length>0→84 else if(moved)→84",
-      "triade/src/render/transitionPlan.ts:46-54 !moved→[] invariant factual (no change, guarded by both fallbacks)",
-      "triade/src/engine/core/types.ts reference-only, git diff --stat -- triade/src/engine empty"
+      "triade/src/ui/Hud.tsx:9 const FALLBACK_PREVIEW: Preview = { kind: 'range', values: [] } singleton empty-window fallback (least-lying, not [1,2])",
+      "triade/src/ui/Hud.tsx:23 previews?: { clean?: Preview; accelerated?: Preview } optional shape (backward compatible; current callers always provide via App.tsx fan-out)",
+      "triade/src/ui/Hud.tsx:64-67 activeId default 'clean' + activePreview = (activeId==='accelerated'? previews?.accelerated : previews?.clean) ?? FALLBACK_PREVIEW guard (replaces unconditional previews.clean/accelerated throw)",
+      "triade/src/ui/PreviewCard.tsx:14-22 unchanged defensive displayOf (exact → value, range → join('/'), [] → \"\", filter Number.isFinite) carries FALLBACK_PREVIEW {range, []} → \"\" no throw",
+      "triade/App.tsx:950-952 unchanged fan-out previews={{ clean: previewFor(game.pendingSpawn, availablePot), accelerated: previewFor(game.pendingSpawn, availablePot) }} still provides both lanes; hardening is Hud-only defensive",
+      "triade/src/game/preview.ts:1-113 byte-identical (git diff --stat -- triade/src/game/preview.ts empty) — Hud consumes Preview type only via fallback",
+      "triade/src/engine/* byte-identical (git diff --stat -- triade/src/engine empty) — Hud is pure display, never mutates board/GameState"
     ],
-    "spec": "_bmad-output/implementation-artifacts/spec-render-gate-hardening.md (intent hardened App↔GameBoard gate/tiles subsystem, 6 ACs ↔ 6 I-O rows)",
+    "spec": "_bmad-output/implementation-artifacts/deferred-work.md#DW-69 (no dedicated spec-hud-preview-hardening.md — ledger + commit 4f674b4)",
     "sprint_status_touched": false
   },
   "requirements": [
     {
       "id": "P0-01",
-      "description": "DW-35/90 Board fallback — moved:true empty plan still arms 84ms EARLY_INPUT_MS timer (not deadlock) — GameBoard.tsx:530-546 dual fallback if(plan.length>0)→84 else if(moved)→84",
+      "description": "DW-69 AC1 omitted previews portrait never-throw — previews: undefined / {} renders without throwing, score 123 + Recorde 456 + Clean label + portrait 76×76 chrome + empty \"\" not populated 3/6",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-01-triade",
-          "title": "[P0-01] Board fallback moved:true empty plan 84ms not deadlock",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-01] DW-69 AC1 omitted previews portrait no-throw + score/Recorde/Clean + 76×76 + empty fallback",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
           "line": 18,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-01-gateway",
-          "title": "[P0-API-01] Board fallback moved:true empty plan 84ms",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
+          "title": "[API-P0-01] gateway omitted previews portrait no-throw + score/Recorde/Clean + 76×76 + empty fallback (DW-69 AC1)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
           "line": 19,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-01-unit",
-          "title": "[P0-01] Board fallback moved:true empty plan 84ms",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-01] DW-69 AC1 omitted previews portrait no-throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
           "line": 18,
           "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P0-01-existing-hud",
+          "title": "hud.test.ts portrait 76×76",
+          "file": "triade/__tests__/ui/components/hud.test.ts",
+          "line": 8,
+          "level": "unit",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -89,37 +98,37 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-02",
-      "description": "DW-35/90 App fallback — doMove moved:true arms 420ms fallbackBusyTimerRef (App.tsx:367-371) secondary safety-net, clear before arm",
+      "description": "DW-69 AC1 omitted previews landscape never-throw — isLandscape:true + previews: undefined renders compact minWidth:60,height:44 band without throwing (same guard)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-02-triade",
-          "title": "[P0-02] App fallback doMove moved:true arms 420ms",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 30,
+          "title": "[P0-02] DW-69 AC1 omitted previews landscape no-throw + compact 60×44 chrome",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 32,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-02-gateway",
-          "title": "[P0-API-02] App fallback 420ms",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 28,
+          "title": "[API-P0-02] gateway omitted previews landscape no-throw + compact 60×44 chrome (DW-69 AC1 landscape)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 32,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-02-unit",
-          "title": "[P0-02] App fallback 420ms",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 26,
+          "title": "[P0-02] DW-69 AC1 omitted previews landscape no-throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 32,
           "level": "unit",
           "status": "skipped"
         }
@@ -130,46 +139,38 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-03",
-      "description": "DW-88 null-rebuild — non-null→null moveResult rebuilds 16→9 via rebuildTilesFromBoard 4×4 GRID scan, syncTiles(rebuilt), setBursts([]), prevMoveResultRef!==null guard",
+      "description": "DW-69 AC2 partial clean exact 3 with activeLaneId clean shows Clean+3 — previews: {clean: exact 3} + activeLaneId='clean' renders Clean + 3 (not fallback)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-03-triade",
-          "title": "[P0-03] null-rebuild non-null→null 16→9 via rebuildTilesFromBoard",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-03] DW-69 AC2 partial clean exact 3 with activeLaneId clean shows Clean+3",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
           "line": 42,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-03-gateway",
-          "title": "[P0-API-03] null-rebuild 16→9",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 38,
+          "title": "[API-P0-03] gateway partial clean exact 3 with activeLaneId clean shows Clean+3 (DW-69 AC2 clean→clean)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 42,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-03-unit",
-          "title": "[P0-03] null-rebuild 16→9",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 36,
+          "title": "[P0-03] DW-69 AC2 partial clean exact 3 with activeLaneId clean",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 42,
           "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-03-umbrella",
-          "title": "[P1-UMB-02] null→null vs non-null→null hygiene",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 24,
-          "level": "e2e",
           "status": "skipped"
         }
       ],
@@ -179,37 +180,37 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-04",
-      "description": "DW-89 settle leak on restart — pending settleTimerRef cleared before rebuild (clearTimeout before rebuildTilesFromBoard), no post-restart fire, fallbackBusyTimerRef also cleared",
+      "description": "DW-69 AC2 partial clean exact 3 with activeLaneId accelerated falls back to empty not 3 — previews: {clean: exact 3} + activeLaneId='accelerated' shows Accelerated+\"\" fallback not 3 (branch not swapped, ?. not bare)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-04-triade",
-          "title": "[P0-04] settle leak pending timer cleared before rebuild",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 55,
+          "title": "[P0-04] DW-69 AC2 partial clean exact 3 with activeLaneId accelerated falls back to empty not 3",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 54,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-04-gateway",
-          "title": "[P0-API-04] settle leak cleared before rebuild",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 48,
+          "title": "[API-P0-04] gateway partial clean exact 3 with activeLaneId accelerated falls back to empty not 3 (DW-69 AC2 clean→accelerated)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 54,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-04-unit",
-          "title": "[P0-04] settle leak cleared before rebuild",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 48,
+          "title": "[P0-04] DW-69 AC2 partial clean exact 3 with activeLaneId accelerated fallback",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 54,
           "level": "unit",
           "status": "skipped"
         }
@@ -220,37 +221,37 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-05",
-      "description": "DW-39 unmount mid-animation — cleanup clearTimeout(settleTimerRef)+null+onMoveSettledRef.current?.() releases App busyRef=false (not just leak)",
+      "description": "DW-69 AC3 null previews via ?. never-throw — previews: null and previews: {clean: null} never throw (nullish path) and still render score + default Clean",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-05-triade",
-          "title": "[P0-05] unmount mid-animation clearTimeout + onMoveSettledRef gate release",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-05] DW-69 AC3 null previews via ?. never-throw",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
           "line": 66,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-05-gateway",
-          "title": "[P0-API-05] unmount releases gate",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 56,
+          "title": "[API-P0-05] gateway null previews via ?. never-throw (DW-69 AC3 null via previews?.)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 66,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-05-unit",
-          "title": "[P0-05] unmount releases gate",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 58,
+          "title": "[P0-05] DW-69 AC3 null previews via ?. never-throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 66,
           "level": "unit",
           "status": "skipped"
         }
@@ -261,46 +262,38 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-06",
-      "description": "DW-96 stroke-tiling restart race — restartSeqRef monotonic + panGesture onBegin snapshot + onEnd seq guard (gestureStartSeqRef!==restartSeqRef return) drops late runOnJS(true) dispatch",
+      "description": "DW-69 AC4 score/best preserved when fallback active — score 0 / best 0 + previews: undefined still renders 0 tokens + Recorde (HUD chrome not suppressed)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-06-triade",
-          "title": "[P0-06] stroke race restartSeqRef monotonic + panGesture seq guard",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-06] DW-69 AC4 score/best zero still rendered when fallback active",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
           "line": 78,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-06-gateway",
-          "title": "[P0-API-06] stroke race restartSeqRef + seq guard",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 64,
+          "title": "[API-P0-06] gateway score/best zero still rendered when fallback active (DW-69 AC4 zero)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 78,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-06-unit",
-          "title": "[P0-06] stroke race",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 68,
+          "title": "[P0-06] DW-69 AC4 score/best zero still rendered when fallback active",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 78,
           "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-06-umbrella",
-          "title": "[P1-UMB-01] lane-switch seq guard only when needsReset",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 14,
-          "level": "e2e",
           "status": "skipped"
         }
       ],
@@ -310,177 +303,46 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_journey": "present",
+        "ui_state": "present"
       }
     },
     {
       "id": "P0-07",
-      "description": "DW-36/38 syncTiles single writer — setTilesState(next) exactly 1 hit + tilesRef.current = next exactly 1 hit both inside const syncTiles, syncTiles(≥3) calls",
+      "description": "DW-69 AC5 opposite partial + hygiene — previews: {accelerated: exact 6} only does not leak into clean lane, and no engine/layout rename (triade/src/engine byte-identical)",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P0-07-triade",
-          "title": "[P0-07] syncTiles single writer setTilesState 1 + tilesRef 1",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-07] DW-69 AC5 opposite partial accelerated only still gated correctly",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
           "line": 90,
           "level": "unit",
           "status": "skipped"
         },
         {
           "id": "P0-07-gateway",
-          "title": "[P0-API-07] syncTiles single writer",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 77,
+          "title": "[API-P0-07] gateway opposite partial accelerated only still gated correctly (DW-69 AC5 opposite)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 90,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
           "id": "P0-07-unit",
-          "title": "[P0-07] syncTiles single writer",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 80,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-UMB-01",
-          "title": "[P2-UMB-01] SCAN single syncTiles writer allowlist",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 62,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P0-08",
-      "description": "applyPlan + onVanish route via syncTiles (no direct setTilesState+separate ref assign outside helper) — GameBoard.tsx:437,551 syncTiles calls",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-08-triade",
-          "title": "[P0-08] applyPlan+onVanish route via syncTiles",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 105,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-08-gateway",
-          "title": "[P0-API-08] applyPlan+onVanish via syncTiles",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 86,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-08-unit",
-          "title": "[P0-08] applyPlan+onVanish via syncTiles",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
+          "title": "[P0-07] DW-69 AC5 opposite partial accelerated only still gated",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
           "line": 90,
           "level": "unit",
           "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P0-09",
-      "description": "App onMoveSettled clears fallbackBusyTimerRef before busyRef=false (clearTimeout before busyRef=false ordering, no double-fire Board 84ms vs App 420ms)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-09-triade",
-          "title": "[P0-09] onMoveSettled clears fallback before busyRef=false",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 118,
-          "level": "unit",
-          "status": "skipped"
         },
         {
-          "id": "P0-09-gateway",
-          "title": "[P0-API-09] onMoveSettled clears fallback before busy=false",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 95,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-09-unit",
-          "title": "[P0-09] onMoveSettled ordering",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 100,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P0-10",
-      "description": "planTileTransitions !moved→[] invariant still holds (contract unchanged, transitionPlan.ts:46-54) — factual invariant moved⟺plan.length>0, not silently discarding effective moves",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-10-triade",
-          "title": "[P0-10] planTileTransitions !moved→[] invariant holds",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 130,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-10-gateway",
-          "title": "[P0-API-10] !moved→[] contract unchanged",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 103,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-10-unit",
-          "title": "[P0-10] !moved→[] invariant",
-          "file": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-          "line": 110,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "transitionPlan-13",
-          "title": "transitionPlan.test.ts 13-case slide/merge/spawn/hold wall",
-          "file": "triade/__tests__/render/transitionPlan.test.ts",
-          "line": 1,
-          "level": "unit",
+          "id": "P0-07-umbrella",
+          "title": "[E2E-P3-03] hygiene scope no engine/layout rename: engine byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 78,
+          "level": "e2e",
           "status": "active"
         }
       ],
@@ -491,481 +353,44 @@
         "auth": "not_applicable",
         "error_path": "present",
         "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_state": "present"
       }
     },
     {
       "id": "P1-01",
-      "description": "lane-switch seq guard DW-96 lane variant bumps restartSeqRef only when needsReset (applyLaneSelection true bumps inside if(needsReset), false HUD-only not bump)",
+      "description": "Distinct lane wiring still clean 3 vs accelerated 6/3/6/12 via activeLaneId — proves silent fallback did not mask missing wiring (R-001/R-003)",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
           "id": "P1-01-triade",
-          "title": "[P1-01] lane-switch seq guard bumps only when needsReset",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 145,
+          "title": "[P1-01] distinct lane wiring clean 3 vs accelerated 6 still distinct via activeLaneId",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 105,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-01-umbrella",
-          "title": "[P1-UMB-01] lane-switch seq guard only when needsReset",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 14,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-02",
-      "description": "undo/continue clear fallback + busyRef=false — handleConfirmUndoAd/Iap, handleContinueAd/Iap, handleRestart, handleSkipTutorial each clearTimeout+null+busyRef=false",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-02-triade",
-          "title": "[P1-02] undo/continue clear fallback + busyRef=false",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 158,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-API-02",
-          "title": "[P1-API-01] undo/continue clear fallback + busyRef=false",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 112,
+          "id": "P1-01-gateway",
+          "title": "[API-P1-01] gateway distinct lane wiring clean 3 vs accelerated 6 still distinct via activeLaneId (R-001/R-003)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 105,
           "level": "api",
-          "status": "skipped"
+          "status": "active"
         },
         {
-          "id": "P1-02-umbrella",
-          "title": "[P1-API-01] gateway dummy",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 62,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-03",
-      "description": "null→null does not rebuild spuriously — prevMoveResultRef.current!==null one-shot gate, prevMoveResultRef update prevents second null cycle flicker",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-03-triade",
-          "title": "[P1-03] null→null does not rebuild spuriously",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 168,
+          "id": "P1-01-unit",
+          "title": "[P1-01] distinct lane wiring clean 3 vs 6",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 105,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-03-umbrella",
-          "title": "[P1-UMB-02] null→null does not rebuild",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 24,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-04",
-      "description": "rapid restart seq monotonic — restartSeqRef = useRef(0) monotonic, never reset to 0, number safe until 2^53 (R-011)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-04-triade",
-          "title": "[P1-04] rapid restart seq monotonic no reset",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 178,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-04-umbrella",
-          "title": "[P1-UMB-03] rapid restart seq monotonic no reset",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 30,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-05",
-      "description": "App useEffect cleanup clears fallbackBusyTimerRef on unmount (clearTimeout+null, prevents orphan timer)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-05-triade",
-          "title": "[P1-05] App useEffect cleanup clears fallbackBusyTimerRef",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 188,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-05-umbrella",
-          "title": "[P1-UMB-04] App useEffect cleanup clears fallback",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 36,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-06",
-      "description": "ledger DW-35,36,38,39,88,89,90,96 done + resolution-undo 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 64-hex 8 hits + sprint-status.yaml untouched (orchestrator-owned)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-06-triade",
-          "title": "[P1-06] ledger 8 hits done + 4cfb9c87 64-hex + sprint-status untouched",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 198,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-06-gateway",
-          "title": "[P1-API-02] ledger 8-hit gate",
-          "file": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-          "line": 120,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-06-umbrella",
-          "title": "[P1-UMB-05] ledger 8 hits done + 4cfb9c87 64-hex",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 42,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-07",
-      "description": "burst orphan cleared on rebuild — rebuild null branch setBursts([]) clears bursts from prior merges so new game has no ghost particles",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-07-triade",
-          "title": "[P1-07] burst orphan cleared on rebuild setBursts([])",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 212,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-07-umbrella",
-          "title": "[P1-UMB-06] burst orphan cleared on rebuild",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 52,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-01",
-      "description": "SCAN single syncTiles writer allowlist — setTilesState(next) 1, tilesRef.current = next 1, const syncTiles 1 def (R-003 hygiene)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-01-triade",
-          "title": "[P2-01] SCAN single syncTiles writer allowlist 1/1/1",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 225,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-01-umbrella",
-          "title": "[P2-UMB-01] SCAN single syncTiles writer",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 62,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-02",
-      "description": "SCAN App fallbackBusyTimerRef allowlist — defined 1, cleared >=6, fallback 420ms exactly 1 hit (R-009 hygiene double-clear advisory)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-02-triade",
-          "title": "[P2-02] SCAN App fallbackBusyTimerRef defined 1 cleared >=6 420ms once",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 237,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-02-umbrella",
-          "title": "[P2-UMB-02] SCAN App fallbackBusyTimerRef allowlist",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 68,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-03",
-      "description": "SCAN App restartSeqRef allowlist — restartSeqRef 1, gestureStartSeqRef 1, bumps >=2, guard 1, snapshot 1 (R-004)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-03-triade",
-          "title": "[P2-03] SCAN App restartSeqRef 1 + gestureStartSeqRef 1 bumps >=2 guard 1",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 248,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-03-umbrella",
-          "title": "[P2-UMB-03] SCAN App restartSeqRef allowlist",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 74,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-04",
-      "description": "SCAN Board timer constants single source — SLIDE_MS 160×1, TILE_FADE_MS 120×1, MAX_MOVE_ANIM_MS 1, EARLY_INPUT_FRACTION 0.3×1, EARLY_INPUT_MS 1 (no duration drift)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-04-triade",
-          "title": "[P2-04] SCAN Board timer constants single source 160/120/280/0.3/84",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 260,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-04-umbrella",
-          "title": "[P2-UMB-04] SCAN Board timer constants single source",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 82,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-05",
-      "description": "SCAN settleTimerRef lifecycle — defined 1, clearTimeout >=2, setTimeout 2 (84ms dual Board primary+fallback) (R-001,R-007)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-05-triade",
-          "title": "[P2-05] SCAN settleTimerRef lifecycle defined 1 clear >=2 setTimeout 2",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 271,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P2-05-umbrella",
-          "title": "[P2-UMB-05] SCAN settleTimerRef lifecycle",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 90,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P3-01",
-      "description": "exploratory cell NaN guard — const cell = Math.max(...,1) prevents width=0 NaN, pixel within width (R-008 residual)",
-      "priority": "P3",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P3-01-triade",
-          "title": "[P3-01] exploratory cell NaN guard Math.max(...,1) preserved",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 282,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P3-01-umbrella",
-          "title": "[P3-UMB-01] exploratory cell NaN guard Math.max(...,1)",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 98,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P3-02",
-      "description": "hygiene scope — no engine/store/HUD/layout change, App+Board only production delta, GRID=4 (not GRID_SIZE), animation timing byte-identical",
-      "priority": "P3",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P3-02-triade",
-          "title": "[P3-02] hygiene scope no engine/store/HUD/layout change App+Board only",
-          "file": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-          "line": 288,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P3-02-umbrella",
-          "title": "[P3-UMB-02] hygiene scope no engine change App+Board only",
-          "file": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-          "line": 104,
-          "level": "e2e",
-          "status": "skipped"
-        },
-        {
-          "id": "render-smoke-500",
-          "title": "render.smoke 500 deterministic moves never leak",
-          "file": "triade/__tests__/render/render.smoke.test.ts",
-          "line": 1,
+          "id": "P1-01-existing-previewWiring",
+          "title": "hud.previewWiring distinct 3/6",
+          "file": "triade/__tests__/ui/components/hud.previewWiring.test.ts",
+          "line": 12,
           "level": "unit",
           "status": "active"
         }
@@ -976,35 +401,583 @@
         "endpoint": "not_applicable",
         "auth": "not_applicable",
         "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "PreviewCard range [] → \"\" display + a11y Próxima (Clean): empty — displayOf({kind:'range', values:[]}) === \"\" with Próxima (Clean): trailing empty, Number.isFinite filter",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-triade",
+          "title": "[P1-02] PreviewCard range [] via PreviewCard direct renders \"\" + a11y Próxima (Clean): empty",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 118,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "[API-P1-02] gateway PreviewCard range [] via direct renders \"\" + a11y Próxima (Clean): empty (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 118,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] PreviewCard range [] → \"\"",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 118,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-umbrella",
+          "title": "[E2E-P2-04] journey PreviewCard defensive displayOf + no export type pollution",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P1-02-existing-previewCard",
+          "title": "previewCard range [] → \"\"",
+          "file": "triade/__tests__/ui/components/previewCard.test.ts",
+          "line": 8,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "Portrait 76×76 vs landscape 60×44 chrome preserved when fallback active (same chrome as populated) — R-002 empty UX chrome",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-triade",
+          "title": "[P1-03] portrait 76×76 vs landscape 60×44 chrome preserved when fallback active",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 130,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "[API-P1-03] gateway portrait 76×76 vs landscape 60×44 chrome preserved when fallback active (R-002)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 130,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] portrait 76×76 vs landscape 60×44 chrome",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 130,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-umbrella",
+          "title": "[E2E-P3-01] exploratory empty chip visual bordered 76×76/60×44",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 58,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "App.tsx fan-out still previews={{clean: previewFor(...), accelerated: previewFor(...)}} unchanged — hardening is Hud-only defensive, callers always provide both lanes (R-001)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-triade",
+          "title": "[P1-04] App.tsx fan-out still previews={{clean: previewFor(...), accelerated: previewFor(...)}} unchanged",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 142,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-gateway",
+          "title": "[API-P1-04] gateway App.tsx fan-out still previews={{clean: previewFor(...), accelerated: previewFor(...)}} unchanged (R-001)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 142,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] App.tsx fan-out still both lanes",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 142,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-04-umbrella",
+          "title": "[E2E-P2-05] journey App.tsx fan-out unchanged + engine byte-identical",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 46,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
         "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "FALLBACK_PREVIEW single-source: only in Hud.tsx, Preview type single import — FALLBACK_PREVIEW ==2 (def+use) + type Preview import >=1 via PreviewCard, no scattered [] literals (R-006)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-triade",
+          "title": "[P1-05] FALLBACK_PREVIEW single-source: only in Hud.tsx, Preview type single import",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 154,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-gateway",
+          "title": "[API-P1-05] gateway FALLBACK_PREVIEW single-source: only in Hud.tsx, Preview type single import (R-006)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 154,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] FALLBACK_PREVIEW single-source",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 154,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-05-umbrella",
+          "title": "[E2E-P2-01] journey single-constant allowlist: FALLBACK==2 previews?==1 ??FALLBACK==1",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 16,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "FALLBACK_PREVIEW mutable singleton guard documents freeze gap — current singleton not frozen (Object.freeze advisory) but PreviewCard reads via filter without mutation; future hardening will Object.freeze (R-004)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-triade",
+          "title": "[P1-06] FALLBACK_PREVIEW mutable singleton guard documents freeze gap",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 166,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "[API-P1-06] gateway FALLBACK_PREVIEW mutable singleton guard documents freeze gap (R-004)",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 166,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] FALLBACK_PREVIEW mutable singleton guard",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 166,
+          "level": "unit",
+          "status": "skipped"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "SCAN Hud.tsx single-constant allowlist: FALLBACK==2 previews?==1 ??FALLBACK==1 — single guard, single fallback (R-006 type widening drift)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-triade",
+          "title": "[P2-01] SCAN Hud.tsx single-constant allowlist: FALLBACK==2 previews?==1 ??FALLBACK==1",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 182,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-gateway",
+          "title": "[API-P1-07] gateway HUD guard single-constant allowlist + no bare previews.*",
+          "file": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+          "line": 178,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] SCAN single-constant allowlist",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 182,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "title": "[E2E-P2-01] journey single-constant allowlist: FALLBACK==2 previews?==1 ??FALLBACK==1",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 16,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "SCAN no bare previews.clean / previews.accelerated without ?. outside guard — rg bare ==0 + previews?.clean / ?.accelerated exist, no re-introduced throw (R-003/R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-triade",
+          "title": "[P2-02] SCAN no bare previews.clean / previews.accelerated without ?. outside guard",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 194,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-unit",
+          "title": "[P2-02] SCAN no bare previews.*",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 194,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-umbrella",
+          "title": "[E2E-P2-02] journey no bare previews.clean / previews.accelerated without ?. outside guard",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 24,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "SCAN ledger resolution-undo 64-hex DW-69 done + sprint-status untouched — rg da2f401d >=1 + DW-69 status: done + resolution-undo present; sprint-status.yaml not written (orchestrator-owned) (R-007)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-triade",
+          "title": "[P2-03] SCAN ledger resolution-undo 64-hex DW-69 done + sprint-status untouched",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 206,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] SCAN ledger resolution-undo",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 206,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "[E2E-P2-03] journey ledger resolution-undo 64-hex DW-69 done + sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 30,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "SCAN PreviewCard defensive displayOf + no export type pollution — PreviewCard Number.isFinite + join('/') + rg export type Preview in Hud.tsx ==0 (thin-view compliance) (R-002/R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-triade",
+          "title": "[P2-04] SCAN PreviewCard defensive displayOf + no export type pollution",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 218,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] SCAN PreviewCard defensive displayOf",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 218,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "title": "[E2E-P2-04] journey PreviewCard defensive displayOf + no export type pollution",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "Exploratory empty chip visual bordered 76×76/60×44 with score legible (no YellowBox) — manual Expo Go snapshot Hud with previews: undefined shows bordered empty chip, Recorde + score legible (R-002/R-008 accepted empty \"\")",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-triade",
+          "title": "[P3-01] exploratory empty chip visual bordered 76×76/60×44 with score legible (no YellowBox)",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 232,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] exploratory empty chip visual",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 232,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-umbrella",
+          "title": "[E2E-P3-01] exploratory empty chip visual bordered 76×76/60×44 with score legible",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 58,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "Micro-bench Hud guard <0.05ms median (10k renders optional) — Hud is one ?. / ?? branch <1ms per render, 100 renders <5s smoke (R-009 perf unchanged)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-triade",
+          "title": "[P3-02] micro-bench Hud guard <0.05ms median (10k renders optional)",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 244,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] micro-bench Hud guard",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 244,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "title": "[E2E-P3-02] exploratory micro-bench Hud guard <0.05ms (100 renders <5s)",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 68,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "Hygiene scope no engine/layout rename: engine byte-identical advisory — !hudSrc.includes('from ../engine') pure presentation; triade/src/engine byte-identical gate + preview.ts byte-identical (sweep boundary Not in Scope)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03-triade",
+          "title": "[P3-03] hygiene scope no engine/layout rename: engine byte-identical advisory",
+          "file": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+          "line": 256,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] hygiene scope no engine/layout rename",
+          "file": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+          "line": 256,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-03-umbrella",
+          "title": "[E2E-P3-03] hygiene scope no engine/layout rename: engine byte-identical advisory",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 78,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "P3-03-umbrella-2",
+          "title": "[E2E-P3-04] hygiene tsc clean + git diff --stat -- triade/src/engine + preview.ts empty",
+          "file": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+          "line": 88,
+          "level": "e2e",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
       }
     }
   ],
   "summary": {
-    "total": 24,
-    "full": 24,
+    "total": 20,
+    "full": 20,
     "partial": 0,
     "none": 0,
     "by_priority": {
       "P0": {
-        "total": 10,
-        "full": 10,
-        "pct": 100
-      },
-      "P1": {
         "total": 7,
         "full": 7,
         "pct": 100
       },
+      "P1": {
+        "total": 6,
+        "full": 6,
+        "pct": 100
+      },
       "P2": {
-        "total": 5,
-        "full": 5,
+        "total": 4,
+        "full": 4,
         "pct": 100
       },
       "P3": {
-        "total": 2,
-        "full": 2,
+        "total": 3,
+        "full": 3,
         "pct": 100
       }
     }
@@ -1017,36 +990,34 @@
   },
   "heuristics_summary": {
     "endpoint_gaps": 0,
-    "auth_negative_path": "not_applicable (pure gate/tile TS, no auth; negative-path is never-throw + empty plan + null-rebuild)",
-    "error_path": "present (dual fallback empty plan + null→null gate + rapid restart + settle leak)",
-    "ui_journey": "not_applicable (RN Skia Canvas + RNGH host unit, not Playwright DOM — host umbrella scans cover journey)",
-    "ui_state": "not_applicable"
+    "auth_negative_path": "not_applicable (pure Hud RN presentation, no auth — negative path is never-throw + null ?. + empty fallback)",
+    "error_path": "present (omitted/partial/null/zero/opposite never-throw + score preserved + bare 0 + ledger hash)",
+    "ui_journey": "present (portrait 76×76 + landscape 60×44 + activeLaneId gate + PreviewCard []→\"\" + App fan-out via host unit umbrella)",
+    "ui_state": "present (empty fallback \"\" a11y Próxima (Clean): + chrome + zero + freeze gap via host scans)"
   },
   "quality": {
-    "passing_tests": 34,
-    "total_tests": 60,
-    "active_gateway": 0,
-    "active_umbrella": 0,
-    "dormant_triade_atdd": 24,
-    "dormant_gateway": 12,
-    "dormant_umbrella": 14,
-    "dormant_unit_atdd": 10,
-    "existing_transitionPlan": 13,
-    "existing_renderSmoke": 3,
-    "existing_game": 32,
+    "passing_tests": 47,
+    "total_tests": 87,
+    "active_gateway": 14,
+    "active_umbrella": 9,
+    "dormant_triade_atdd": 20,
+    "dormant_unit_atdd": 20,
+    "existing_hud": 8,
+    "existing_previewWiring": 9,
+    "existing_previewCard": 7,
     "blocker_issues": 0,
     "warning_issues": 0
   },
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-render-gate-hardening.md",
-    "fixtures": "_bmad-output/test-artifacts/fixtures/render-gate-hardening-fixtures.ts",
-    "gateway": "_bmad-output/test-artifacts/tests/api/render-gate-hardening.gateway.spec.ts",
-    "umbrella": "_bmad-output/test-artifacts/tests/e2e/render-gate-hardening.umbrella.spec.ts",
-    "atdd_triade": "triade/__tests__/render/render-gate-hardening.atdd.test.ts",
-    "atdd_unit": "_bmad-output/test-artifacts/tests/unit/render-gate-hardening.atdd.test.ts",
-    "spec": "_bmad-output/implementation-artifacts/spec-render-gate-hardening.md",
-    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-render-gate-hardening.md",
-    "test_design_mirror": "_bmad-output/test-artifacts/test-design-dw-render-gate-hardening.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-hud-preview-hardening.md",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/hud-preview-hardening-fixtures.ts",
+    "gateway": "_bmad-output/test-artifacts/tests/api/hud-preview-hardening.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/hud-preview-hardening.umbrella.spec.ts",
+    "atdd_triade": "triade/__tests__/ui/hud-preview-hardening.atdd.test.ts",
+    "atdd_unit": "_bmad-output/test-artifacts/tests/unit/hud-preview-hardening.atdd.test.ts",
+    "spec": "_bmad-output/implementation-artifacts/deferred-work.md#DW-69",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-hud-preview-hardening.md",
+    "test_design_mirror": "_bmad-output/test-artifacts/test-design-dw-hud-preview-hardening.md",
     "automation_summary": "_bmad-output/test-artifacts/automation-summary.md"
   }
 }
