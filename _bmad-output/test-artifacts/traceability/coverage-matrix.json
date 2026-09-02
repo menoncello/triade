@@ -1,10 +1,10 @@
 {
   "phase": "PHASE_1_COMPLETE",
-  "generated_at": "2026-09-02T13:40:00+00:00",
+  "generated_at": "2026-09-02T14:05:00+00:00",
   "trace_target": {
     "type": "story",
-    "id": "dw-engine-trace-merge-guards",
-    "label": "dw-engine-trace-merge-guards \u2014 trace empty on noop and mergeValue guard (DW-21, DW-22)"
+    "id": "dw-engine-spawn-candidates-validation",
+    "label": "dw-engine-spawn-candidates-validation \u2014 single-source pool validation + dedup for second callers (DW-72, DW-73)"
   },
   "collection_mode": "contract_static",
   "collection_status": "COLLECTED",
@@ -15,82 +15,74 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-engine-trace-merge-guards.md",
-      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-trace-merge-guards.md",
-      "_bmad-output/test-artifacts/test-design-dw-engine-trace-merge-guards.md",
-      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-trace-merge-guards.md",
-      "triade/__tests__/engine/game.test.ts",
-      "triade/__tests__/engine/line.test.ts",
-      "triade/__tests__/engine/rules.test.ts",
-      "triade/__tests__/render/transitionPlan.test.ts",
-      "triade/__tests__/game/preview-invariant.test.ts",
+      "_bmad-output/implementation-artifacts/spec-engine-spawn-candidates-validation.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-engine-spawn-candidates-validation.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-engine-spawn-candidates-validation.md",
+      "triade/src/engine/core/spawn.ts",
       "triade/src/engine/core/game.ts",
-      "triade/src/engine/core/rules.ts",
-      "triade/src/engine/core/line.ts",
       "triade/src/engine/core/types.ts",
-      "triade/src/render/transitionPlan.ts",
-      "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-      "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-      "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-      "_bmad-output/test-artifacts/fixtures/engine-trace-merge-guards-fixtures.ts",
-      "_bmad-output/test-artifacts/automation-summary-dw-engine-trace-merge-guards.md"
+      "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+      "triade/__tests__/engine/spawn-placement.test.ts",
+      "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-engine-spawn-candidates-validation.md"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
   },
   "working_tree_delta": {
-    "baseline": "3bcf38cc7734c79f133e9b1619f765b32679fa02 -> 35c9d1c fix(engine): trace empty on noop and mergeValue guard (DW-21/DW-22)",
-    "head": "35c9d1c (35c9d1ca4006652e142e41a66fd45a98c31dcf1b)",
-    "working_tree_ledger": "2\u00d7 DW-21/DW-22 open\u2192done 2026-09-02 + resolution: resolved by sweep bundle dw-engine-trace-merge-guards + resolution-undo: b4557fd959ad8eaaebefd4d12cc00759ff3fea9176d41acbc8b9e60a1fff968b (rg 2 hits, sprint-status.yaml untouched \u2014 orchestrator-owned)",
+    "baseline": "51e4677 -> 50126fa fix(engine): spawn candidates validation + dedup (DW-72, DW-73) \u2014 triade/src/engine/core/spawn.ts:102-122 loop+Set",
+    "head": "50126fa",
+    "working_tree_ledger": "2\u00d7 DW-72/DW-73 open\u2192done 2026-09-02 + resolution: resolved by sweep bundle dw-engine-spawn-candidates-validation + resolution-undo: 365ffe33e51d4b7fa2e9623dfbd7d90efa61c409764e73db7e6521d8c5c73be2 2026-09-02 7374617475733a206f70656e (rg 2 hits, sprint-status.yaml untouched \u2014 orchestrator-owned)",
     "production_files": [
-      "triade/src/engine/core/game.ts:50-57 let trace = built.trace; const moved = !boardsEqual(state.board, effectiveBoard); if (!moved) trace=[]; (was const trace = built.trace with no emptying) \u2014 enforces empty trace on noop (DW-21). Spawn trace.push only inside if (moved)",
-      "triade/src/engine/core/rules.ts:5-17 if (!canMerge(a,b)) return (a??0)<=2?3:(a??0)*2; return (a??0)<=2?3:(a??0)*2; plus JSDoc DW-22: defensive guard \u2014 only ever called under canMerge; outside we intentionally ignore second operand (both branches same a-only, tautology explicit)",
-      "triade/src/engine/core/line.ts:73-76 doc DW-21: boardFromLines always returns a full placement trace; noop contract enforced in game.move after boardsEqual check \u2014 still pushes every v!==null ShiftedCell regardless of moved",
-      "triade/__tests__/game/preview-invariant.test.ts:373 tightened assert.strictEqual(noopRes.trace.length, 0, 'noop trace must be empty') (was 16 stationary)",
-      "triade/__tests__/render/transitionPlan.test.ts:108 tightened assert.strictEqual(result.trace.length, 0, 'DW-21: noop trace must be empty') + title noop move \u2026 empty trace (DW-21) (was trace still describes stationary board)",
-      "triade/src/engine/core/types.ts:43-57 unchanged TraceEntry {value,to,from,spawned} + MoveResult + GRID_SIZE=4 rectangular contract preserved",
-      "triade/src/render/transitionPlan.ts:21-54 byte-identical planTileTransitions already short-circuits if (!result.moved) return []",
-      "triade/src/engine byte-identical except game.ts+rules.ts+line.ts(doc) \u2014 git diff --stat -- triade/src/engine shows 5-line hardening, triade/src/render byte-identical"
+      "triade/src/engine/core/spawn.ts:102-122 loop+Set validation \u2014 replaces candidates.filter(([r,c])=> ...) with guard loop: if (!Array.isArray(candidates)) return 0 draws; seen Set<string>; for entry \u2192 !Array.isArray(entry)||length<2 continue; typeof r/c !== number continue; !isInteger continue; bounds continue; board[r]?.[c]!==null continue; seen.has continue; pool.push \u2014 preserves cloneBoard at top, pool 0\u21920 draws, pickIndex(pool.length,rng) 1 draw",
+      "triade/src/engine/core/game.ts:53-78 byte-identical opposite-edge candidate generation (push distinct per row/col via shifted[i].moved) \u2014 validated but not changed",
+      "triade/src/engine/core/types.ts:1 GRID_SIZE=4 untouched",
+      "triade/src/engine/core/board.ts byte-identical"
     ],
-    "spec": "_bmad-output/implementation-artifacts/spec-engine-trace-merge-guards.md status: done baseline 3bcf38cc \u2192 final e325bab (intent/boundaries/I-O matrix 5 rows + 4 tasks 5 ACs)",
+    "spec": "_bmad-output/implementation-artifacts/spec-engine-spawn-candidates-validation.md status: done baseline 51e4677 \u2192 final ed54b4e (intent/boundaries/I-O matrix 8 rows + 4 tasks 5 ACs)",
     "sprint_status_touched": false
   },
   "requirements": [
     {
       "id": "P0-01",
-      "description": "DW-21 noop left full non-mergeable \u2192 trace 0, moved false, score 0, no spawned, pending unchanged (AC noop \u2014 boardWith [[1,3,6,12]\u00d74] left)",
+      "description": "AC OOB filtered (spec row 1, R-001/R-004) \u2014 candidates=[[4,0]] on empty 4x4 \u2192 pool [] \u2192 {cell:null,value:null} 0 draws, doesNotThrow, board deepEqual before, res.board !== input; [[4,0],[0,0]] \u2192 pool [[0,0]] 1 draw",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-01-triade",
-          "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
-          "file": "triade/__tests__/game/preview-invariant.test.ts",
-          "line": 373,
+          "id": "P0-01-atdd",
+          "title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 22,
           "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 verified GREEN when activated (20 pass)"
+        },
+        {
+          "id": "P0-01-unit-mirror",
+          "title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 20,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "mirror \u2014 RED-phase"
+        },
+        {
+          "id": "P0-01-gw",
+          "title": "[P0-GW-01] OOB candidate [[4,0]] filtered \u2192 empty pool 0 draws no throw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 19,
+          "level": "api",
           "status": "active"
         },
         {
-          "id": "P0-01-gateway",
-          "title": "[P0-API-01] gateway noop left trace 0 moved false score 0 no spawned pending unchanged",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 19,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-01-unit",
-          "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 36,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-01-game",
-          "title": "game.test.ts noop \u2192 no spawned (tightened to trace 0 via preview-invariant)",
-          "file": "triade/__tests__/engine/game.test.ts",
-          "line": 198,
+          "id": "P0-01-spawn-unit",
+          "title": "[P0] spawnTile provided but all candidates occupied: returns nulls, 0 draws",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 125,
           "level": "unit",
           "status": "active"
         }
@@ -107,33 +99,34 @@
     },
     {
       "id": "P0-02",
-      "description": "DW-21 noop 4-dir same board \u2192 all trace 0 up/right/down (wall-agnostic movementLines + boardsEqual \u2192 !moved \u2192 [])",
+      "description": "AC null entry filtered (spec row 2, R-001) \u2014 candidates=[null,[0,0]] where [0,0] empty \u2192 pool [[0,0]] 1 draw, doesNotThrow, no destructuring throw; undefined same path",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-02-gateway",
-          "title": "[P0-API-02] gateway noop 4-dir same board trace 0",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 26,
-          "level": "api",
-          "status": "skipped"
+          "id": "P0-02-atdd",
+          "title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 32,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
         },
         {
-          "id": "P0-02-unit",
-          "title": "[P0-02] DW-21 noop 4-dir same board \u2192 all trace 0",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 47,
+          "id": "P0-02-unit-mirror",
+          "title": "[P0-02] null / undefined entry filtered",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 33,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-02-e2e",
-          "title": "[P0-E2E-01] spec boundaries GRID_SIZE 4 + noop trace contract",
-          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-          "line": 8,
-          "level": "e2e",
-          "status": "skipped"
+          "id": "P0-02-gw",
+          "title": "[P0-GW-02] null/undefined entry filtered via !Array.isArray guard",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 34,
+          "level": "api",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -148,40 +141,32 @@
     },
     {
       "id": "P0-03",
-      "description": "DW-21 effective [1,2,null,null] left \u2192 moved true, score 3, trace merged 3 at [0,0] from [[0,0],[0,1]] + spawned at [0,3] opposite edge",
+      "description": "AC missing column [1] (spec row 3) \u2014 candidates=[[1]] (no c) \u2192 entry.length<2 continue, empty pool 0 draws, nulls; [[1],[0,0]] \u2192 pool [[0,0]] 1 draw",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-03-unit",
-          "title": "[P0-03] DW-21 effective [1,2,null,null] left \u2192 merged 3 + spawn",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 58,
+          "id": "P0-03-atdd",
+          "title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 42,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-03-gateway",
-          "title": "[P0-API-03] gateway effective [1,2,null,null] left \u2192 merged 3 + spawn",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 34,
-          "level": "api",
-          "status": "skipped"
-        },
-        {
-          "id": "P0-03-game",
-          "title": "game.test.ts HAPPY_PATH 1+2\u21923",
-          "file": "triade/__tests__/engine/game.test.ts",
+          "id": "P0-03-unit-mirror",
+          "title": "[P0-03] missing column [1] filtered",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
           "line": 45,
           "level": "unit",
-          "status": "active"
+          "status": "skipped"
         },
         {
-          "id": "P0-03-previewInv",
-          "title": "preview-invariant blocked swarm noop vs effective",
-          "file": "triade/__tests__/game/preview-invariant.test.ts",
-          "line": 120,
-          "level": "unit",
+          "id": "P0-03-gw",
+          "title": "[P0-GW-03] missing column [1] + non-number [\"a\",\"b\"] filtered",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 50,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -197,24 +182,32 @@
     },
     {
       "id": "P0-04",
-      "description": "DW-21 effective with gaps [3,null,3,null] left \u2192 moved true, trace 2 slides + spawn (not emptied \u2014 filter lives in game.ts not line.ts)",
+      "description": "AC non-number [\"a\",\"b\"] (spec row 4) \u2014 candidates=[[\"a\",\"b\"]] \u2192 typeof r/c !== number continue, 0 draws, nulls, doesNotThrow; mixed \u2192 pool [[0,0]] 1 draw",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-04-unit",
-          "title": "[P0-04] DW-21 effective with gaps [3,null,3,null] left \u2192 2 slides + spawn",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 76,
+          "id": "P0-04-atdd",
+          "title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 52,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-04-line",
-          "title": "line.test.ts gap [3,null,3,null]\u2192[3,3,null,null] moved true",
-          "file": "triade/__tests__/engine/line.test.ts",
-          "line": 22,
+          "id": "P0-04-unit-mirror",
+          "title": "[P0-04] non-number type filtered",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 58,
           "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-04-gw2",
+          "title": "[P0-GW-03] missing column + non-number filtered (same gateway)",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 50,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -230,32 +223,32 @@
     },
     {
       "id": "P0-05",
-      "description": "DW-21 HOLD vs STATIONARY packed [1,3,6,12] row left stays noop trace 0 not 4 holds (shiftLine.moved value-based)",
+      "description": "AC duplicate dedup uniform AC3 (spec row 5, R-002) \u2014 candidates=[[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 via Set<string> ${r},${c}, spy 1 draw, counts 1/2 each within 5\u03c3 over N=4000 (not 2/3 bias), rngOf(0)\u2192[0,0] rngOf(0.6)\u2192[1,1]",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-05-unit",
-          "title": "[P0-05] DW-21 packed [1,3,6,12] row left stays noop trace 0 not 4 holds",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 86,
+          "id": "P0-05-atdd",
+          "title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 62,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-05-line",
-          "title": "line.test.ts shiftLine([1,3,6,12]).moved === false",
-          "file": "triade/__tests__/engine/line.test.ts",
-          "line": 31,
+          "id": "P0-05-unit-mirror",
+          "title": "[P0-05] duplicate dedup uniform",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 72,
           "level": "unit",
-          "status": "active"
+          "status": "skipped"
         },
         {
-          "id": "P0-05-transPlan",
-          "title": "transitionPlan hold stationary \u2192 hold vs noop []",
-          "file": "triade/__tests__/render/transitionPlan.test.ts",
-          "line": 45,
-          "level": "unit",
+          "id": "P0-05-gw",
+          "title": "[P0-GW-04] duplicate dedup uniform 1/2 not 2/3 bias",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 68,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -271,31 +264,39 @@
     },
     {
       "id": "P0-06",
-      "description": "DW-22 mergeValue tautology unguarded: (1,1)->3 (2,2)->3 (3,6)->6 (null,3)->6 a-only no throw (canMerge 3,6 false proves b ignored)",
+      "description": "AC valid pool uniform (spec row 6) \u2014 candidates=[[0,3],[1,3]] both empty \u2192 pickIndex(2,rng) uniform 1/2 within 5\u03c3, spy 1 draw, res.board[cell]===value, board deepEqual before, res.board !== board",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-06-unit",
-          "title": "[P0-06] DW-22 mergeValue tautology unguarded a-only no throw",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 94,
+          "id": "P0-06-atdd",
+          "title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 72,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-06-gateway",
-          "title": "[P0-API-06] gateway mergeValue tautology a-only",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 52,
-          "level": "api",
+          "id": "P0-06-unit-mirror",
+          "title": "[P0-06] valid pool kept",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 85,
+          "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-06-rules",
-          "title": "rules.test.ts mergeValue(1,1)\u21923 / (2,2)\u21923 / (3,null)\u21926",
-          "file": "triade/__tests__/engine/rules.test.ts",
-          "line": 28,
+          "id": "P0-06-gw",
+          "title": "[P0-GW-05] valid pool uniform pickIndex(2) 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 85,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-06-placement",
+          "title": "[P0] AC3 spawnTile with candidates: picks uniformly among candidates and consumes EXACTLY 1 draw",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 92,
           "level": "unit",
           "status": "active"
         }
@@ -312,24 +313,32 @@
     },
     {
       "id": "P0-07",
-      "description": "DW-22 mergeValue guarded still correct: (1,2)->3 (2,1)->3 (3,3)->6 (6,6)->12 (12,12)->24 \u2014 canMerge true paths",
+      "description": "AC mix valid+invalid+dup+OOB (spec row 7, R-003) \u2014 candidates=[[0,0],null,[4,0],[0,0],[0,3]] with empties at [0,0],[0,3] \u2192 pool [[0,0],[0,3]] deduped/filtered, spy 1 draw, cell in pool, 4000-draw uniformity 1/2 within 5\u03c3",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-07-unit",
-          "title": "[P0-07] DW-22 mergeValue guarded still correct",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 104,
+          "id": "P0-07-atdd",
+          "title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 82,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-07-rules",
-          "title": "rules.test.ts mergeValue(1,2)\u21923 / (3,3)\u21926",
-          "file": "triade/__tests__/engine/rules.test.ts",
-          "line": 35,
+          "id": "P0-07-unit-mirror",
+          "title": "[P0-07] mix valid+invalid+dup+OOB",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 96,
           "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-07-gw",
+          "title": "[P0-GW-06] mix valid+invalid+dup+OOB \u2192 pool [[0,0],[0,3]] 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 105,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -345,90 +354,32 @@
     },
     {
       "id": "P0-08",
-      "description": "DW-21 boardFromLines boundary full-placement vs game.move noop empty (holds survive on effective partial)",
+      "description": "AC non-array outer guard (R-009) \u2014 candidates is null/42/{0:0} as unknown \u2192 !Array.isArray(candidates) \u2192 {cell:null,value:null} 0 draws, doesNotThrow, no pickIndex",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-08-unit",
-          "title": "[P0-08] DW-21 boardFromLines full-placement vs game.move noop empty boundary",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 114,
+          "id": "P0-08-atdd",
+          "title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 92,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-08-lineDoc",
-          "title": "line.ts DW-21 doc boardFromLines always returns full placement trace",
-          "file": "triade/src/engine/core/line.ts",
-          "line": 73,
-          "level": "unit",
-          "status": "active"
-        },
-        {
-          "id": "P0-08-umbrella",
-          "title": "[E2E-P1-01] line.ts DW-21 doc only meaningful trace via game.move not line.ts filter",
-          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-          "line": 18,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "present"
-      }
-    },
-    {
-      "id": "P0-09",
-      "description": "DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not (filter in game.ts not line.ts)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-09-unit",
-          "title": "[P0-09] DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 134,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "present"
-      }
-    },
-    {
-      "id": "P0-10",
-      "description": "DW-21 trace spawned never on noop, exactly 1 on effective opposite edge (if (moved) { spawnTile\u2026trace.push(spawn) } ordering)",
-      "priority": "P0",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P0-10-unit",
-          "title": "[P0-10] DW-21 trace spawned never on noop, exactly 1 on effective",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 144,
+          "id": "P0-08-unit-mirror",
+          "title": "[P0-08] non-array outer guard",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 108,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-10-game",
-          "title": "game.test.ts spawn at opposite edge candidates[0]",
-          "file": "triade/__tests__/engine/game.test.ts",
-          "line": 88,
-          "level": "unit",
+          "id": "P0-08-gw",
+          "title": "[P0-GW-07] non-array outer guard null/42/object \u2192 0 draws no throw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 122,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -443,26 +394,91 @@
       }
     },
     {
-      "id": "P0-11",
-      "description": "DW-21/22 manual 3-log probe: noop [] false + merge 3 + guard a-only (spec Verification single node --loader tsx command)",
+      "id": "P0-09",
+      "description": "AC occupied + float (R-004/005/006) \u2014 candidates=[[0,0] occupied, [0.5,0] float] \u2192 !isInteger + board[r]?.[c]!==null \u2192 pool [] 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool [[0,3]] 1 draw",
       "priority": "P0",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P0-11-unit",
-          "title": "[P0-11] DW-21/22 manual 3-log probe noop [] false + merge 3 + guard a-only",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 153,
+          "id": "P0-09-atdd",
+          "title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 102,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P0-11-gateway",
-          "title": "[P0-API-11] gateway manual probe",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 78,
-          "level": "api",
+          "id": "P0-09-unit-mirror",
+          "title": "[P0-09] occupied + float filtering",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 120,
+          "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P0-09-gw",
+          "title": "[P0-GW-08] occupied + float filtered \u2192 0 vs 1 draw",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 138,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P0-10",
+      "description": "AC omitted candidates (spec row 8, R-008) \u2014 spawnTile(board,val,rng) with no 4th arg when board has 4 empties \u2192 all-empty uniform 1/4 within 5\u03c3 over 4000, spy 1 draw; full board \u2192 0 draws, nulls",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-10-atdd",
+          "title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 112,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-10-unit-mirror",
+          "title": "[P0-10] omitted candidates",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 132,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P0-10-gw",
+          "title": "[P0-GW-09] omitted candidates unchanged all-empty uniform 1/4 within 5\u03c3",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 155,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P0-10-unit",
+          "title": "[P0] spawnTile omitted candidates: places uniformly among all empties, 1 draw",
+          "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+          "line": 13,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "P0-10-omit",
+          "title": "[P0] AC5 spawnTile with no candidates (omitted) keeps all-empty behavior",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 145,
+          "level": "unit",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -477,31 +493,47 @@
     },
     {
       "id": "P1-01",
-      "description": "existing pipeline still green: game.test.ts 33 + preview-invariant + transitionPlan 60 pass (byte-identical valid-path guard)",
+      "description": "P1 4-dir game.move pipeline (R-007) \u2014 single-tile-off-wall board per direction when move(state,dir,rngOf(0,0.35,0.45)) \u2192 res.moved true, spawned.to in oppositeEdgeCandidates(state.board,dir) (left\u2192col3, right\u2192col0, up\u2192row3, down\u2192row0), res.board[spawned.to]===pendingSpawn.value",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P1-01-unit",
-          "title": "[P1-01] P1 game.test.ts 33 suites still green alongside noop fix",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 168,
+          "id": "P1-01-atdd",
+          "title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 125,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-01-game",
-          "title": "game.test.ts 33 pass",
-          "file": "triade/__tests__/engine/game.test.ts",
-          "line": 1,
+          "id": "P1-01-unit-mirror",
+          "title": "[P1-01] game.move 4-dir opposite edge",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 145,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-01-gw",
+          "title": "[P1-GW-10] game.move 4-dir opposite edge pipeline",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 175,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-01-place-left",
+          "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+          "file": "triade/__tests__/engine/spawn-placement.test.ts",
+          "line": 10,
           "level": "unit",
           "status": "active"
         },
         {
-          "id": "P1-01-transPlan",
-          "title": "transitionPlan.test.ts 13 pass",
-          "file": "triade/__tests__/render/transitionPlan.test.ts",
-          "line": 1,
+          "id": "P1-01-dir-int",
+          "title": "[P0] integration left: spawn is at (row, GRID_SIZE-1) of a moved row only",
+          "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+          "line": 10,
           "level": "unit",
           "status": "active"
         }
@@ -518,24 +550,32 @@
     },
     {
       "id": "P1-02",
-      "description": "line.test.ts holds survive on effective partial not filtered (shiftLine gap-fill 2 slides)",
+      "description": "P1 provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008) \u2014 provided full board [[0,0],[1,1]] \u2192 0 draws nulls, [[4,0]] OOB-only \u2192 0 draws, move noop gameOver 3/6 board \u2192 moved false 0 draws",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P1-02-unit",
-          "title": "[P1-02] P1 line.test.ts holds survive on effective partial not filtered",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 172,
+          "id": "P1-02-atdd",
+          "title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 135,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-02-line",
-          "title": "line.test.ts effective partial",
-          "file": "triade/__tests__/engine/line.test.ts",
-          "line": 15,
+          "id": "P1-02-unit-mirror",
+          "title": "[P1-02] provided-but-empty pool",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 158,
           "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-02-gw",
+          "title": "[P1-GW-11] provided-but-empty pool 0 draws + noop 0 draws",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 195,
+          "level": "api",
           "status": "active"
         }
       ],
@@ -551,23 +591,39 @@
     },
     {
       "id": "P1-03",
-      "description": "rules.test.ts 6 cases still green: canMerge + mergeValue 1+2/3+3 (tautology keeps 1,1\u21923 expected)",
+      "description": "P1 draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003) \u2014 validation loop adds 0 draws even on malformed input, rng only in pickIndex",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P1-03-unit",
-          "title": "[P1-03] P1 rules.test.ts 6 cases still green",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 179,
+          "id": "P1-03-atdd",
+          "title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 145,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-03-rules",
-          "title": "rules.test.ts 6 pass",
-          "file": "triade/__tests__/engine/rules.test.ts",
-          "line": 1,
+          "id": "P1-03-unit-mirror",
+          "title": "[P1-03] draw-budget preservation",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 171,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P1-03-gw",
+          "title": "[P1-GW-12] draw-budget 1 vs 0 + effective 3 vs noop 0",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+          "line": 212,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "P1-03-draw",
+          "title": "[P1] integration draw-budget: effective move 3 draws, cell draw picks among candidates",
+          "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+          "line": 75,
           "level": "unit",
           "status": "active"
         }
@@ -584,174 +640,33 @@
     },
     {
       "id": "P1-04",
-      "description": "transitionPlan noop empty plan and hold stationary pair (moved:false\u2192[] short-circuit compatible)",
+      "description": "P1 transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007) \u2014 wrong pool would diverge by 1 tile",
       "priority": "P1",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P1-04-unit",
-          "title": "[P1-04] P1 transitionPlan noop empty plan and hold stationary pair",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 186,
+          "id": "P1-04-atdd",
+          "title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 155,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-04-transPlan",
-          "title": "transitionPlan noop empty plan",
-          "file": "triade/__tests__/render/transitionPlan.test.ts",
-          "line": 108,
-          "level": "unit",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-05",
-      "description": "preview-invariant noop trace must be empty tightened at 35c9d1c (assert.strictEqual 0 not 16 stationary)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-05-unit",
-          "title": "[P1-05] P1 preview-invariant noop trace must be empty",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 197,
+          "id": "P1-04-unit-mirror",
+          "title": "[P1-04] transitionPlan assertNoLeak",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 184,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P1-05-preview",
-          "title": "preview-invariant.test.ts:373 tightened noopRes.trace.length 0",
-          "file": "triade/__tests__/game/preview-invariant.test.ts",
-          "line": 373,
-          "level": "unit",
-          "status": "active"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-06",
-      "description": "draw-budget preserved: effective 3 draws, noop 0 (spyRng + rngOf throw-on-exhaust pin)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-06-unit",
-          "title": "[P1-06] P1 draw-budget preserved effective 3 draws noop 0",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 202,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-06-gateway",
-          "title": "[P1-API-06-draw] gateway draw-budget 3/0",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 68,
-          "level": "api",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-07",
-      "description": "moved divergence convergence: shiftLine.moved (value-based out.some) vs game.move.moved (!boardsEqual)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-07-unit",
-          "title": "[P1-07] P1 moved divergence convergence",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 216,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-08",
-      "description": "ledger resolution-undo b4557fd 2 hits DW-21/22 done 2026-09-02 (resolution + hash coupling)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-08-unit",
-          "title": "[P1-08] P1 ledger resolution-undo b4557fd 2 hits DW-21/22 done",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 228,
-          "level": "unit",
-          "status": "skipped"
-        },
-        {
-          "id": "P1-08-umbrella",
-          "title": "[E2E-P2-01] ledger resolution-undo",
-          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-          "line": 38,
-          "level": "e2e",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P1-09",
-      "description": "engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green (occupiedCells + resultingTiles chain)",
-      "priority": "P1",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P1-09-unit",
-          "title": "[P1-09] P1 engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+          "id": "P1-04-gw",
+          "title": "[P1-GW-13] transitionPlan assertNoLeak resultingTiles===occupiedCells",
+          "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
           "line": 235,
-          "level": "unit",
-          "status": "skipped"
+          "level": "api",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -766,25 +681,33 @@
     },
     {
       "id": "P2-01",
-      "description": "single-guard allowlist game.ts let trace 1 + if (!moved) trace=[] 1 + trace.push inside if(moved) 1 (no const trace)",
+      "description": "P2 SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002) \u2014 candidates.filter 0 + Set<string> 1 + seen.has 1 + seen.add 1 + !Array.isArray(entry) 1 + isInteger 2 + !Array.isArray(candidates) 1",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P2-01-unit",
-          "title": "[P2-01] single-guard allowlist game.ts let trace + if (!moved)",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 240,
+          "id": "P2-01-atdd",
+          "title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 168,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P2-01-gateway",
-          "title": "[P2-API-01] gateway single-guard allowlist game.ts",
-          "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-          "line": 88,
-          "level": "api",
+          "id": "P2-01-unit-mirror",
+          "title": "[P2-01] SCAN single-site",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 197,
+          "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P2-01-e2e",
+          "title": "[P2-E2E-01] SCAN single-site loop + Set dedup + no candidates.filter survivor",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+          "line": 10,
+          "level": "e2e",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -799,17 +722,33 @@
     },
     {
       "id": "P2-02",
-      "description": "single-guard allowlist rules.ts if (!canMerge 1 + canMerge(a,b) 2 + (a ?? 0) <=2 2 tautology both branches same a-only",
+      "description": "P2 SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004) \u2014 export const GRID_SIZE=1 + =4 + spawn.ts 5 GRID_SIZE refs",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P2-02-unit",
-          "title": "[P2-02] single-guard allowlist rules.ts tautology",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 249,
+          "id": "P2-02-atdd",
+          "title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 178,
           "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P2-02-unit-mirror",
+          "title": "[P2-02] SCAN GRID_SIZE",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 210,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-02-e2e",
+          "title": "[P2-E2E-02] SCAN GRID_SIZE single definition + spawn bounds use GRID_SIZE",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+          "line": 20,
+          "level": "e2e",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -824,25 +763,33 @@
     },
     {
       "id": "P2-03",
-      "description": "DW-21 doc on boardFromLines always returns full placement trace (line.ts:73) + game.ts if (!moved) trace=[] 1 hit + no filter in line.ts",
+      "description": "P2 SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006) \u2014 board[r]?.[c] !== null 1 vs board[r][c] === null 1 + cloneBoard + pickIndex(pool.length + pool.length===0 1",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P2-03-unit",
-          "title": "[P2-03] DW-21 doc on boardFromLines always returns full placement trace",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 256,
+          "id": "P2-03-atdd",
+          "title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 188,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P2-03-umbrella",
-          "title": "[E2E-P2-02] line.ts DW-21 doc",
-          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+          "id": "P2-03-unit-mirror",
+          "title": "[P2-03] SCAN optional chaining",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 223,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P2-03-e2e",
+          "title": "[P2-E2E-03] SCAN board[r]?.[c] !== null optional chaining guard pin",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
           "line": 28,
           "level": "e2e",
-          "status": "skipped"
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -857,100 +804,33 @@
     },
     {
       "id": "P2-04",
-      "description": "no bare trace = built.trace after moved check \u2014 moved is single gate not trace.length (alias benign transient)",
+      "description": "P2 SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010) \u2014 spawn.ts Math.random 2 + game.ts Math.random 2 + deferred-work 365ffe33 + status: done 2026-09-02 + game.ts no sprint text",
       "priority": "P2",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P2-04-unit",
-          "title": "[P2-04] no bare trace = built.trace after moved check",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 263,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-05",
-      "description": "trace shape GRID_SIZE 4 + TraceEntry {value,to,from,spawned} + MoveResult trace:TraceEntry[] unchanged",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-05-unit",
-          "title": "[P2-05] trace shape GRID_SIZE 4 + TraceEntry unchanged",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 269,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-06",
-      "description": "ledger + spec hashes: resolution-undo b4557fd 2 hits + final_revision e325bab + baseline 3bcf38cc",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-06-unit",
-          "title": "[P2-06] ledger + spec hashes",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 278,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P2-07",
-      "description": "sprint-status.yaml ownership diff empty never write never revert (orchestrator-owned)",
-      "priority": "P2",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P2-07-unit",
-          "title": "[P2-07] sprint-status.yaml ownership diff empty",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 286,
+          "id": "P2-04-atdd",
+          "title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 198,
           "level": "unit",
           "status": "skipped"
         },
         {
-          "id": "P2-07-umbrella",
-          "title": "[E2E-P3-04] sprint-status ownership",
-          "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-          "line": 58,
-          "level": "e2e",
+          "id": "P2-04-unit-mirror",
+          "title": "[P2-04] SCAN ledger",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 236,
+          "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P2-04-e2e",
+          "title": "[P2-E2E-04] SCAN Math.random defaults only + ledger resolution-undo 365ffe33",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+          "line": 36,
+          "level": "e2e",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -965,17 +845,33 @@
     },
     {
       "id": "P3-01",
-      "description": "exploratory ragged board still moved via movementLines pad (if ported) \u2014 DW-20/41 already hardens short boards",
+      "description": "P3 exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual) \u2014 runSeededSession(0x1234,50) spawnValues 50 + N3 pairs promised===materialized",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P3-01-unit",
-          "title": "[P3-01] exploratory ragged board",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 291,
+          "id": "P3-01-atdd",
+          "title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 210,
           "level": "unit",
           "status": "skipped"
+        },
+        {
+          "id": "P3-01-unit-mirror",
+          "title": "[P3-01] exploratory cursor-drift",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 249,
+          "level": "unit",
+          "status": "skipped"
+        },
+        {
+          "id": "P3-01-e2e",
+          "title": "[P3-E2E-06] exploratory 50-move runSeededSession no cursor drift",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+          "line": 52,
+          "level": "e2e",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -990,92 +886,33 @@
     },
     {
       "id": "P3-02",
-      "description": "exploratory one-cell [3,null,3,null] left \u2192 2 slides trace 2+spawn not dropped (future filter guard)",
+      "description": "P3 perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression \u2014 10k mixed-pool spawnTile [[4,0],null,[0,0],[0,0]] <800ms O(4) per spawn",
       "priority": "P3",
       "coverage": "FULL",
       "tests": [
         {
-          "id": "P3-02-unit",
-          "title": "[P3-02] exploratory one-cell 2 slides not dropped",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 298,
+          "id": "P3-02-atdd",
+          "title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression",
+          "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+          "line": 220,
           "level": "unit",
           "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P3-03",
-      "description": "exploratory mergeValue domain stress all Cell\u00d72 finite no throw ([-1..Infinity]\u00d72 a-only)",
-      "priority": "P3",
-      "coverage": "FULL",
-      "tests": [
+        },
         {
-          "id": "P3-03-unit",
-          "title": "[P3-03] exploratory mergeValue domain stress finite no throw",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 305,
+          "id": "P3-02-unit-mirror",
+          "title": "[P3-02] perf bench",
+          "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+          "line": 262,
           "level": "unit",
           "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P3-04",
-      "description": "exploratory moved:false short-circuits planTileTransitions before classify even if trace non-empty",
-      "priority": "P3",
-      "coverage": "FULL",
-      "tests": [
+        },
         {
-          "id": "P3-04-unit",
-          "title": "[P3-04] exploratory moved:false short-circuits planTileTransitions",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 314,
-          "level": "unit",
-          "status": "skipped"
-        }
-      ],
-      "gaps": [],
-      "recommendation": "",
-      "heuristics": {
-        "endpoint": "not_applicable",
-        "auth": "not_applicable",
-        "error_path": "present",
-        "ui_journey": "not_applicable",
-        "ui_state": "not_applicable"
-      }
-    },
-    {
-      "id": "P3-05",
-      "description": "bench 10k\u00d7 move/mergeValue median <0.01 ms O(1) guard (no while infinite, tsc <5s)",
-      "priority": "P3",
-      "coverage": "FULL",
-      "tests": [
-        {
-          "id": "P3-05-unit",
-          "title": "[P3-05] bench 10k\u00d7 move/mergeValue O(1)",
-          "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-          "line": 322,
-          "level": "unit",
-          "status": "skipped"
+          "id": "P3-02-e2e",
+          "title": "[P3-E2E-07] hygiene bench O(4) per spawn \u2014 10k mixed-pool spawnTile <800ms",
+          "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+          "line": 62,
+          "level": "e2e",
+          "status": "active"
         }
       ],
       "gaps": [],
@@ -1089,48 +926,49 @@
       }
     }
   ],
-  "summary": {
-    "total": 32,
-    "full": 32,
-    "partial": 0,
-    "none": 0,
-    "by_priority": {
+  "coverage_statistics": {
+    "total_requirements": 20,
+    "fully_covered": 20,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
       "P0": {
-        "total": 11,
-        "full": 11,
-        "pct": 100
+        "total": 10,
+        "covered": 10,
+        "percentage": 100
       },
       "P1": {
-        "total": 9,
-        "full": 9,
-        "pct": 100
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
       },
       "P2": {
-        "total": 7,
-        "full": 7,
-        "pct": 100
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
       },
       "P3": {
-        "total": 5,
-        "full": 5,
-        "pct": 100
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
       }
     }
   },
-  "gaps": {
-    "critical": [],
-    "high": [],
-    "medium": [],
-    "low": [],
-    "partial": [],
-    "unit_only": []
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
   },
-  "heuristics_summary": {
-    "endpoint_gaps": 0,
-    "auth_negative_path_gaps": 0,
-    "happy_path_only_gaps": 0,
-    "ui_journey_gaps": 0,
-    "ui_state_gaps": 0,
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
     "counts": {
       "endpoints_without_tests": 0,
       "auth_missing_negative_paths": 0,
@@ -1139,37 +977,29 @@
       "ui_states_missing_coverage": 0
     }
   },
-  "quality": {
-    "blockers": [],
-    "warnings": [],
-    "info": []
-  },
-  "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-trace-merge-guards.md"
-  },
   "test_inventory": {
     "summary": {
-      "files": 9,
-      "cases": 61,
-      "skipped_cases": 44,
+      "files": 7,
+      "cases": 67,
+      "skipped_cases": 40,
       "fixme_cases": 0,
       "pending_cases": 0,
       "by_level": {
         "e2e": {
-          "tests": 5,
-          "criteria_covered": 5
+          "tests": 6,
+          "criteria_covered": 6
         },
         "api": {
-          "tests": 7,
-          "criteria_covered": 7
+          "tests": 14,
+          "criteria_covered": 14
         },
         "component": {
           "tests": 0,
           "criteria_covered": 0
         },
         "unit": {
-          "tests": 49,
-          "criteria_covered": 32
+          "tests": 47,
+          "criteria_covered": 20
         },
         "other": {
           "tests": 0,
@@ -1179,492 +1009,2015 @@
     },
     "tests": [
       {
-        "id": "P0-01-triade",
-        "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
-        "file": "triade/__tests__/game/preview-invariant.test.ts",
-        "line": 373,
+        "id": "P0-01-atdd",
+        "title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 22,
         "level": "unit",
-        "status": "active"
+        "status": "skipped"
       },
       {
-        "id": "P0-01-gateway",
-        "title": "[P0-API-01] gateway noop left trace 0 moved false score 0 no spawned pending unchanged",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
+        "id": "P0-01-unit-mirror",
+        "title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 20,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-gw",
+        "title": "[P0-GW-01] OOB candidate [[4,0]] filtered \u2192 empty pool 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
         "line": 19,
         "level": "api",
-        "status": "skipped"
+        "status": "active"
       },
       {
-        "id": "P0-01-unit",
-        "title": "[P0-01] DW-21 noop left full non-mergeable \u2192 trace 0",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 36,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-01-game",
-        "title": "game.test.ts noop \u2192 no spawned (tightened to trace 0 via preview-invariant)",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 198,
+        "id": "P0-01-spawn-unit",
+        "title": "[P0] spawnTile provided but all candidates occupied: returns nulls, 0 draws",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 125,
         "level": "unit",
         "status": "active"
       },
       {
-        "id": "P0-02-gateway",
-        "title": "[P0-API-02] gateway noop 4-dir same board trace 0",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 26,
-        "level": "api",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-02-unit",
-        "title": "[P0-02] DW-21 noop 4-dir same board \u2192 all trace 0",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 47,
+        "id": "P0-02-atdd",
+        "title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 32,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-02-e2e",
-        "title": "[P0-E2E-01] spec boundaries GRID_SIZE 4 + noop trace contract",
-        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-        "line": 8,
-        "level": "e2e",
+        "id": "P0-02-unit-mirror",
+        "title": "[P0-02] null / undefined entry filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 33,
+        "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-03-unit",
-        "title": "[P0-03] DW-21 effective [1,2,null,null] left \u2192 merged 3 + spawn",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "id": "P0-02-gw",
+        "title": "[P0-GW-02] null/undefined entry filtered via !Array.isArray guard",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 34,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-03-atdd",
+        "title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 42,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-unit-mirror",
+        "title": "[P0-03] missing column [1] filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 45,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-gw",
+        "title": "[P0-GW-03] missing column [1] + non-number [\"a\",\"b\"] filtered",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 50,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-04-atdd",
+        "title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 52,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-04-unit-mirror",
+        "title": "[P0-04] non-number type filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
         "line": 58,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-03-gateway",
-        "title": "[P0-API-03] gateway effective [1,2,null,null] left \u2192 merged 3 + spawn",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 34,
+        "id": "P0-04-gw2",
+        "title": "[P0-GW-03] missing column + non-number filtered (same gateway)",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 50,
         "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-05-atdd",
+        "title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 62,
+        "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-03-game",
-        "title": "game.test.ts HAPPY_PATH 1+2\u21923",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 45,
+        "id": "P0-05-unit-mirror",
+        "title": "[P0-05] duplicate dedup uniform",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 72,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-05-gw",
+        "title": "[P0-GW-04] duplicate dedup uniform 1/2 not 2/3 bias",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 68,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-atdd",
+        "title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 72,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-unit-mirror",
+        "title": "[P0-06] valid pool kept",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 85,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-gw",
+        "title": "[P0-GW-05] valid pool uniform pickIndex(2) 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 85,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-placement",
+        "title": "[P0] AC3 spawnTile with candidates: picks uniformly among candidates and consumes EXACTLY 1 draw",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 92,
         "level": "unit",
         "status": "active"
       },
       {
-        "id": "P0-03-previewInv",
-        "title": "preview-invariant blocked swarm noop vs effective",
-        "file": "triade/__tests__/game/preview-invariant.test.ts",
+        "id": "P0-07-atdd",
+        "title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 82,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-unit-mirror",
+        "title": "[P0-07] mix valid+invalid+dup+OOB",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 96,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-gw",
+        "title": "[P0-GW-06] mix valid+invalid+dup+OOB \u2192 pool [[0,0],[0,3]] 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 105,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-atdd",
+        "title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 92,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-unit-mirror",
+        "title": "[P0-08] non-array outer guard",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 108,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-gw",
+        "title": "[P0-GW-07] non-array outer guard null/42/object \u2192 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 122,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-09-atdd",
+        "title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 102,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-09-unit-mirror",
+        "title": "[P0-09] occupied + float filtering",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
         "line": 120,
         "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P0-04-unit",
-        "title": "[P0-04] DW-21 effective with gaps [3,null,3,null] left \u2192 2 slides + spawn",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 76,
-        "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-04-line",
-        "title": "line.test.ts gap [3,null,3,null]\u2192[3,3,null,null] moved true",
-        "file": "triade/__tests__/engine/line.test.ts",
-        "line": 22,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P0-05-unit",
-        "title": "[P0-05] DW-21 packed [1,3,6,12] row left stays noop trace 0 not 4 holds",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 86,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-05-line",
-        "title": "line.test.ts shiftLine([1,3,6,12]).moved === false",
-        "file": "triade/__tests__/engine/line.test.ts",
-        "line": 31,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P0-05-transPlan",
-        "title": "transitionPlan hold stationary \u2192 hold vs noop []",
-        "file": "triade/__tests__/render/transitionPlan.test.ts",
-        "line": 45,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P0-06-unit",
-        "title": "[P0-06] DW-22 mergeValue tautology unguarded a-only no throw",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 94,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-06-gateway",
-        "title": "[P0-API-06] gateway mergeValue tautology a-only",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 52,
+        "id": "P0-09-gw",
+        "title": "[P0-GW-08] occupied + float filtered \u2192 0 vs 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 138,
         "level": "api",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-06-rules",
-        "title": "rules.test.ts mergeValue(1,1)\u21923 / (2,2)\u21923 / (3,null)\u21926",
-        "file": "triade/__tests__/engine/rules.test.ts",
-        "line": 28,
-        "level": "unit",
         "status": "active"
       },
       {
-        "id": "P0-07-unit",
-        "title": "[P0-07] DW-22 mergeValue guarded still correct",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 104,
+        "id": "P0-10-atdd",
+        "title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 112,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-07-rules",
-        "title": "rules.test.ts mergeValue(1,2)\u21923 / (3,3)\u21926",
-        "file": "triade/__tests__/engine/rules.test.ts",
-        "line": 35,
+        "id": "P0-10-unit-mirror",
+        "title": "[P0-10] omitted candidates",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 132,
         "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-10-gw",
+        "title": "[P0-GW-09] omitted candidates unchanged all-empty uniform 1/4 within 5\u03c3",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 155,
+        "level": "api",
         "status": "active"
-      },
-      {
-        "id": "P0-08-unit",
-        "title": "[P0-08] DW-21 boardFromLines full-placement vs game.move noop empty boundary",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 114,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-08-lineDoc",
-        "title": "line.ts DW-21 doc boardFromLines always returns full placement trace",
-        "file": "triade/src/engine/core/line.ts",
-        "line": 73,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P0-08-umbrella",
-        "title": "[E2E-P1-01] line.ts DW-21 doc only meaningful trace via game.move not line.ts filter",
-        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-        "line": 18,
-        "level": "e2e",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-09-unit",
-        "title": "[P0-09] DW-21 HOLD vs STATIONARY effective partial still emits holds while full noop does not",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 134,
-        "level": "unit",
-        "status": "skipped"
       },
       {
         "id": "P0-10-unit",
-        "title": "[P0-10] DW-21 trace spawned never on noop, exactly 1 on effective",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 144,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P0-10-game",
-        "title": "game.test.ts spawn at opposite edge candidates[0]",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 88,
+        "title": "[P0] spawnTile omitted candidates: places uniformly among all empties, 1 draw",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 13,
         "level": "unit",
         "status": "active"
       },
       {
-        "id": "P0-11-unit",
-        "title": "[P0-11] DW-21/22 manual 3-log probe noop [] false + merge 3 + guard a-only",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 153,
+        "id": "P0-10-omit",
+        "title": "[P0] AC5 spawnTile with no candidates (omitted) keeps all-empty behavior",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 145,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-atdd",
+        "title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 125,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P0-11-gateway",
-        "title": "[P0-API-11] gateway manual probe",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 78,
-        "level": "api",
+        "id": "P1-01-unit-mirror",
+        "title": "[P1-01] game.move 4-dir opposite edge",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 145,
+        "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P1-01-unit",
-        "title": "[P1-01] P1 game.test.ts 33 suites still green alongside noop fix",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "id": "P1-01-gw",
+        "title": "[P1-GW-10] game.move 4-dir opposite edge pipeline",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 175,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-place-left",
+        "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 10,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-dir-int",
+        "title": "[P0] integration left: spawn is at (row, GRID_SIZE-1) of a moved row only",
+        "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+        "line": 10,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-02-atdd",
+        "title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 135,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-unit-mirror",
+        "title": "[P1-02] provided-but-empty pool",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 158,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-gw",
+        "title": "[P1-GW-11] provided-but-empty pool 0 draws + noop 0 draws",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 195,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-atdd",
+        "title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 145,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-unit-mirror",
+        "title": "[P1-03] draw-budget preservation",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 171,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-gw",
+        "title": "[P1-GW-12] draw-budget 1 vs 0 + effective 3 vs noop 0",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 212,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-draw",
+        "title": "[P1] integration draw-budget: effective move 3 draws, cell draw picks among candidates",
+        "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+        "line": 75,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-04-atdd",
+        "title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 155,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-unit-mirror",
+        "title": "[P1-04] transitionPlan assertNoLeak",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 184,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-gw",
+        "title": "[P1-GW-13] transitionPlan assertNoLeak resultingTiles===occupiedCells",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 235,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P2-01-atdd",
+        "title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
         "line": 168,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P1-01-game",
-        "title": "game.test.ts 33 pass",
-        "file": "triade/__tests__/engine/game.test.ts",
-        "line": 1,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P1-01-transPlan",
-        "title": "transitionPlan.test.ts 13 pass",
-        "file": "triade/__tests__/render/transitionPlan.test.ts",
-        "line": 1,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P1-02-unit",
-        "title": "[P1-02] P1 line.test.ts holds survive on effective partial not filtered",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 172,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P1-02-line",
-        "title": "line.test.ts effective partial",
-        "file": "triade/__tests__/engine/line.test.ts",
-        "line": 15,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P1-03-unit",
-        "title": "[P1-03] P1 rules.test.ts 6 cases still green",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 179,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P1-03-rules",
-        "title": "rules.test.ts 6 pass",
-        "file": "triade/__tests__/engine/rules.test.ts",
-        "line": 1,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P1-04-unit",
-        "title": "[P1-04] P1 transitionPlan noop empty plan and hold stationary pair",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 186,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P1-04-transPlan",
-        "title": "transitionPlan noop empty plan",
-        "file": "triade/__tests__/render/transitionPlan.test.ts",
-        "line": 108,
-        "level": "unit",
-        "status": "active"
-      },
-      {
-        "id": "P1-05-unit",
-        "title": "[P1-05] P1 preview-invariant noop trace must be empty",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "id": "P2-01-unit-mirror",
+        "title": "[P2-01] SCAN single-site",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
         "line": 197,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P1-05-preview",
-        "title": "preview-invariant.test.ts:373 tightened noopRes.trace.length 0",
-        "file": "triade/__tests__/game/preview-invariant.test.ts",
-        "line": 373,
-        "level": "unit",
+        "id": "P2-01-e2e",
+        "title": "[P2-E2E-01] SCAN single-site loop + Set dedup + no candidates.filter survivor",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 10,
+        "level": "e2e",
         "status": "active"
       },
       {
-        "id": "P1-06-unit",
-        "title": "[P1-06] P1 draw-budget preserved effective 3 draws noop 0",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 202,
+        "id": "P2-02-atdd",
+        "title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 178,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P1-06-gateway",
-        "title": "[P1-API-06-draw] gateway draw-budget 3/0",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 68,
-        "level": "api",
-        "status": "skipped"
-      },
-      {
-        "id": "P1-07-unit",
-        "title": "[P1-07] P1 moved divergence convergence",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 216,
+        "id": "P2-02-unit-mirror",
+        "title": "[P2-02] SCAN GRID_SIZE",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 210,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P1-08-unit",
-        "title": "[P1-08] P1 ledger resolution-undo b4557fd 2 hits DW-21/22 done",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 228,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P1-08-umbrella",
-        "title": "[E2E-P2-01] ledger resolution-undo",
-        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-        "line": 38,
+        "id": "P2-02-e2e",
+        "title": "[P2-E2E-02] SCAN GRID_SIZE single definition + spawn bounds use GRID_SIZE",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 20,
         "level": "e2e",
-        "status": "skipped"
+        "status": "active"
       },
       {
-        "id": "P1-09-unit",
-        "title": "[P1-09] P1 engine pipeline move\u2192boardFromLines\u2192planTileTransitions still green",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 235,
+        "id": "P2-03-atdd",
+        "title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 188,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-01-unit",
-        "title": "[P2-01] single-guard allowlist game.ts let trace + if (!moved)",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 240,
+        "id": "P2-03-unit-mirror",
+        "title": "[P2-03] SCAN optional chaining",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 223,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-01-gateway",
-        "title": "[P2-API-01] gateway single-guard allowlist game.ts",
-        "file": "_bmad-output/test-artifacts/tests/api/engine-trace-merge-guards.gateway.spec.ts",
-        "line": 88,
-        "level": "api",
+        "id": "P2-03-e2e",
+        "title": "[P2-E2E-03] SCAN board[r]?.[c] !== null optional chaining guard pin",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 28,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-04-atdd",
+        "title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 198,
+        "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-02-unit",
-        "title": "[P2-02] single-guard allowlist rules.ts tautology",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
+        "id": "P2-04-unit-mirror",
+        "title": "[P2-04] SCAN ledger",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 236,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-04-e2e",
+        "title": "[P2-E2E-04] SCAN Math.random defaults only + ledger resolution-undo 365ffe33",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 36,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-01-atdd",
+        "title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 210,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-01-unit-mirror",
+        "title": "[P3-01] exploratory cursor-drift",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
         "line": 249,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-03-unit",
-        "title": "[P2-03] DW-21 doc on boardFromLines always returns full placement trace",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 256,
+        "id": "P3-01-e2e",
+        "title": "[P3-E2E-06] exploratory 50-move runSeededSession no cursor drift",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 52,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-02-atdd",
+        "title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 220,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-03-umbrella",
-        "title": "[E2E-P2-02] line.ts DW-21 doc",
-        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
+        "id": "P3-02-unit-mirror",
+        "title": "[P3-02] perf bench",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 262,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P3-02-e2e",
+        "title": "[P3-E2E-07] hygiene bench O(4) per spawn \u2014 10k mixed-pool spawnTile <800ms",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 62,
+        "level": "e2e",
+        "status": "active"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "P0-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase dormant \u2014 verified GREEN when activated (20 pass)",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)"
+      },
+      {
+        "id": "P0-01-unit-mirror",
+        "severity": "high",
+        "reason": "mirror \u2014 RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw"
+      },
+      {
+        "id": "P0-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)"
+      },
+      {
+        "id": "P0-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-02] null / undefined entry filtered"
+      },
+      {
+        "id": "P0-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)"
+      },
+      {
+        "id": "P0-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-03] missing column [1] filtered"
+      },
+      {
+        "id": "P0-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)"
+      },
+      {
+        "id": "P0-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-04] non-number type filtered"
+      },
+      {
+        "id": "P0-05-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)"
+      },
+      {
+        "id": "P0-05-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-05] duplicate dedup uniform"
+      },
+      {
+        "id": "P0-06-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)"
+      },
+      {
+        "id": "P0-06-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-06] valid pool kept"
+      },
+      {
+        "id": "P0-07-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)"
+      },
+      {
+        "id": "P0-07-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-07] mix valid+invalid+dup+OOB"
+      },
+      {
+        "id": "P0-08-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)"
+      },
+      {
+        "id": "P0-08-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-08] non-array outer guard"
+      },
+      {
+        "id": "P0-09-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)"
+      },
+      {
+        "id": "P0-09-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-09] occupied + float filtering"
+      },
+      {
+        "id": "P0-10-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)"
+      },
+      {
+        "id": "P0-10-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-10] omitted candidates"
+      },
+      {
+        "id": "P1-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)"
+      },
+      {
+        "id": "P1-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-01] game.move 4-dir opposite edge"
+      },
+      {
+        "id": "P1-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)"
+      },
+      {
+        "id": "P1-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-02] provided-but-empty pool"
+      },
+      {
+        "id": "P1-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)"
+      },
+      {
+        "id": "P1-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-03] draw-budget preservation"
+      },
+      {
+        "id": "P1-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)"
+      },
+      {
+        "id": "P1-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-04] transitionPlan assertNoLeak"
+      },
+      {
+        "id": "P2-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)"
+      },
+      {
+        "id": "P2-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single-site"
+      },
+      {
+        "id": "P2-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)"
+      },
+      {
+        "id": "P2-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-02] SCAN GRID_SIZE"
+      },
+      {
+        "id": "P2-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)"
+      },
+      {
+        "id": "P2-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-03] SCAN optional chaining"
+      },
+      {
+        "id": "P2-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)"
+      },
+      {
+        "id": "P2-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-04] SCAN ledger"
+      },
+      {
+        "id": "P3-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)"
+      },
+      {
+        "id": "P3-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-01] exploratory cursor-drift"
+      },
+      {
+        "id": "P3-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression"
+      },
+      {
+        "id": "P3-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-02] perf bench"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "P0-01-atdd",
+      "severity": "high",
+      "reason": "RED-phase dormant \u2014 verified GREEN when activated (20 pass)",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)"
+    },
+    {
+      "id": "P0-01-unit-mirror",
+      "severity": "high",
+      "reason": "mirror \u2014 RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw"
+    },
+    {
+      "id": "P0-02-atdd",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)"
+    },
+    {
+      "id": "P0-02-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-02] null / undefined entry filtered"
+    },
+    {
+      "id": "P0-03-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)"
+    },
+    {
+      "id": "P0-03-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-03] missing column [1] filtered"
+    },
+    {
+      "id": "P0-04-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)"
+    },
+    {
+      "id": "P0-04-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-04] non-number type filtered"
+    },
+    {
+      "id": "P0-05-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)"
+    },
+    {
+      "id": "P0-05-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-05] duplicate dedup uniform"
+    },
+    {
+      "id": "P0-06-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)"
+    },
+    {
+      "id": "P0-06-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-06] valid pool kept"
+    },
+    {
+      "id": "P0-07-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)"
+    },
+    {
+      "id": "P0-07-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-07] mix valid+invalid+dup+OOB"
+    },
+    {
+      "id": "P0-08-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)"
+    },
+    {
+      "id": "P0-08-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-08] non-array outer guard"
+    },
+    {
+      "id": "P0-09-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)"
+    },
+    {
+      "id": "P0-09-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-09] occupied + float filtering"
+    },
+    {
+      "id": "P0-10-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)"
+    },
+    {
+      "id": "P0-10-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P0-10] omitted candidates"
+    },
+    {
+      "id": "P1-01-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)"
+    },
+    {
+      "id": "P1-01-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-01] game.move 4-dir opposite edge"
+    },
+    {
+      "id": "P1-02-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)"
+    },
+    {
+      "id": "P1-02-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-02] provided-but-empty pool"
+    },
+    {
+      "id": "P1-03-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)"
+    },
+    {
+      "id": "P1-03-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-03] draw-budget preservation"
+    },
+    {
+      "id": "P1-04-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)"
+    },
+    {
+      "id": "P1-04-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P1-04] transitionPlan assertNoLeak"
+    },
+    {
+      "id": "P2-01-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)"
+    },
+    {
+      "id": "P2-01-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-01] SCAN single-site"
+    },
+    {
+      "id": "P2-02-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)"
+    },
+    {
+      "id": "P2-02-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-02] SCAN GRID_SIZE"
+    },
+    {
+      "id": "P2-03-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)"
+    },
+    {
+      "id": "P2-03-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-03] SCAN optional chaining"
+    },
+    {
+      "id": "P2-04-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)"
+    },
+    {
+      "id": "P2-04-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P2-04] SCAN ledger"
+    },
+    {
+      "id": "P3-01-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)"
+    },
+    {
+      "id": "P3-01-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P3-01] exploratory cursor-drift"
+    },
+    {
+      "id": "P3-02-atdd",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression"
+    },
+    {
+      "id": "P3-02-unit-mirror",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+      "test_title": "[P3-02] perf bench"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "full": 20,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {
+        "total": 10,
+        "full": 10,
+        "pct": 100
+      },
+      "P1": {
+        "total": 4,
+        "full": 4,
+        "pct": 100
+      },
+      "P2": {
+        "total": 4,
+        "full": 4,
+        "pct": 100
+      },
+      "P3": {
+        "total": 2,
+        "full": 2,
+        "pct": 100
+      }
+    }
+  },
+  "gaps": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "quality": {
+    "passing_tests": 27,
+    "total_tests": 67,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-spawn-candidates-validation.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "test_inventory_compat": {
+    "summary": {
+      "files": 7,
+      "cases": 67,
+      "skipped_cases": 40,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 6,
+          "criteria_covered": 6
+        },
+        "api": {
+          "tests": 14,
+          "criteria_covered": 14
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 47,
+          "criteria_covered": 20
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-01-atdd",
+        "title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 22,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-unit-mirror",
+        "title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 20,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-01-gw",
+        "title": "[P0-GW-01] OOB candidate [[4,0]] filtered \u2192 empty pool 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 19,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-01-spawn-unit",
+        "title": "[P0] spawnTile provided but all candidates occupied: returns nulls, 0 draws",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 125,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-02-atdd",
+        "title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 32,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-02-unit-mirror",
+        "title": "[P0-02] null / undefined entry filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 33,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-02-gw",
+        "title": "[P0-GW-02] null/undefined entry filtered via !Array.isArray guard",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 34,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-03-atdd",
+        "title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 42,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-unit-mirror",
+        "title": "[P0-03] missing column [1] filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 45,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-03-gw",
+        "title": "[P0-GW-03] missing column [1] + non-number [\"a\",\"b\"] filtered",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 50,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-04-atdd",
+        "title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 52,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-04-unit-mirror",
+        "title": "[P0-04] non-number type filtered",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 58,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-04-gw2",
+        "title": "[P0-GW-03] missing column + non-number filtered (same gateway)",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 50,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-05-atdd",
+        "title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 62,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-05-unit-mirror",
+        "title": "[P0-05] duplicate dedup uniform",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 72,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-05-gw",
+        "title": "[P0-GW-04] duplicate dedup uniform 1/2 not 2/3 bias",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 68,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-atdd",
+        "title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 72,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-unit-mirror",
+        "title": "[P0-06] valid pool kept",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 85,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-06-gw",
+        "title": "[P0-GW-05] valid pool uniform pickIndex(2) 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 85,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-06-placement",
+        "title": "[P0] AC3 spawnTile with candidates: picks uniformly among candidates and consumes EXACTLY 1 draw",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 92,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-07-atdd",
+        "title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 82,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-unit-mirror",
+        "title": "[P0-07] mix valid+invalid+dup+OOB",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 96,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-07-gw",
+        "title": "[P0-GW-06] mix valid+invalid+dup+OOB \u2192 pool [[0,0],[0,3]] 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 105,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-08-atdd",
+        "title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 92,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-unit-mirror",
+        "title": "[P0-08] non-array outer guard",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 108,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-08-gw",
+        "title": "[P0-GW-07] non-array outer guard null/42/object \u2192 0 draws no throw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 122,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-09-atdd",
+        "title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 102,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-09-unit-mirror",
+        "title": "[P0-09] occupied + float filtering",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 120,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-09-gw",
+        "title": "[P0-GW-08] occupied + float filtered \u2192 0 vs 1 draw",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 138,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-10-atdd",
+        "title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 112,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-10-unit-mirror",
+        "title": "[P0-10] omitted candidates",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 132,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P0-10-gw",
+        "title": "[P0-GW-09] omitted candidates unchanged all-empty uniform 1/4 within 5\u03c3",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 155,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P0-10-unit",
+        "title": "[P0] spawnTile omitted candidates: places uniformly among all empties, 1 draw",
+        "file": "triade/__tests__/engine/spawn-candidates.unit.test.ts",
+        "line": 13,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P0-10-omit",
+        "title": "[P0] AC5 spawnTile with no candidates (omitted) keeps all-empty behavior",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 145,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-atdd",
+        "title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 125,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-01-unit-mirror",
+        "title": "[P1-01] game.move 4-dir opposite edge",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 145,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-01-gw",
+        "title": "[P1-GW-10] game.move 4-dir opposite edge pipeline",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 175,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-place-left",
+        "title": "[P0] AC1 left: spawn lands on the rightmost column of the only moved row",
+        "file": "triade/__tests__/engine/spawn-placement.test.ts",
+        "line": 10,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-01-dir-int",
+        "title": "[P0] integration left: spawn is at (row, GRID_SIZE-1) of a moved row only",
+        "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+        "line": 10,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-02-atdd",
+        "title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 135,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-unit-mirror",
+        "title": "[P1-02] provided-but-empty pool",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 158,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-02-gw",
+        "title": "[P1-GW-11] provided-but-empty pool 0 draws + noop 0 draws",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 195,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-atdd",
+        "title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 145,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-unit-mirror",
+        "title": "[P1-03] draw-budget preservation",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 171,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-03-gw",
+        "title": "[P1-GW-12] draw-budget 1 vs 0 + effective 3 vs noop 0",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 212,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P1-03-draw",
+        "title": "[P1] integration draw-budget: effective move 3 draws, cell draw picks among candidates",
+        "file": "triade/__tests__/integration/directional-spawn.integration.test.ts",
+        "line": 75,
+        "level": "unit",
+        "status": "active"
+      },
+      {
+        "id": "P1-04-atdd",
+        "title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 155,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-unit-mirror",
+        "title": "[P1-04] transitionPlan assertNoLeak",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 184,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P1-04-gw",
+        "title": "[P1-GW-13] transitionPlan assertNoLeak resultingTiles===occupiedCells",
+        "file": "_bmad-output/test-artifacts/tests/api/engine-spawn-candidates-validation.gateway.spec.ts",
+        "line": 235,
+        "level": "api",
+        "status": "active"
+      },
+      {
+        "id": "P2-01-atdd",
+        "title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 168,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-01-unit-mirror",
+        "title": "[P2-01] SCAN single-site",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 197,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-01-e2e",
+        "title": "[P2-E2E-01] SCAN single-site loop + Set dedup + no candidates.filter survivor",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 10,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-02-atdd",
+        "title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 178,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-02-unit-mirror",
+        "title": "[P2-02] SCAN GRID_SIZE",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 210,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-02-e2e",
+        "title": "[P2-E2E-02] SCAN GRID_SIZE single definition + spawn bounds use GRID_SIZE",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 20,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P2-03-atdd",
+        "title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 188,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-03-unit-mirror",
+        "title": "[P2-03] SCAN optional chaining",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 223,
+        "level": "unit",
+        "status": "skipped"
+      },
+      {
+        "id": "P2-03-e2e",
+        "title": "[P2-E2E-03] SCAN board[r]?.[c] !== null optional chaining guard pin",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
         "line": 28,
         "level": "e2e",
-        "status": "skipped"
+        "status": "active"
       },
       {
-        "id": "P2-04-unit",
-        "title": "[P2-04] no bare trace = built.trace after moved check",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 263,
+        "id": "P2-04-atdd",
+        "title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 198,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-05-unit",
-        "title": "[P2-05] trace shape GRID_SIZE 4 + TraceEntry unchanged",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 269,
+        "id": "P2-04-unit-mirror",
+        "title": "[P2-04] SCAN ledger",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 236,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P2-06-unit",
-        "title": "[P2-06] ledger + spec hashes",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 278,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P2-07-unit",
-        "title": "[P2-07] sprint-status.yaml ownership diff empty",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 286,
-        "level": "unit",
-        "status": "skipped"
-      },
-      {
-        "id": "P2-07-umbrella",
-        "title": "[E2E-P3-04] sprint-status ownership",
-        "file": "_bmad-output/test-artifacts/tests/e2e/engine-trace-merge-guards.umbrella.spec.ts",
-        "line": 58,
+        "id": "P2-04-e2e",
+        "title": "[P2-E2E-04] SCAN Math.random defaults only + ledger resolution-undo 365ffe33",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 36,
         "level": "e2e",
-        "status": "skipped"
+        "status": "active"
       },
       {
-        "id": "P3-01-unit",
-        "title": "[P3-01] exploratory ragged board",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 291,
+        "id": "P3-01-atdd",
+        "title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 210,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P3-02-unit",
-        "title": "[P3-02] exploratory one-cell 2 slides not dropped",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 298,
+        "id": "P3-01-unit-mirror",
+        "title": "[P3-01] exploratory cursor-drift",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 249,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P3-03-unit",
-        "title": "[P3-03] exploratory mergeValue domain stress finite no throw",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 305,
+        "id": "P3-01-e2e",
+        "title": "[P3-E2E-06] exploratory 50-move runSeededSession no cursor drift",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 52,
+        "level": "e2e",
+        "status": "active"
+      },
+      {
+        "id": "P3-02-atdd",
+        "title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression",
+        "file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "line": 220,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P3-04-unit",
-        "title": "[P3-04] exploratory moved:false short-circuits planTileTransitions",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 314,
+        "id": "P3-02-unit-mirror",
+        "title": "[P3-02] perf bench",
+        "file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "line": 262,
         "level": "unit",
         "status": "skipped"
       },
       {
-        "id": "P3-05-unit",
-        "title": "[P3-05] bench 10k\u00d7 move/mergeValue O(1)",
-        "file": "_bmad-output/test-artifacts/tests/unit/engine-trace-merge-guards.atdd.test.ts",
-        "line": 322,
-        "level": "unit",
-        "status": "skipped"
+        "id": "P3-02-e2e",
+        "title": "[P3-E2E-07] hygiene bench O(4) per spawn \u2014 10k mixed-pool spawnTile <800ms",
+        "file": "_bmad-output/test-artifacts/tests/e2e/engine-spawn-candidates-validation.umbrella.spec.ts",
+        "line": 62,
+        "level": "e2e",
+        "status": "active"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "P0-01-atdd",
+        "severity": "high",
+        "reason": "RED-phase dormant \u2014 verified GREEN when activated (20 pass)",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-01] OOB candidate filtered \u2192 empty pool \u2192 {cell:null,value:null} 0 draws, no throw (spec row 1, R-001/R-004)"
+      },
+      {
+        "id": "P0-01-unit-mirror",
+        "severity": "high",
+        "reason": "mirror \u2014 RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-01] OOB candidate [[4,0]] \u2192 empty pool nulls 0 draws no throw"
+      },
+      {
+        "id": "P0-02-atdd",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-02] null / undefined entry in candidates array \u2192 filtered, valid kept, 1 draw, no throw (spec row 2, R-001)"
+      },
+      {
+        "id": "P0-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-02] null / undefined entry filtered"
+      },
+      {
+        "id": "P0-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-03] missing column [1] (no c) \u2192 filtered via length<2 \u2192 empty pool 0 draws if no other valid (spec row 3, R-001)"
+      },
+      {
+        "id": "P0-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-03] missing column [1] filtered"
+      },
+      {
+        "id": "P0-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-04] non-number type [\"a\",\"b\"] \u2192 filtered via typeof guard, no throw (spec row 4, R-001)"
+      },
+      {
+        "id": "P0-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-04] non-number type filtered"
+      },
+      {
+        "id": "P0-05-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-05] duplicate cells deduped \u2014 [[0,0],[0,0],[1,1]] all empty \u2192 pool.length 2 uniform 1/2 each, 1 draw (spec row 5, R-002 AC3)"
+      },
+      {
+        "id": "P0-05-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-05] duplicate dedup uniform"
+      },
+      {
+        "id": "P0-06-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-06] valid pool kept \u2014 [[0,3],[1,3]] both empty \u2192 uniform pickIndex(2) 1 draw, placed value (spec row 6)"
+      },
+      {
+        "id": "P0-06-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-06] valid pool kept"
+      },
+      {
+        "id": "P0-07-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-07] mix valid+invalid+dup+OOB \u2192 [[0,0],null,[4,0],[0,0],[0,3]] deduped/filtered to [[0,0],[0,3]] 1 draw (spec row 7, R-003)"
+      },
+      {
+        "id": "P0-07-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-07] mix valid+invalid+dup+OOB"
+      },
+      {
+        "id": "P0-08-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-08] non-array candidates outer guard \u2192 null/42/object \u2192 {cell:null,value:null} 0 draws, no throw, no pickIndex (R-009)"
+      },
+      {
+        "id": "P0-08-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-08] non-array outer guard"
+      },
+      {
+        "id": "P0-09-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-09] occupied + float filtering \u2014 [[0,0] occupied, [0.5,0] float] \u2192 empty pool 0 draws; [[0,0] occupied, [0,3] empty] \u2192 pool size 1 (R-004/R-005/R-006)"
+      },
+      {
+        "id": "P0-09-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-09] occupied + float filtering"
+      },
+      {
+        "id": "P0-10-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-10] omitted candidates (undefined) \u2192 unchanged all-empty uniform pick, 1 draw (spec row 8, R-008)"
+      },
+      {
+        "id": "P0-10-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P0-10] omitted candidates"
+      },
+      {
+        "id": "P1-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-01] game.move 4-direction opposite-edge pipeline still correct after validation (R-007)"
+      },
+      {
+        "id": "P1-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-01] game.move 4-dir opposite edge"
+      },
+      {
+        "id": "P1-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-02] provided-but-empty pool still {cell:null,value:null} 0 draws, move noop 0 draws (R-008)"
+      },
+      {
+        "id": "P1-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-02] provided-but-empty pool"
+      },
+      {
+        "id": "P1-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-03] draw-budget preservation \u2014 spawnTile 1 vs 0, move effective 3 vs noop 0, newGame 20 (R-003)"
+      },
+      {
+        "id": "P1-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-03] draw-budget preservation"
+      },
+      {
+        "id": "P1-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-04] transitionPlan assertNoLeak \u2014 resultingTiles equals occupiedCells after candidate filtering (R-007)"
+      },
+      {
+        "id": "P1-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P1-04] transitionPlan assertNoLeak"
+      },
+      {
+        "id": "P2-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single-site validation loop + Set dedup + no candidates.filter survivor (R-001/R-002)"
+      },
+      {
+        "id": "P2-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-01] SCAN single-site"
+      },
+      {
+        "id": "P2-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-02] SCAN no GRID_SIZE literal drift \u2014 types.ts single GRID_SIZE=4, spawn.ts bounds use GRID_SIZE (R-004)"
+      },
+      {
+        "id": "P2-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-02] SCAN GRID_SIZE"
+      },
+      {
+        "id": "P2-03-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-03] SCAN optional chaining board[r]?.[c] !== null, not board[r][c] in candidate loop (R-004/R-006)"
+      },
+      {
+        "id": "P2-03-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-03] SCAN optional chaining"
+      },
+      {
+        "id": "P2-04-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-04] SCAN no Math.random in engine, ledger resolution-undo hex tail, sprint-status untouched (R-010)"
+      },
+      {
+        "id": "P2-04-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P2-04] SCAN ledger"
+      },
+      {
+        "id": "P3-01-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-01] exploratory \u2014 200-move runSeededSession cursor-drift sweep with validated candidates (R-003 residual)"
+      },
+      {
+        "id": "P3-01-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-01] exploratory cursor-drift"
+      },
+      {
+        "id": "P3-02-atdd",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "triade/__tests__/engine/spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-02] perf \u2014 spawnTile loop+Set O(4) per spawn <500ms for 10k, validation adds no bench regression"
+      },
+      {
+        "id": "P3-02-unit-mirror",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/engine-spawn-candidates-validation.atdd.test.ts",
+        "test_title": "[P3-02] perf bench"
       }
     ]
   }

@@ -1,0 +1,182 @@
+{
+  "DW-100": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add Number.isFinite guards in matchScore and render.",
+    "key": "1",
+    "label": "Add isFinite guards",
+    "resolution": ""
+  },
+  "DW-101": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add numberOfLines=1 ellipsizeMode tail flexShrink.",
+    "key": "1",
+    "label": "Add ellipsize and flexShrink",
+    "resolution": ""
+  },
+  "DW-102": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering (overlay 2 vs Hud 1) in an integration render test, and clear/restart cleanly on unmount mid-fade.",
+    "key": "1",
+    "label": "Bundle overlay carriers",
+    "resolution": ""
+  },
+  "DW-107": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Toggle overflow visible during shake or add padding.",
+    "key": "1",
+    "label": "Set overflow visible during shake",
+    "resolution": ""
+  },
+  "DW-108": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Filter with entry.spawned === true or in entry check.",
+    "key": "1",
+    "label": "Check spawned === true explicitly",
+    "resolution": ""
+  },
+  "DW-109": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add value>=3 filter before max update.",
+    "key": "1",
+    "label": "Add value >=3 guard",
+    "resolution": ""
+  },
+  "DW-110": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Clamp width to Math.max(1, finiteWidth) for overlay.",
+    "key": "1",
+    "label": "Validate width finite fallback 1",
+    "resolution": ""
+  },
+  "DW-37": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add cell-change effect retargeting x/y shared values for rest/vanish/move tiles to new pixel grid.",
+    "key": "1",
+    "label": "Retarget all kinds on cell change",
+    "resolution": ""
+  },
+  "DW-56": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Clamp roll with Math.min and replace NaN displayRoll with 0.5 fallback.",
+    "key": "1",
+    "label": "Clamp roll and validate displayRoll",
+    "resolution": ""
+  },
+  "DW-6": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Provide SafeAreaProvider initialMetrics and synced insets effect that debounces rotation so board never flashes to 0; verify on simulator landscape rotation.",
+    "key": "1",
+    "label": "Add initialMetrics plus synced hook",
+    "resolution": ""
+  },
+  "DW-7": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Set StatusBar style dark on landscape light backgrounds and verify contrast on device.",
+    "key": "1",
+    "label": "Force dark status bar",
+    "resolution": ""
+  },
+  "DW-77": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Introduce BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/{line,spawn,types}.ts and triade/test-utils/helpers.ts with validation and migrate tests to use the param, enabling level-specific sizes.",
+    "key": "1",
+    "label": "Make configurable",
+    "resolution": ""
+  },
+  "DW-86": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add explicit forfeitedContinue flag that dies on continue attempt.",
+    "key": "1",
+    "label": "Implement forfeitedContinue state",
+    "resolution": ""
+  },
+  "DW-87": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Await saveBest before handleRestart and gate isNewRecord on hydrationOkRef.",
+    "key": "1",
+    "label": "Serialize saveBest before restart",
+    "resolution": ""
+  },
+  "DW-91": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add effect that recreates or re-targets value on reducedMotion toggle.",
+    "key": "1",
+    "label": "Recreate Animated.Value on toggle",
+    "resolution": ""
+  },
+  "DW-92": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add clamp for insets top/bottom to finite >=0.",
+    "key": "1",
+    "label": "Clamp insets to finite >=0",
+    "resolution": ""
+  },
+  "DW-93": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Reseed rngRef on each newGame with Date.now or increment.",
+    "key": "1",
+    "label": "Reseed RNG per game",
+    "resolution": ""
+  },
+  "DW-97": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Only compute isNewRecord when hydrationOkByLaneRef true.",
+    "key": "1",
+    "label": "Gate highlight on hydrationOk",
+    "resolution": ""
+  },
+  "DW-98": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Update sessionStartBestByLaneRef to persistedBest after save resolves.",
+    "key": "1",
+    "label": "Update ref on save resolution",
+    "resolution": ""
+  },
+  "DW-99": {
+    "answered_at": "2026-09-02",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Make handleRestart await pending saveBest promises.",
+    "key": "1",
+    "label": "Await saveBest before restart",
+    "resolution": ""
+  }
+}
