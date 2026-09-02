@@ -10,7 +10,7 @@ import {
   nextSessionBest,
 } from '../../src/feel/bulletTime.ts';
 import { presetFor, reducedPresetFor, allPresetValues } from '../../src/feel/feel.ts';
-import { newGame, move } from '../../src/engine/core/index.ts';
+import { newGame, move, stateFromResult } from '../../src/engine/core/index.ts';
 import type { TraceEntry } from '../../src/engine/core/types.ts';
 import { mulberry32 } from '../../src/utils/mulberry32.ts';
 
@@ -201,7 +201,7 @@ describe('ATDD 8-4 — P1 high (integration / wiring)', () => {
           if (e.spawned) foundSpawnOnly = true;
         }
       }
-      if (res.moved) game = { board: res.board, pendingSpawn: res.pendingSpawn };
+      if (res.moved) game = stateFromResult(res);
       if (foundMerge && foundSpawnOnly) break;
     }
     // At least confirm maxMergeValue ignores spawned entries on a constructed mixed trace

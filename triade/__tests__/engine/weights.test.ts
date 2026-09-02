@@ -11,7 +11,7 @@ import {
   potForTier,
   weightedValue,
 } from '../../src/engine/core/index.ts';
-import { mulberry32, rngOf, extractSpecifiers } from '../../test-utils/helpers.ts';
+import { mulberry32, rngOf, extractSpecifiers, sigmaBound } from '../../test-utils/helpers.ts';
 
 // Story 2.4 (curva halving-decay normalizada) — acceptance tests for the
 // halving-decay curve, normalization, and weighted picker (weights.ts).
@@ -136,7 +136,18 @@ test('[P1] statistical sampling: within-pot frequencies match halving-decay rati
         potSamples++;
       }
     }
-    assert.ok(potSamples > N * 0.1, `tier ${tier}: pot band must be sampled (${potSamples} samples)`);
+    const potRatio = potSamples / N;
+    // Sigma-scaled gate consistent with surrounding ±1% absolute gates: POT_WEIGHT=0.2 at N=100k => 5σ≈0.0063.
+    // Replaces the catastrophically loose >N*0.1 floor (would pass with half the pot probability missing).
+    assert.ok(
+      Math.abs(potRatio - POT_WEIGHT) < sigmaBound(POT_WEIGHT, N),
+      `tier ${tier}: pot share ratio ${potRatio.toFixed(4)} vs expected ${POT_WEIGHT} outside 5σ (${sigmaBound(POT_WEIGHT, N).toFixed(4)}) — pot band starved or over-sampled`
+    );
+    // Keep a 1% absolute backstop aligned with the within-pot ±1% gates (sigmaBound is tighter at this N, but backstop documents intended scale).
+    assert.ok(
+      Math.abs(potRatio - POT_WEIGHT) < 0.01,
+      `tier ${tier}: pot share ratio ${potRatio.toFixed(4)} vs expected ${POT_WEIGHT} outside ±1% absolute`
+    );
     for (const v of pot) {
       const freq = (freqs.get(v) as number) / potSamples;
       const ratio = ratios.get(v) as number;

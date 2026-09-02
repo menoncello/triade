@@ -7,6 +7,7 @@ import {
   movementLines,
   newGame,
   shiftLine,
+  stateFromResult,
   tierForCeiling,
 } from '../src/engine/core/index.ts';
 import type { Board, Direction, GameState, MoveResult, PendingSpawn, Rng } from '../src/engine/core/index.ts';
@@ -202,8 +203,8 @@ export function runSeededSession(seed: number, targetSpawns: number) {
     displayRolls.push(res.pendingSpawn.displayRoll);
     n3pairs.push({ promised: lastPending.value, materialized: spawned.value });
     tieredPairs.push({ tier: lastResolvedTier, value: spawned.value });
-    snapshots.push({ board: res.board, pendingSpawn: res.pendingSpawn });
-    state = { board: res.board, pendingSpawn: res.pendingSpawn };
+    snapshots.push(stateFromResult(res));
+    state = stateFromResult(res);
     lastPending = res.pendingSpawn;
     // The NEXT pending was resolved from the post-merge board BEFORE placing
     // the spawn — reconstruct that pre-spawn board to recover its tier.
@@ -211,6 +212,8 @@ export function runSeededSession(seed: number, targetSpawns: number) {
   }
   return { spawnValues, displayRolls, n3pairs, tieredPairs, snapshots };
 }
+
+export { stateFromResult } from '../src/engine/core/index.ts';
 
 // Delegates to the shared comment- and string-aware scanner so that string
 // and regex literals containing `//` or `/*` are not corrupted. Preserves

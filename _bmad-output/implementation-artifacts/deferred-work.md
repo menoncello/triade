@@ -452,21 +452,27 @@ resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: weights.test.ts
 reason: `weights.test.ts` statistical pot-sampling floor (`> N * 0.1`) is far looser than the surrounding ±1–2% frequency gates — triggers only after catastrophic failure (triade/__tests__/engine/weights.test.ts).
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-preview-pot-ladder-hygiene
+resolution-undo: ac1bd5ea06c0d2ad96d3691d63172b22d6b090a3ddbb09837137305667161f05 2026-09-01 7374617475733a206f70656e
 
 ### DW-62: `{ board: result.board, pendingSpawn: result.pendingSpawn }` reconstruction duplicated ad hoc across App.tsx + smoke/integration tests instead of a shared `stateFromResult` helper — drift risk.
 
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: App.tsx
 reason: `{ board: result.board, pendingSpawn: result.pendingSpawn }` reconstruction duplicated ad hoc across App.tsx + smoke/integration tests instead of a shared `stateFromResult` helper — drift risk.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-preview-pot-ladder-hygiene
+resolution-undo: ac1bd5ea06c0d2ad96d3691d63172b22d6b090a3ddbb09837137305667161f05 2026-09-01 7374617475733a206f70656e
 
 ### DW-63: Tier-0 ceiling-ordering exception (documented "harmless" in game.ts comments) is the exact case excluded from the ceiling-ordering test — asserted nowhere.
 
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: game.ts
 reason: Tier-0 ceiling-ordering exception (documented "harmless" in game.ts comments) is the exact case excluded from the ceiling-ordering test — asserted nowhere.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-preview-pot-ladder-hygiene
+resolution-undo: ac1bd5ea06c0d2ad96d3691d63172b22d6b090a3ddbb09837137305667161f05 2026-09-01 7374617475733a206f70656e
 
 ### DW-64: `npx tsc --noEmit -p tsconfig.test.json` fails at the repo baseline (verified pre-existing on `870c9ab` via `git stash`), so the "both tsc clean" gate cannot pass without out-of-scope work
 

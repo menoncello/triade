@@ -286,11 +286,32 @@ test('[P1] determinism: identical seed reproduces the identical { board, pending
 test('[P1] rewind shape: reconstructing GameState from a result reproduces the identical next result', () => {
   const base = gameState(staticBoard([1, 2, null, null]), { value: 1, displayRoll: 0 });
   const r1 = game.move(base, 'left', rngOf(0.1, 0.2, 0.3));
-  const replayInput = { board: r1.board, pendingSpawn: r1.pendingSpawn };
+  const replayInput = game.stateFromResult(r1);
   const r2a = game.move(replayInput, 'right', rngOf(0.25, 0.35, 0.45));
   const r2b = game.move({ board: r1.board, pendingSpawn: { ...r1.pendingSpawn } }, 'right', rngOf(0.25, 0.35, 0.45));
   assert.strictEqual(r2a.moved, true);
   assert.deepStrictEqual(r2a, r2b, 'state object fully determines the next result — no hidden state');
+});
+
+test('[P1] tier-0 ceiling-ordering exception: pot value 3 legitimately exceeds tiny ceiling 0/1/2 (documented harmless)', () => {
+  // Game.ts:64-69 documents that tier-0 is the harmless exception — pot value 3 can exceed a tiny ceiling.
+  // This was the exact case excluded from the tier>=1 ordering test and asserted nowhere (DW-63).
+  // We pin that the exception actually occurs and is observable, so future refactors don't "fix" it away.
+  for (const ceiling of [0, 1, 2]) {
+    const rng = mulberry32(0x51ce + ceiling + 0x100);
+    let sawThree = false;
+    let sawExceeding = false;
+    for (let i = 0; i < 2000; i++) {
+      const v = game.resolveSpawn(ceiling, rng);
+      assert.ok(isValidSpawnValue(v), `ceiling ${ceiling}: spawn value ${v} invalid`);
+      // Tier-0 pot is [3]; combined band is 1(0.4),2(0.4),3(0.2) — only 3 can be pot and exceed 0/1/2
+      assert.ok(v === 1 || v === 2 || v === 3, `ceiling ${ceiling}: tier-0 spawn must be 1,2 or 3, got ${v}`);
+      if (v === 3) sawThree = true;
+      if (v > ceiling) sawExceeding = true;
+    }
+    assert.ok(sawThree, `ceiling ${ceiling}: must eventually spawn 3 (tier-0 pot)`);
+    assert.ok(sawExceeding, `ceiling ${ceiling}: value 3 must exceed tiny ceiling ${ceiling} at least once (harmless exception)`);
+  }
 });
 
 // Tier >= 1 only: for ceilings 0/1/2 the tier-0 pot value 3 can legitimately

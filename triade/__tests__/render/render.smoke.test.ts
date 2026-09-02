@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import * as game from '../../src/engine/core/index.ts';
-import { emptyBoard, boardWith, mulberry32, assertNoLeak, gameState } from '../../test-utils/helpers.ts';
+import { emptyBoard, boardWith, mulberry32, assertNoLeak, gameState, stateFromResult } from '../../test-utils/helpers.ts';
 import { planTileTransitions } from '../../src/render/transitionPlan.ts';
 
 const DIRECTIONS = ['left', 'right', 'up', 'down'] as const;
@@ -36,7 +36,7 @@ test('SMOKE: render critical path — 500 deterministic moves never leak and nev
     } else {
       assert.deepStrictEqual(plan, [], `move ${i} (${dir}) did not move but produced a non-empty plan`);
     }
-    state = { board: result.board, pendingSpawn: result.pendingSpawn };
+    state = stateFromResult(result);
     if (game.isGameOver(state.board)) {
       state = game.newGame(rng);
       games++;
@@ -55,7 +55,7 @@ test('SMOKE: a full-game session exercises every transition type at least once',
     const result = game.move(state, dir, rng);
     const plan = planTileTransitions(state.board, result);
     for (const t of plan) seen.add(t.type);
-    state = { board: result.board, pendingSpawn: result.pendingSpawn };
+    state = stateFromResult(result);
     if (game.isGameOver(state.board)) state = game.newGame(rng);
   }
   for (const type of TRANSITION_TYPES) {

@@ -90,6 +90,10 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
   return { board: newBoard, score, moved, trace, pendingSpawn };
 }
 
+export function stateFromResult(result: MoveResult): GameState {
+  return { board: result.board, pendingSpawn: result.pendingSpawn };
+}
+
 export function isGameOver(board: Board): boolean {
   let r: number;
   let c: number;

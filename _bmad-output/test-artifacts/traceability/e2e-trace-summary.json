@@ -1,16 +1,16 @@
 {
   "schema_version": "0.1.0",
-  "snapshot_at": "2026-09-02T01:56:23.244460+00:00",
+  "snapshot_at": "2026-09-02T02:20:07.362118Z",
   "repo": "3-clone",
   "collection_mode": "contract_static",
   "collection_status": "COLLECTED",
   "inventory_basis": "acceptance_criteria",
   "gate_basis": "priority_thresholds",
-  "source_sha": "a09e6ed23b968201717a4848cb1cff148172ac4e",
+  "source_sha": "3a6038e",
   "target": {
     "type": "story",
-    "id": "dw-layout-band-dedup-and-guard",
-    "label": "dw-layout-band-dedup-and-guard \u2014 layoutFor NaN/Infinity guard + band-height dedup (DW-5/DW-10)"
+    "id": "dw-preview-pot-ladder-hygiene",
+    "label": "dw-preview-pot-ladder-hygiene \u2014 tighten weight floor, dedupe state reconstruction, assert tier-0 ceiling exception"
   },
   "decision_mode": "deterministic",
   "evaluator": "Eduardo",
@@ -19,30 +19,28 @@
     "resolution_mode": "formal_requirements",
     "confidence": "high",
     "sources": [
-      "_bmad-output/implementation-artifacts/spec-layout-band-dedup-and-guard.md",
-      "triade/src/ui/layout.ts",
-      "triade/App.tsx",
-      "triade/src/ui/Hud.tsx",
-      "triade/__tests__/ui/layout.test.ts",
-      "_bmad-output/test-artifacts/test-design-dw-layout-band-dedup-and-guard.md",
-      "_bmad-output/implementation-artifacts/deferred-work.md#DW-5/DW-10",
-      "_bmad-output/test-artifacts/tests/api/layout.band-dedup-guard.gateway.spec.ts",
-      "_bmad-output/test-artifacts/tests/e2e/layout.band-dedup-guard.umbrella.spec.ts",
-      "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts"
+      "_bmad-output/implementation-artifacts/spec-preview-pot-ladder-hygiene.md",
+      "_bmad-output/test-artifacts/test-design-dw-preview-pot-ladder-hygiene.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-preview-pot-ladder-hygiene.md",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/index.ts",
+      "triade/test-utils/helpers.ts",
+      "triade/__tests__/engine/weights.test.ts",
+      "triade/__tests__/engine/adaptive-spawn-integration.test.ts"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
   },
   "coverage": {
     "inventory": {
-      "covered": 14,
-      "total": 14,
+      "covered": 19,
+      "total": 19,
       "pct": 100
     },
     "priority_breakdown": {
       "P0": {
-        "total": 4,
-        "covered": 4,
+        "total": 7,
+        "covered": 7,
         "pct": 100
       },
       "P1": {
@@ -51,32 +49,32 @@
         "pct": 100
       },
       "P2": {
-        "total": 3,
-        "covered": 3,
+        "total": 4,
+        "covered": 4,
         "pct": 100
       },
       "P3": {
-        "total": 2,
-        "covered": 2,
+        "total": 3,
+        "covered": 3,
         "pct": 100
       }
     },
     "by_level": {
       "e2e": {
-        "tests": 8,
-        "criteria_covered": 9
+        "tests": 6,
+        "criteria_covered": 19
       },
       "api": {
-        "tests": 19,
-        "criteria_covered": 12
+        "tests": 16,
+        "criteria_covered": 13
       },
       "component": {
         "tests": 0,
         "criteria_covered": 0
       },
       "unit": {
-        "tests": 37,
-        "criteria_covered": 14
+        "tests": 45,
+        "criteria_covered": 19
       },
       "other": {
         "tests": 0,
@@ -85,9 +83,9 @@
     }
   },
   "tests": {
-    "files": 4,
-    "cases": 64,
-    "skipped_cases": 18,
+    "files": 12,
+    "cases": 67,
+    "skipped_cases": 19,
     "fixme_cases": 0,
     "pending_cases": 0
   },
@@ -104,134 +102,7 @@
     "ui_journey_status": "not_applicable",
     "ui_state_status": "not_applicable"
   },
-  "blockers": [
-    {
-      "id": "P0-01",
-      "severity": "high",
-      "reason": "RED-phase scaffold it.skip \u2014 active coverage via gateway",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-01] AC NaN/Infinity guard \u2014 6-field Number.isFinite degrades to boardSize:0 finite"
-    },
-    {
-      "id": "P0-03",
-      "severity": "high",
-      "reason": "RED-phase scaffold",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-03] AC finite portrait 390\u00d7844 byte-identical"
-    },
-    {
-      "id": "P0-04",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-04] AC finite landscape 844\u00d7390 byte-identical"
-    },
-    {
-      "id": "P0-05",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-05] AC finite golden anchors byte-identical"
-    },
-    {
-      "id": "P0-06",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-06] AC degenerate-clamp layout.test.ts:232"
-    },
-    {
-      "id": "P0-07",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-07] AC getBandTop dedup \u2014 App.tsx bandTop + Hud.tsx 2\u00d7 height use single helper"
-    },
-    {
-      "id": "P0-08",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P0-08] AC getBandTop pure arithmetic \u2014 insets.top + SAFE_MARGIN + bandHeight byte-identical"
-    },
-    {
-      "id": "P1-01",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P1-01] band pins \u2014 PORTRAIT 96 / LANDSCAPE 48 and landscape collapses"
-    },
-    {
-      "id": "P1-02",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P1-02] isLandscape single-source \u2014 layoutFor.isLandscape agrees with orientation.ts"
-    },
-    {
-      "id": "P1-03",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P1-03] per-edge insets bind asymmetrically"
-    },
-    {
-      "id": "P1-05",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P1-05] finiteness sweep \u2014 all layoutFor outputs finite"
-    },
-    {
-      "id": "P1-06",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P1-06] ledger DW-5/DW-10 done with resolution-undo 64-hex"
-    },
-    {
-      "id": "P2-01",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P2-01] SCAN single helper allowlist \u2014 getBandTop 1 export + 3 uses"
-    },
-    {
-      "id": "P2-02",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P2-02] SCAN no duplicate formula"
-    },
-    {
-      "id": "P2-04",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P2-04] BOARD_SIZE_FLOOR + floor-clamp + 0-clamp branch stays byte-identical"
-    },
-    {
-      "id": "P2-03",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P2-03] SCAN early-guard invariant \u2014 Number.isFinite guard is first statement"
-    },
-    {
-      "id": "P3-01",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P3-01] exploratory \u2014 getBandTop non-finite residual is pure arithmetic NaN\u2192NaN per spec"
-    },
-    {
-      "id": "P3-02",
-      "severity": "high",
-      "reason": "Test marked skipped",
-      "test_file": "triade/__tests__/ui/layout.band-dedup-guard.atdd.test.ts",
-      "test_title": "[P3-02] hygiene \u2014 layout scope stays pure, no engine/feel/monetization leakage, O(1) <1 ms"
-    }
-  ],
+  "blockers": [],
   "recommendations": [
     {
       "priority": "LOW",
@@ -240,17 +111,32 @@
     },
     {
       "priority": "MEDIUM",
-      "action": "Activate RED-phase ATDD scaffolds it.skip \u2192 it (20 scaffolds) for full defense-in-depth \u2014 active gateway/e2e already green",
+      "action": "Activate ATDD scaffolds it.skip \u2192 it for defense-in-depth (19 dormant)",
       "requirements": [
         "AC-01",
         "AC-02",
         "AC-03",
-        "AC-04"
+        "AC-04A",
+        "AC-04B",
+        "AC-04C",
+        "AC-04D",
+        "P1-01",
+        "P1-02",
+        "P1-03",
+        "P1-04",
+        "P1-05",
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04",
+        "P3-01",
+        "P3-02",
+        "P3-03"
       ]
     }
   ],
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-layout-band-dedup-and-guard.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-preview-pot-ladder-hygiene.md",
     "trace_report_url": "",
     "artifact_url": "",
     "journey_evidence_url": ""

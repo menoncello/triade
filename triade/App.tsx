@@ -5,7 +5,7 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
 import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
-import { newGame, move, isGameOver, ceilingDetector, tierForCeiling } from './src/engine/core/index.ts';
+import { newGame, move, isGameOver, ceilingDetector, tierForCeiling, stateFromResult } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { potForTier } from './src/engine/core/pot.ts';
 import { applyMove, initialScore, isNewRecord } from './src/game/matchScore.ts';
@@ -332,7 +332,7 @@ function AppContent() {
       // Capture snapshot before move for undo history (only if effective)
       const snapshot: Snapshot = { game, match, matchStats, sessionBestMerge };
       const result = move(game, dir, rngRef.current);
-      setGame({ board: result.board, pendingSpawn: result.pendingSpawn });
+      setGame(stateFromResult(result));
       setMoveResult(result);
       setMatch((current) => applyMove(current, result));
       setMatchStats((prev) => applyMoveStats(prev, result.board, result));

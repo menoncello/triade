@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { newGame, move, isGameOver } from '../../src/engine/core/index.ts';
+import { newGame, move, isGameOver, stateFromResult } from '../../src/engine/core/index.ts';
 import type { Direction } from '../../src/engine/core/index.ts';
 import { mulberry32 } from '../../src/utils/mulberry32.ts';
 import { GRID_SIZE } from '../../src/engine/core/types.ts';
@@ -110,7 +110,7 @@ test('smoke: core gameplay loop executes 200 moves with directional spawn invari
       assert.strictEqual(result.trace.filter((e) => e.spawned).length, 0, `noop ${dir} must not spawn`);
       assert.deepStrictEqual(result.pendingSpawn, beforePending, 'noop keeps pendingSpawn');
     }
-    state = { board: result.board, pendingSpawn: result.pendingSpawn };
+    state = stateFromResult(result);
     // Board occupancy stays within 1..16
     let occ = 0;
     for (const row of state.board) for (const v of row) if (v !== null) occ++;
@@ -185,7 +185,7 @@ test('smoke: effective-move 3-draw budget holds across a 50-move session (direct
     }
     // Advance state with a real rng for next iteration's board
     if (result.moved) {
-      state = { board: result.board, pendingSpawn: result.pendingSpawn };
+      state = stateFromResult(result);
     }
   }
 });

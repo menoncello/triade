@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { newGame, move, isGameOver } from '../../src/engine/core/index.ts';
+import { newGame, move, isGameOver, stateFromResult } from '../../src/engine/core/index.ts';
 import type { Direction, GameState } from '../../src/engine/core/index.ts';
 import { applyMove, initialScore } from '../../src/game/matchScore.ts';
 import { GameE2ETestFixture } from '../../test-utils/e2e/GameE2ETestFixture.ts';
@@ -30,7 +30,7 @@ test('smoke: core gameplay loop executes without crash over a full session', () 
   for (let i = 0; i < 200 && !isGameOver(state.board); i++) {
     const result = move(state, dirs[i % 4], mulberry32(i + 50000));
     if (result.moved) {
-      state = { board: result.board, pendingSpawn: result.pendingSpawn };
+      state = stateFromResult(result);
       match = applyMove(match, result);
     }
     assert.strictEqual(result.board.length, 4, 'board stays 4x4 every turn');
