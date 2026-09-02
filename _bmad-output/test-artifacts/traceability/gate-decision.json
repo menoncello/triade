@@ -1,24 +1,23 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-09-02T14:05:00+00:00",
+  "evaluated_at": "2026-09-02T15:45:00+00:00",
   "repo": "3-clone",
   "target": {
     "type": "story",
-    "id": "dw-engine-spawn-candidates-validation",
-    "label": "dw-engine-spawn-candidates-validation \u2014 single-source pool validation + dedup for second callers (DW-72, DW-73)"
+    "id": "dw-decision-dw-6",
+    "label": "dw-decision-dw-6 — DW-6 Rotation race: SafeAreaProvider initialMetrics + synced insets effect"
   },
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
   "gate_status": "PASS",
-  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%). All critical requirements covered; working-tree delta loop+Set validated via 20 ATDD (activated 20 pass) + 14 gateway + 9 e2e + 27 active hardened (spawn-candidates.unit 12 + spawn-placement 11 + directional integration); full host suite 910 pass / 0 fail confirms no regression; ledger DW-72/73 done.",
+  "rationale": "P0 coverage is 100% (required: 100%), P1 coverage is 100% (target: 90%, minimum: 80%), and overall coverage is 100% (minimum: 80%). All 20 criteria FULL via host unit (18 layout.test.ts + 4 useSyncedLayout.test.ts active + 20 dw-6 ATDD dormant green when activated). No uncovered P0/P1. Single-source allowlists verified (SafeAreaProvider 3, useSyncedLayout 3, coalesceLayout 1, lastValid 6, boardSize===0 2, DEFAULT_DEBOUNCE_MS 2, ScrollView 0) + ledger 61d4ee9e 1 hit + sprint-status untouched. Full triade gate 914 pass / 0 fail / 311 skipped still green (20 dormant from this bundle). Simulator rotation remains manual P1 device smoke per spec.",
   "p0_status": "MET",
   "p1_status": "MET",
   "overall_status": "MET",
   "critical_open": 0,
   "links": {
-    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-engine-spawn-candidates-validation.md",
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-decision-dw-6.md",
     "trace_report_url": "",
-    "artifact_url": "",
-    "journey_evidence_url": ""
+    "artifact_url": ""
   }
 }

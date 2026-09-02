@@ -46,7 +46,9 @@ resolution-undo: 6f4ef234ac5b66d54037f0d76159f5f7967a91d50f0d5c9f7935907eaeec746
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: triade/App.tsx:28-30
 reason: Rotation race: `useSafeAreaInsets` lags `useWindowDimensions` by a frame → board can flash to 0; `SafeAreaProvider` mounts without `initialMetrics`; ScrollView offset persists across rotation (`triade/App.tsx:28-30,103`). Native polish, manual-validation domain.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-decision-dw-6
+resolution-undo: 61d4ee9e5c27fb2394f9073e803812b744e157c97ba4ad6b783f48aa9529ea48 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Add initialMetrics plus synced hook — Provide SafeAreaProvider initialMetrics and synced insets effect that debounces rotation so board never flashes to 0; verify on simulator landscape rotation.
 
 ### DW-7: Status bar legibility / band-under-status-bar on non-notch landscape (light UI + `StatusBar style="auto"`). Manual validation domain.
