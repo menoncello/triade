@@ -310,10 +310,13 @@ export interface GameBoardProps {
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
   direction?: Direction;
+  onShakeActiveChange?: (active: boolean) => void;
 }
 
-export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
-  const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
+export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction, onShakeActiveChange }: GameBoardProps) {
+  const finiteWidth = Number.isFinite(width) ? (width as number) : 1;
+  const safeWidth = Math.max(1, finiteWidth);
+  const cell = Math.max((safeWidth - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   // S8.3 screen shake — imperative worklet on board container only (never chrome)
   const shakeX = useSharedValue(0);
   const shakeY = useSharedValue(0);
@@ -325,14 +328,49 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
   const bulletFlashStyle = useAnimatedStyle(() => ({
     opacity: bulletFlash.value,
   }));
+  // DW-107: board shake 5-8px must not be clipped by parent overflow hidden — notify parent to toggle overflow visible during 130ms shake
+  const shakeNotifyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const notifyShakeActive = useCallback(
+    (active: boolean) => {
+      try {
+        onShakeActiveChange?.(active);
+      } catch {}
+    },
+    [onShakeActiveChange],
+  );
+  useEffect(() => {
+    return () => {
+      if (shakeNotifyTimerRef.current) {
+        clearTimeout(shakeNotifyTimerRef.current);
+        shakeNotifyTimerRef.current = null;
+      }
+    };
+  }, []);
+  // Schedule overflow visible for 130ms shake sequence; compensating padding (BOARD_PADDING + SHAKE_CAP) documented as alternative
+  const scheduleShakeVisible = useCallback(() => {
+    notifyShakeActive(true);
+    if (shakeNotifyTimerRef.current) clearTimeout(shakeNotifyTimerRef.current);
+    shakeNotifyTimerRef.current = setTimeout(() => {
+      shakeNotifyTimerRef.current = null;
+      notifyShakeActive(false);
+    }, 130);
+  }, [notifyShakeActive]);
+  const cancelShakeNotify = useCallback(() => {
+    if (shakeNotifyTimerRef.current) {
+      clearTimeout(shakeNotifyTimerRef.current);
+      shakeNotifyTimerRef.current = null;
+    }
+    notifyShakeActive(false);
+  }, [notifyShakeActive]);
   // Cancel shake immediately if Reduced Motion is enabled mid-animation (FR-30, UX-DR-16)
   useEffect(() => {
     if (reducedMotion) {
       shakeX.value = withTiming(0, { duration: 20 });
       shakeY.value = withTiming(0, { duration: 20 });
       bulletFlash.value = withTiming(0, { duration: 20 });
+      cancelShakeNotify();
     }
-  }, [reducedMotion, shakeX, shakeY, bulletFlash]);
+  }, [reducedMotion, shakeX, shakeY, bulletFlash, cancelShakeNotify]);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
@@ -487,10 +525,12 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
     prevMoveResultRef.current = moveResult;
     // S8.3 directional screen shake — data-driven from FeelPreset.shakeMs, capped ≤SHAKE_CAP,
     // disabled under Reduced Motion, silent on NOOP/no-merge, board only.
+    // DW-107: toggle parent overflow visible during 130ms shake or add compensating padding (BOARD_PADDING + SHAKE_CAP spare)
     if (moveResult.moved && !reducedMotion && direction) {
       const maxShake = maxShakeForTrace(moveResult.trace, reducedMotion);
       const amplitude = Math.min(maxShake, SHAKE_CAP);
       if (amplitude > 0) {
+        scheduleShakeVisible();
         const vec = directionVector(direction);
         // Only drive the axis matching swipe direction; invalid dir -> zero vector -> no shake
         if (vec.x !== 0) {
@@ -513,11 +553,13 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
           // Invalid direction — suppress shake
           shakeX.value = withTiming(0, { duration: 20 });
           shakeY.value = withTiming(0, { duration: 20 });
+          cancelShakeNotify();
         }
       } else {
         // Effective move but no merge (slide-only) — cancel any prior shake so it doesn't bleed
         shakeX.value = withTiming(0, { duration: 20 });
         shakeY.value = withTiming(0, { duration: 20 });
+        cancelShakeNotify();
       }
     } else {
       // NOOP, Reduced Motion, or missing direction — cancel any residual shake
@@ -526,6 +568,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         shakeX.value = withTiming(0, { duration: 20 });
         shakeY.value = withTiming(0, { duration: 20 });
       }
+      cancelShakeNotify();
     }
     // S8.4 bullet time — rarity-gated flash on new session-best, ~200ms, board only
     // Never throws on invalid trace; Reduced Motion suppresses; NOOP never triggers
@@ -561,7 +604,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard, scheduleShakeVisible, cancelShakeNotify]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
@@ -576,11 +619,12 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
 
   const ordered = [...tiles].sort((a, b) => renderOrder(a.kind) - renderOrder(b.kind));
 
+  // board container is width, height: width (safeWidth alias keeps 1:1 square; DW-110 guard via safeWidth)
   return (
-    <View style={{ width, height: width }}>
+    <View style={{ width: safeWidth, height: safeWidth }}>
       <Animated.View style={shakeStyle}>
-        <Canvas style={{ width, height: width }}>
-          <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
+        <Canvas style={{ width: safeWidth, height: safeWidth }}>
+          <RoundedRect x={0} y={0} width={safeWidth} height={safeWidth} r={14} color="#bdb6ab" />
           {ordered.map((t) => (
             <AnimatedTile
               key={t.id}
@@ -599,6 +643,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         </Canvas>
       </Animated.View>
       {/* S8.4 bullet-time flash overlay — board only, ~200ms, suppressed under Reduced Motion */}
+      {/* DW-110: width guard — Math.max(1, finiteWidth) validated via safeWidth so NaN never propagates to overlay style */}
       <Animated.View
         pointerEvents="none"
         style={[
@@ -606,8 +651,8 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
             position: 'absolute',
             left: 0,
             top: 0,
-            width,
-            height: width,
+            width: safeWidth,
+            height: safeWidth,
             borderRadius: 14,
             backgroundColor: '#fff7e0',
           },

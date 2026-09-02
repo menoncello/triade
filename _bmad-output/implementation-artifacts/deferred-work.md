@@ -929,7 +929,9 @@ decision: 2026-09-02 Keep truncated overlap as acceptable — Accept jank as low
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-3-screen-shake (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: Board shake 5-8px at edges clipped by parent View overflow hidden
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-board-shake-width-hardening
+resolution-undo: e7ad6158649620fdeee8687ab72310cc63b608b2ec5ff0272c566b3e68fff05f 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Set overflow visible during shake — Toggle overflow visible during shake or add padding.
 
 ### DW-108: BulletTime spawned undefined gap — trace entry without spawned field misclassified as merge
@@ -955,7 +957,9 @@ decision: 2026-09-02 Add value >=3 guard — Add value>=3 filter before max upda
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bullet-time (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: GameBoard width unvalidated for bullet flash overlay — NaN width propagates to overlay style
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-board-shake-width-hardening
+resolution-undo: e7ad6158649620fdeee8687ab72310cc63b608b2ec5ff0272c566b3e68fff05f 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Validate width finite fallback 1 — Clamp width to Math.max(1, finiteWidth) for overlay.
 
 ### DW-111: doMove identity invalidates on every sessionBestMerge change — gesture stability claim weakened

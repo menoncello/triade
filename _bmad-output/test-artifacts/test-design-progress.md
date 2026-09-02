@@ -23,4 +23,10 @@ inputDocuments:
 Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `67a1b51 fix(ui): harden GameOverOverlay carriers (DW-91/92/101/102)` vs `58e036c` — 3 files `410/14` — `triade/src/ui/GameOverOverlay.tsx` clampInset + SAFE_MARGIN×4, reactive reducedMotion re-target (stopAnimation+setValue+anim 280/80/cubic/native) + cleanup mid-fade, numberOfLines tail flexShrink:1 textAlign:right on 5 Texts + label flexShrink:0 row fix, `overlayCarriers.integration.test.ts` 4 zIndex/clamp/overflow/reducedMotion+unmount pins. Output is `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md` (mirrored to `test-design/test-design-dw-overlay-carriers-hardening.md`).
 
 Prior bundles: dw-persist-hydration-race-fix still archived as `_bmad-output/test-artifacts/test-design-dw-persist-hydration-race-fix.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
+---
 
+# Test Design Progress — dw-board-shake-width-hardening
+
+Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `e3c4155 sweep dw-board-shake-width-hardening: DW-107, DW-110` vs `e3c52ae` — 2 production files `+150/-10` — `triade/src/render/GameBoard.tsx` safeWidth guard `Math.max(1, Number.isFinite(width)?width:1)` + 5 style sites on safeWidth + `onShakeActiveChange` callback `shakeNotifyTimerRef 130ms` with `scheduleShakeVisible/cancelShakeNotify` symmetric branches + `triade/App.tsx` `isBoardShaking` state + `boardWrap overflow:visible` conditional. Output is `_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md` (mirrored to `test-design/test-design-dw-board-shake-width-hardening.md`).
+
+Prior bundle: dw-overlay-carriers-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.

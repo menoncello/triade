@@ -135,6 +135,8 @@ function AppContent() {
   const [entitlements, setEntitlements] = useState<Entitlements>({});
   const [restoreBusy, setRestoreBusy] = useState(false);
   const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
+  // DW-107: board shake 5-8px must not be clipped — toggle parent overflow visible during 130ms shake
+  const [isBoardShaking, setIsBoardShaking] = useState(false);
 
   // Sync i18n language with Settings.language — immediate apply per UX-DR-30
   // Normalizes pt-BR/en-US etc to pt/en for i18next (supportedLngs)
@@ -1015,7 +1017,7 @@ function AppContent() {
         hintHighlight={hintHighlight}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
-        <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
+        <View style={[styles.boardWrap, { width: boardSize, height: boardSize }, isBoardShaking ? { overflow: 'visible' } : null]}>
           <GestureDetector gesture={panGesture}>
             <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
               <GameBoard
@@ -1027,6 +1029,7 @@ function AppContent() {
                 onMoveSettled={onMoveSettled}
                 hintHighlight={hintHighlight}
                 direction={lastDirectionRef.current ?? undefined}
+                onShakeActiveChange={setIsBoardShaking}
               />
             </View>
           </GestureDetector>

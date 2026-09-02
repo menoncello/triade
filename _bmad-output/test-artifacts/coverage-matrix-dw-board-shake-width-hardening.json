@@ -1,0 +1,1484 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T23:29:29.893045+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-board-shake-width-hardening",
+    "label": "dw-board-shake-width-hardening — Board shake overflow visible + width hardening (DW-107, DW-110)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-board-shake-width-hardening.md#intent-contract",
+      "_bmad-output/implementation-artifacts/spec-board-shake-width-hardening.md#I/O & Edge-Case Matrix",
+      "_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-board-shake-width-hardening.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-board-shake-width-hardening.md#Acceptance Criteria",
+      "triade/src/render/GameBoard.tsx:313-319,331-371,525-570,622-655",
+      "triade/App.tsx:138-139,1020,1032",
+      "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-board-shake-width-hardening-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-board-shake-width-hardening.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-01",
+      "title": "Shake visible not clipped (DW-107, I/O row 1) — merge amplitude 2/5 with direction left/right/up/down toggles boardWrap overflow hidden→visible for 130ms then hidden; shakeX/Y withSequence 30+40+30+30 on correct axis, capped SHAKE_CAP 8",
+      "description": "Shake visible not clipped (DW-107, I/O row 1) — merge amplitude 2/5 with direction left/right/up/down toggles boardWrap overflow hidden→visible for 130ms then hidden; shakeX/Y withSequence 30+40+30+30 on correct axis, capped SHAKE_CAP 8",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-U-06",
+          "title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false + cancelShakeNotify symmetric",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 89,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "test.skip RED-phase, passes when activated (working tree implements e3c4155)"
+        },
+        {
+          "id": "P0-U-07",
+          "title": "DW-107 App isBoardShaking state + boardWrap overflow:visible conditional + prop threading",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 107,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-U-09",
+          "title": "DW-107 scheduleShakeVisible only on amplitude>0 (merge shake) — 4 dirs axis",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 129,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-04",
+          "title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false symmetric + cancelShakeNotify",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 58,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-05",
+          "title": "DW-107 App boardWrap overflow conditional — isBoardShaking state + visible/hidden + prop threading",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 70,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-UMB-01",
+          "title": "board shake width hardening journey — overflow visible 130ms + width guard + isBoardShaking wiring",
+          "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+          "line": 22,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-U-01",
+          "title": "DW-107 rapid re-shake timer reset — schedule does clearTimeout before setTimeout 130",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 172,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-U-05",
+          "title": "DW-107 P2-05 expectation — hasVisibleFix && hasPaddingFix both true",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 214,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "shake.atdd.P2-05",
+          "title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED) — hasVisibleFix||hasPaddingFix",
+          "file": "triade/__tests__/feel/shake.atdd.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "it.skip EXPECTED RED — active green after e3c4155 when de-skipped"
+        },
+        {
+          "id": "P0-HOST-INT-02",
+          "title": "(HOST-ONLY) merge shake left direction → onShakeActiveChange spy [true] at t0 then [true,false] after advance 130ms",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 271,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "HOST probe RED-phase"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "AC-02",
+      "title": "NOOP/slide-only/no-dir silent with cancel (DW-107, I/O row 2) — moved false or amplitude 0 or !direction or invalid dir zero vec → cancel residual shake withTiming(0,20) + cancelShakeNotify false immediate, never throws",
+      "description": "NOOP/slide-only/no-dir silent with cancel (DW-107, I/O row 2) — moved false or amplitude 0 or !direction or invalid dir zero vec → cancel residual shake withTiming(0,20) + cancelShakeNotify false immediate, never throws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-U-08",
+          "title": "DW-107 cancelShakeNotify on every non-shake branch (NOOP/moved false, slide-only amplitude 0, !direction, reducedMotion, invalid dir zero vec) — 4 sites",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 119,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-U-10",
+          "title": "DW-107 unmount cleanup — useEffect return clears shakeNotifyTimerRef + nulls it",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 141,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-06",
+          "title": "DW-107 cancelShakeNotify on every non-shake branch — reducedMotion + invalid dir + slide-only + NOOP",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 84,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-UMB-01",
+          "title": "shake lifecycle journey — schedule true→clear→setTimeout 130 then cancel on NOOP/slide-only/no-dir/reducedMotion/invalid dir + unmount cleanup",
+          "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+          "line": 42,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "AC-03",
+      "title": "ReducedMotion mid-shake snap (DW-107, I/O row 3, FR-30) — reducedMotion true toggled mid-shake snaps shakeX/Y/bulletFlash withTiming(0,20) + cancelShakeNotify false within 0ms; overflow returns hidden immediately",
+      "description": "ReducedMotion mid-shake snap (DW-107, I/O row 3, FR-30) — reducedMotion true toggled mid-shake snaps shakeX/Y/bulletFlash withTiming(0,20) + cancelShakeNotify false within 0ms; overflow returns hidden immediately",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-U-11",
+          "title": "DW-107 reducedMotion mid-shake snap + cancel — useEffect [reducedMotion] snaps shakeX/Y/bulletFlash withTiming(0,20) then cancelShakeNotify",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 153,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-U-02",
+          "title": "DW-107 deps [notifyShakeActive] and [scheduleShakeVisible, cancelShakeNotify] on moveResult effect — no stale closure",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 184,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-03",
+          "title": "DW-107 onShakeActiveChange contract — optional prop + ?. + try/catch never-throws",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 46,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-UMB-01B",
+          "title": "reducedMotion journey — withTiming(0,20)×3 + cancelShakeNotify + 130 vs sequence alignment",
+          "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+          "line": 77,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "reducedMotion.atdd.P2-06",
+          "title": "reducedMotion.atdd P2-06 width, height: width literal 1:1 square contract stays green",
+          "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts",
+          "line": 58,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "AC-04",
+      "title": "Width NaN/Infinity guard (DW-110, I/O row 4) — width NaN/Infinity/-Infinity/undefined as any/\"x\" as any → finiteWidth fallback 1, safeWidth 1, cell ≥1, overlay width:1 height:1 not NaN, Canvas/View/RoundedRect all 1 not NaN, never throws",
+      "description": "Width NaN/Infinity guard (DW-110, I/O row 4) — width NaN/Infinity/-Infinity/undefined as any/\"x\" as any → finiteWidth fallback 1, safeWidth 1, cell ≥1, overlay width:1 height:1 not NaN, Canvas/View/RoundedRect all 1 not NaN, never throws",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-U-01",
+          "title": "DW-110 width guard — finiteWidth = Number.isFinite(width) ? width : 1; safeWidth = Math.max(1, finiteWidth)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 31,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-U-02",
+          "title": "DW-110 safeWidth propagation — all 5 style sites consume safeWidth not bare width (View/Canvas/RoundedRect/overlay/cell)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-U-03",
+          "title": "DW-110 NaN/Infinity/undefined safeWidth falls back to 1 not NaN — static + host render contract",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 60,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-01",
+          "title": "DW-110 width guard — safeWidth Math.max(1, Number.isFinite(width)?width:1) propagates to View/Canvas/RoundedRect/overlay/cell",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 22,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-API-02",
+          "title": "DW-110 NaN/Infinity/-Infinity/undefined → safeWidth 1 not NaN + Math.max clamp",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 34,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P0-UMB-01C",
+          "title": "width guard propagation journey — safeWidth 9 + Number.isFinite 1 + literal 1 + BOARD_PADDING+SHAKE_CAP spare",
+          "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+          "line": 77,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "bulletTime.atdd.P2-05",
+          "title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)",
+          "file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+          "line": 38,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "it.skip EXPECTED RED — active green after e3c4155"
+        },
+        {
+          "id": "P0-HOST-INT-01",
+          "title": "(HOST-ONLY) mount GameBoard width NaN → View/Canvas/overlay style.width ===1 not NaN",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 266,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "HOST probe RED-phase"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "AC-05",
+      "title": "Width 0/negative clamp (DW-110, I/O row 5) — width 0/-5/null as any → safeWidth Math.max(1, finiteWidth) →1 clamps, board remains 1:1 square width: safeWidth height: safeWidth (literal comment width, height: width still present for reducedMotion.atdd P2-06)",
+      "description": "Width 0/negative clamp (DW-110, I/O row 5) — width 0/-5/null as any → safeWidth Math.max(1, finiteWidth) →1 clamps, board remains 1:1 square width: safeWidth height: safeWidth (literal comment width, height: width still present for reducedMotion.atdd P2-06)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-U-04",
+          "title": "DW-110 width literal preservation for reducedMotion.atdd P2-06 — comment alias keeps \"width, height: width\"",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 70,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-U-03",
+          "title": "DW-110 width 0/negative clamp — Math.max(1,finiteWidth) ensures safeWidth>=1",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 192,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-API-03B",
+          "title": "DW-110 width 0/-5 clamp + narrow 160 smoke",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 98,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P2-U-01",
+          "title": "DW-110 narrow board 160 smoke — safeWidth 160 → cell (160-16-24)/4 =30 still renders without NaN",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 242,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "AC-06",
+      "title": "Ledger & ownership (OPS) — deferred-work.md DW-107/110 show status: done 2026-09-02 + resolution-undo: e7ad6158649620fdeee8687ab72310cc63b608b2ec5ff0272c566b3e68fff05f 64-hex per entry (exactly 2 hits); sprint-status.yaml diff stays empty (orchestrator-owned)",
+      "description": "Ledger & ownership (OPS) — deferred-work.md DW-107/110 show status: done 2026-09-02 + resolution-undo: e7ad6158649620fdeee8687ab72310cc63b608b2ec5ff0272c566b3e68fff05f 64-hex per entry (exactly 2 hits); sprint-status.yaml diff stays empty (orchestrator-owned)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-U-04",
+          "title": "DW-107/DW-110 spec + ledger provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 200,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-U-07",
+          "title": "sprint-status.yaml orchestrator-owned — not written by this sweep (empty diff)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 230,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P2-U-03",
+          "title": "engine byte-identical — triade/src/engine/** not touched (git diff -- triade/src/engine empty)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+          "line": 257,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P1-API-04B",
+          "title": "ledger/spec provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2 + spec final_revision db01dfa",
+          "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+          "line": 107,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        },
+        {
+          "id": "P2-UMB-03",
+          "title": "ledger & sprint-status ownership journey — git diff -- sprint-status.yaml empty + deferred-work 2 hits",
+          "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+          "line": 142,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 6,
+    "fully_covered": 6,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 36,
+      "skipped_cases": 35,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 5,
+          "criteria_covered": 5
+        },
+        "api": {
+          "tests": 8,
+          "criteria_covered": 6
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 23,
+          "criteria_covered": 6
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "P0-U-06",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 89,
+        "title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false + cancelShakeNotify symmetric",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "test.skip RED-phase, passes when activated (working tree implements e3c4155)"
+      },
+      {
+        "id": "P0-U-07",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 107,
+        "title": "DW-107 App isBoardShaking state + boardWrap overflow:visible conditional + prop threading",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-U-09",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 129,
+        "title": "DW-107 scheduleShakeVisible only on amplitude>0 (merge shake) — 4 dirs axis",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-04",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 58,
+        "title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false symmetric + cancelShakeNotify",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-05",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 70,
+        "title": "DW-107 App boardWrap overflow conditional — isBoardShaking state + visible/hidden + prop threading",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "line": 22,
+        "title": "board shake width hardening journey — overflow visible 130ms + width guard + isBoardShaking wiring",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 172,
+        "title": "DW-107 rapid re-shake timer reset — schedule does clearTimeout before setTimeout 130",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-05",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 214,
+        "title": "DW-107 P2-05 expectation — hasVisibleFix && hasPaddingFix both true",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "shake.atdd.P2-05",
+        "file": "triade/__tests__/feel/shake.atdd.test.ts",
+        "line": 42,
+        "title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED) — hasVisibleFix||hasPaddingFix",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "it.skip EXPECTED RED — active green after e3c4155 when de-skipped"
+      },
+      {
+        "id": "P0-HOST-INT-02",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 271,
+        "title": "(HOST-ONLY) merge shake left direction → onShakeActiveChange spy [true] at t0 then [true,false] after advance 130ms",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "HOST probe RED-phase"
+      },
+      {
+        "id": "P0-U-08",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 119,
+        "title": "DW-107 cancelShakeNotify on every non-shake branch (NOOP/moved false, slide-only amplitude 0, !direction, reducedMotion, invalid dir zero vec) — 4 sites",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-U-10",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 141,
+        "title": "DW-107 unmount cleanup — useEffect return clears shakeNotifyTimerRef + nulls it",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-06",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 84,
+        "title": "DW-107 cancelShakeNotify on every non-shake branch — reducedMotion + invalid dir + slide-only + NOOP",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "line": 42,
+        "title": "shake lifecycle journey — schedule true→clear→setTimeout 130 then cancel on NOOP/slide-only/no-dir/reducedMotion/invalid dir + unmount cleanup",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-U-11",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 153,
+        "title": "DW-107 reducedMotion mid-shake snap + cancel — useEffect [reducedMotion] snaps shakeX/Y/bulletFlash withTiming(0,20) then cancelShakeNotify",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-02",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 184,
+        "title": "DW-107 deps [notifyShakeActive] and [scheduleShakeVisible, cancelShakeNotify] on moveResult effect — no stale closure",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-03",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 46,
+        "title": "DW-107 onShakeActiveChange contract — optional prop + ?. + try/catch never-throws",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-UMB-01B",
+        "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "line": 77,
+        "title": "reducedMotion journey — withTiming(0,20)×3 + cancelShakeNotify + 130 vs sequence alignment",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "reducedMotion.atdd.P2-06",
+        "file": "triade/__tests__/feel/reducedMotion.atdd.test.ts",
+        "line": 58,
+        "title": "reducedMotion.atdd P2-06 width, height: width literal 1:1 square contract stays green",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "P0-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 31,
+        "title": "DW-110 width guard — finiteWidth = Number.isFinite(width) ? width : 1; safeWidth = Math.max(1, finiteWidth)",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-U-02",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 42,
+        "title": "DW-110 safeWidth propagation — all 5 style sites consume safeWidth not bare width (View/Canvas/RoundedRect/overlay/cell)",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 60,
+        "title": "DW-110 NaN/Infinity/undefined safeWidth falls back to 1 not NaN — static + host render contract",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-01",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 22,
+        "title": "DW-110 width guard — safeWidth Math.max(1, Number.isFinite(width)?width:1) propagates to View/Canvas/RoundedRect/overlay/cell",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-API-02",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 34,
+        "title": "DW-110 NaN/Infinity/-Infinity/undefined → safeWidth 1 not NaN + Math.max clamp",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P0-UMB-01C",
+        "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "line": 77,
+        "title": "width guard propagation journey — safeWidth 9 + Number.isFinite 1 + literal 1 + BOARD_PADDING+SHAKE_CAP spare",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "bulletTime.atdd.P2-05",
+        "file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+        "line": 38,
+        "title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "it.skip EXPECTED RED — active green after e3c4155"
+      },
+      {
+        "id": "P0-HOST-INT-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 266,
+        "title": "(HOST-ONLY) mount GameBoard width NaN → View/Canvas/overlay style.width ===1 not NaN",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "HOST probe RED-phase"
+      },
+      {
+        "id": "P0-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 70,
+        "title": "DW-110 width literal preservation for reducedMotion.atdd P2-06 — comment alias keeps \"width, height: width\"",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 192,
+        "title": "DW-110 width 0/negative clamp — Math.max(1,finiteWidth) ensures safeWidth>=1",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-API-03B",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 98,
+        "title": "DW-110 width 0/-5 clamp + narrow 160 smoke",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P2-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 242,
+        "title": "DW-110 narrow board 160 smoke — safeWidth 160 → cell (160-16-24)/4 =30 still renders without NaN",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 200,
+        "title": "DW-107/DW-110 spec + ledger provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-U-07",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 230,
+        "title": "sprint-status.yaml orchestrator-owned — not written by this sweep (empty diff)",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P2-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "line": 257,
+        "title": "engine byte-identical — triade/src/engine/** not touched (git diff -- triade/src/engine empty)",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P1-API-04B",
+        "file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "line": 107,
+        "title": "ledger/spec provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2 + spec final_revision db01dfa",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      },
+      {
+        "id": "P2-UMB-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "line": 142,
+        "title": "ledger & sprint-status ownership journey — git diff -- sprint-status.yaml empty + deferred-work 2 hits",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "P0-U-06",
+        "severity": "high",
+        "reason": "test.skip RED-phase, passes when activated (working tree implements e3c4155)",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false + cancelShakeNotify symmetric"
+      },
+      {
+        "id": "P0-U-07",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 App isBoardShaking state + boardWrap overflow:visible conditional + prop threading"
+      },
+      {
+        "id": "P0-U-09",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 scheduleShakeVisible only on amplitude>0 (merge shake) — 4 dirs axis"
+      },
+      {
+        "id": "P0-API-04",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false symmetric + cancelShakeNotify"
+      },
+      {
+        "id": "P0-API-05",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-107 App boardWrap overflow conditional — isBoardShaking state + visible/hidden + prop threading"
+      },
+      {
+        "id": "P0-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "test_title": "board shake width hardening journey — overflow visible 130ms + width guard + isBoardShaking wiring"
+      },
+      {
+        "id": "P1-U-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 rapid re-shake timer reset — schedule does clearTimeout before setTimeout 130"
+      },
+      {
+        "id": "P1-U-05",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 P2-05 expectation — hasVisibleFix && hasPaddingFix both true"
+      },
+      {
+        "id": "shake.atdd.P2-05",
+        "severity": "high",
+        "reason": "it.skip EXPECTED RED — active green after e3c4155 when de-skipped",
+        "test_file": "triade/__tests__/feel/shake.atdd.test.ts",
+        "test_title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED) — hasVisibleFix||hasPaddingFix"
+      },
+      {
+        "id": "P0-HOST-INT-02",
+        "severity": "high",
+        "reason": "HOST probe RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "(HOST-ONLY) merge shake left direction → onShakeActiveChange spy [true] at t0 then [true,false] after advance 130ms"
+      },
+      {
+        "id": "P0-U-08",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 cancelShakeNotify on every non-shake branch (NOOP/moved false, slide-only amplitude 0, !direction, reducedMotion, invalid dir zero vec) — 4 sites"
+      },
+      {
+        "id": "P0-U-10",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 unmount cleanup — useEffect return clears shakeNotifyTimerRef + nulls it"
+      },
+      {
+        "id": "P0-API-06",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-107 cancelShakeNotify on every non-shake branch — reducedMotion + invalid dir + slide-only + NOOP"
+      },
+      {
+        "id": "P1-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "test_title": "shake lifecycle journey — schedule true→clear→setTimeout 130 then cancel on NOOP/slide-only/no-dir/reducedMotion/invalid dir + unmount cleanup"
+      },
+      {
+        "id": "P0-U-11",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 reducedMotion mid-shake snap + cancel — useEffect [reducedMotion] snaps shakeX/Y/bulletFlash withTiming(0,20) then cancelShakeNotify"
+      },
+      {
+        "id": "P1-U-02",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107 deps [notifyShakeActive] and [scheduleShakeVisible, cancelShakeNotify] on moveResult effect — no stale closure"
+      },
+      {
+        "id": "P0-API-03",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-107 onShakeActiveChange contract — optional prop + ?. + try/catch never-throws"
+      },
+      {
+        "id": "P0-UMB-01B",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "test_title": "reducedMotion journey — withTiming(0,20)×3 + cancelShakeNotify + 130 vs sequence alignment"
+      },
+      {
+        "id": "P0-U-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 width guard — finiteWidth = Number.isFinite(width) ? width : 1; safeWidth = Math.max(1, finiteWidth)"
+      },
+      {
+        "id": "P0-U-02",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 safeWidth propagation — all 5 style sites consume safeWidth not bare width (View/Canvas/RoundedRect/overlay/cell)"
+      },
+      {
+        "id": "P0-U-03",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 NaN/Infinity/undefined safeWidth falls back to 1 not NaN — static + host render contract"
+      },
+      {
+        "id": "P0-API-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-110 width guard — safeWidth Math.max(1, Number.isFinite(width)?width:1) propagates to View/Canvas/RoundedRect/overlay/cell"
+      },
+      {
+        "id": "P0-API-02",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-110 NaN/Infinity/-Infinity/undefined → safeWidth 1 not NaN + Math.max clamp"
+      },
+      {
+        "id": "P0-UMB-01C",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "test_title": "width guard propagation journey — safeWidth 9 + Number.isFinite 1 + literal 1 + BOARD_PADDING+SHAKE_CAP spare"
+      },
+      {
+        "id": "bulletTime.atdd.P2-05",
+        "severity": "high",
+        "reason": "it.skip EXPECTED RED — active green after e3c4155",
+        "test_file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+        "test_title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)"
+      },
+      {
+        "id": "P0-HOST-INT-01",
+        "severity": "high",
+        "reason": "HOST probe RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "(HOST-ONLY) mount GameBoard width NaN → View/Canvas/overlay style.width ===1 not NaN"
+      },
+      {
+        "id": "P0-U-04",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 width literal preservation for reducedMotion.atdd P2-06 — comment alias keeps \"width, height: width\""
+      },
+      {
+        "id": "P1-U-03",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 width 0/negative clamp — Math.max(1,finiteWidth) ensures safeWidth>=1"
+      },
+      {
+        "id": "P1-API-03B",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "DW-110 width 0/-5 clamp + narrow 160 smoke"
+      },
+      {
+        "id": "P2-U-01",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-110 narrow board 160 smoke — safeWidth 160 → cell (160-16-24)/4 =30 still renders without NaN"
+      },
+      {
+        "id": "P1-U-04",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "DW-107/DW-110 spec + ledger provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2"
+      },
+      {
+        "id": "P1-U-07",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "sprint-status.yaml orchestrator-owned — not written by this sweep (empty diff)"
+      },
+      {
+        "id": "P2-U-03",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+        "test_title": "engine byte-identical — triade/src/engine/** not touched (git diff -- triade/src/engine empty)"
+      },
+      {
+        "id": "P1-API-04B",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+        "test_title": "ledger/spec provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2 + spec final_revision db01dfa"
+      },
+      {
+        "id": "P2-UMB-03",
+        "severity": "high",
+        "reason": "RED-phase",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+        "test_title": "ledger & sprint-status ownership journey — git diff -- sprint-status.yaml empty + deferred-work 2 hits"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "P0-U-06",
+      "severity": "high",
+      "reason": "test.skip RED-phase, passes when activated (working tree implements e3c4155)",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false + cancelShakeNotify symmetric"
+    },
+    {
+      "id": "P0-U-07",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 App isBoardShaking state + boardWrap overflow:visible conditional + prop threading"
+    },
+    {
+      "id": "P0-U-09",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 scheduleShakeVisible only on amplitude>0 (merge shake) — 4 dirs axis"
+    },
+    {
+      "id": "P0-API-04",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-107 shakeNotifyTimerRef + scheduleShakeVisible true→130→false symmetric + cancelShakeNotify"
+    },
+    {
+      "id": "P0-API-05",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-107 App boardWrap overflow conditional — isBoardShaking state + visible/hidden + prop threading"
+    },
+    {
+      "id": "P0-UMB-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "test_title": "board shake width hardening journey — overflow visible 130ms + width guard + isBoardShaking wiring"
+    },
+    {
+      "id": "P1-U-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 rapid re-shake timer reset — schedule does clearTimeout before setTimeout 130"
+    },
+    {
+      "id": "P1-U-05",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 P2-05 expectation — hasVisibleFix && hasPaddingFix both true"
+    },
+    {
+      "id": "shake.atdd.P2-05",
+      "severity": "high",
+      "reason": "it.skip EXPECTED RED — active green after e3c4155 when de-skipped",
+      "test_file": "triade/__tests__/feel/shake.atdd.test.ts",
+      "test_title": "[P2-05] board edge clipping by overflow hidden (EXPECTED RED) — hasVisibleFix||hasPaddingFix"
+    },
+    {
+      "id": "P0-HOST-INT-02",
+      "severity": "high",
+      "reason": "HOST probe RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "(HOST-ONLY) merge shake left direction → onShakeActiveChange spy [true] at t0 then [true,false] after advance 130ms"
+    },
+    {
+      "id": "P0-U-08",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 cancelShakeNotify on every non-shake branch (NOOP/moved false, slide-only amplitude 0, !direction, reducedMotion, invalid dir zero vec) — 4 sites"
+    },
+    {
+      "id": "P0-U-10",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 unmount cleanup — useEffect return clears shakeNotifyTimerRef + nulls it"
+    },
+    {
+      "id": "P0-API-06",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-107 cancelShakeNotify on every non-shake branch — reducedMotion + invalid dir + slide-only + NOOP"
+    },
+    {
+      "id": "P1-UMB-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "test_title": "shake lifecycle journey — schedule true→clear→setTimeout 130 then cancel on NOOP/slide-only/no-dir/reducedMotion/invalid dir + unmount cleanup"
+    },
+    {
+      "id": "P0-U-11",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 reducedMotion mid-shake snap + cancel — useEffect [reducedMotion] snaps shakeX/Y/bulletFlash withTiming(0,20) then cancelShakeNotify"
+    },
+    {
+      "id": "P1-U-02",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107 deps [notifyShakeActive] and [scheduleShakeVisible, cancelShakeNotify] on moveResult effect — no stale closure"
+    },
+    {
+      "id": "P0-API-03",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-107 onShakeActiveChange contract — optional prop + ?. + try/catch never-throws"
+    },
+    {
+      "id": "P0-UMB-01B",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "test_title": "reducedMotion journey — withTiming(0,20)×3 + cancelShakeNotify + 130 vs sequence alignment"
+    },
+    {
+      "id": "P0-U-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 width guard — finiteWidth = Number.isFinite(width) ? width : 1; safeWidth = Math.max(1, finiteWidth)"
+    },
+    {
+      "id": "P0-U-02",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 safeWidth propagation — all 5 style sites consume safeWidth not bare width (View/Canvas/RoundedRect/overlay/cell)"
+    },
+    {
+      "id": "P0-U-03",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 NaN/Infinity/undefined safeWidth falls back to 1 not NaN — static + host render contract"
+    },
+    {
+      "id": "P0-API-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-110 width guard — safeWidth Math.max(1, Number.isFinite(width)?width:1) propagates to View/Canvas/RoundedRect/overlay/cell"
+    },
+    {
+      "id": "P0-API-02",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-110 NaN/Infinity/-Infinity/undefined → safeWidth 1 not NaN + Math.max clamp"
+    },
+    {
+      "id": "P0-UMB-01C",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "test_title": "width guard propagation journey — safeWidth 9 + Number.isFinite 1 + literal 1 + BOARD_PADDING+SHAKE_CAP spare"
+    },
+    {
+      "id": "bulletTime.atdd.P2-05",
+      "severity": "high",
+      "reason": "it.skip EXPECTED RED — active green after e3c4155",
+      "test_file": "triade/__tests__/feel/bulletTime.atdd.test.ts",
+      "test_title": "[P2-05] board width / overflow — overlay uses width×width, clipped by boardWrap overflow hidden (EXPECTED RED)"
+    },
+    {
+      "id": "P0-HOST-INT-01",
+      "severity": "high",
+      "reason": "HOST probe RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "(HOST-ONLY) mount GameBoard width NaN → View/Canvas/overlay style.width ===1 not NaN"
+    },
+    {
+      "id": "P0-U-04",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 width literal preservation for reducedMotion.atdd P2-06 — comment alias keeps \"width, height: width\""
+    },
+    {
+      "id": "P1-U-03",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 width 0/negative clamp — Math.max(1,finiteWidth) ensures safeWidth>=1"
+    },
+    {
+      "id": "P1-API-03B",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "DW-110 width 0/-5 clamp + narrow 160 smoke"
+    },
+    {
+      "id": "P2-U-01",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-110 narrow board 160 smoke — safeWidth 160 → cell (160-16-24)/4 =30 still renders without NaN"
+    },
+    {
+      "id": "P1-U-04",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "DW-107/DW-110 spec + ledger provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2"
+    },
+    {
+      "id": "P1-U-07",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "sprint-status.yaml orchestrator-owned — not written by this sweep (empty diff)"
+    },
+    {
+      "id": "P2-U-03",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/dw-board-shake-width-hardening.atdd.test.ts",
+      "test_title": "engine byte-identical — triade/src/engine/** not touched (git diff -- triade/src/engine empty)"
+    },
+    {
+      "id": "P1-API-04B",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/api/board-shake-width-hardening.gateway.spec.ts",
+      "test_title": "ledger/spec provenance — deferred-work DW-107/DW-110 done 2026-09-02 with resolution-undo e7ad61… ×2 + spec final_revision db01dfa"
+    },
+    {
+      "id": "P2-UMB-03",
+      "severity": "high",
+      "reason": "RED-phase",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/board-shake-width-hardening.umbrella.spec.ts",
+      "test_title": "ledger & sprint-status ownership journey — git diff -- sprint-status.yaml empty + deferred-work 2 hits"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ]
+}
