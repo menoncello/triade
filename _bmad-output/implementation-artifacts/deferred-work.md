@@ -304,35 +304,45 @@ resolution: CLOSED with verification by story 1.6 (2026-08-18): RNG input handle
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)"), 2026-09-01
 location: triade/src/engine/core/ceiling.ts:5-7
 reason: `ceilingDetector` quebra em row ausente/undefined (`row.length` em undefined) (`triade/src/engine/core/ceiling.ts:5-7`). Contrato de board retangular do engine; pré-existente e consistente com o resto do core.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-ceiling-hardening
+resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a517 2026-09-02 7374617475733a206f70656e
 
 ### DW-42: Fragilidade de ponto flutuante em `tierForCeiling` para ceilings muito grandes / >MAX_SAFE_INTEGER (`triade/src/engine/core/ceiling.ts:19`). Fórmula fechada endossada pelo spec; negligible dado o bound de tiles do jogo 2048.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)"), 2026-09-01
 location: triade/src/engine/core/ceiling.ts:19
 reason: Fragilidade de ponto flutuante em `tierForCeiling` para ceilings muito grandes / >MAX_SAFE_INTEGER (`triade/src/engine/core/ceiling.ts:19`). Fórmula fechada endossada pelo spec; negligible dado o bound de tiles do jogo 2048.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-ceiling-hardening
+resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a517 2026-09-02 7374617475733a206f70656e
 
 ### DW-43: Sem guard de teto superior nos tiers; `tierForCeiling` cresce ilimitado com o ceiling (`triade/src/engine/core/ceiling.ts:19`). Sem bug atual; risco de acoplamento caso consumidores assumam tiers enumerados fixos.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)"), 2026-09-01
 location: triade/src/engine/core/ceiling.ts:19
 reason: Sem guard de teto superior nos tiers; `tierForCeiling` cresce ilimitado com o ceiling (`triade/src/engine/core/ceiling.ts:19`). Sem bug atual; risco de acoplamento caso consumidores assumam tiers enumerados fixos.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-ceiling-hardening
+resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a517 2026-09-02 7374617475733a206f70656e
 
 ### DW-44: Valores de tile inválidos (NaN/negativo/0) silenciosamente tratados como sem-tile (`v !== null && v > max`) (`triade/src/engine/core/ceiling.ts:9`). Inalcançável com tiles válidos positivos potências de 2; defensivo apenas.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)"), 2026-09-01
 location: triade/src/engine/core/ceiling.ts:9
 reason: Valores de tile inválidos (NaN/negativo/0) silenciosamente tratados como sem-tile (`v !== null && v > max`) (`triade/src/engine/core/ceiling.ts:9`). Inalcançável com tiles válidos positivos potências de 2; defensivo apenas.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-ceiling-hardening
+resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a517 2026-09-02 7374617475733a206f70656e
 
 ### DW-45: `tierForCeiling` não testado para entradas negativo/0/fracionário/Infinity (`triade/src/engine/core/ceiling.ts:18-19`). Entradas sempre são ceilings válidos produzidos por `ceilingDetector`.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 2-1-deteccao-de-teto-de-spawn-spawn-ceiling (2026-08-20)"), 2026-09-01
 location: triade/src/engine/core/ceiling.ts:18-19
 reason: `tierForCeiling` não testado para entradas negativo/0/fracionário/Infinity (`triade/src/engine/core/ceiling.ts:18-19`). Entradas sempre são ceilings válidos produzidos por `ceilingDetector`.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-ceiling-hardening
+resolution-undo: d403df0b7bb1b95ec4972b76d57119d999b1f9dd29ace759488cd6921759a517 2026-09-02 7374617475733a206f70656e
 
 ### DW-46: Sem validação em runtime dos pesos em `spawnConfig` — edição futura dos pesos degrada silenciosamente (pot absorve excesso de probabilidade, NaN/negativo envenena as comparações e tudo vira pot); a invariante `FIXED_WEIGHTS[1]+FIXED_WEIGHTS[2] === 1-POT_WEIGHT` é guardada apenas pelo teste de soma com epsilon (`triade/src/engine/config/spawnConfig.ts:1-5`, `triade/src/engine/core/spawn.ts:11-16`). Por design do spec: 2.4 (`weightedPicker`) re-normalizará e nunca confiará na soma exata.
 
