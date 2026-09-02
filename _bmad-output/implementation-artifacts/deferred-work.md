@@ -781,7 +781,9 @@ resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/src/ui/GameOverOverlay.tsx:26-50
 reason: Reduced-motion branch stale across remounts — `triade/src/ui/GameOverOverlay.tsx:26-50` `useRef` captura só 1º mount — não alcançável hoje `reducedMotion={false}` — deferred, low.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-overlay-carriers-hardening
+resolution-undo: 596c2f86f89f421758063c068af190fef0052b181dcedd83fcfcc495c1859b15 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Recreate Animated.Value on toggle — Add effect that recreates or re-targets value on reducedMotion toggle.
 
 ### DW-92: insets undefined / rotation during fade — `triade/src/ui/GameOverOverlay.tsx:17-20` defensivo `?.top ??0` — edge tablet — deferred, low.
@@ -789,7 +791,9 @@ decision: 2026-09-02 Recreate Animated.Value on toggle — Add effect that recre
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/src/ui/GameOverOverlay.tsx:17-20
 reason: insets undefined / rotation during fade — `triade/src/ui/GameOverOverlay.tsx:17-20` defensivo `?.top ??0` — edge tablet — deferred, low.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-overlay-carriers-hardening
+resolution-undo: 596c2f86f89f421758063c068af190fef0052b181dcedd83fcfcc495c1859b15 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Clamp insets to finite >=0 — Add clamp for insets top/bottom to finite >=0.
 
 ### DW-93: RNG determinism discontinuity never reseeded — `triade/App.tsx:40` `mulberry32(20260808)` único — deferred, low.
@@ -872,7 +876,9 @@ decision: 2026-09-02 Add isFinite guards — Add Number.isFinite guards in match
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Overflow layout: `score >1e9` estoura `row space-between` sem `numberOfLines/ellipsizeMode/flexShrink` no `GameOverOverlay`. Pré-existente, fora de MVP.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-overlay-carriers-hardening
+resolution-undo: 596c2f86f89f421758063c068af190fef0052b181dcedd83fcfcc495c1859b15 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Add ellipsize and flexShrink — Add numberOfLines=1 ellipsizeMode tail flexShrink.
 
 ### DW-102: `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual.
@@ -880,7 +886,9 @@ decision: 2026-09-02 Add ellipsize and flexShrink — Add numberOfLines=1 ellips
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-overlay-carriers-hardening
+resolution-undo: 596c2f86f89f421758063c068af190fef0052b181dcedd83fcfcc495c1859b15 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Bundle overlay carriers — Make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering (overlay 2 vs Hud 1) in an integration render test, and clear/restart cleanly on unmount mid-fade.
 decision: 2026-09-02 Bundle overlay carriers — Fix GameOverOverlay carriers in one pass: make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering in an integration render test, and ensure unmount mid-fade clears and restarts cleanly.
 

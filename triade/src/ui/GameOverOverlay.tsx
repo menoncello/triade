@@ -37,10 +37,11 @@ export function GameOverOverlay({
   onContinueCancel,
 }: GameOverOverlayProps) {
   const { t } = useTranslation();
-  const padTop = (insets?.top ?? 0) + SAFE_MARGIN;
-  const padBottom = (insets?.bottom ?? 0) + SAFE_MARGIN;
-  const padLeft = (insets?.left ?? 0) + SAFE_MARGIN;
-  const padRight = (insets?.right ?? 0) + SAFE_MARGIN;
+  const clampInset = (v: unknown): number => (Number.isFinite(v as number) && (v as number) >= 0 ? (v as number) : 0);
+  const padTop = clampInset(insets?.top) + SAFE_MARGIN;
+  const padBottom = clampInset(insets?.bottom) + SAFE_MARGIN;
+  const padLeft = clampInset(insets?.left) + SAFE_MARGIN;
+  const padRight = clampInset(insets?.right) + SAFE_MARGIN;
   // 3.2 Clean lane: no continue/ad/hint — see LaneProfile. Invalid → clean fallback.
   // activeLaneId is reserved for the future Accelerated continue slot (profile.canContinue); Clean stays single CTA.
 
@@ -53,12 +54,18 @@ export function GameOverOverlay({
   const contentY = useRef(new Animated.Value(reducedMotion ? 0 : 12)).current;
 
   useEffect(() => {
+    scrimOpacity.stopAnimation();
+    contentOpacity.stopAnimation();
+    contentY.stopAnimation();
     if (reducedMotion) {
       scrimOpacity.setValue(1);
       contentOpacity.setValue(1);
       contentY.setValue(0);
       return;
     }
+    scrimOpacity.setValue(0);
+    contentOpacity.setValue(0);
+    contentY.setValue(12);
     const FADE_MS = 280;
     const anim = Animated.parallel([
       Animated.timing(scrimOpacity, { toValue: 1, duration: FADE_MS, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
@@ -72,7 +79,7 @@ export function GameOverOverlay({
       contentOpacity.stopAnimation();
       contentY.stopAnimation();
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, scrimOpacity, contentOpacity, contentY]);
 
   // D1 fix (a11y aninhada): outer overlay NÃO é `accessible` — bloqueia gestos via `pointerEvents="auto"`
   // e centra o card. Inner `View accessible alert` agrupa só as stats para anúncio; CTA `Pressable`
@@ -92,23 +99,23 @@ export function GameOverOverlay({
           <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
             <View style={styles.row}>
               <Text style={styles.label}>{t('gameOver.score')}</Text>
-              <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>{t('gameOver.best')}</Text>
-              <Text style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>{t('gameOver.maxTile')}</Text>
-              <Text style={styles.value}>{String(stats.maxTile)}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.maxTile)}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>{t('gameOver.merges')}</Text>
-              <Text style={styles.value}>{String(stats.merges)}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.merges)}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>{t('gameOver.longestStreak')}</Text>
-              <Text style={styles.value}>{String(stats.longestStreak)}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.longestStreak)}</Text>
             </View>
           </View>
           {/* AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here */}
@@ -190,18 +197,23 @@ const styles = StyleSheet.create({
     color: '#8a8578',
     fontSize: 13,
     fontWeight: '500',
+    flexShrink: 0,
   },
   value: {
     color: '#1a1d23',
     fontSize: 17,
     fontWeight: '500',
     fontVariant: ['tabular-nums'],
+    flexShrink: 1,
+    textAlign: 'right',
   },
   valueRecord: {
     color: '#E8A33D',
     fontSize: 17,
     fontWeight: '500',
     fontVariant: ['tabular-nums'],
+    flexShrink: 1,
+    textAlign: 'right',
   },
   cta: {
     width: HIT_TARGET,

@@ -6,20 +6,21 @@ lastStep: 'step-05-generate-output'
 nextStep: ''
 lastSaved: '2026-09-02'
 inputDocuments:
-  - 'triade/App.tsx'
-  - 'triade/src/game/matchScore.ts'
-  - 'triade/src/services/storage/settingsStore.ts'
-  - 'triade/__tests__/game/matchScore.test.ts'
-  - 'triade/__tests__/ui/components/gameOverOverlay.recordHighlight.test.ts'
-  - '_bmad-output/implementation-artifacts/spec-persist-hydration-race-fix.md'
+  - 'triade/src/ui/GameOverOverlay.tsx'
+  - 'triade/src/ui/Hud.tsx'
+  - 'triade/src/ui/layout.ts'
+  - 'triade/test-utils/rn-stub.ts'
+  - 'triade/__tests__/ui/components/gameOverOverlay.test.ts'
+  - 'triade/__tests__/ui/components/overlayCarriers.integration.test.ts'
+  - '_bmad-output/implementation-artifacts/spec-overlay-carriers-hardening.md'
   - '_bmad-output/implementation-artifacts/deferred-work.md'
   - '_bmad-output/implementation-artifacts/sprint-status.yaml'
   - '_bmad/tea/config.yaml'
 ---
 
-# Test Design Progress — dw-persist-hydration-race-fix
+# Test Design Progress — dw-overlay-carriers-hardening
 
-Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `5eaeb51 fix(persist): hydration race + sessionStart stale + finite guards (DW-87,97,98,99,100)` — 2 files `169/16` — `triade/App.tsx` hydrationOk gating + sessionStart update on save resolve + pendingSave await + sanitized render + `isNewRecord && hydrationOk` prop, `triade/src/game/matchScore.ts` `Number.isFinite` guards. Output is `_bmad-output/test-artifacts/test-design-dw-persist-hydration-race-fix.md` (mirrored to `test-design/test-design-dw-persist-hydration-race-fix.md`).
+Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `67a1b51 fix(ui): harden GameOverOverlay carriers (DW-91/92/101/102)` vs `58e036c` — 3 files `410/14` — `triade/src/ui/GameOverOverlay.tsx` clampInset + SAFE_MARGIN×4, reactive reducedMotion re-target (stopAnimation+setValue+anim 280/80/cubic/native) + cleanup mid-fade, numberOfLines tail flexShrink:1 textAlign:right on 5 Texts + label flexShrink:0 row fix, `overlayCarriers.integration.test.ts` 4 zIndex/clamp/overflow/reducedMotion+unmount pins. Output is `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md` (mirrored to `test-design/test-design-dw-overlay-carriers-hardening.md`).
 
-Prior bundles: dw-forfeited-continue-rng-reseed still archived as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
+Prior bundles: dw-persist-hydration-race-fix still archived as `_bmad-output/test-artifacts/test-design-dw-persist-hydration-race-fix.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
 
