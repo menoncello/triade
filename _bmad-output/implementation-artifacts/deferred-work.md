@@ -913,7 +913,8 @@ decision: 2026-09-02 Set overflow visible during shake — Toggle overflow visib
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bullet-time (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: BulletTime spawned undefined gap — trace entry without spawned field misclassified as merge
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/feel/bulletTime.ts:14 entry.spawned !== false guard excludes undefined spawned entries from maxMergeValue — DW-108 trace gap fixed
 decision: 2026-09-02 Check spawned === true explicitly — Filter with entry.spawned === true or in entry check.
 
 ### DW-109: BulletTime value <3 not filtered — 0 or negative finite pollutes sessionBestMerge
@@ -921,7 +922,8 @@ decision: 2026-09-02 Check spawned === true explicitly — Filter with entry.spa
 origin: migrated from legacy ledger ("Deferred from: code review of story 8-4-bullet-time (2026-09-01 — gds-code-review, 2 layers)"), 2026-09-01
 location: n/a
 reason: BulletTime value <3 not filtered — 0 or negative finite pollutes sessionBestMerge
-status: open
+status: done 2026-09-02
+resolution: already resolved: triade/src/feel/bulletTime.ts:16 Number.isFinite(entry.value) && entry.value <3 guard filters zero/negative before sessionBestMerge — DW-109 pollutes fix
 decision: 2026-09-02 Add value >=3 guard — Add value>=3 filter before max update.
 
 ### DW-110: GameBoard width unvalidated for bullet flash overlay — NaN width propagates to overlay style
