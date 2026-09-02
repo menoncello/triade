@@ -29,9 +29,12 @@ function spyRng(...values: number[]): Rng & { calls: number[] } {
   const calls: number[] = [];
   let i = 0;
   const rng = (): number => {
+    if (i >= values.length) {
+      throw new Error(`spyRng exhausted after ${calls.length} scripted draw(s) — the engine drew more than expected`);
+    }
     const v = values[i++];
-    calls.push(v === undefined ? 0.5 : v);
-    return calls[calls.length - 1];
+    calls.push(v);
+    return v;
   };
   return Object.assign(rng, { calls });
 }

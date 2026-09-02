@@ -21,7 +21,9 @@ resolution: CLOSED by story 1.6 (2026-08-18): T3.1 removed the TEMP hint text an
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: triade/test-utils/helpers.ts:67-71
 reason: `stripComments` corrupts string/regex literals containing `//` or `/*` — the purity/thin-view tripwire can false-pass or false-fail on future edits that embed such literals (`triade/test-utils/helpers.ts:67-71`). Test-tooling robustness; current files are clean.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-test-scanner-helpers-hardening
+resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd3 2026-09-01 7374617475733a206f70656e
 
 ### DW-4: `boardSize` clamps to 0 on degenerate/tiny windows (the old 40pt floor was removed; the 360 cap removal is intended per UX-DR-20 container-driven maximize) (`triade/src/ui/layout.ts:31`). Acceptable per spec; board simply doesn't render on absurd sizes.
 
@@ -344,7 +346,9 @@ resolution: already resolved: triade/src/engine/config/spawnConfig.ts:13,17 Obje
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-pesos-fixos-1-2-em-40-40 (2026-08-21)"), 2026-09-01
 location: triade/test-utils/helpers.ts:17-23
 reason: Fallback de `rngOf` retorna 0.5 para sempre — um rng sub-provisionado num teste de `spawnTile` produz silenciosamente valor 2 em vez de falhar rápido (`triade/test-utils/helpers.ts:17-23`). Pre-existente ao diff.
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-test-scanner-helpers-hardening
+resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd3 2026-09-01 7374617475733a206f70656e
 
 ### DW-49: Benchmarks timing-sensitive continuam no run default do CI — script `benchmark` idêntico a `test`, mantendo benchmarks no caminho padrão (`triade/package.json`). Recomendação pré-existente do review R1 (mover benchmarks para fora do run default) ainda não atendida.
 
@@ -426,14 +430,18 @@ resolution: already resolved: triade/__tests__/engine/pot.test.ts:48-64 hand-com
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: adaptive-spawn-integration.test.ts
 reason: `spyRng` in `adaptive-spawn-integration.test.ts` silently serves `0.5` forever once its supplied values are exhausted instead of throwing — a regression that over-draws can pass frequency-style assertions unnoticed; exact `calls` deep-equal pins cover the P0 paths (triade/__tests__/engine/adaptive-spawn-integration.test.ts:16-24).
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-test-scanner-helpers-hardening
+resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd3 2026-09-01 7374617475733a206f70656e
 
 ### DW-60: `gameState()` test helper defaults `{ value: 1, displayRoll: 0 }` — hidden magic default silently drives ~two dozen migrated assertions and means those sessions never exercise realistic pending-value flow (triade/test-utils/helpers.ts).
 
 origin: migrated from legacy ledger ("Deferred from: re-review of 2-6-integracao-com-o-engine-merge-once-e-effective-move (2026-08-23)"), 2026-09-01
 location: triade/test-utils/helpers.ts
 reason: `gameState()` test helper defaults `{ value: 1, displayRoll: 0 }` — hidden magic default silently drives ~two dozen migrated assertions and means those sessions never exercise realistic pending-value flow (triade/test-utils/helpers.ts).
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-test-scanner-helpers-hardening
+resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd3 2026-09-01 7374617475733a206f70656e
 
 ### DW-61: `weights.test.ts` statistical pot-sampling floor (`> N * 0.1`) is far looser than the surrounding ±1–2% frequency gates — triggers only after catastrophic failure (triade/__tests__/engine/weights.test.ts).
 
@@ -476,7 +484,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review pass 2 of 7-1-pendingspawn-pre-resolvido-no-snapshot (2026-08-24)"), 2026-09-01
 location: triade/test-utils/helpers.ts
 reason: Scanner regex-literal handling: `stripCommentsAndStrings` treats regex literals as plain code, so a quote/apostrophe inside a regex (e.g. `/it's/`) flips the state machine into string mode and blanks all subsequent real source until the next quote — producing false NEGATIVES in the ui.norolls structural guard. Documented as a known limitation in the helper, but the blast radius is mode-desync swallowing real code, not mere pass-through. No such pattern exists in any currently scanned view/service file; proper fix requires division-vs-regex disambiguation (real lexer work) — revisit if scanned sources ever adopt regex literals with quote characters (triade/test-utils/helpers.ts).
-status: open
+status: done 2026-09-01
+resolution: resolved by sweep bundle dw-test-scanner-helpers-hardening
+resolution-undo: d03bd19660d953d51029cb993603729020df8a32a61c092cb18da7891621edd3 2026-09-01 7374617475733a206f70656e
 
 ### DW-67: two-lane preview (both lanes show a preview card): IMPLEMENTED (HUD fan-out, 2026-08-24) — `Hud` now takes `previews: { clean, accelerated }` and fans the lane-agnostic `previewFor(game.pendingSpawn)` into two labeled `PreviewCard`s (Clean / Accelerated) in portrait & landscape (`triade/src/ui/Hud.tsx`). Both lanes currently show the same pre-resolved preview; per-lane board differentiation (distinct `pendingSpawn` per lane) remains Epic 3 — no Hud rework needed, just feed distinct `previews` when Epic 3 builds two-lane boards. Traced as `7.2-AC3` in `traceability-matrix-7-2.md`.
 
