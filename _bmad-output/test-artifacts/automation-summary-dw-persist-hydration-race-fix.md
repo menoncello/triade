@@ -25,7 +25,7 @@ inputDocuments:
   - '_bmad-output/test-artifacts/tests/api/persist-hydration-race-fix.gateway.spec.ts'
   - '_bmad-output/test-artifacts/tests/e2e/persist-hydration-race-fix.umbrella.spec.ts'
   - '_bmad/tea/config.yaml'
-outputFile: '_bmad-output/test-artifacts/automation-summary.md'
+outputFile: '_bmad-output/test-artifacts/automation-summary-dw-persist-hydration-race-fix.md'
 test_artifacts: '_bmad-output/test-artifacts'
 ---
 

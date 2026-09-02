@@ -110,6 +110,8 @@ function AppContent() {
   const purchaseBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const hydrationOkByLaneRef = useRef<Record<LaneId, boolean>>({ clean: true, accelerated: true });
+  const pendingSaveByLaneRef = useRef<Record<LaneId, Promise<boolean> | null>>({ clean: null, accelerated: null });
+  const persistedBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const [ready, setReady] = useState(false);
   const [persistedBestByLane, setPersistedBestByLane] = useState<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const [settings, setSettings] = useState<Settings>({ ...DEFAULT_SETTINGS });
@@ -179,6 +181,7 @@ function AppContent() {
       if (cancelled) return;
       hydrationOkByLaneRef.current = { clean: byLane.clean.ok, accelerated: byLane.accelerated.ok };
       sessionStartBestByLaneRef.current = { clean: byLane.clean.best, accelerated: byLane.accelerated.best };
+      persistedBestByLaneRef.current = { clean: byLane.clean.best, accelerated: byLane.accelerated.best };
       setPersistedBestByLane({ clean: byLane.clean.best, accelerated: byLane.accelerated.best });
       const activeLane: LaneId = loadedSettings.laneDefault === 1 ? 'accelerated' : 'clean';
       setMatch(initialScore(byLane[activeLane].best));
@@ -209,17 +212,33 @@ function AppContent() {
     };
   }, []);
 
+  useEffect(() => {
+    persistedBestByLaneRef.current = persistedBestByLane;
+  }, [persistedBestByLane]);
+
   // Persist per-lane: only the active lane's best is ever written, gated on that
   // lane's session-start best (isNewRecord) and hydrationOk for that lane.
   useEffect(() => {
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     if (!hydrationOkByLaneRef.current[activeLaneId]) return;
+    const sanitizedMatchBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+    const rawPersistedForCheck = persistedBestByLane[activeLaneId];
+    const sanitizedPersistedForCheck = Number.isFinite(rawPersistedForCheck) && rawPersistedForCheck >= 0 ? rawPersistedForCheck : 0;
     if (
-      isNewRecord(sessionStartBestByLaneRef.current[activeLaneId], match.best) &&
-      match.best > persistedBestByLane[activeLaneId]
+      isNewRecord(sessionStartBestByLaneRef.current[activeLaneId], sanitizedMatchBest) &&
+      sanitizedMatchBest > sanitizedPersistedForCheck
     ) {
-      void saveBestForLane(activeLaneId, match.best).then((ok) => {
-        if (ok) setPersistedBestByLane((prev) => ({ ...prev, [activeLaneId]: match.best }));
+      const p = saveBestForLane(activeLaneId, sanitizedMatchBest).then((ok) => {
+        if (ok) {
+          setPersistedBestByLane((prev) => ({ ...prev, [activeLaneId]: sanitizedMatchBest }));
+          persistedBestByLaneRef.current = { ...persistedBestByLaneRef.current, [activeLaneId]: sanitizedMatchBest };
+          sessionStartBestByLaneRef.current = { ...sessionStartBestByLaneRef.current, [activeLaneId]: sanitizedMatchBest };
+        }
+        return ok;
+      });
+      pendingSaveByLaneRef.current[activeLaneId] = p;
+      p.finally(() => {
+        if (pendingSaveByLaneRef.current[activeLaneId] === p) pendingSaveByLaneRef.current[activeLaneId] = null;
       });
     }
   }, [match.best, persistedBestByLane, selectedLaneIndex]);
@@ -436,7 +455,14 @@ function AppContent() {
     [game, match, matchStats, sessionBestMerge, tutorialState, settings],
   );
 
-  const handleRestart = useCallback(() => {
+  const handleRestart = useCallback(async () => {
+    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+    const pending = pendingSaveByLaneRef.current[activeLaneId];
+    if (pending) {
+      try {
+        await pending;
+      } catch {}
+    }
     // S8.3 clear last swipe direction on new game — board shake resets
     lastDirectionRef.current = null;
     setSessionBestMerge(0);
@@ -445,11 +471,10 @@ function AppContent() {
     rngRef.current = mulberry32(rngSeedRef.current);
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
     // DW-86: forfeitedContinue — set on game-over, dies on continue attempt / new game
-    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     const s = newGame(rngRef.current);
     setGame(s);
     setMoveResult(null);
-    setMatch(initialScore(persistedBestByLane[activeLaneId]));
+    setMatch(initialScore(persistedBestByLaneRef.current[activeLaneId]));
     setMatchStats(initialStats(s.board));
     busyRef.current = false;
     setUndoHistory([]);
@@ -965,11 +990,16 @@ function AppContent() {
     }
   }, [gameOver, canContinueDerived, forfeitedContinue]);
 
+  const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+  const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+  const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
+  const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
+
   return (
     <View style={styles.container}>
       <Hud
-        score={match.score}
-        best={match.best}
+        score={sanitizedScore}
+        best={sanitizedBest}
         isLandscape={isLandscape}
         insets={insets}
         bandHeight={bandHeight}
@@ -1028,19 +1058,19 @@ function AppContent() {
             : 'recording frame rate baseline…'}
         </Text>
         <Text style={styles.stats}>
-          score: {match.score} · live best: {match.best} · persisted best: {persistedBestByLane[activeLaneId as LaneId]}
+          score: {sanitizedScore} · live best: {sanitizedBest} · persisted best: {sanitizedPersisted}
         </Text>
       </View>
       {gameOver ? (
         <GameOverOverlay
           stats={{
-            score: match.score,
-            best: match.best,
+            score: match.score === match.score && Number.isFinite(match.score) && match.score >= 0 ? match.score : 0,
+            best: match.best === match.best && Number.isFinite(match.best) && match.best >= 0 ? match.best : 0,
             maxTile: matchStats.maxTile,
             merges: matchStats.merges,
             longestStreak: matchStats.longestStreak,
           }}
-          isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score)}
+          isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score) && hydrationOkByLaneRef.current[activeLaneId as LaneId]}
           onRestart={handleRestart}
           reducedMotion={settings.reducedMotion}
           insets={insets}

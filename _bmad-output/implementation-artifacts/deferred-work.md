@@ -744,7 +744,9 @@ decision: 2026-09-02 Implement forfeitedContinue state — Add explicit forfeite
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:75-82
 reason: Persist race + degraded hydration discards live best — `triade/App.tsx:75-82 + 103-110` `initialScore(persistedBest)` `[persistedBest]` only; `saveBest` async vs restart pode perder record; `hydrationOkRef=false` zera best — trade-off spec para não vazar `match.best` — deferred, medium.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-persist-hydration-race-fix
+resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Serialize saveBest before restart — Await saveBest before handleRestart and gate isNewRecord on hydrationOkRef.
 
 ### DW-88: Tiles corrupt after restart (null moveResult never rebuilds) — `triade/src/render/GameBoard.tsx:262-265` `if(!moveResult) return` deixa tiles stale 16->9 — não causado por 6.3 (`render` byte-identical), já deferido em 1-3 — deferred, high (pre-existing).
@@ -830,7 +832,9 @@ resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Hydration failure `ok:false` falso-positivo: `loadBest()` degradado retorna `{best:0,ok:false}` mas `sessionStartBestRef=0` faz `isNewRecord(0,50)=true` acender recorde indevido para usuário com recorde 500. Pré-existente (App byte-identical), fora de escopo 6.4 verify-only; reavaliar em Epic 9/storage quando `hydrationOkRef` bloquear highlight.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-persist-hydration-race-fix
+resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Gate highlight on hydrationOk — Only compute isNewRecord when hydrationOkByLaneRef true.
 
 ### DW-98: Stale `sessionStartBestRef` multi-jogo: após recorde 150, segundo jogo 120 com `sessionStartBestRef 100` ainda acende (`100<120`) mesmo `persistedBest` já 150 — semântica cross-restart ambígua; spec mantém ref na sessão para não vazar `match.best`, mas sem update pós-persist. Pré-existente, Epic 3/6 follow-up.
@@ -838,7 +842,9 @@ decision: 2026-09-02 Gate highlight on hydrationOk — Only compute isNewRecord 
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Stale `sessionStartBestRef` multi-jogo: após recorde 150, segundo jogo 120 com `sessionStartBestRef 100` ainda acende (`100<120`) mesmo `persistedBest` já 150 — semântica cross-restart ambígua; spec mantém ref na sessão para não vazar `match.best`, mas sem update pós-persist. Pré-existente, Epic 3/6 follow-up.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-persist-hydration-race-fix
+resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Update ref on save resolution — Update sessionStartBestByLaneRef to persistedBest after save resolves.
 
 ### DW-99: Corrida async `saveBest`: `handleRestart` com `persistedBest` stale se restart antes de `saveBest` resolver; `initialScore(persistedBest)` captura 100 não 150. Pré-existente, manual-validation.
@@ -846,7 +852,9 @@ decision: 2026-09-02 Update ref on save resolution — Update sessionStartBestBy
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Corrida async `saveBest`: `handleRestart` com `persistedBest` stale se restart antes de `saveBest` resolver; `initialScore(persistedBest)` captura 100 não 150. Pré-existente, manual-validation.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-persist-hydration-race-fix
+resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Await saveBest before restart — Make handleRestart await pending saveBest promises.
 
 ### DW-100: Entradas não-finitas/corrompidas: `previousBest -5/NaN/Infinity` ou `score NaN/Infinity` → highlight ou render `"NaN"` sem `Number.isFinite` guard; `parseBest` já rejeita mas bypass via MMKV nativo possível. Contrato `MatchScore` garante finitos.
@@ -854,7 +862,9 @@ decision: 2026-09-02 Await saveBest before restart — Make handleRestart await 
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-novo-recorde-como-numero-destacado (2026-08-28 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Entradas não-finitas/corrompidas: `previousBest -5/NaN/Infinity` ou `score NaN/Infinity` → highlight ou render `"NaN"` sem `Number.isFinite` guard; `parseBest` já rejeita mas bypass via MMKV nativo possível. Contrato `MatchScore` garante finitos.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-persist-hydration-race-fix
+resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 2026-09-02 7374617475733a206f70656e
 decision: 2026-09-02 Add isFinite guards — Add Number.isFinite guards in matchScore and render.
 
 ### DW-101: Overflow layout: `score >1e9` estoura `row space-between` sem `numberOfLines/ellipsizeMode/flexShrink` no `GameOverOverlay`. Pré-existente, fora de MVP.
