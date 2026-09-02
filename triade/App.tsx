@@ -103,6 +103,9 @@ function AppContent() {
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
   const busyRef = useRef(false);
+  const restartSeqRef = useRef(0);
+  const gestureStartSeqRef = useRef(0);
+  const fallbackBusyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastDirectionRef = useRef<Direction | null>(null);
   const adBusyRef = useRef(false);
   const purchaseBusyRef = useRef(false);
@@ -245,11 +248,21 @@ function AppContent() {
       setSessionBestMerge(0);
       // Changing lane always starts a new game (FR-11, D-008) — best is lane-scoped
       if (needsReset) {
+        // DW-96: lane switch mid-gesture needs same guard as restart
+        restartSeqRef.current += 1;
+        if (fallbackBusyTimerRef.current) {
+          clearTimeout(fallbackBusyTimerRef.current);
+          fallbackBusyTimerRef.current = null;
+        }
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
         setMatch(initialScore(persistedBestByLane[nextLaneId]));
         setMatchStats(initialStats(s.board));
+        if (fallbackBusyTimerRef.current) {
+          clearTimeout(fallbackBusyTimerRef.current);
+          fallbackBusyTimerRef.current = null;
+        }
         busyRef.current = false;
         resetAssistance();
         // Tutorial: new lane may need its own 3-move sequence
@@ -298,6 +311,10 @@ function AppContent() {
     if (!tutorialState || !isTutorialActive(tutorialState)) return;
     const laneId = tutorialState.laneId;
     setTutorialState(null);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
     const nextSettings: Settings = {
       ...settings,
@@ -346,6 +363,12 @@ function AppContent() {
         // transitionPlan — no animation runs, onMoveSettled never fires, so the
         // gate must only engage on real moves (noop deadlock guard).
         busyRef.current = true;
+        // DW-35/DW-90: App-level fallback if GameBoard never releases (empty plan / bailout)
+        if (fallbackBusyTimerRef.current) clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = setTimeout(() => {
+          fallbackBusyTimerRef.current = null;
+          busyRef.current = false;
+        }, 420);
         setUndoHistory((prev) => [...prev, snapshot]);
         // Hint highlight is one-shot, clear on next move
         setHintHighlight(null);
@@ -428,6 +451,11 @@ function AppContent() {
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
+    restartSeqRef.current += 1;
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
   }, [persistedBestByLane, selectedLaneIndex, entitlements]);
 
   // 3.3 Accelerated assistance handlers — gated by LaneProfile
@@ -461,6 +489,10 @@ function AppContent() {
       setMatchStats(snap.matchStats);
       setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
       return;
     }
@@ -514,6 +546,10 @@ function AppContent() {
       setMatchStats(snap.matchStats);
       setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
       setMoveResult(null);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
     } finally {
       adBusyRef.current = false;
@@ -545,6 +581,10 @@ function AppContent() {
     setMatchStats(snap.matchStats);
     setSessionBestMerge(Number.isFinite(snap.sessionBestMerge) ? snap.sessionBestMerge as number : 0);
     setMoveResult(null);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
   }, [undoBudget, undoHistory, activeProfile, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
@@ -686,7 +726,7 @@ function AppContent() {
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(async () => {
-    if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); busyRef.current = false; return; }
+    if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); if (fallbackBusyTimerRef.current) { clearTimeout(fallbackBusyTimerRef.current); fallbackBusyTimerRef.current = null; } busyRef.current = false; return; }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
     if (!activeProfile.allowAds || !activeProfile.canContinue) return;
@@ -723,6 +763,10 @@ function AppContent() {
       setContinueBudget(res.state.continueBudget);
       setHintHighlight(res.state.hintHighlight);
       setShowUndoPrompt(res.state.showUndoPrompt);
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
       busyRef.current = false;
     } finally {
       adBusyRef.current = false;
@@ -752,6 +796,10 @@ function AppContent() {
     setContinueBudget(res.state.continueBudget);
     setHintHighlight(res.state.hintHighlight);
     setShowUndoPrompt(res.state.showUndoPrompt);
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
@@ -791,7 +839,20 @@ function AppContent() {
   doMoveRef.current = doMove;
 
   const onMoveSettled = useCallback(() => {
+    if (fallbackBusyTimerRef.current) {
+      clearTimeout(fallbackBusyTimerRef.current);
+      fallbackBusyTimerRef.current = null;
+    }
     busyRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (fallbackBusyTimerRef.current) {
+        clearTimeout(fallbackBusyTimerRef.current);
+        fallbackBusyTimerRef.current = null;
+      }
+    };
   }, []);
 
   const panGesture = useMemo(
@@ -800,7 +861,12 @@ function AppContent() {
         .activeOffsetX([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
         .activeOffsetY([-SWIPE_THRESHOLD, SWIPE_THRESHOLD])
         .runOnJS(true)
+        .onBegin(() => {
+          gestureStartSeqRef.current = restartSeqRef.current;
+        })
         .onEnd((event, success) => {
+          // DW-96: drop dispatch if restart occurred mid-gesture (seq changed)
+          if (gestureStartSeqRef.current !== restartSeqRef.current) return;
           handleGestureEnd(event, success, busyRef, (dir) => doMoveRef.current(dir));
         }),
     [],

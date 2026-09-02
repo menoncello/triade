@@ -333,6 +333,31 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
     return initial;
   });
   const tilesRef = useRef(tiles);
+  const prevMoveResultRef = useRef<MoveResult | null>(moveResult);
+
+  // Single disciplined writer for tiles state + ref (DW-36/DW-38): every
+  // mutation must route via this helper so tilesRef never desyncs from
+  // React state. No direct setTilesState+separate ref assignment elsewhere.
+  const syncTiles = useCallback((next: TileDescriptor[]) => {
+    tilesRef.current = next;
+    setTilesState(next);
+  }, []);
+
+  const rebuildTilesFromBoard = useCallback(
+    (boardToRender: Board): TileDescriptor[] => {
+      const next: TileDescriptor[] = [];
+      for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+          const v = boardToRender[r][c];
+          if (v !== null) {
+            next.push({ id: nextId(), value: v, from: [r, c], to: [r, c], kind: 'rest' });
+          }
+        }
+      }
+      return next;
+    },
+    [nextId]
+  );
 
   // T3.4 early-input release: onMoveSettled opens the App input gate ~30% into
   // the animation (EARLY_INPUT_MS), not after every tile finishes settling, so
@@ -344,7 +369,12 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     return () => {
-      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      if (settleTimerRef.current) {
+        clearTimeout(settleTimerRef.current);
+        settleTimerRef.current = null;
+        // DW-39: unmount mid-animation must release App gate, not just leak timer
+        onMoveSettledRef.current?.();
+      }
     };
   }, []);
 
@@ -404,8 +434,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
           }
         }
       }
-      tilesRef.current = next;
-      setTilesState(next);
+      syncTiles(next);
       if (newBursts.length > 0) {
         setBursts((prev) => [...prev, ...newBursts]);
         // Auto-clear bursts after animation window so they don't accumulate
@@ -414,17 +443,31 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         }, 500);
       }
     },
-    [nextId, cell, reducedMotion]
+    [nextId, cell, reducedMotion, syncTiles]
   );
 
   useEffect(() => {
     if (!moveResult) {
+      // DW-88/DW-89: rebuild tiles when moveResult nulls after non-null (restart/undo)
+      // and clear any pending settle timer so it doesn't fire stale post-restart.
+      if (prevMoveResultRef.current !== null) {
+        if (settleTimerRef.current) {
+          clearTimeout(settleTimerRef.current);
+          settleTimerRef.current = null;
+        }
+        const rebuilt = rebuildTilesFromBoard(board);
+        syncTiles(rebuilt);
+        // Clear bursts that belong to previous game
+        setBursts([]);
+      }
       prevBoardRef.current = board;
+      prevMoveResultRef.current = moveResult;
       return;
     }
     const plan = planTileTransitions(prevBoardRef.current, moveResult);
     applyPlan(plan);
     prevBoardRef.current = board;
+    prevMoveResultRef.current = moveResult;
     // S8.3 directional screen shake — data-driven from FeelPreset.shakeMs, capped ≤SHAKE_CAP,
     // disabled under Reduced Motion, silent on NOOP/no-merge, board only.
     if (moveResult.moved && !reducedMotion && direction) {
@@ -484,20 +527,29 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
     // animates nothing, so it must not touch the gate. An effective move opens
     // the gate after ~30% of the animation; a new swipe then re-plans and tiles
     // retarget forward to their committed targets.
-    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    // DW-35/DW-90: if engine reports moved:true with empty plan, fallback still releases gate.
+    if (settleTimerRef.current) {
+      clearTimeout(settleTimerRef.current);
+      settleTimerRef.current = null;
+    }
     if (plan.length > 0) {
       settleTimerRef.current = setTimeout(() => {
         settleTimerRef.current = null;
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
+    } else if (moveResult.moved) {
+      // moved:true but empty plan -> deadlock without fallback; release quickly
+      settleTimerRef.current = setTimeout(() => {
+        settleTimerRef.current = null;
+        onMoveSettledRef.current?.();
+      }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
-    tilesRef.current = next;
-    setTilesState(next);
-  }, []);
+    syncTiles(next);
+  }, [syncTiles]);
 
   const renderOrder = (kind: TileKind): number => {
     if (kind === 'appear') return 0;

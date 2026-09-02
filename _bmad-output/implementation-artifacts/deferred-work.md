@@ -271,14 +271,18 @@ resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/App.tsx:84-90
 reason: Gate/timer state machine has zero automated coverage and the `moved ⟺ plan.length>0` invariant is unenforced across `App`/`GameBoard` (`triade/App.tsx:84-90`, `triade/src/render/GameBoard.tsx:258-268`): if the engine ever reports `moved:true` with an empty `transitionPlan` (or a React bailout skips the effect), `busyRef` stays true forever and every subsequent swipe is dropped. Current code is deadlock-free; the risk is future-regression-only. Suggest a regression test when the test harness gains the ability to drive the App/GameBoard gate state machine. Deferred — gesture/animation behavior is manual-validation domain per project rule.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-36: `tilesRef` mirrors tile state outside React's functional-update flow (`triade/src/render/GameBoard.tsx:192, 244-245, 271-275`): any future `setTilesState` writer that forgets to sync `tilesRef` would silently corrupt subsequent plans (dropped/phantom tiles, wrong merge sources). The two current writers (`applyPlan`, `onVanish`) are consistent. Latent maintenance risk.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:192
 reason: `tilesRef` mirrors tile state outside React's functional-update flow (`triade/src/render/GameBoard.tsx:192, 244-245, 271-275`): any future `setTilesState` writer that forgets to sync `tilesRef` would silently corrupt subsequent plans (dropped/phantom tiles, wrong merge sources). The two current writers (`applyPlan`, `onVanish`) are consistent. Latent maintenance risk.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-37: Orientation/resize mid-animation leaves shared values in stale pixel space (`triade/src/render/GameBoard.tsx:98-112, 174-175, 250-269`): rest tiles never re-target on `cell` change; a swipe accepted right after a resize re-plans and tiles visibly jump. Pre-existing render bug that the story 1.6 re-plan path now triggers. Manual-validation domain.
 
@@ -292,14 +296,18 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:205
 reason: `tilesRef` remains a second source of truth for tile state (`triade/src/render/GameBoard.tsx:205, 257-258, 285-287`): re-confirmed during the story 1.6 re-review that both writers (`applyPlan`, `onVanish`) keep the ref in sync, but any future `setTilesState` writer that forgets to sync the ref would desync rendering from the plan. Latent maintenance risk (same class as Df2).
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-39: GameBoard unmount clears the settle timer without releasing the App input gate (`triade/src/render/GameBoard.tsx:215-219`, `triade/App.tsx:105-107`): the unmount cleanup `clearTimeout`s a pending settle timer but never calls `onMoveSettled`, so if the board ever unmounts mid-animation (orientation/conditional render/remount) `busyRef` stays `true` and all swipe input freezes permanently — no fallback timeout. Not reachable today (the board never unmounts). Suggest a fallback timer release if a remount path is ever added.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-6-input-por-swipe-rngh-edge-cases-contract (2026-08-18)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:215-219
 reason: GameBoard unmount clears the settle timer without releasing the App input gate (`triade/src/render/GameBoard.tsx:215-219`, `triade/App.tsx:105-107`): the unmount cleanup `clearTimeout`s a pending settle timer but never calls `onMoveSettled`, so if the board ever unmounts mid-animation (orientation/conditional render/remount) `busyRef` stays `true` and all swipe input freezes permanently — no fallback timeout. Not reachable today (the board never unmounts). Suggest a fallback timer release if a remount path is ever added.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-40: `useState(() => newGame(rngRef.current))` mutates the RNG ref inside a state initializer
 
@@ -705,21 +713,27 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:262-265
 reason: Tiles corrupt after restart (null moveResult never rebuilds) — `triade/src/render/GameBoard.tsx:262-265` `if(!moveResult) return` deixa tiles stale 16->9 — não causado por 6.3 (`render` byte-identical), já deferido em 1-3 — deferred, high (pre-existing).
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-89: Settle-timer leak fires after restart (Df5) — `triade/src/render/GameBoard.tsx:273-280` timer não limpo em `handleRestart` — Df5 já deferido — deferred.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/src/render/GameBoard.tsx:273-280
 reason: Settle-timer leak fires after restart (Df5) — `triade/src/render/GameBoard.tsx:273-280` timer não limpo em `handleRestart` — Df5 já deferido — deferred.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-90: moved:true + empty plan deadlock (Df1) — `triade/App.tsx:91-98` + `GameBoard.tsx:275` — Df1 já deferido — deferred.
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:91-98
 reason: moved:true + empty plan deadlock (Df1) — `triade/App.tsx:91-98` + `GameBoard.tsx:275` — Df1 já deferido — deferred.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-91: Reduced-motion branch stale across remounts — `triade/src/ui/GameOverOverlay.tsx:26-50` `useRef` captura só 1º mount — não alcançável hoje `reducedMotion={false}` — deferred, low.
 
@@ -763,7 +777,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/App.tsx:119-139
 reason: Stroke tiling restart during gesture race — `triade/App.tsx:119-139` `doMoveRef` + `panGesture` `runOnJS:true` — Df1-4 ledger — deferred, medium.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-render-gate-hardening
+resolution-undo: 4cfb9c87cc92e42a3d0a5621d85f333cb7c546c3d62a3aef82c4a189144c824c 2026-09-02 7374617475733a206f70656e
 
 ### DW-97: Hydration failure `ok:false` falso-positivo: `loadBest()` degradado retorna `{best:0,ok:false}` mas `sessionStartBestRef=0` faz `isNewRecord(0,50)=true` acender recorde indevido para usuário com recorde 500. Pré-existente (App byte-identical), fora de escopo 6.4 verify-only; reavaliar em Epic 9/storage quando `hydrationOkRef` bloquear highlight.
 
