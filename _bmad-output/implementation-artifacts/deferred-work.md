@@ -610,6 +610,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-s
 location: line.ts
 reason: Acoplamento `GRID_SIZE` fixo 4x4 (`line.ts` assume 4, `helpers.ts:15` `SIZE=4`) — contrato `Board` é fixo, não configurável por nível.
 status: open
+decision: 2026-09-02 Make configurable — Introduce a BoardConfig/GRID_SIZE param threaded through triade/src/engine/core/line.ts, spawn.ts, types.ts and triade/test-utils/helpers.ts so levels can specify size; add validation and migrate tests.
 
 ### DW-78: ULP no boundary 0.6 — `preview.ts:80` `if (roll < 0.6)` pode flipar por 1 ULP (`0.5999999999999999` vs `0.6000000000000001` ou `0.6 - EPSILON/2` que arredonda para 0.6), quebrando invariante 60/40 por um double representável; teste atual pinna `0.599` exact / `0.6` range mas não EPSILON. Pre-existing, tolerância float do spec; engine assume `
 
@@ -799,6 +800,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 6-4-no
 location: n/a
 reason: `reducedMotion`/`insets`/`zIndex` carriers: toggle `useRef` one-time init sem re-target; `insets` parcial/negativo/NaN não clamped; `zIndex:2` vs `Hud 1` não testado integrado; `unmount` mid-fade single-cycle. Pré-existente, Epic 9 / manual.
 status: open
+decision: 2026-09-02 Bundle overlay carriers — Fix GameOverOverlay carriers in one pass: make reducedMotion reactive with re-target on prop change, clamp insets to finite >=0, assert zIndex layering in an integration render test, and ensure unmount mid-fade clears and restarts cleanly.
 
 ### DW-103: Ladder ceiling não pinado end-to-end: novo teste varia só `stats.maxTile` prop (thin-view correto), não cadeia `ceilingDetector→tierForCeiling→potForTier`; `isNewRecord(match.best,…)` leak via alias não Runtime-pinado. Thin-view é intencional per spec; cadeia é `engine.purity`/`preview-invariant`.
 
