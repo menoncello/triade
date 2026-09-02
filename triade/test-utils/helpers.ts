@@ -19,8 +19,18 @@ export function defaultPendingSpawn(): PendingSpawn {
   return { value: 1, displayRoll: 0 };
 }
 
+function cloneBoard(board: Board): Board {
+  return board.map((row) => [...row]);
+}
+
+function deepFreezeBoard(board: Board): Board {
+  for (const row of board) Object.freeze(row);
+  return Object.freeze(board) as Board;
+}
+
 export function gameState(board: Board, pendingSpawn: PendingSpawn = defaultPendingSpawn()): GameState {
-  return { board, pendingSpawn };
+  const b = deepFreezeBoard(cloneBoard(board));
+  return { board: b, pendingSpawn: { ...pendingSpawn } };
 }
 
 export function emptyBoard(): Board {

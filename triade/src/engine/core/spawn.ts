@@ -55,6 +55,10 @@ export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): nu
   return pickCombined(tier, rng);
 }
 
+function cloneBoard(board: Board): Board {
+  return board.map((row) => [...row]);
+}
+
 // Place, not roll: puts the given value (the materialized pendingSpawn, per
 // the N3 invariant — the value is never rolled here) into a uniformly random
 // empty cell (one draw via pickIndex). On a full board nothing is placed.
@@ -63,12 +67,15 @@ export function weightedValue(rng: Rng = Math.random, tier: CeilingTier = 0): nu
 // pick). When provided, only empty in-bounds cells within the pool are
 // eligible; a provided-but-empty pool returns nulls and consumes 0 draws
 // (engine-never-throws). Out-of-bounds candidates are silently ignored.
+// Hygiene (DW-23/70/75): clones the board before placing so the input is never
+// mutated and the returned board is a new reference (no shared-mutable alias).
 export function spawnTile(
   board: Board,
   value: number,
   rng: Rng = Math.random,
   candidates?: Array<[number, number]>
 ): SpawnResult {
+  const next = cloneBoard(board);
   if (candidates === undefined) {
     const empty: Array<[number, number]> = [];
     for (let r = 0; r < GRID_SIZE; r++) {
@@ -76,14 +83,14 @@ export function spawnTile(
         if (board[r][c] === null) empty.push([r, c]);
       }
     }
-    if (empty.length === 0) return { board, cell: null, value: null };
+    if (empty.length === 0) return { board: next, cell: null, value: null };
     const cell = empty[pickIndex(empty.length, rng)];
-    board[cell[0]][cell[1]] = value;
-    return { board, cell, value };
+    next[cell[0]][cell[1]] = value;
+    return { board: next, cell, value };
   }
   const pool = candidates.filter(([r, c]) => r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE && board[r][c] === null);
-  if (pool.length === 0) return { board, cell: null, value: null };
+  if (pool.length === 0) return { board: next, cell: null, value: null };
   const cell = pool[pickIndex(pool.length, rng)];
-  board[cell[0]][cell[1]] = value;
-  return { board, cell, value };
+  next[cell[0]][cell[1]] = value;
+  return { board: next, cell, value };
 }

@@ -30,11 +30,13 @@ test('[P0] spawnTile omitted candidates: places uniformly among all empties, 1 d
       [10, 11, 12, null],
     ]);
     const spy = spyRng(rng());
+    const before = b.map((r) => r.slice());
     const res = spawnTile(b, 42, spy);
     assert.strictEqual(spy.calls.length, 1, 'omitted candidates: exactly 1 draw');
     assert.ok(res.cell !== null, 'must place');
     assert.strictEqual(res.value, 42, 'place-not-roll: given value');
-    assert.strictEqual(b[res.cell![0]][res.cell![1]], 42, 'board mutated at cell');
+    assert.deepStrictEqual(b, before, 'input board must not be mutated (clone hygiene)');
+    assert.strictEqual(res.board[res.cell![0]][res.cell![1]], 42, 'returned board has value at cell');
     const key = `${res.cell![0]},${res.cell![1]}`;
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
@@ -160,12 +162,14 @@ test('[P0] spawnTile provided single candidate that is empty: deterministic pick
   board[0][0] = 1;
   // Only (3,3) is the candidate and it is empty -> always that cell
   const candidates: Array<[number, number]> = [[3, 3]];
+  const before = board.map((r) => r.slice());
   const spy = spyRng(0.99);
   const res = spawnTile(board, 7, spy, candidates);
   assert.strictEqual(spy.calls.length, 1, 'single candidate still draws exactly 1');
   assert.deepStrictEqual(res.cell, [3, 3]);
   assert.strictEqual(res.value, 7);
-  assert.strictEqual(board[3][3], 7);
+  assert.deepStrictEqual(board, before, 'input board must not be mutated');
+  assert.strictEqual(res.board[3][3], 7);
 });
 
 test('[P0] spawnTile candidate determinism: same rng value picks same index', () => {

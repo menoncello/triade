@@ -173,7 +173,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-1-technical-spike-engine-ts-board-skia-benchmark-ci — pass 2 (2026-08-10)"), 2026-09-01
 location: n/a
 reason: spawnTile mutates its input board and returns the same reference
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-mutation-hygiene
+resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26e 2026-09-02 7374617475733a206f70656e
 
 ### DW-24: `matchScore.applyMove` has no guard on `result.score` — a NaN poisons both score and best; `moved:false` with score>0 would inflate. Engine contract guarantees finite ≥0 scores and noop scores 0; defensive guard only.
 
@@ -536,7 +538,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-25)"), 2026-09-01
 location: js/game.js
 reason: `spawnTile` muta o board de entrada e retorna a mesma referência (`board[cell[0]][cell[1]] = value; return { board, cell, value }`) — pre-existing (js/game.js idêntico), documentado desde 1-1; `move()` só passa board recém-construído por `boardFromLines`, então aliases não vazam. Não causado por 12.1, latente para callers futuros que reutilizem o board.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-mutation-hygiene
+resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26e 2026-09-02 7374617475733a206f70656e
 
 ### DW-71: `pickIndex` / `weightedPicker` degradam NaN/Infinity para índice 0 em vez de lançar — trust-the-rng, já documentado em deferred 2-6; `spawnTile` com pool vazio retorna `nulls` com 0 draws (engine-never-throws) enquanto `move()` assume AC4 (pool sempre não-vazio quando `moved===true`), então o orçamento de 3 draws cairia para 2 no branch inalcançável mas guardado. Pre-existing.
 
@@ -573,7 +577,9 @@ resolution-undo: 26a75af183b8ffbe96535a58ff2c6ec6f12a3a000117765a9f94e84b21702c6
 origin: migrated from legacy ledger ("Deferred from: code review of story 12-1-spawn-no-lado-oposto-das-linhas-movidas (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: `spawnTile` muta `board` in-place (já listado em 2026-08-25, re-confirmado) — `move()` passa board fresco de `boardFromLines`, aliases não vazam hoje.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-mutation-hygiene
+resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26e 2026-09-02 7374617475733a206f70656e
 
 ### DW-76: `pickIndex`/`weightedPicker` degradam NaN/Infinity para 0 / clamp e `pool=[]` retorna `nulls` 0 draws — trust-the-rng, branch inalcançável mas guardado per AC5 engine-never-throws.
 
@@ -615,7 +621,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story 7-4-invariante-preview-nunca-altera-o-spawn (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: n/a
 reason: Board shallow ref — `gameState` guarda `board` por referência e `boardFromLines` não deep-freeze linhas; `result.board[0][0]=999` pode vazar para snapshot anterior se caller retiver referência de linha. Testes só mutam `pendingSpawn` em isolamento; `engine.purity` cobre board em outra suíte. Pre-existing desde 1-1.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-engine-spawn-mutation-hygiene
+resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26e 2026-09-02 7374617475733a206f70656e
 
 ### DW-82: Facade `rn-stub` + `tsconfig.test.json` fecha waiver TS5101 de duas camadas (`baseUrl` deprecation + 3 erros de tipagem `useWindowDimensions`/`GestureHandlerRootViewProps`/`Platform`) — `triade/test-utils/rn-stub.ts` agora exporta `useWindowDimensions`/`Platform`/`Dimensions`/`StyleSheet.flatten`/`ViewStyle` e `triade/tsconfig.test.json` adiciona `ignoreDeprecations: "6.0"`; `npx tsc --noEmit` e `-p tsconfig.test.json` ambos clean live 2026-08-26. Mudança fora do escopo 6.1 mas correta; defer como hygiene fechada.
 

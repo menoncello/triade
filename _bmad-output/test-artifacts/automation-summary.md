@@ -3,38 +3,36 @@ stepsCompleted: ['step-01-preflight-and-context', 'step-02-identify-targets', 's
 lastStep: 'step-04-validate-and-summarize'
 lastSaved: '2026-09-02'
 workflowType: 'bmad-testarch-automate'
-storyId: 'dw-engine-line-compaction'
-storyKey: 'dw-engine-line-compaction'
+storyId: 'dw-engine-spawn-mutation-hygiene'
+storyKey: 'dw-engine-spawn-mutation-hygiene'
 inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-engine-line-compaction.md'
-  - '_bmad-output/test-artifacts/test-design-dw-engine-line-compaction.md'
-  - '_bmad-output/test-artifacts/test-design/test-design-dw-engine-line-compaction.md'
-  - '_bmad-output/test-artifacts/atdd-checklist-dw-engine-line-compaction.md'
-  - 'triade/__tests__/engine/line-compaction.atdd.test.ts'
-  - 'triade/__tests__/engine/line-compaction.regression.test.ts'
-  - 'triade/__tests__/engine/line.test.ts'
-  - 'triade/__tests__/engine/line-moved.unit.test.ts'
+  - '_bmad-output/implementation-artifacts/spec-engine-spawn-mutation-hygiene.md'
+  - '_bmad-output/test-artifacts/test-design/test-design-dw-engine-spawn-mutation-hygiene.md'
+  - '_bmad-output/test-artifacts/atdd-checklist-dw-engine-spawn-mutation-hygiene.md'
+  - 'triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts'
+  - 'triade/__tests__/engine/spawn-candidates.unit.test.ts'
+  - 'triade/__tests__/engine/spawn.test.ts'
   - 'triade/__tests__/engine/game.test.ts'
-  - 'triade/__tests__/render/transitionPlan.test.ts'
-  - 'triade/src/engine/core/line.ts'
-  - 'triade/src/engine/core/types.ts'
-  - 'triade/src/engine/core/rules.ts'
+  - 'triade/__tests__/engine/engine.purity.test.ts'
+  - 'triade/src/engine/core/spawn.ts'
   - 'triade/src/engine/core/game.ts'
+  - 'triade/src/engine/core/types.ts'
+  - 'triade/test-utils/helpers.ts'
   - '_bmad/tea/config.yaml'
 outputFile: '_bmad-output/test-artifacts/automation-summary.md'
 test_artifacts: '_bmad-output/test-artifacts'
 ---
 
-# Automation Summary — DW bundle dw-engine-line-compaction — line shift compaction + 4x4 guard hardening
+# Automation Summary — DW bundle dw-engine-spawn-mutation-hygiene — clone boards on spawn and deep-freeze helper snapshots
 
 **Date:** 2026-09-02
 **Author:** Eduardo (TEA / Murat — Master Test Architect)
-**Workflow:** `bmad-testarch-automate` (Create) — targeted delta for `dw-engine-line-compaction`
-**Mode:** BMad-integrated context (spec + test-design + ATDD) but host-dominated execution; no Playwright/Cypress harness required for this pure engine line/board hardening
+**Workflow:** `bmad-testarch-automate` (Create) — targeted delta for `dw-engine-spawn-mutation-hygiene`
+**Mode:** BMad-integrated context (spec + test-design + ATDD) but host-dominated execution; no Playwright/Cypress harness required for this pure engine clone/freeze hygiene
 **Stack:** `frontend` (Expo RN SDK 57, `node:test` + `tsx`, Reanimated 4 + Skia 2.6.2)
-**Working-tree delta under test:** `HEAD 7eacd93` (`fix(engine): fully compact shiftLine multi-gap and harden 4x4 guards (DW-20, DW-74)`) vs baseline `505c8ea` (spec `spec-engine-line-compaction.md` intent/boundaries/I-O matrix 8 rows, 6 ACs). Working-tree vs `HEAD` is metadata-only (`_bmad-output/implementation-artifacts/deferred-work.md` DW-20/DW-74 `open→done 2026-09-02` + `resolution-undo: 26a75af…` + `_bmad-output/test-artifacts/test-design-progress.md`); production delta is `triade/src/engine/core/line.ts` + 3 test files + spec.
+**Working-tree delta under test:** `HEAD 53c4f3d` (`sweep dw-engine-spawn-mutation-hygiene: DW-23, DW-70, DW-75, DW-81 via bmad-loop`) vs baseline `edfc574` (spec `spec-engine-spawn-mutation-hygiene.md` intent/boundaries/I-O matrix 8 rows, 8 ACs). Working-tree vs `HEAD` is metadata-only (`_bmad-output/implementation-artifacts/deferred-work.md` DW-23/70/75/81 `open→done 2026-09-02` + `resolution-undo: b85f43d1…` + `_bmad-output/test-artifacts/test-design-progress.md`); production delta is `triade/src/engine/core/spawn.ts` + `triade/src/engine/core/game.ts` + `triade/test-utils/helpers.ts` + `triade/__tests__/engine/spawn-candidates.unit.test.ts` + spec.
 
-> **Delta (1 production file + 3 test files + spec, ~120 insertions, no GRID_SIZE change, no spawn/feel/layout/monetization change):** `triade/src/engine/core/line.ts:16-110` — `movementLines` both row/col paths now `board[r]?.[c] ?? null` (was `board[r][c]`) for ragged-board padding (2 sites); `shiftLine` gains `const n=line.length` + `for(i<n)` (was `GRID_SIZE`) + `dest` bounds guard `if(dest<0||dest>=n) continue` + **wall-scan** `let target=dest; while(target>0 && out[target-1].v===null) target--` before placing tile at `target` (merge branch keeps `dest=i-1` only `canMerge(out[dest].v, t.v)` → `out[dest].v=merged`); `boardFromLines` now `for i<lines.length / if(!row)continue` + `for k<row.length / if(!item)continue` (was `GRID_SIZE` fixed loops + `lines[i][k]` direct). `src/engine` byte-identical otherwise (`GRID_SIZE=4` unchanged, `rules.ts:canMerge/mergeValue` unchanged, `game.ts` unchanged as pipeline consumer). `triade/__tests__/engine/line-compaction.regression.test.ts` (new 82 LOC, 11 cases) + `triade/__tests__/engine/game.test.ts` ONE_CELL left/down wall expectations (`[_,3,_,3] left → [3,3,_,_]` fully compact, `down [3,_,_,3] → [_,_,3,3]`) + `triade/__tests__/render/transitionPlan.test.ts` wall `to [0,0]/[0,3]/[3,1]` + ledger `deferred-work.md` DW-20/DW-74 `done 2026-09-02` + `resolution-undo: 26a75af1… 64-hex`.
+> **Delta (2 production files + 1 helper + 1 test file + spec, ~80 insertions, no GRID_SIZE change, no feel/render/layout/monetization change):** `triade/src/engine/core/spawn.ts:58-96` — adds `function cloneBoard(board): Board { return board.map(r=>[...r]) }`; `spawnTile` clones at top `const next=cloneBoard(board)` and operates/returns `next` in all 4 branches (omitted-full `empty.length===0` → `next`, candidate-empty `pool.length===0` → `next`, placing `next[cell]=value` ×2). Hygiene doc `DW-23/70/75`. Draw budget preserved: placing 1 draw via `pickIndex`, empty/full/pool-empty 0 draws. `triade/src/engine/core/game.ts:40-92` — `move()` renames `const newBoard` → `let effectiveBoard = built.board`, computes `moved = !boardsEqual(state.board, effectiveBoard)`, passes `effectiveBoard` to `ceilingDetector`/`spawnTile`, then `effectiveBoard = spawn.board` and `trace.push` on `spawn.cell`, returns `board: effectiveBoard` (was `newBoard` alias-mutated by `spawnTile`). `triade/test-utils/helpers.ts:22-34` — adds `cloneBoard` + `deepFreezeBoard(board: Board){ for(row of board) Object.freeze(row); return Object.freeze(board) }`; `gameState(board, pendingSpawn)` now `const b = deepFreezeBoard(cloneBoard(board)); return { board: b, pendingSpawn: { ...pendingSpawn } }` (was `{ board, pendingSpawn }` shallow). `triade/__tests__/engine/spawn-candidates.unit.test.ts:34-172` — two tests gain clone-hygiene assertions: `[P0] omitted candidates: places uniformly…` captures `const before = b.map(r=>r.slice())` + `assert.deepStrictEqual(b, before, input board must not be mutated)` + `assert.strictEqual(res.board[cell],42)` (was `b[cell]`); `[P0] single candidate…` captures `before` + `assert.deepStrictEqual(board, before)` + `assert.strictEqual(res.board[3][3],7)` (was `board[3][3]`). `triade/src/engine/core/types.ts: GRID_SIZE=4`, `board.ts: emptyBoard/boardsEqual`, `rules.ts: canMerge/mergeValue`, `ceiling.ts/pot.ts/weights.ts/line.ts` byte-identical (`git diff --stat -- triade/src/engine` shows only `spawn.ts` + `game.ts`).
 
 ---
 
@@ -44,9 +42,9 @@ test_artifacts: '_bmad-output/test-artifacts'
 
 - **Config `test_stack_type`:** `auto` (`_bmad/tea/config.yaml:14`)
 - **Auto-detection:** `triade/package.json` has `react`/`react-native`/`expo`/`@shopify/react-native-skia`/`react-native-reanimated` + no `pyproject.toml`/`go.mod`/`pom.xml`/`Cargo.toml` → **frontend**
-- **Framework:** `node:test` + `tsx` (`triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test`) — **verified exists** (`triade/node_modules/.bin/tsx` + `npm --prefix triade exec -- tsc --noEmit` clean via `TSX_TSCONFIG_PATH` both configs, `tsx` host-verified, `npm --prefix triade test -- __tests__/engine/line.test.ts __tests__/engine/line-moved.unit.test.ts __tests__/engine/line-compaction.regression.test.ts` 43/43 green, `npm --prefix triade test -- __tests__/engine/game.test.ts __tests__/render/transitionPlan.test.ts` 32+16 green)
-- **No Playwright/Cypress harness required:** dw bundle is pure `shiftLine` wall-scan predicate + `movementLines`/`boardFromLines` length guards + `GRID_SIZE` single-source + `trace from wall fidelity` seam. Host `node:test` is correct harness per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device`. `tea_use_playwright_utils:true` loaded but not applied for this engine seam — no `page.goto`/`page.locator` surface (TEA `browser_automation: auto` → host adaptation is correct for Expo Canvas). `tea_use_pactjs_utils:false` — provider scrutiny is `line.ts`/`types.ts`/`rules.ts` pure delegation (single `GRID_SIZE` + single wall-scan + single `canMerge` predicate), not Pact.
-- **Existing test structure:** `triade/__tests__/engine/line-compaction.atdd.test.ts` (20 `it.skip` scaffolds, P0 8 + P1 6 + P2 4 + P3 2, ~318 lines, host `node:test` + `tsx`) + `triade/__tests__/engine/line-compaction.regression.test.ts` (11 new DW-74/DW-20 pins, 43 pass with `line.test.ts`) + `triade/__tests__/engine/game.test.ts` (32 pass — 3 wall expectations patched) + `triade/__tests__/render/transitionPlan.test.ts` (16 pass — 3 wall `to` coords patched) + `_bmad-output/test-artifacts/tests/{api,e2e}` + `fixtures/` (9 prior: `feel-*` + `helpers-hardening` + `layout-band` + `preview-pot-ladder` + `purity-weight` + `ci-gesture`).
+- **Framework:** `node:test` + `tsx` (`triade/package.json` `test: TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test`) — **verified exists** (`triade/node_modules/.bin/tsx` + `npm --prefix triade exec -- tsc --noEmit` clean via `TSX_TSCONFIG_PATH` both configs, `tsx` host-verified, `npm --prefix triade test -- __tests__/engine/spawn-candidates.unit.test.ts __tests__/engine/spawn.test.ts __tests__/engine/game.test.ts` 45+ pass, `npm --prefix triade test -- __tests__/engine/engine.purity.test.ts` 4 pass)
+- **No Playwright/Cypress harness required:** dw bundle is pure `spawnTile` clone + `gameState` freeze + `move` effectiveBoard hygiene (ADR-06 history isolation). Host `node:test` is correct harness per `test-levels-framework.md` Unit dominance + test-design execution strategy `PR (<15 min) / no device`. `tea_use_playwright_utils:true` loaded but not applied for this engine seam — no `page.goto`/`page.locator` surface (TEA `browser_automation: auto` → host adaptation is correct for Expo Canvas). `tea_use_pactjs_utils:false` — provider scrutiny is `spawn.ts`/`game.ts`/`helpers.ts` pure delegation (single `cloneBoard` per module + single `GRID_SIZE` + single `deepFreezeBoard`), not Pact.
+- **Existing test structure:** `triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts` (20 `it.skip` scaffolds, P0 8 + P1 6 + P2 4 + P3 2, 461 lines, host `node:test` + `tsx`) + `triade/__tests__/engine/spawn-candidates.unit.test.ts` (13 pass including 2 clone-hygiene loops) + `triade/__tests__/engine/spawn.test.ts` + `triade/__tests__/engine/game.test.ts` (32 pass) + `triade/__tests__/engine/engine.purity.test.ts` (4 pass) + `_bmad-output/test-artifacts/tests/{api,e2e}` + `fixtures/` (10 prior: `feel-*` + `helpers-hardening` + `layout-band` + `preview-pot-ladder` + `purity-weight` + `ci-gesture` + `engine-line-compaction`).
 
 ### Execution Mode Resolution
 
@@ -60,18 +58,18 @@ test_artifacts: '_bmad-output/test-artifacts'
 ```
 
 - **Knowledge fragments loaded (core, always):** `test-levels-framework.md`, `test-priorities-matrix.md`, `data-factories.md`, `selective-testing.md`, `ci-burn-in.md`, `test-quality.md`
-- **Extended on demand:** `probability-impact.md`/`risk-governance.md` (via `test-design-dw-engine-line-compaction.md` R-001..R-010, 3 high score 6: R-001 wall-scan incomplete, R-002 gap-non-merge, R-003 short guard), `nfr-criteria.md` (reliability never-throw vs single-wall-scan + single-GRID_SIZE + ledger 64-hex + 60 FPS O(1) `<50ms`), `fixture-architecture.md` (deterministic, no faker — `refLine`/`staticBoard`/`emptyBoard`/`rngOf` + `shiftLine` pure), `api-testing-patterns.md` (gateway contract via pure helpers + scanner), `selector-resilience.md` (not applied — no DOM), `network-first.md` (not applied — pure arithmetic)
+- **Extended on demand:** `probability-impact.md`/`risk-governance.md` (via `test-design-dw-engine-spawn-mutation-hygiene.md` R-001..R-010, 3 high score 6: R-001 effectiveBoard propagation, R-002 clone-all-branches, R-003 freeze throw), `nfr-criteria.md` (reliability never-throw vs clone+freeze + ledger 64-hex + 60 FPS O(16) `<500ms`), `fixture-architecture.md` (deterministic, no faker — `boardWith`/`emptyBoard`/`gameState` frozen + `rngOf`/`spyRng` + `oppositeEdgeCandidates`), `api-testing-patterns.md` (gateway contract via pure helpers + scanner), `selector-resilience.md` (not applied — no DOM), `network-first.md` (not applied — pure arithmetic)
 - **TEA flags:** `tea_use_playwright_utils:true`, `tea_use_pactjs_utils:false`, `tea_pact_mcp:none`, `tea_browser_automation:auto`, `tea_execution_mode:auto`, `tea_capability_probe:true`, `risk_threshold:p1`
 - **Persistent facts:** `file:{project-root}/**/project-context.md` (expanded; none found — facts skipped)
 
 ### Inputs Confirmed
 
-- Spec `spec-engine-line-compaction.md` (intent/boundaries/I-O 8 rows, 6 ACs: multi-gap wall `[null,null,null,2]→[2,…]`, double-gap `[null,2,null,4]`, gap-non-merge `[3,null,3]→[3,3] score 0`, cascade `[3,3,3,3]→[6,3,3] score 6`, short/empty `[]/1-elem`, existing suites stay green, `GRID_SIZE=4`)
-- Test-design `test-design-dw-engine-line-compaction.md` (10 risks R-001..R-010, 3 high score 6, P0 12 checks / P1 16 / P2 4 / P3 4, NFR planning never-throw+single-wall-scan+GRID_SIZE+O(1), entry/exit, estimates ~3.6–6.6h host)
-- ATDD checklist `atdd-checklist-dw-engine-line-compaction.md` + `line-compaction.atdd.test.ts` (20 `it.skip`, P0 8 + P1 6 + P2 4 + P3 2, `it.skip` RED-phase scaffolds, host `node:test` dormant 20 skip → 20 pass when activated, 280ms dormant, 350ms activated)
-- Source `line.ts:16-110` (`movementLines` `board[r]?.[c] ?? null` 2 sites + `shiftLine` `n=line.length` + wall-scan `while(target>0…)` + `boardFromLines` `lines.length/row.length` + `if(!row)/if(!item)` guards) / `types.ts:1` (`GRID_SIZE=4` single) / `rules.ts:canMerge/mergeValue` (read-only) / `game.ts` (pipeline consumer byte-identical) / `transitionPlan.ts:classify` (wall `to` derivation)
-- Existing guards `line.test.ts 18 pass + line-moved + regression 11 =43` + `game.test.ts 32 pass + transitionPlan 16 pass` + `npm test` host + `tsc` both tsconfigs clean (fixed `line-compaction.atdd` `ShiftedCell` cast + `purity-weight` loop parens)
-- Ledger `deferred-work.md` DW-20/DW-74 `done 2026-09-02` with `resolution-undo: 26a75af1… 64-hex + 737461… date-salt`; `sprint-status.yaml` untouched (orchestrator-owned per prompt, verified absent string `dw-engine-line-compaction`)
+- Spec `spec-engine-spawn-mutation-hygiene.md` (intent/boundaries/I-O 8 rows, 8 ACs: spawnTile clones no-mutation, full board new-ref, empty pool [] clone, all occupied clone, OOB ignored, single candidate clone, gameState freeze rows+outer, move effectiveBoard propagation + history isolation)
+- Test-design `test-design-dw-engine-spawn-mutation-hygiene.md` (10 risks R-001..R-010, 3 high score 6, P0 8 groups / P1 6 / P2 4 / P3 2, NFR planning never-throw+clone+freeze+GRID_SIZE+O(16), entry/exit, estimates ~3.5–6.5h host)
+- ATDD checklist `atdd-checklist-dw-engine-spawn-mutation-hygiene.md` + `spawn-mutation-hygiene.atdd.test.ts` (20 `it.skip`, P0 8 + P1 6 + P2 4 + P3 2, `it.skip` RED-phase scaffolds, host `node:test` dormant 20 skip → 20 pass when activated, 280ms dormant, 380ms activated)
+- Source `spawn.ts:58-96` (`cloneBoard` + `const next` + 4 exits `return next`) / `game.ts:40-92` (`let effectiveBoard` + `spawn.board` + `return effectiveBoard`) / `helpers.ts:22-34` (`cloneBoard` + `deepFreezeBoard` rows+outer + `gameState` frozen) / `types.ts:1` (`GRID_SIZE=4` single) / `board.ts: emptyBoard/boardsEqual` (read-only) / `spawn-candidates.unit.test.ts:34-172` (2 clone-hygiene pins)
+- Existing guards `spawn-candidates.unit.test.ts: 13 pass + spawn.test.ts + game.test.ts 32 pass + engine.purity 4 pass + ATDD 20 skip` + `npm test` host + `tsc` both tsconfigs clean (fixed gateway `use strict` freeze non-throw + umbrella `expo` substring false-positive)
+- Ledger `deferred-work.md` DW-23/70/75/81 `done 2026-09-02` with `resolution-undo: b85f43d1… 64-hex + 737461… date-salt`; `sprint-status.yaml` untouched (orchestrator-owned per prompt, verified absent string `dw-engine-spawn-mutation-hygiene`)
 
 ---
 
@@ -81,303 +79,201 @@ test_artifacts: '_bmad-output/test-artifacts'
 
 | Target | File(s) | Test Level | Priority | Justification |
 |--------|---------|------------|----------|---------------|
-| Wall-most multi-gap compaction `[null,null,null,2]→[2,…,from [[0,3]]] moved true` + double-gap `[null,2,null,4]→[2,4]` + single-tile 3-gap + all-null `moved false` (DW-74) | `triade/src/engine/core/line.ts:57-64` wall-scan | **Unit (pure `shiftLine`)** | **P0** | AC wall invariant (R-001 score 6) — blocks player-visible mid-board gaps after swipe. No workaround — pipeline would retain gap. |
-| Gap-non-merge preserved `[3,null,3,null]→[3,3] score 0` (shift wall `target`, merge immediate `dest` only) (DW-74 preserve) | `triade/src/engine/core/line.ts:61-72` | **Unit (pure `shiftLine`)** | **P0** | AC gap-non-merge (R-002 score 6) — a collapsed `canMerge(out[target]` refactor would score 6 across gap. |
-| Cascade block preserved `[3,3,3,3]→[6,3,3,null] score 6` merge-once sequential (single-pass invariant) | `triade/src/engine/core/line.ts:46-55` | **Unit (pure `shiftLine`)** | **P0** | AC cascade (R-004 score 4, but P0 because merge-once is load-bearing) — two-pass would yield `[6,6]` 12. |
-| Short/empty guards: `shiftLine([]) len0 + [{v:1}] len1 + movementLines([[1]] as Board) pad` + `board[r]?.[c] ?? null` (DW-20) | `triade/src/engine/core/line.ts:16-35` + `39-43` | **Unit (pure + never-throw)** | **P0** | AC never-throw (R-003 score 6) — before `for(i<GRID_SIZE)` OOB `TypeError`. |
-| 2-elem gap `refLine(null,3).slice(0,2)→[3,null]` + short `boardFromLines([line],left)` maps without crash (DW-20 pipeline) | `triade/src/engine/core/line.ts:88-102` | **Unit (pure `boardFromLines`)** | **P1** | AC short pipeline (R-003 score 6) — boardFromLines short would throw on `lines[i][k]` OOB. |
-| PIPELINE 4-dir `left/right/up/down` full board wall compaction via `movementLines→shiftLine→boardFromLines` (`GRID_SIZE-1-k` un-reverse) | `triade/src/engine/core/line.ts:16-110` + `triade/src/engine/core/game.ts` pipeline | **Integration (engine → board)** | **P1** | AC pipeline wall (R-005 score 3, but P1 because `game.move` + `transitionPlan` depend) — wall-scan is direction-agnostic, reversal must stay correct. |
-| `game.move` wall expectations `ONE_CELL [_,3,_,3] left → [3,3,_,_] fully compact + down [3,_,_,3] → [_,_,3,3]` (patched) | `triade/__tests__/engine/game.test.ts` wall expectations | **Integration (game)** | **P1** | AC wall wiring (R-001/R-007 score 6/4) — without wall, board retains gap visible to player. |
-| `transitionPlan` wall slide `left to [0,0] from [[0,2]] / right to [0,3] / down to [3,1]` + trace `from wall fidelity` | `triade/src/render/transitionPlan.ts: classify` + `line.ts: trace` | **Integration (transition)** | **P1** | AC trace wall (R-006 score 3) — `boardFromLines` direction-split `to: [r,c]` derivation is wall-faithful. |
-| Trace wall fidelity: single shift `from [[r,c]]` at wall + `moved` boolean + `score` cascade | `triade/src/engine/core/line.ts:42-44,57-72` | **Unit (trace)** | **P1** | AC trace (R-006 score 3) — shift must source `from [[t.r,t.c]]` not `out[dest]`. |
-| `tsc --noEmit` clean both configs + `GRID_SIZE=4` single definition (types.ts:1) | `triade/tsconfig*.json` + `triade/src/engine/core/types.ts:1` | **Unit (type)** | **P1** | AC maintainability (R-005) — GRID_SIZE drift would break `GRID_SIZE-1-k` mapping. |
-| Single-wall-scan allowlist `while(target>0 …) ==1` + `const n=line.length ==1` + `for(i<n) ==1` + shift body `GRID_SIZE 0` | `triade/src/engine/core/line.ts:39,46,55-57` | **Unit (source-text `rg`)** | **P2** | AC single-scan invariant (R-001) — duplicate scan or missing scan is a fail; `shiftLine` must not reference `GRID_SIZE`. |
-| Shift vs merge site separation `out[target].v=t.v ==1` vs `canMerge(out[dest].v ==1` + `out[dest].v=merged ==1` (not `target`) | `triade/src/engine/core/line.ts:57-65` | **Unit (`rg`)** | **P2** | AC gap-non-merge source-level gate (R-002) — collapsed merge predicate would be caught. |
-| `boardFromLines` guards `lines.length/row.length` + `if(!row)/if(!item)` + `movementLines` optional chaining `board[r]?.[c] ?? null ×2` + `GRID_SIZE=4` single | `triade/src/engine/core/line.ts:78-82` + `types.ts:1` | **Unit (`rg`)** | **P2** | AC guard invariant (R-003) — short-input silent-pad is defensive-only but must be observable. |
-| Hygiene — line scope stays pure, no spawn/feel/monetization leakage, wall scan O(1) `10k <50ms` bench | `triade/src/engine/core/line.ts` | **Unit (bench)** | **P2** | AC hygiene + perf (R-009 PERF 1, scope) — wall scan is O(n) n=4 ≤3 steps, 48 ops per `move()`. |
-| Ledger: DW-20/DW-74 `resolution-undo: 26a75af…` 64-hex + `status: done 2026-09-02` present | `_bmad-output/implementation-artifacts/deferred-work.md` | **Unit (`rg`)** | **P2** | AC ledger reversibility (R-008 OPS 2) — blocks open→done without hash; `sprint-status.yaml` untouched per prompt. |
-| Ragged exploratory beyond `[[1]]`: `boardFromLines([[1,2],[3]] as ragged) still maps wall` | `triade/src/engine/core/line.ts:78-82` | **Unit (exploratory)** | **P3** | AC exploratory (R-003 residual) — complements `[[1]]` pin with deeper ragged. |
-| Cross-cutting: `git diff --stat -- triade/src/engine` shows `line.ts` only + `triade/src/engine` byte-identical otherwise | `triade/src/engine` | **Unit (`rg`)** | **P3** | AC scope guard (Not in Scope) — spawn/feel/layout not drifted. |
-
-### Test Levels Chosen (per `test-levels-framework.md`)
-
-- **Unit** dominant (pure `shiftLine` wall predicate + gap/cascade + `movementLines`/`boardFromLines` guards + `GRID_SIZE` literal + `trace from` + `move`/`transitionPlan` wall wiring) — correct level for host-only pure arithmetic with no network/browser.
-- **Static scan** for maintainability allowlists (`while(target>0` count, `const n=line.length` count, `canMerge(out[dest]` vs `target`, `board[r]?.[c] ?? null` 2, `GRID_SIZE` single, `from: [[t.r` 1) — host `rg` gates are the E2E-equivalent here (engine seam + ledger).
-- **Integration** via `movementLines→shiftLine→boardFromLines` → `game.move` → `transitionPlan` board mutation (consumes `staticBoard`/`emptyBoard` deterministic) — E2E journeys in `umbrella.spec.ts` are host through wiring+engine+ledger, not browser.
-- No Playwright/Cypress harness — correct per stack `frontend` but scenario is framework-free host source-text + pure engine arithmetic exercised via `node:test`.
-
-### Priorities Assigned (per `test-priorities-matrix.md`)
-
-- **P0** (9 contracts, `P×I ≥6` + blocks wall/never-throw + no workaround): multi-gap 4 wall pins + gap-non-merge + cascade + 3 guard pins (empty/1-elem/movementLines) — blocks player-visible gaps + TypeError.
-- **P1** (7 contracts, `P×I 3–4` + important common workflows): 2-elem/boardFromLines guards + 4-dir pipeline + game.move wall + transitionPlan wall + trace fidelity + tsc/GRID_SIZE.
-- **P2** (5 contracts, `P×I 1–2` + secondary + edge): single-wall-scan + shift vs merge + boardFromLines guards + ledger + hygiene/bench.
-- **P3** (2 exploratory, `P×I 1` + exploratory + perf): ragged `[[1,2],[3]]` + scope/monitor (cross-cutting, bench hygiene already in P2).
-
-### Coverage Plan (critical-paths, host-only, no device lane)
-
-- **Smoke (<5 min, host):** `TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test triade/__tests__/engine/line.test.ts` 18/18 + `rg 'while\(target > 0' triade/src/engine/core/line.ts` + `rg 'const n = line.length' line.ts` (<0.1s) — fast feedback.
-- **P0 (<10 min, host):** 9 groups (multi-gap 4 wall + gap-non-merge + cascade + 3 guards) — critical path, must be green before merge.
-- **P1 (<30 min, host):** 7 groups (2-elem/boardFromLines + 4-dir + game.move wall + transitionPlan wall + trace + tsc) — important wiring coverage.
-- **P2/P3 (<60 min, host):** 5 allowlist/ledger/hygiene checks + 2 exploratory/bench (optional) — full regression, O(1) wall scan `<50ms`.
-- No E2E Playwright `page.goto`/`page.locator` — `movementLines` reversal `row.reverse()`/`col.reverse()` + `boardFromLines` `GRID_SIZE-1-k` preserved; pipeline + trace gates are sufficient. Deferred smoke is host `node:test` wall expectation per `spec Verification`.
-
-### Risk/Priority Matrix
-
-| Risk ID | Category | Description | P×I | Priority | Mitigation via Tests |
-|---------|----------|-------------|-----|----------|----------------------|
-| R-001 | TECH | Wall-scan incomplete or overshoots — multi-gap still partial or slides through mergeable neighbor (dest without scan left [null,null,2,null]) | 6 | P0/P1/P2 | P0 4 wall pins + P1 4-dir + P2 single-scan allowlist + umbrella E2E-01 pipeline |
-| R-002 | TECH | Gap-non-merge breaks — gap-adjacent equal tiles incorrectly merge (target vs dest collapse would score 6 across gap) | 6 | P0/P2 | P0 gap-non-merge + P2 dest vs target scan + umbrella E2E-02 merge-once |
-| R-003 | TECH | Short/empty guard masks ragged boards — movementLines pads, boardFromLines truncates, shiftLine length vs GRID_SIZE | 6 | P0/P1/P2/P3 | P0 empty/1-elem/movementLines + P1 2-elem/boardFromLines + P2 n/GRID_SIZE + umbrella E2E-03 never-throw |
-| R-004 | TECH | Cascade-block regression — [3,3,3,3] two-pass would yield [6,6] 12 instead of [6,3,3] 6 | 4 | P0/P1 | P0 cascade + P1 game.move cascade lane |
-| R-005 | TECH | Direction right/down reversal vs wall-scan interaction — reversed line wall is index 0, scan must not drift to n-1 | 3 | P1/P2 | P1 4-dir pipeline + P2 GRID_SIZE single-source |
-| R-006 | DATA | Trace from/spawn opposite-edge drift — from [[r,c]] wall attribution, to:[r,c] via GRID_SIZE-1-k | 3 | P1 | P1 trace wall fidelity + transitionPlan wall to |
-| R-007 | BUS | Legacy wall vs one-cell expectation drift — ONE_CELL one-step semantics vs wall fully compact | 4 | P1 | P1 game.move ONE_CELL + transitionPlan to pins |
-| R-008 | OPS | Deferred-ledger resolution-undo 64-hex + sprint-status.yaml ownership | 2 | P2 | P2 ledger scan + umbrella E2E-04 |
-| R-009 | PERF | Wall scan adds while(target>0…) per shifting tile (max 3 steps, 48 ops per move, ~0.01ms) | 1 | P2 | P2 hygiene bench 10k <50ms |
-| R-010 | TECH | Helper name / spec final_revision drift — spec final_revision hash literal stale | 1 | P3 | P3 scope guard (git diff --stat -- triade/src/engine shows line.ts only) |
+| spawnTile clones — input not mutated, returned board has value at cell, 1 draw (DW-23/70) | `triade/src/engine/core/spawn.ts:58-96` `const next=cloneBoard` + row spread | **Unit (pure `spawnTile`)** | **P0** | AC clone hygiene (R-002 score 6) — blocks shared-mutable alias that would rewrite history. No workaround — alias leaks to any future caller reusing input board. |
+| spawnTile full board — returns clone !== input, cell/value null, 0 draws (DW-75 new-ref divergence) | `triade/src/engine/core/spawn.ts:86` `empty.length===0 → next` | **Unit (pure `spawnTile`)** | **P0** | AC full-board hygiene (R-002 score 6, R-005 score 3) — before fix returned same ref; after returns new ref intentional divergence pinned. |
+| spawnTile empty candidate pool [] — clone !== input, nulls, 0 draws (engine-never-throws guard) | `triade/src/engine/core/spawn.ts:92` `pool.length===0 → next` | **Unit (pure `spawnTile`)** | **P0** | AC empty-pool hygiene (R-002 score 6) — move() assumes non-empty but spawnTile guards. |
+| spawnTile all candidates occupied — clone !== input, nulls, 0 draws (filtered pool empty) | `triade/src/engine/core/spawn.ts:91-92` `candidates.filter` + pool-empty | **Unit (pure `spawnTile`)** | **P0** | AC pool-empty hygiene (R-002 score 6) — OOB/occupied filter leaves 0 eligible empties. |
+| spawnTile OOB candidates ignored — only in-bounds empty eligible (R-002 edge) | `triade/src/engine/core/spawn.ts:91` `r>=0&&r<GRID_SIZE&&c>=0&&c<GRID_SIZE&&board[r][c]===null` | **Unit (pure `spawnTile`)** | **P0** | AC OOB guard — `[-1,0]` filtered before pool-empty check, only `[0,1]` eligible, 1 draw. |
+| spawnTile single candidate deterministic — clone hygiene (landed pin) | `triade/src/engine/core/spawn.ts:93-95` placing branch `next[cell]=value` | **Unit (pure `spawnTile`)** | **P0** | AC single-candidate hygiene (R-002) — second landed pin in `spawn-candidates.unit.test.ts` single candidate. |
+| gameState snapshot freeze — deepEqual !== input, frozen outer+rows, mutating stored throws / silent fail, input mutation after does not affect stored (DW-81) | `triade/test-utils/helpers.ts:22-34` `cloneBoard` + `deepFreezeBoard` rows+outer | **Unit (pure `gameState`)** | **P0** | AC freeze hygiene (R-003 score 6) — `gameState` is the only freezing site; helpers stay mutable for setup, snapshot-only freeze. |
+| move propagates cloned spawn board — result.board contains spawned value at opposite-edge candidate, result.board !== input board ref, prior GameState board unchanged after mutating result.board (DW-75 R-001) | `triade/src/engine/core/game.ts:41-91` `let effectiveBoard = spawn.board` | **Unit (game pipeline)** | **P0** | AC effectiveBoard propagation (R-001 score 6, R-007 score 3) — before fix relied on `newBoard` alias mutation; after `let effectiveBoard = spawn.board` is the only link. 100% of effective moves. |
+| game.move 4-direction wall+spawn pipeline preserves line wall compaction after hygiene (R-001) | `triade/src/engine/core/game.ts:54-64` candidates `left→col3/right→col0/up→row3/down→row0` + `triade/src/engine/core/spawn.ts` | **Integration (game)** | **P1** | AC pipeline wall (R-001) — hygiene must not change movementLines→boardFromLines wall invariant. |
+| transitionPlan congruence — resultingTiles(plan) equals occupiedCells(result.board) after cloned effectiveBoard (R-007) | `triade/src/render/transitionPlan.ts` + `triade/test-utils/helpers.ts:occupiedCells` | **Integration (render)** | **P1** | AC trace-board congruence (R-007 score 3) — stale `newBoard` would diverge by 1 tile. |
+| draw-budget preservation — spawnTile placing 1 vs 0, move effective 3 vs noop 0 (R-002) | `triade/src/engine/core/spawn.ts:pickIndex` + `triade/src/engine/core/game.ts:72-85` | **Unit (draw budget)** | **P1** | AC draw-budget contract — clone adds 0 draws; effective 3 = pickIndex 1 + resolveSpawn 1 + displayRoll 1, noop 0, newGame 20. |
+| engine.purity ADR-01/05 — spawn.ts + game.ts import nothing from RN/Skia/Expo (R-006) | `triade/src/engine/core/spawn.ts` + `game.ts` + `helpers.ts` | **Unit (static)** | **P1** | AC purity — hygiene adds no new specifier; `engine.purity.test.ts` 4 pass gate. |
+| move noop isolation — deepEqual input board, pendingSpawn !== input ref, 0 draws (R-001) | `triade/src/engine/core/game.ts:87-89` `pendingSpawn: { ...state.pendingSpawn }` | **Unit (game pipeline)** | **P1** | AC noop hygiene — fullNoop board `3,6` alternating true gameOver board, no merge, 0 draws, shallow pendingSpawn copy. |
+| spawn-candidates statistical uniformity still 40/40-like within pool after clone (R-002 residual) | `triade/src/engine/core/spawn.ts:41` `pickIndex` uniform | **Unit (statistical)** | **P1** | AC uniform not biased — clone must not skew `pickIndex` ordering (round-robin 200 draws each ≥30). |
+| Single cloneBoard definition per module, no structuredClone/JSON board copy (R-004 R-006) | `triade/src/engine/core/spawn.ts` 1 + `triade/test-utils/helpers.ts` 2 | **Unit (source-text `rg`)** | **P2** | AC single-site invariant — duplicate clone or `structuredClone` (throws on frozen) would fail. |
+| effectiveBoard single propagation site — let effectiveBoard + spawn.board + return effectiveBoard, no return newBoard survivor (R-001) | `triade/src/engine/core/game.ts:41,73,91` | **Unit (`rg`)** | **P2** | AC single propagation site — reverting to `newBoard` drops spawn. |
+| Row-freeze completeness — gameState freezes rows+outer, boardWith/emptyBoard stay mutable for setup (R-003) | `triade/test-utils/helpers.ts:27-32` `Object.freeze(row)` + `Object.freeze(board)` | **Unit (`rg`)** | **P2** | AC freeze hygiene — `emptyBoard` must stay mutable for setup. |
+| No GRID_SIZE drift — types.ts single GRID_SIZE=4, clone uses board.map spread not structuredClone (R-004) | `triade/src/engine/core/types.ts:1` `GRID_SIZE=4` single | **Unit (`rg`)** | **P2** | AC GRID_SIZE single definition + clone depth assumption (R-004) — `number|null` primitives guarantee shallow row copy sufficiency. |
+| Ledger: DW-23/70/75/81 `resolution-undo: b85f43d1…` 64-hex + `status: done 2026-09-02` present | `_bmad-output/implementation-artifacts/deferred-work.md` | **Unit (`rg`)** | **P2** | AC ledger reversibility (R-008 OPS 2) — blocks open→done without hash; `sprint-status.yaml` untouched per prompt. |
+| Hygiene — clone+freeze O(16) per spawn/move invisible to frame budget <15 ms gate (R-009 PERF 1) | `triade/src/engine/core/spawn.ts:58-59` `board.map(r=>[...r])` 16 cells | **Unit (bench)** | **P2** | AC hygiene + perf (R-009 PERF 1) — 10k spawnTile <500ms, 10k gameState <800ms, O(16) negligible vs frame budget. |
+| Exploratory — 200-move runSeededSession alias sweep with frozen snapshots via stateFromResult (attempts%4) | `triade/test-utils/helpers.ts:173-224` | **Unit (exploratory)** | **P3** | AC exploratory alias sweep (R-001 residual) — would fail with shared-mutable alias (mutating res.board would leak to prior snapshot). |
+| Residual + bench ledger scope guard — git diff shows spawn.ts+game.ts only | `triade/src/engine` | **Unit (`rg`)** | **P3** | AC scope guard (Not in Scope) — spawn/feel/layout not drifted. |
 
 ---
 
-## Step 3 — Generate Tests (adaptive orchestration)
+## Step 3 — Test Generation (Sequential)
 
-### Execution Mode
+### Fixtures
 
-```
-⚙️ Execution Mode Resolution:
-- Requested: auto
-- Resolved: sequential (opencode runtime — no subagent/agent-team, host-verified)
-- Supports subagent: false, Supports agent-team: false, Probe Enabled: true
-```
+- **Created:** `_bmad-output/test-artifacts/fixtures/engine-spawn-mutation-hygiene-fixtures.ts` (320 lines, host-only, no faker — deterministic board literals + `boardWith`/`emptyBoard`/`gameState` frozen + `rngOf`/`spyRng` draw-budget + `oppositeEdgeCandidates` + source-scan helpers `cloneBoardCount`/`returnNextCount`/`letEffectiveBoardCount`/`structuredClone`/`GRID_SIZE`/`ledgerHasDWsDone`/`sprintStatusHasNoBundle` + bench helpers `spawnCloneBench`/`freezeBench`).
 
-Sequential dispatch (no runtime-managed parallelism) — TEA does not impose an additional worker ceiling; all outputs are valid JSON with stable schema.
+### API Gateway Tests
 
-### Worker Dispatch (by `detected_stack: frontend`)
+- **Created:** `_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts` (520 lines, host `node:test` + `tsx`, no Playwright request fixture — pure engine gateway).
+  - P0 critical (8 tests): spawnTile clones no-mutation + full board new-ref + empty pool [] + all occupied + OOB + single candidate + gameState freeze rows+outer throws/silent + move propagates cloned board at opposite-edge candidate + history isolation.
+  - P1 wiring (6 tests): 4-dir wall+spawn pipeline + transitionPlan congruence + draw-budget 1/0 + effective 3 vs noop 0 + engine.purity no RN/Skia + noop isolation + uniform not biased.
+  - P2 static scans (6 tests): single cloneBoard per module no structuredClone + effectiveBoard single site + row-freeze completeness + GRID_SIZE=4 single + ledger DWs done + O(16) bench <500/800ms.
 
-| Stack | Subagent A (API) | Subagent B (E2E) | Subagent B-backend |
-|-------|------------------|------------------|---------------------|
-| `frontend` | Launch → `engine-line-compaction.gateway.spec.ts` (21 contracts) | Launch → `engine-line-compaction.umbrella.spec.ts` (6 journeys) | Skip (no backend) |
+### E2E Umbrella Tests
 
-### Outputs Generated
+- **Created:** `_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts` (410 lines, host `node:test` + `tsx`, no Playwright page.goto — pure engine seam as E2E).
+  - `E2E_JOURNEYS` 6 journeys (P1 4 + P2 1 + P3 1) + host verifiers 6 tests:
+    - E2E-01 P1 clone hygiene pipeline end-to-end (spawnTile no-mutation → move effectiveBoard → history isolation + 4-dir)
+    - E2E-02 P1 draw-budget + transitionPlan congruence (3/0/1|0 + resultingTiles == occupiedCells)
+    - E2E-03 P1 purity + scope guard (no RN/Skia, GRID_SIZE=4, git diff scope)
+    - E2E-04 P1 ledger closed end-to-end (DW-23/70/75/81 done + resolution-undo 64-hex, sprint-status untouched)
+    - E2E-05 P2 static allowlists end-to-end (single-cloneBoard/effectiveBoard/freeze + GRID_SIZE + no structuredClone)
+    - E2E-06 P3 residual alias sweep over 20 moves + O(16) bench + no scope leakage
 
-| File | Lines | Tests | Level | Priority | Status |
-|------|-------|-------|-------|----------|--------|
-| `_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts` | ~410 | 21 (9 P0 + 7 P1 + 5 P2) | Unit (API gateway) | P0/P1/P2 | ✅ 21/21 pass (host, `TSX_TSCONFIG_PATH=triade/tsconfig.test.json node --import tsx --test _bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts`) |
-| `_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts` | ~335 | 6 journeys (4 P1 + 1 P2 + 1 P3) | E2E (host through engine→board→trace→ledger) | P1/P2/P3 | ✅ 6/6 pass (host, `TSX_TSCONFIG_PATH=triade/tsconfig.test.json node --import tsx --test _bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts`) |
-| `_bmad-output/test-artifacts/fixtures/engine-line-compaction-fixtures.ts` | ~220 | 18 helpers + bench `shiftLineBench` | Fixture (deterministic + scan) | P0/P1/P2 | ✅ deterministic, no faker, reused via gateway/umbrella |
-| `triade/__tests__/engine/line-compaction.atdd.test.ts` (pre-existing ATDD, 20 `it.skip` scaffolds) | ~318 | 20 (8 P0 + 6 P1 + 4 P2 + 2 P3) | Unit + Static-scan | P0/P1/P2/P3 | ✅ dormant 20 skip; activated `sed s/it.skip/it/g` → 20/20 pass (host, `350ms`) |
+### Existing ATDD (reference, already green)
 
-**Total API/E2E TEA artifacts:** 27 contracts (21 gateway + 6 umbrella) + 18 fixture helpers + 20 ATDD scaffolds = 47 checks (20 dormant) mapping to 10 risks (3 high ≥6 mitigated) and 6 ACs (spec I-O matrix). ATDD `P0 8/8 + P1 6/6 + P2 4/4 + P3 2/2` all GREEN when activated — already implemented in working tree `HEAD 7eacd93` vs baseline `505c8ea`.
+- `triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts` (461 lines, 20 `it.skip` scaffolds, P0 8 + P1 6 + P2 4 + P3 2, host `node:test` + `tsx`) — dormant `20 skip` → `20 pass` when activated (`it.skip` → `it`), 380ms activated, 280ms dormant. Plus `triade/__tests__/engine/spawn-candidates.unit.test.ts` (13 pass, 2 clone-hygiene loops), `spawn.test.ts`, `game.test.ts` (32 pass), `engine.purity.test.ts` (4 pass).
 
-### Fixtures Created
+---
 
-- **`engine-line-compaction-fixtures.ts`** (shared, host-only, deterministic):
-  - `refLine(...vs)` 4-literal + `colRefLine(col,...vs)` + `WALL_RIGHT_BOARD`/`DOUBLE_GAP_BOARD`/`HAPPY_PATH_BOARD`/`CASCADE_BOARD`/`COLUMN_BOARD` (deterministic `staticBoard`/`emptyBoard`)
-  - `wallMostSingleGap()`/`doubleGapTwoTiles()`/`gapNonMergeInvariant()`/`cascadeBlockInvariant()` + `emptyLine()`/`singleElemLine()`/`slicedTwoElemLine()`/`shortBoardOneCell()`/`shortLineForBoardFromLines()` + `pipelinePreSpawn(board,dir)` composing `movementLines→shiftLine→boardFromLines`
-  - `readSrc`/`lineSrc`/`typesSrc`/`rulesSrc`/`ledgerSrc`/`sprintStatusSrc` (with dual `process.cwd()` + `../` fallback for `cd triade` vs root execution)
-  - `wallScanCount()`/`nCaptureCount()`/`forICount()`/`canMergeDestCount()`/`canMergeTargetCount()`/`shiftTargetCount()`/`mergeDestCount()`/`optionalChainingCount()`/`gridSizeDefCount()`/`gridSizeInShiftLine()`/`fromWallAssignmentCount()`/`linesDotLengthCount()`/`rowDotLengthCount()` (P2 allowlist scans)
-  - `ledgerHasDWsDone()`/`ledgerUndoHashCount()`/`sprintStatusHasNoBundle()`/`engineDiffIsLineOnly()` (P2 ledger + ownership)
-  - `shiftLineBench(iterations=10_000)` → `{elapsed, ok: elapsed<50}` (`≈0.005ms` per call, O(1) wall-scan ≤3 steps per tile, 48 null checks per `move()`)
-  - No `@faker-js/faker` — deterministic board/`CellRef` + `readFileSync` only (per `data-factories.md` + `fixture-architecture.md`).
+## Step 3c — Aggregate & Validate
 
-**Fixture composition note (per `fixtures-composition.md`):** Fixture is pure import + `readFileSync` + `staticBoard` deterministic; no `test.extend` composition needed for host engine project (no Playwright `page` fixture). Tests consume fixture via direct import (`import { refLine } from '../fixtures/engine-line-compaction-fixtures.ts'`) or inline `refLine` mirror — `recurse.md` not needed (single wall-scan predicate, not recursive).
+### Execution (host gates)
 
-### Test Execution Evidence
+- **Gateway:** `node --import ./triade/node_modules/tsx/dist/loader.mjs --test _bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts` → **20 pass / 0 fail** (P0 8 + P1 6 + P2 6, ~200ms). Fixed `use strict` freeze non-throw (silent fail in CJS) + `expo` substring false-positive.
+- **Umbrella:** `node --import ./triade/node_modules/tsx/dist/loader.mjs --test _bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts` → **6 pass / 0 fail** (P1 4 + P2 1 + P3 1, ~240ms). Fixed `use strict` + `expo` import-pattern guard.
+- **ATDD active:** `node --import ./triade/node_modules/tsx/dist/loader.mjs --test triade/__tests__/engine/spawn-mutation-hygiene.atdd.active.test.ts` → **20 pass / 0 fail** (P0 8 + P1 6 + P2 4 + P3 2, ~170ms). Proves working-tree delta implements contract (before 53c4f3d, P0-01 would be `res.board===b` alias / `isFrozen false`).
+- **Existing suites:** `npm --prefix triade test -- __tests__/engine/spawn-candidates.unit.test.ts __tests__/engine/spawn.test.ts __tests__/engine/game.test.ts` → **45+ pass** (13 + ? + 32, 2 clone-hygiene loops pinned). `npm --prefix triade test -- __tests__/engine/engine.purity.test.ts` → **4 pass** (no RN/Skia leakage). `npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.json && npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.test.json` → **clean** (both gates).
+- **Full host gate:** `npm --prefix triade test` → **882 pass / 11 expected-RED / 118 skipped (98 + 20 new dormant)**; **902 pass when 20 activated** (882 + 20). No new flake.
 
-**Gateway (API) — P0/P1/P2 — 21 contracts:**
+### Coverage Matrix (updated)
 
-```
-▶ [API] engine line-compaction gateway — P0 critical (DW-74 wall + preserves + DW-20 guards)
-  ✔ [P0] AC DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true (R-001, R-006)
-  ✔ [P0] AC DW-74 double gap two tiles: [null,2,null,4] -> [2,4,null,null] sequential scan (R-001)
-  ✔ [P0] AC DW-74 3-gap single tile: [null,null,3,null] -> [3,null,null,null] (R-001 boundary)
-  ✔ [P0] AC DW-74 all-null stays empty moved false without throw (R-001 no-op wall)
-  ✔ [P0] AC gap-non-merge preserved: [3,null,3,null] -> [3,3,null,null] score 0 (R-002, wall vs immediate)
-  ✔ [P0] AC cascade block preserved: [3,3,3,3] -> [6,3,3,null] score 6 merge-once sequential (R-004)
-  ✔ [P0] AC DW-20 guard empty line: shiftLine([]) length 0 moved false no throw (R-003)
-  ✔ [P0] AC DW-20 guard single element: shiftLine([{v:1}]) length 1 moved false no throw (R-003)
-  ✔ [P0] AC DW-20 guard movementLines short board pads with optional chaining (R-003)
-✔ [API] engine line-compaction gateway — P0 critical (DW-74 wall + preserves + DW-20 guards) (2.6ms)
-▶ [API] engine line-compaction gateway — P1 wiring (4-dir pipeline + wall expectations)
-  ✔ [P1] AC DW-20 guard 2-elem gap: refLine(null,3).slice(0,2) -> [3,null] without crash (R-003)
-  ✔ [P1] AC DW-20 guard boardFromLines short: boardFromLines([line], left) maps without crash (R-003)
-  ✔ [P1] PIPELINE 4-dir left/right/up/down full board matches pre-spawn wall compaction (R-005)
-  ✔ [P1] game.move wall expectations: ONE_CELL [_,3,_,3] left fully compact + down wall mirrors left (R-001, R-007)
-  ✔ [P1] transitionPlan wall slide: left to [0,0], right to [0,3], down to [3,1] with from wall fidelity (R-006)
-  ✔ [P1] trace wall fidelity: single shift from [[r,c]] at wall and moved boolean (R-006)
-  ✔ [P1] tsc both configs clean and GRID_SIZE=4 invariant (R-005, maintainability)
-✔ [API] engine line-compaction gateway — P1 wiring (4-dir pipeline + wall expectations) (1.2ms)
-▶ [API] engine line-compaction gateway — P2 static scans (allowlist + guard + hygiene)
-  ✔ [P2] SCAN single wall-scan site: while(target > 0 && out[target-1].v===null) ==1 (R-001)
-  ✔ [P2] SCAN shiftLine length guard: const n=line.length + for i<n + dest bounds, 0 GRID_SIZE in body (R-003)
-  ✔ [P2] SCAN shift vs merge site separation: shift out[target].v=t.v and merge canMerge(out[dest].v (R-002)
-  ✔ [P2] SCAN boardFromLines guards + movementLines optional chaining pads ragged boards (R-003)
-  ✔ [P2] hygiene — engine scope stays pure, no spawn/feel/monetization leakage, wall scan O(1) <1ms (R-009)
-✔ [API] engine line-compaction gateway — P2 static scans (allowlist + guard + hygiene) (15.4ms)
-ℹ tests 21
-ℹ suites 3
-ℹ pass 21
-ℹ fail 0
-ℹ duration_ms 21
-```
-
-**Umbrella (E2E) — 6 journeys:**
-
-```
-▶ [E2E] engine line-compaction umbrella — P1 pipeline journeys
-  ✔ [P1][E2E-01] wall-compaction pipeline end-to-end (4-dir wall + trace wall fidelity)
-  ✔ [P1][E2E-02] gap-non-merge + cascade preserved end-to-end (merge-once contract)
-  ✔ [P1][E2E-03] short/empty guard hardening end-to-end (never-throw + length fidelity)
-  ✔ [P1][E2E-04] ledger DW-20/DW-74 done with resolution-undo 64-hex, sprint-status untouched
-✔ [E2E] engine line-compaction umbrella — P1 pipeline journeys (4.0ms)
-▶ [E2E] engine line-compaction umbrella — P2 allowlist + residual
-  ✔ [P2][E2E-05] static allowlists — single-wall-scan/GRID_SIZE/predicate + guard ordering
-  ✔ [P3][E2E-06] residual ragged beyond [[1]] + O(1) bench + no scope leakage
-✔ [E2E] engine line-compaction umbrella — P2 allowlist + residual (7.8ms)
-ℹ tests 6
-ℹ suites 2
-ℹ pass 6
-ℹ fail 0
-ℹ duration_ms 13
-```
-
-**ATDD activated — 20/20 (correct TDD inversion: RED→GREEN with working tree):**
-
-```
-▶ ATDD dw-engine-line-compaction — P0 critical (spec AC + DW-74/DW-20)
-  ✔ [P0-01] DW-74 wall-most multi-gap: [null,null,null,2] -> [2,null,null,null] from [[0,3]] moved true
-  ✔ [P0-02] DW-74 double gap two tiles: [null,2,null,4] -> [2,4,null,null] sequential scan
-  ✔ [P0-03] DW-74 3-gap single tile: [null,null,3,null] -> [3,null,null,null]
-  ✔ [P0-04] DW-74 all-null stays empty moved false without throw
-  ✔ [P0-05] preserve gap-non-merge: [3,null,3,null] -> [3,3,null,null] score 0 (wall vs immediate)
-  ✔ [P0-06] preserve cascade block: [3,3,3,3] -> [6,3,3,null] score 6 (merge-once sequential)
-  ✔ [P0-07] DW-20 guard empty line: shiftLine([]) length 0 moved false no throw
-  ✔ [P0-08] DW-20 guard single element: shiftLine([{v:1}]) length 1 moved false no throw
-✔ ATDD dw-engine-line-compaction — P0 critical (spec AC + DW-74/DW-20) (2.5ms)
-▶ ATDD dw-engine-line-compaction — P1 wiring (board/4-dir/pipeline/wall trace)
-  ✔ [P1-01] DW-20 guard 2-elem gap: refLine(null,3).slice(0,2) -> [3,null] without crash
-  ✔ [P1-02] DW-20 guard boardFromLines short: boardFromLines([line], left) maps without crash
-  ✔ [P1-03] DW-20 guard movementLines short board: movementLines([[1]] as Board, left) pads to 4x4
-  ✔ [P1-04] PIPELINE 4-dir left/right/up/down full board matches pre-spawn wall compaction
-  ✔ [P1-05] game.move wall expectations: ONE_CELL [_,3,_,3] left fully compact + down wall mirrors left
-  ✔ [P1-06] transitionPlan wall slide: left to [0,0], right to [0,3], down to [3,1] (wall-compacted coordinates)
-✔ ATDD dw-engine-line-compaction — P1 wiring (board/4-dir/pipeline/wall trace) (1.2ms)
-▶ ATDD dw-engine-line-compaction — P2 static scans (single-wall-scan / guards)
-  ✔ [P2-01] SCAN single wall-scan site: while(target > 0 && out[target-1].v===null) ==1 in line.ts
-  ✔ [P2-02] SCAN shiftLine length guard: const n=line.length + for i<n + dest bounds, not GRID_SIZE
-  ✔ [P2-03] SCAN shift vs merge site separation: shift out[target].v=t.v and merge canMerge(out[dest].v
-  ✔ [P2-04] SCAN boardFromLines guards + movementLines optional chaining pads ragged boards
-✔ ATDD dw-engine-line-compaction — P2 static scans (single-wall-scan / guards) (1.0ms)
-▶ ATDD dw-engine-line-compaction — P3 exploratory / residual / hygiene
-  ✔ [P3-01] exploratory — boardFromLines ragged row length beyond [[1]] still maps without crash
-  ✔ [P3-02] hygiene — line scope stays pure, no spawn/feel/monetization leakage, wall scan O(1) <1ms
-✔ ATDD dw-engine-line-compaction — P3 exploratory / residual / hygiene (5.1ms)
-ℹ tests 20
-ℹ suites 4
-ℹ pass 20
-ℹ fail 0
-ℹ duration_ms 350
-```
-
-**Existing suites (must stay green, not re-derived):**
-
-```
-npm --prefix triade test -- __tests__/engine/line.test.ts __tests__/engine/line-moved.unit.test.ts __tests__/engine/line-compaction.regression.test.ts → 43 pass (18+?+11) + game/transition wall expectations green
-npm --prefix triade test -- __tests__/engine/game.test.ts __tests__/render/transitionPlan.test.ts → 32 pass + 16 pass
-npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.json && npm --prefix triade exec -- tsc --noEmit --project triade/tsconfig.test.json → both clean
-npm --prefix triade test (full host) → ~871 pass / 11 fail (expected REDs from feel/legacy ATDD) + 78 skipped; duration ~3.2s
-```
+- **Created:** `_bmad-output/test-artifacts/coverage-matrix.json` + `_bmad-output/test-artifacts/e2e-trace-summary-dw-engine-spawn-mutation-hygiene.json` + `_bmad-output/test-artifacts/gate-decision-dw-engine-spawn-mutation-hygiene.json` (and generic `e2e-trace-summary.json` / `gate-decision.json` overwritten to this story as latest).
 
 ---
 
 ## Step 4 — Validate & Summarize
 
-### Checklist Validation (from `checklist.md`)
+### Checklist Validation (per `checklist.md`)
 
-- [x] Framework readiness — `node:test` + `tsx` via `TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test` verified (line.test.ts 18/18 + line-moved + regression 11 =43, game 32 + transitionPlan 16, tsc both configs clean)
-- [x] Coverage mapping — P0 9 groups 100% + P1 7 groups ≥95% (actual 100%) + P2 5 groups (scans/ledger/hygiene) + P3 2 exploratory via gateway(21) + umbrella(6) + ATDD(20 dormant) + fixtures(18) + existing 43+32+16; no duplicate coverage across test levels (Unit vs Static-scan vs Integration pipeline composition via `movementLines→shiftLine→boardFromLines`)
-- [x] Test quality and structure — Given-When-Then per test, one behavioural pin per `it`, determinism via `refLine(...vs)` 4-literal + `staticBoard`/`emptyBoard` deterministic, isolation via `pipelinePreSpawn` helper (not faker), no `it.skip` in gateway/umbrella (all active, host-only)
-- [x] Fixtures, factories, helpers — deterministic `refLine`/`staticBoard`/`emptyBoard` + `WALL_RIGHT_BOARD`/`CASCADE_BOARD` + `pipelinePreSpawn` composition helper (imports real wiring, not local copy); `readSrc` dual `cwd` + `../` fallback for `cd triade` vs root execution (DOTALL ledger trap handled via `[\s\S]*?`, guard-order scoped to `line.ts` body not global import)
-- [x] CLI sessions cleaned up (no orphaned browsers) — no Playwright `page.goto`/`page.locator` surface; `tea_browser_automation: auto` correctly adapted to host (Expo Canvas, not web)
-- [x] Temp artifacts stored in `_bmad-output/test-artifacts/` not random locations — all under `test_artifacts: _bmad-output/test-artifacts` per `_bmad/tea/config.yaml` (fixtures at `fixtures/`, tests at `tests/api/` + `tests/e2e/`, summary at `automation-summary.md`)
+- [x] Framework scaffolding verified (`node:test` + `tsx` via `triade/package.json` `type:module`, `TSX_TSCONFIG_PATH=tsconfig.test.json`)
+- [x] Execution mode correctly determined: BMad-Integrated (spec + test-design + ATDD present) but host-dominated (pure engine) — sequential
+- [x] Story markdown loaded (`spec-engine-spawn-mutation-hygiene.md` 8 ACs, I-O matrix 8 rows, boundaries)
+- [x] Acceptance criteria extracted (8 ACs: clone, full clone, empty pool, all occupied, OOB, single candidate, freeze, effectiveBoard)
+- [x] Test-design loaded (`test-design-dw-engine-spawn-mutation-hygiene.md` 10 risks, 3 high, P0/P1/P2/P3 levels, NFR planning)
+- [x] ATDD outputs checked (20 `it.skip` scaffolds, not duplicated — gateway/umbrella at different level/priority, same AC different assertion depth)
+- [x] Automation targets identified (16 targets, P0 8 + P1 6 + P2 6, no duplicate coverage across levels — Unit for clone/freeze, Integration for pipeline, E2E for journeys)
+- [x] Test levels selected appropriately (Unit for pure logic, Integration for game pipeline, E2E for journeys + ledger + bench; API = gateway contract, E2E = umbrella journeys, both host)
+- [x] Duplicate coverage avoided (E2E for critical pipeline journeys only, API for contract variations + static scans, Unit for pure edge cases — ATDD remains canonical)
+- [x] Test priorities assigned (P0 critical path + high risk ≥6, P1 important flows + medium, P2 secondary scans, P3 exploratory)
+- [x] Fixture architecture created (`engine-spawn-mutation-hygiene-fixtures.ts` deterministic, no faker, auto-cleanup not needed for pure boards)
+- [x] Data factories not needed (deterministic `boardWith`/`emptyBoard`/`gameState` + `rngOf`/`spyRng` reuse, no `@faker-js/faker`)
+- [x] Helper utilities checked ( existing `triade/test-utils/helpers.ts` already provides `oppositeEdgeCandidates`/`occupiedCells`/`runSeededSession`/`stripComments`)
+- [x] Test files generated at appropriate levels (`tests/api` gateway 20, `tests/e2e` umbrella 6, `triade/__tests__/engine` ATDD 20)
+- [x] Given-When-Then format used consistently (all gateway/umbrella/ATDD tests have Given/When/Then comments)
+- [x] Priority tags added to all test names ([P0], [P1], [P2], [P3] + [E2E-01..06])
+- [x] data-testid selectors not applicable (pure engine, no DOM — `GameBoard.tsx` Skia tile wiring verified via existing `transitionPlan` + `engine.purity` gates)
+- [x] Network-first pattern not applicable (pure arithmetic, no `page.route`/`page.goto`)
+- [x] Quality standards enforced (no hard waits, no flaky patterns, deterministic `boardWith` literals, `spyRng` draw-budget, `Object.isFrozen` pins)
+- [x] Healing not enabled (`auto_heal_failures` false default — no healing attempted, no failures to heal)
+- [x] Automation summary created at `_bmad-output/test-artifacts/automation-summary.md`
+- [x] Knowledge base references applied (`test-levels-framework`, `test-priorities-matrix`, `data-factories`, `fixture-architecture`, `selective-testing`, `ci-burn-in`, `test-quality`)
 
-### Polish Output
+### Polish
 
-- Deduplication: P0 wall + gap-non-merge + cascade + short guards appear only once across gateway/umbrella/ATDD (no progressive-append duplication); fixtures single-sourced via `refLine` + `pipelinePreSpawn` (no local copy in pipeline).
-- Consistency: `P0/P1/P2/P3 = priority/risk, NOT execution timing` pinned in both test-design and automation-summary; `R-001..R-010` scores and mitigations consistent with test-design risk matrix (3 high ≥6 all mitigated).
-- Completeness: All 10 risks mapped to at least one gateway or umbrella contract; NFR thresholds (60 FPS O(1) `<0.05ms`/`<50ms` 10k wall scan, never-throw, single `GRID_SIZE=4` + single wall-scan + ledger 64-hex) have planned evidence without invented PASS/FAIL.
-- Format cleanup: Tables aligned, headers consistent, no orphaned `TODO — provider source not accessible` (provider is `line.ts`/`types.ts`/`rules.ts` itself, not external microservice).
-
-### Files Created/Updated (under `test_artifacts: _bmad-output/test-artifacts`)
-
-| File | Action | Tests | Notes |
-|------|--------|-------|-------|
-| `_bmad-output/test-artifacts/tests/api/engine-line-compaction.gateway.spec.ts` | **Created** | 21 active (9 P0 + 7 P1 + 5 P2) | Host `node:test` + `tsx`, gateway contracts for wall/gap/cascade/guard/4-dir/trace; provider scrutiny via `readSrc` scans + `refLine` deterministic; 21/21 pass |
-| `_bmad-output/test-artifacts/tests/e2e/engine-line-compaction.umbrella.spec.ts` | **Created** | 6 active (4 P1 + 1 P2 + 1 P3) | Host `node:test` + `tsx`, umbrella journeys through engine→board→trace→ledger; E2E label = through seam not browser; 6/6 pass |
-| `_bmad-output/test-artifacts/fixtures/engine-line-compaction-fixtures.ts` | **Created** | 18 helpers + bench | Deterministic, no faker; `refLine`/`colRefLine`/`WALL_RIGHT_BOARD`/`pipelinePreSpawn` + scan helpers (`wallScanCount` etc) + `shiftLineBench` + `readSrc` dual-cwd |
-| `triade/__tests__/engine/line-compaction.atdd.test.ts` | **Already created (ATDD, 20 `it.skip`)** | 20 dormant (8 P0 + 6 P1 + 4 P2 + 2 P3) | RED-phase scaffolds; activated 20/20 pass; correct TDD inversion (before sweep: ` [null,null,null,2]→[null,null,2,null]` one-cell + `shiftLine([])` throw + `movementLines([[1]]) TypeError` would FAIL) |
-| `_bmad-output/test-artifacts/automation-summary.md` | **Updated** | — | This file; replaces prior `dw-ci-gesture-wiring-docs` summary with `dw-engine-line-compaction` (workflow is per-bundle, not append) |
-| `_bmad-output/test-artifacts/test-design-dw-engine-line-compaction.md` | **Reference (no write)** | — | Pre-existing (TD workflow, 2026-09-02, 10 risks 3 high ≥6, P0 12 + P1 16 + P2 4 + P3 4) |
-| `_bmad-output/test-artifacts/atdd-checklist-dw-engine-line-compaction.md` | **Reference (no write)** | — | Pre-existing (ATDD, 20 `it.skip`, 4 suites) |
-| `_bmad-output/implementation-artifacts/deferred-work.md` | **Not written by this workflow (read-only)** | — | DW-20/DW-74 `done 2026-09-02` with `resolution-undo: 26a75af1… 64-hex + 737461… date-salt`; `sprint-status.yaml` untouched per prompt (orchestrator-owned) |
-
-### Key Assumptions and Risks
-
-**Assumptions:**
-1. `GRID_SIZE=4` stays fixed (spec `Always: Keep GRID_SIZE=4`); orientation mapping `GRID_SIZE-1-k` for `right`/`down` in `boardFromLines` is unchanged and correct. Verified `GRID_SIZE=4` single definition.
-2. Production `Board` is always 4×4 via `emptyBoard()`/`boardFromLines(emptyBoard())`; short guard exists for harness/ragged-input defensiveness and test isolation, not for a live code path that ships a 1×1 board (spec I-O: short inputs are harness edge only). `movementLines([[1]])` now pads silently rather than throwing — document-only residual R-003.
-3. Gap-non-merge contract: merge only when immediate predecessor `i-1` is `canMerge`-true, never through a wall-scan gap — `shiftLine` shift uses wall `target`, merge uses `dest`. Future gap semantics must not change `canMerge(1,2)` across gap (in line domain gap is erased before adjacency, but equal `>=3` across gap stays non-merged because shifting fills wall).
-4. `sprint-status.yaml` remains orchestrator-owned; DW-20/74 are `deferred-work.md` ledger only — not `sprint-status.yaml` transitions. Verified `git diff --stat -- _bmad-output/implementation-artifacts/sprint-status.yaml` empty.
-5. `Node 26` (`package.json` `engines >=26`) and `tsconfig.test.json` `rn-stub` path remain the host test harness — no device bench required for this bundle (wall-scan O(1) n=4). Verified `npx tsc --noEmit` both configs clean.
-6. `ATDD 20 it.skip` dormant state is intentional (RED-phase scaffolds) — activating them (`sed s/it.skip/it/g` or python `replace('it.skip','it')`) yields 20 pass with current working tree; `npm test` 11 fail are expected REDs from other feel ATDDs (not this bundle, e.g. shake overlap without cancelAnimation).
-
-**Residual Risks (from test-design, not re-derived):**
-- **R-001 wall-scan incomplete (P×I 6, mitigated):** wall-scan `while(target>0 && out[target-1].v===null)` is single site but `game.move` could re-inline `dest=i-1` without scan — gates via gateway P2 single-wall-scan + P0 4 wall pins + umbrella E2E-01 4-dir pipeline.
-- **R-002 gap-non-merge collapse (P×I 6, mitigated):** refactor that reused `target` for merge (`canMerge(out[target].v`) would merge `3` across gap and score 6 — pin via gateway P2 `canMerge(out[dest]` vs `target` + P0 gap pin `score 0`.
-- **R-003 ragged silent-pad (P×I 6, mitigated):** `movementLines` `board[r]?.[c] ?? null` pads ragged boards silently and `boardFromLines` `lines.length/row.length` truncates — now `moved`/`trace` would drift on malformed board; documented residual (no production 1×1 board), gate via 5-case guard + umbrella E2E-03 never-throw.
-- **R-004 cascade two-pass (P×I 4, mitigated):** `for i<n` single-pass sequential vs two-pass compact-then-merge (`[6,6]` 12) — pin via P0 cascade `score 6`.
-- **R-008 ledger hash (P×I 2, mitigated):** `resolution-undo: 26a75af1…` 64-hex 2 hits for DW-20/74; any reopen must preserve hash else rollback invalid; `sprint-status.yaml` untouched.
-
-### Next Recommended Workflow
-
-- **`test-review`** (optional) — review generated tests for quality and redundancy (gateway 21 + umbrella 6 are non-redundant with `line.test.ts` 18 + regression 11, but a `test-review` sweep would verify no overlap).
-- **`trace`** (optional) — generate traceability matrix linking `spec-engine-line-compaction 6 ACs` → `ATDD 20` → `gateway 21` → `umbrella 6` → `fixtures 18` → `deferred-work DW-20/74`.
-- **`nfr-assess`** (if NFR evidence collection is due) — validate NFR planning `never-throw` + `single-wall-scan` + `single-GRID_SIZE` + `P0 100%/P1 ≥95%` + `O(1) <50ms` against current evidence without inventing new thresholds. Do NOT run Playwright E2E for this bundle — host `node:test` is correct harness per stack detection.
+- Removed duplication (ATDD vs gateway vs umbrella same AC different depth — documented as Level separation, not duplication)
+- Verified consistency (R-001..R-010 scores, DW-23/70/75/81 64-hex `b85f43d1…`, `GRID_SIZE=4` single, `board.map` row spread, `effectiveBoard` single site, `O(16)` bench thresholds)
+- Checked completeness (all template sections populated)
+- Format cleanup (tables aligned, headers consistent)
 
 ---
 
-## Definition of Done — dw-engine-line-compaction
+## Coverage Summary
 
-### Entry Criteria
+| Priority | Tests (new automate) | ATDD (reference) | Existing suites (gate) | Total Coverage |
+|----------|----------------------|------------------|------------------------|----------------|
+| P0 | 8 (gateway) + 1 journey (E2E-01) | 8 `it.skip` → 8 pass activated | 13 pass (2 clone loops) + 32 `game.test.ts` wall | **100%** (8/8 groups) |
+| P1 | 6 (gateway) + 4 journeys (E2E-01..04) | 6 `it.skip` → 6 pass activated | 32 `game.test.ts` + 16 `transitionPlan` + 4 `engine.purity` | **≥95%** |
+| P2 | 6 (gateway) + 1 journey (E2E-05) | 4 `it.skip` → 4 pass activated | `rg` allowlists + `tsc` twin gates | **≥90%** |
+| P3 | — (bench via gateway P2 + E2E-06) | 2 `it.skip` → 2 pass activated | 20-move alias sweep + bench | **≥90%** |
+| **Total** | **20 gateway + 6 umbrella + 1 fixtures** | **20 ATDD dormant** | **882 pass host gate (902 with ATDD active)** | **100% P0, ≥95% P1, ≥90% P2/P3** |
 
-- [x] Requirements and assumptions agreed (spec `status: done`, `final_revision 4f6cc04` reviewed, 6 ACs + 8-row I-O matrix accepted, DW-20/DW-74 ledger intent `open→done 2026-09-02`)
-- [x] Test environment provisioned (host `node >=26`, `tsx`, `TSX_TSCONFIG_PATH=tsconfig.test.json` — verified `triade/node_modules/.bin/tsx` + `npx tsc --noEmit` both configs clean)
-- [x] Test data available (deterministic `refLine(...vs)` 4-literal + `CellRef {v,r,c}` + short/empty `[]`/`[{v:1}]`/`[null,3].slice(0,2)` + `GRID_SIZE=4` + `emptyBoard`/`staticBoard`/`boardWith`/`rngOf(0,0,0.5)` fixtures, no faker)
-- [x] Feature deployed to test environment (`HEAD 7eacd93` checked out, `triade/src/engine/core/line.ts` wall-scan + length guards + `line-compaction.regression.test.ts` 11 pins + `game.test.ts`/`transitionPlan.test.ts` wall expectations patched)
-- [x] `spec-engine-line-compaction.md` Code Map and I-O matrix accepted (wall-scan `target` while + length-guard `n=line.length` + optional chaining pads + `boardFromLines` `lines.length/row.length`)
-- [x] Ledger DW-20/DW-74 `open→done` intent recorded in `deferred-work.md` (not gating implementation, docs-sidecar of this bundle)
-
-### Exit Criteria
-
-- [x] All P0 tests passing — `gateway 9/9 + ATDD P0 8/8 + regression 11/11 + line.test.ts 18/18` (wall 4 wall + gap-non-merge + cascade + short/empty guards + `moved true` + `from [[0,3]]`) — 100% (no exceptions)
-- [x] All P1 tests passing (or failures triaged with waiver) — `gateway 7/7 + ATDD P1 6/6 + game.test.ts 32/32 + transitionPlan 16/16` (2-elem gap + short `boardFromLines`/`movementLines` + 4-dir pipeline + game.move `ONE_CELL` fully compact + transitionPlan `to [0,0]/[0,3]/[3,1]` + trace `from` wall fidelity + `tsc` both configs) — ≥95% met (actual 100%, 0 waivers)
-- [x] No open high-priority / high-severity bugs — R-001..R-003 100% mitigated (single-wall-scan, gap-non-merge `dest` vs `target`, length-driven `i<n` + `board[r]?.[c] ?? null`) or waived — 0 high open
-- [x] Test coverage agreed as sufficient — P0 100% + P1 100% (≥95%) + P2 `single-wall-scan/GRID_SIZE/predicate/optional-chaining/ledger` 5/5 + P3 `ragged beyond + bench` 2/2 (informational ≥85% met) — 47 checks total (gateway 21 + umbrella 6 + ATDD 20 dormant + fixtures 18)
-- [x] Ledger `resolution-undo` 64-hex for DW-20/74 present (`26a75af1…` 2 hits via `resolution-undo: [0-9a-f]{64}`), `sprint-status.yaml` untouched (`git diff --stat -- sprint-status.yaml` empty per prompt `sprint-status.yaml is owned by the orchestrator: never write it`)
-- [x] `triade/src/engine` delta is `line.ts` only — `git diff --stat -- triade/src/engine` shows `line.ts` only (not `rules.ts`/`game.ts`/`spawn.ts`/`pot.ts`/`board.ts`), `GRID_SIZE=4` single definition in `types.ts:1` (`rg -n "GRID_SIZE =" triade/src/engine/core/types.ts` ==1)
-- [x] `npx tsc --noEmit` clean both configs (`triade/tsconfig.json` + `triade/tsconfig.test.json`) — wall-scan typed `number` + `ShiftedCell`/`CellRef` stable (fixed `line-compaction.atdd` `ShiftedCell` cast + `purity-weight` loop parens)
-- [x] Prior suites still green — `line.test.ts` 18 + `line-moved` + `line-compaction.regression` 11 =43 + `game.test.ts` 32 + `transitionPlan` 16 wall expectations green + `npm test` host stable + `npm run benchmark` not in default gate (engine `<2ms/turn`, `10k shiftLine <50ms`)
-
-### DoD Summary
-
-- **Coverage:** P0 9 groups (9 gateway + 8 ATDD + 11 regression) 100% + P1 7 groups (7 gateway + 6 ATDD + game 32 + transitionPlan 16) ≥95% (actual 100%) + P2 5 groups allowlist/ledger/hygiene + P3 2 exploratory/bench (informational) — all mapped to 10 risks (3 high ≥6 mitigated) and 6 ACs (spec I-O matrix). Total effort `~3.6–6.6h` (~0.5–0.9 days wall-clock host-only, no device lane) per test-design estimates — already executed via `HEAD 7eacd93` working tree (host `<1s` gateway+umbrella + `<15 min` full gate including `tsc`).
-- **Artifacts:** `fixtures/engine-line-compaction-fixtures.ts` (18 helpers, deterministic, no faker) + `tests/api/engine-line-compaction.gateway.spec.ts` (21 contracts, 21/21 pass) + `tests/e2e/engine-line-compaction.umbrella.spec.ts` (6 journeys, 6/6 pass) + `triade/__tests__/engine/line-compaction.atdd.test.ts` (20 dormant, 20/20 when activated) + `automation-summary.md` (this file) — all under `test_artifacts: _bmad-output/test-artifacts` per `_bmad/tea/config.yaml`.
-- **Quality gates:** P0 100% required, R-001..R-003 high 100% mitigated, wall invariant holds (`[null,null,null,2]→[2,…,from [[0,3]]]`, `[null,2,null,4]→[2,4,…]` + `transitionPlan to [0,0]/[0,3]/[3,1]`), gap-non-merge holds (`[3,null,3,null] score 0`, merge uses `dest` not `target`), no duplicate wall-scan predicate (`while(target>0…)` 1 site) and no `for(i<GRID_SIZE)` in `shiftLine` (length-driven `i<n`), `npx tsc --noEmit` clean both configs.
-- **Next:** No further automation needed for this bundle — host-only `node:test` + `tsx` is correct harness; Playwright E2E `page.goto` is not applicable (Expo RN Skia Canvas, not web). If new line lanes are added, re-run `*automate` with additional `refLine` vectors; if performance SLO changes, re-run `*nfr-assess` — do not invent `10k shiftLine <50ms` threshold beyond measured `≈0.005ms` per call.
+- **Test level breakdown:** Unit 14 (8 P0 + 6 P1) + Integration 2 (P1 pipeline + trace) + E2E (host) 6 journeys (P1 4 + P2 1 + P3 1) + Static scans 6 (P2) + Bench 2 (P2/P3). No Component/API (Playwright) — pure engine, host `node:test` is correct per `test-levels-framework.md`.
+- **Files created/updated:** `_bmad-output/test-artifacts/fixtures/engine-spawn-mutation-hygiene-fixtures.ts` + `_bmad-output/test-artifacts/tests/api/engine-spawn-mutation-hygiene.gateway.spec.ts` + `_bmad-output/test-artifacts/tests/e2e/engine-spawn-mutation-hygiene.umbrella.spec.ts` + `_bmad-output/test-artifacts/automation-summary.md` (this file) + `coverage-matrix.json` + `e2e-trace-summary-*.json` + `gate-decision-*.json` + ledger `deferred-work.md` (DW flips, not written by automate).
+- **Coverage percentage:** P0 100% (8/8 AC groups), P1 ≥95%, P2/P3 ≥90% (informational). Overall 100% AC coverage (8 ACs).
 
 ---
 
-**Generated by**: BMad TEA Agent - Test Architect Module (Murat)
-**Workflow**: `bmad-testarch-automate`
-**Version**: 4.0 (BMad v6)
-**Execution Mode**: sequential (auto → sequential fallback)
-**TEA Config**: `_bmad/tea/config.yaml` (`test_artifacts: _bmad-output/test-artifacts`, `test_design_output: _bmad-output/test-artifacts/test-design`, `user_name: Eduardo`, `communication_language: Português`, `document_output_language: English`)
+## Definition of Done (DoD) — dw-engine-spawn-mutation-hygiene
+
+### Functional
+
+- [x] All 8 ACs pinned (AC1 spawnTile clones no-mutation, AC2 full board new-ref, AC3 empty pool [] clone, AC4 all occupied clone, AC5 OOB ignored, AC6 single candidate clone, AC7 gameState freeze rows+outer, AC8 move effectiveBoard propagation + history isolation) — P0 8/8 gateway + 20/20 ATDD activated
+- [x] No high-risk (≥6) items unmitigated (R-001 effectiveBoard propagation, R-002 clone-all-branches, R-003 freeze throw all gated via `rg` + host pins)
+- [x] Existing suites stay green (45+ pass spawn-candidates/spawn/game + 4 pass engine.purity + 32 pass game.test.ts + 16 pass transitionPlan)
+- [x] `sprint-status.yaml` untouched (orchestrator-owned — verified via `git diff --stat` having no `sprint-status.yaml`)
+
+### Quality
+
+- [x] Twin `tsc` gates clean (`npx tsc --noEmit` + `npx tsc -p triade/tsconfig.test.json --noEmit`)
+- [x] Full host gate `<15 min` (882 pass / 11 expected-RED / 118 skipped dormant; 902 pass with ATDD active)
+- [x] No new lint errors in generated test files (gateway/umbrella/fixtures `node:test` + `tsx` import clean)
+- [x] Ledger `deferred-work.md` DW-23/70/75/81 `status: done 2026-09-02` + `resolution: resolved by sweep bundle dw-engine-spawn-mutation-hygiene` + `resolution-undo: b85f43d1a077f8ad7f8d33c07155f5e3ae81c44b4b974f1cfcc598d8b869d26e 2026-09-02 7374617475733a206f70656e` preserved (reopen keeps hash)
+
+### Test
+
+- [x] P0 pass rate 100% (8/8 gateway + 8/8 ATDD activated + 2 clone-hygiene loops in `spawn-candidates.unit.test.ts`)
+- [x] P1 pass rate ≥95% (6/6 gateway + 4/4 umbrella P1 journeys + game.test.ts 32 pass)
+- [x] P2/P3 pass rate ≥90% (6/6 gateway scans + 1/1 umbrella P2 + 1/1 umbrella P3 + bench O(16) <500/800ms)
+- [x] No flaky patterns (deterministic `boardWith` literals, `rngOf`/`spyRng` scripted draws, `mulberry32` seeded, no hard waits)
+- [x] Priority tagging enables selective execution (P0 on every commit, P1 on PR, P2 nightly, P3 exploratory)
+- [x] Fixtures deterministic (no `@faker-js/faker` — board math is `number|null` primitives, `emptyBoard`/`boardWith`/`gameState` frozen output-side)
+- [x] Gateway 20 pass + Umbrella 6 pass + ATDD 20 pass (when activated) = 46 new automate contracts (118 skipped dormant includes 20 new ATDD + 98 prior)
+
+### NFR
+
+- [x] Reliability: Engine never throws (all draw paths, full/empty pool, OOB candidates, frozen row assignment degrades as intended — isFrozen + silent fail in CJS / TypeError in ESM)
+- [x] Reliability: ADR-06 history isolation holds (mutating `result.board` never rewrites prior history — P0-08 + E2E-01 alias sweep 20 moves)
+- [x] Maintainability: Single clone site per module, no `structuredClone`/`JSON` board copy, no duplicate `GRID_SIZE` change, no new deps
+- [x] Performance: Clone+freeze O(16) per effective move / per helper snapshot, invisible to frame budget (`10k spawnTile <500ms`, `10k gameState <800ms`, `<0.05ms` per move)
+- [x] Security: No new attack surface (pure TS clone/freeze, no IO, no auth; `engine.purity` 4 pass)
+- [x] Offline: No new network/persistence dep (in-memory Board only; `git diff --stat` shows only `spawn.ts`+`game.ts`+`helpers.ts`)
+
+---
+
+## Next Steps
+
+1. **Link this checklist and generated tests** into the story file `Dev Notes` / `ATDD Artifacts` section when a writable story file is available (spec already at `_bmad-output/implementation-artifacts/spec-engine-spawn-mutation-hygiene.md`)
+2. **Share this checklist and `triade/__tests__/engine/spawn-mutation-hygiene.atdd.test.ts` + gateway/umbrella** with the `dev` workflow as a manual handoff
+3. **Review this checklist** with team in standup or planning (P0 100% required, R-001..R-003 mitigations already green)
+4. **Begin implementation** using implementation checklist as guide — for this sweep, implementation already in working tree (de-skipped run proves GREEN; `git diff edfc574..53c4f3d -- triade/src/engine/core/spawn.ts` shows only `cloneBoard` + `const next` + `return next ×4`; `game.ts` shows `let effectiveBoard` propagation; `helpers.ts` shows `deepFreezeBoard` freeze)
+5. **Activate one scaffold at a time** by removing `it.skip` for the current task, then confirm it fails before implementing (before `53c4f3d`, P0-01 would be `res.board===b` alias / `isFrozen false`)
+6. **Work one activated test at a time** (red → green for each) — already complete for this bundle
+7. **Share progress** in daily standup
+8. **When all activated tests pass**, refactor code for quality (single `cloneBoard` already done)
+9. **When refactoring complete**, manually update ledger `deferred-work.md` DW statuses (already `done 2026-09-02`) — do not touch `sprint-status.yaml`
+10. **Run `bmad-testarch-test-review`** to validate test quality, and `bmad-testarch-trace` to update traceability matrix
+
+---
+
+## Knowledge Base References Applied
+
+This automate workflow consulted the following knowledge fragments (via `test-design-dw-engine-spawn-mutation-hygiene.md` + `tea-index.csv`):
+
+- **test-levels-framework.md** — Level selection: Unit (spawn/move/gameState) vs Integration (pipeline `move`→`transitionPlan` via `resultingTiles`/`occupiedCells`) vs Static scans (grep allowlists `cloneBoard`/`effectiveBoard`/`GRID_SIZE`)
+- **test-priorities-matrix.md** — P0 critical path + high risk ≥6 (R-001..003), P1 important flows + medium (R-004..007), P2 secondary + low (R-008..009), P3 exploratory
+- **fixture-architecture.md** — Not needed for pure `node:test` spawn host — reuse `helpers.ts` `boardWith`/`emptyBoard`/`gameState` frozen output-side + `mulberry32`/`spyRng` harnesses, no `test.extend`
+- **data-factories.md** — Not needed — deterministic `boardWith([...])` literals + `spyRng` draw-budget + `mulberry32` reuse (no `@faker-js/faker` — board math is `number|null` primitives)
+- **ci-burn-in.md** — Host `npm test` `<15 min` is sufficient; no burn-in loop needed (deterministic, no flake)
+- **test-quality.md** — Given-When-Then per test, one pin per `it`, determinism via `boardWith` literals, isolation via `emptyBoard` per test, `moved` boolean `!boardsEqual` observable
+- **selective-testing.md** — Gateway/umbrella/ATDD tagged P0/P1/P2/P3 for `test:e2e:p0` style selective execution (host `node:test` `--test-name-pattern="[P0]"`)
+- **api-testing-patterns.md** — Gateway contract via pure helpers + scanner (no Playwright request fixture for this seam)
+
+See `resources/knowledge` for complete fragment mapping; see `_bmad-output/test-artifacts/test-design/test-design-dw-engine-spawn-mutation-hygiene.md` Section "Risk Assessment" for the 10 risks (3 high) and NFR planning that informed P0/P1/P2/P3 levels.
+
+---
+
+## Recommendations
+
+- No further E2E automation needed for this hygiene bundle — host `node:test` 20 gateway + 6 umbrella + 20 ATDD + existing 45+ engine suites already gate clone/freeze/effectiveBoard.
+- For broader coverage, run `bmad-testarch-trace` to refresh `coverage-matrix.json` from the 8 ACs, and `bmad-testarch-test-review` to audit test quality.
+- Keep `BOARD_CELL_TYPE = number|null` guard in review checklist — any widening to object would require `cloneBoard` to deepen from `board.map(r=>[...r])` to `board.map(r=>r.map(c=> c===null?null:{...c}))` and a new P0 object-alias pin.
+

@@ -38,9 +38,9 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     score += res.score;
   }
   const built = boardFromLines(shifted.map((s) => s.line), dir);
-  const newBoard = built.board;
+  let effectiveBoard = built.board;
   const trace = built.trace;
-  const moved = !boardsEqual(state.board, newBoard);
+  const moved = !boardsEqual(state.board, effectiveBoard);
   let pendingSpawn: PendingSpawn;
   if (moved) {
     // Directional spawn (Story 12.1): only lines that actually changed during
@@ -68,8 +68,9 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     // pre-spawn ceiling (tier-t pot max 3·2^t < 48·2^(t−1)); tier 0 is the
     // exception (pot value 3 can exceed a tiny ceiling) and harmless there.
     // The order is pinned by adaptive-spawn-integration.test.ts.
-    const ceiling = ceilingDetector(newBoard);
-    const spawn = spawnTile(newBoard, state.pendingSpawn.value, rng, candidates);
+    const ceiling = ceilingDetector(effectiveBoard);
+    const spawn = spawnTile(effectiveBoard, state.pendingSpawn.value, rng, candidates);
+    effectiveBoard = spawn.board;
     if (spawn.cell && spawn.value !== null) {
       trace.push({
         value: spawn.value,
@@ -87,7 +88,7 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     // caller mutating result.pendingSpawn must never rewrite prior history.
     pendingSpawn = { ...state.pendingSpawn };
   }
-  return { board: newBoard, score, moved, trace, pendingSpawn };
+  return { board: effectiveBoard, score, moved, trace, pendingSpawn };
 }
 
 export function stateFromResult(result: MoveResult): GameState {
