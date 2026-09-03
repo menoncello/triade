@@ -26,9 +26,9 @@ export function PreviewCard({ preview, label }: { preview: Preview; label?: stri
   const laneNote = label ? ` (${label})` : '';
   const announcement = `Próxima${laneNote}: ${display}`;
   return (
-    <View style={styles.card} accessibilityLabel={announcement} pointerEvents="none">
-      {label ? <Text style={styles.label}>{label}</Text> : null}
-      <Text style={styles.value}>{display}</Text>
+    <View style={styles.card} accessibilityLabel={announcement} pointerEvents="none" accessible accessibilityRole="text">
+      {label ? <Text style={styles.label} allowFontScaling>{label}</Text> : null}
+      <Text style={styles.value} allowFontScaling adjustsFontSizeToFit={false}>{display}</Text>
     </View>
   );
 }
@@ -50,11 +50,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
   label: {
     color: '#8a8578',
     fontSize: 9,
     fontWeight: '500',
     marginTop: 2,
+    flexWrap: 'wrap',
   },
 });

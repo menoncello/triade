@@ -77,6 +77,16 @@ import { ToneScreen } from './src/ui/ToneScreen.tsx';
 import { triggerHapticsForTrace } from './src/feel/haptics.ts';
 import { triggerSfxForTrace, triggerSfxForSpawn, triggerSfxForGameOver } from './src/feel/sfx.ts';
 import { nextSessionBest } from './src/feel/bulletTime.ts';
+import { BoardA11yOverlay } from './src/a11y/boardAccessibility.tsx';
+import { useScreenReaderEnabled, isThreeFingerMove } from './src/a11y/screenReaderGestures.ts';
+import {
+  announceMove,
+  announceMerge,
+  announceSpawn,
+  announceScoreThrottled,
+  announceGameOver,
+  announceNewRecord,
+} from './src/a11y/announcements.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
 import { useTranslation } from 'react-i18next';
@@ -137,6 +147,11 @@ function AppContent() {
   const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
   // DW-107: board shake 5-8px must not be clipped — toggle parent overflow visible during 130ms shake
   const [isBoardShaking, setIsBoardShaking] = useState(false);
+  const screenReaderEnabled = useScreenReaderEnabled();
+  const screenReaderEnabledRef = useRef(screenReaderEnabled);
+  useEffect(() => {
+    screenReaderEnabledRef.current = screenReaderEnabled;
+  }, [screenReaderEnabled]);
 
   // Sync i18n language with Settings.language — immediate apply per UX-DR-30
   // Normalizes pt-BR/en-US etc to pt/en for i18next (supportedLngs)
@@ -452,9 +467,61 @@ function AppContent() {
             triggerSfxForGameOver();
           }
         } catch {}
+        // 9-2 a11y announcements — engine-derived, never blocking
+        try {
+          if (!result.moved) {
+            // noop silent — no announcement
+          } else {
+            const dirLabel = (() => {
+              try {
+                return i18n.t(`a11y.dir.${dir}`);
+              } catch {
+                return dir;
+              }
+            })();
+            announceMove(dirLabel);
+            // Merge announcements coalesced to one per move to avoid VoiceOver queue flood (patch P1)
+            const mergeEntries = result.trace.filter((e: any) => !e.spawned && e.from.length === 2);
+            if (mergeEntries.length > 0) {
+              const first = mergeEntries[0];
+              const aPos = first.from[0];
+              const bPos = first.from[1];
+              const aVal = snapshot.game.board[aPos[0]]?.[aPos[1]];
+              const bVal = snapshot.game.board[bPos[0]]?.[bPos[1]];
+              if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(first.value)) {
+                announceMerge(aVal as number, bVal as number, first.value);
+              } else if (Number.isFinite(first.value)) {
+                // fallback: announce generic merge with resulting value if source values stale
+                try { announceMerge(first.value / 2, first.value / 2, first.value); } catch {}
+              }
+            }
+            const spawnEntry = result.trace.find((e: any) => e.spawned);
+            if (spawnEntry && Number.isFinite(spawnEntry.value)) {
+              announceSpawn(spawnEntry.value);
+            }
+            if (result.score > 0) {
+              const curScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+              const newScore = curScore + result.score;
+              announceScoreThrottled(newScore);
+            }
+            if (isGameOver(result.board)) {
+              const curScore2 = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+              const newScore2 = curScore2 + result.score;
+              const curBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+              const newBest = Math.max(curBest, newScore2);
+              announceGameOver(newScore2, newBest);
+              const activeLaneIdForRecord: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+              const startBest = sessionStartBestByLaneRef.current[activeLaneIdForRecord] ?? 0;
+              const hydrationOk = hydrationOkByLaneRef.current[activeLaneIdForRecord] ?? true;
+              if (hydrationOk && isNewRecord(startBest, newScore2)) {
+                announceNewRecord();
+              }
+            }
+          }
+        } catch {}
       }
     },
-    [game, match, matchStats, sessionBestMerge, tutorialState, settings],
+    [game, match, matchStats, sessionBestMerge, tutorialState, settings, selectedLaneIndex],
   );
 
   const handleRestart = useCallback(async () => {
@@ -911,9 +978,20 @@ function AppContent() {
         .onBegin(() => {
           gestureStartSeqRef.current = restartSeqRef.current;
         })
-        .onEnd((event, success) => {
+        .onEnd((event: any, success: boolean) => {
           // DW-96: drop dispatch if restart occurred mid-gesture (seq changed)
           if (gestureStartSeqRef.current !== restartSeqRef.current) return;
+          if (screenReaderEnabledRef.current) {
+            // VoiceOver active: single-finger reserved for navigation, only 3-finger swipes move
+            if (busyRef.current) return;
+            if (!success) return;
+            const dir = isThreeFingerMove(event);
+            if (!dir) return;
+            try {
+              doMoveRef.current(dir);
+            } catch {}
+            return;
+          }
           handleGestureEnd(event, success, busyRef, (dir) => doMoveRef.current(dir));
         }),
     [],
@@ -1031,6 +1109,7 @@ function AppContent() {
                 direction={lastDirectionRef.current ?? undefined}
                 onShakeActiveChange={setIsBoardShaking}
               />
+              <BoardA11yOverlay board={game.board} width={boardSize} />
             </View>
           </GestureDetector>
         </View>
@@ -1053,14 +1132,14 @@ function AppContent() {
           <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
         ) : null}
         <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel={t('laneSelect.pistas')}>
-          <Text style={styles.menuLabel}>{t('laneSelect.pistas')}</Text>
+          <Text style={styles.menuLabel} allowFontScaling>{t('laneSelect.pistas')}</Text>
         </Pressable>
-        <Text style={styles.stats}>
+        <Text style={styles.stats} allowFontScaling>
           {stats
             ? `baseline: ${stats.fps.toFixed(1)} fps · p99 ${stats.p99Ms.toFixed(2)}ms · ${stats.frames} frames`
             : 'recording frame rate baseline…'}
         </Text>
-        <Text style={styles.stats}>
+        <Text style={styles.stats} allowFontScaling>
           score: {sanitizedScore} · live best: {sanitizedBest} · persisted best: {sanitizedPersisted}
         </Text>
       </View>
@@ -1123,10 +1202,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#1a1d23',
+    flexWrap: 'wrap',
   },
   stats: {
     marginTop: 12,
     fontSize: 14,
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
 });

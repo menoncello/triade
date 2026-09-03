@@ -9,9 +9,9 @@ export function CeilingBanner({ onDismiss }: { onDismiss: () => void }) {
     <View style={styles.banner} accessibilityLabel="indicador de teto">
       <View style={styles.bannerAccent} />
       <View style={styles.bannerContent}>
-        <Text style={styles.bannerText}>{t('accelerated.ceilingHint')}</Text>
+        <Text style={styles.bannerText} allowFontScaling>{t('accelerated.ceilingHint')}</Text>
         <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel={t('accelerated.dismiss')}>
-          <Text style={styles.dismissLabel}>×</Text>
+          <Text style={styles.dismissLabel} allowFontScaling>×</Text>
         </Pressable>
       </View>
     </View>
@@ -24,9 +24,9 @@ export function StuckBanner({ onDismiss }: { onDismiss: () => void }) {
     <View style={styles.banner} accessibilityLabel="aviso de travamento">
       <View style={styles.bannerAccent} />
       <View style={styles.bannerContent}>
-        <Text style={styles.bannerText}>{t('accelerated.stuckHint')}</Text>
+        <Text style={styles.bannerText} allowFontScaling>{t('accelerated.stuckHint')}</Text>
         <Pressable onPress={onDismiss} style={styles.dismissBtn} accessibilityRole="button" accessibilityLabel={t('accelerated.dismiss')}>
-          <Text style={styles.dismissLabel}>×</Text>
+          <Text style={styles.dismissLabel} allowFontScaling>×</Text>
         </Pressable>
       </View>
     </View>
@@ -47,17 +47,17 @@ export function RewardPrompt({
   const { t } = useTranslation();
   return (
     <View style={styles.prompt} accessibilityLabel={title}>
-      <Text style={styles.promptTitle}>{title}</Text>
+      <Text style={styles.promptTitle} allowFontScaling>{title}</Text>
       <View style={styles.promptRow}>
         <Pressable onPress={onAd} style={styles.adBtn} accessibilityRole="button" accessibilityLabel={t('reward.ad')}>
-          <Text style={styles.adLabel}>{t('reward.ad')}</Text>
+          <Text style={styles.adLabel} allowFontScaling>{t('reward.ad')}</Text>
         </Pressable>
         <Pressable onPress={onIap} style={styles.iapBtn} accessibilityRole="button" accessibilityLabel={t('reward.iap')}>
-          <Text style={styles.iapLabel}>{t('reward.iap')}</Text>
+          <Text style={styles.iapLabel} allowFontScaling>{t('reward.iap')}</Text>
         </Pressable>
       </View>
       <Pressable onPress={onCancel} style={styles.cancelBtn} accessibilityRole="button" accessibilityLabel={t('reward.cancel')}>
-        <Text style={styles.cancelLabel}>{t('reward.cancel')}</Text>
+        <Text style={styles.cancelLabel} allowFontScaling>{t('reward.cancel')}</Text>
       </Pressable>
     </View>
   );
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     color: '#1a1d23',
+    flexWrap: 'wrap',
   },
   dismissBtn: {
     minWidth: HIT_TARGET,

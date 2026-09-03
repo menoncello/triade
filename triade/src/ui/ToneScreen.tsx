@@ -117,7 +117,7 @@ export function ToneScreen({ insets, onDismiss }: ToneScreenProps) {
         <View style={styles.tileWrap} testID="tone-tile">
           <View style={styles.tile} />
         </View>
-        <Text style={styles.copy} accessibilityRole="text">
+        <Text style={styles.copy} accessibilityRole="text" allowFontScaling>
           {t('tone.line')}
         </Text>
       </View>
@@ -173,5 +173,6 @@ const styles = StyleSheet.create({
     color: '#F2EEE3',
     textAlign: 'center',
     letterSpacing: 0.3,
+    flexWrap: 'wrap',
   },
 });

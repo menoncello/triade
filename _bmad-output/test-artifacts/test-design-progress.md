@@ -6,15 +6,17 @@ lastStep: 'step-05-generate-output'
 nextStep: ''
 lastSaved: '2026-09-02'
 inputDocuments:
-  - 'triade/src/ui/GameOverOverlay.tsx'
-  - 'triade/src/ui/Hud.tsx'
-  - 'triade/src/ui/layout.ts'
-  - 'triade/test-utils/rn-stub.ts'
-  - 'triade/__tests__/ui/components/gameOverOverlay.test.ts'
-  - 'triade/__tests__/ui/components/overlayCarriers.integration.test.ts'
-  - '_bmad-output/implementation-artifacts/spec-overlay-carriers-hardening.md'
+  - '_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md'
+  - '_bmad-output/implementation-artifacts/epic-9-context.md'
   - '_bmad-output/implementation-artifacts/deferred-work.md'
   - '_bmad-output/implementation-artifacts/sprint-status.yaml'
+  - 'triade/src/a11y/announcements.ts'
+  - 'triade/src/a11y/boardAccessibility.tsx'
+  - 'triade/src/a11y/screenReaderGestures.ts'
+  - 'triade/App.tsx'
+  - 'triade/src/ui/ToneScreen.tsx'
+  - 'triade/src/render/GameBoard.tsx'
+  - 'triade/__tests__/a11y/screenReader.contract.test.tsx'
   - '_bmad/tea/config.yaml'
 ---
 
@@ -30,3 +32,11 @@ Prior bundles: dw-persist-hydration-race-fix still archived as `_bmad-output/tes
 Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `e3c4155 sweep dw-board-shake-width-hardening: DW-107, DW-110` vs `e3c52ae` — 2 production files `+150/-10` — `triade/src/render/GameBoard.tsx` safeWidth guard `Math.max(1, Number.isFinite(width)?width:1)` + 5 style sites on safeWidth + `onShakeActiveChange` callback `shakeNotifyTimerRef 130ms` with `scheduleShakeVisible/cancelShakeNotify` symmetric branches + `triade/App.tsx` `isBoardShaking` state + `boardWrap overflow:visible` conditional. Output is `_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md` (mirrored to `test-design/test-design-dw-board-shake-width-hardening.md`).
 
 Prior bundle: dw-overlay-carriers-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
+
+---
+
+# Test Design Progress — 9-2-screen-reader-contract
+
+Epic-Level (Phase 4) deep-dive. Working-tree delta is `6576273` → `HEAD` (b9db712 + 7832d3c/417549b spec finalisation) — 17 files `+825/-56` — 3 new `src/a11y/*` modules (`announcements.ts` announceForAccessibilityWithOptions queue+500ms throttle, `boardAccessibility.tsx` overlay 4×4 GRID=4 PAD=8 GAP=8 safeWidth, `screenReaderGestures.ts` isThreeFingerMove + useScreenReaderEnabled), `App.tsx` pan gate (screenReaderEnabledRef → isThreeFingerMove → doMove, single-finger reserved) + announcement wiring (coalesced merge 1/move, spawn, score throttled, gameOver/newRecord), `ToneScreen.tsx` pause (`paused=voiceOverActive||announcementPending`, 2s timer + 5s fallback, announcementFinished), 8 chrome files `allowFontScaling+flexWrap/minHeight`, `en.json/pt.json:63` a11y keys, `screenReader.contract.test.tsx` 13 P0 tests. Output is `_bmad-output/test-artifacts/test-design/test-design-epic-9-2-screen-reader-contract.md` (mirrored to `test-design-9-2-screen-reader-contract.md`).
+
+Prior bundles: dw-board-shake-width-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md`; dw-overlay-carriers-hardening as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`.

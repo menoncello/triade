@@ -15,7 +15,7 @@ export function PauseButton({ onPress }: PauseButtonProps) {
       style={styles.button}
       hitSlop={4}
     >
-      <Text style={styles.glyph}>II</Text>
+      <Text style={styles.glyph} allowFontScaling>II</Text>
     </Pressable>
   );
 }

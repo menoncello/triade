@@ -63,5 +63,21 @@
   "common": {
     "confirm": "Confirm",
     "cancel": "Cancel"
+  },
+  "a11y": {
+    "moved": "Moved {{dir}}",
+    "merged": "Merged: {{a}} plus {{b}} equals {{c}}",
+    "spawn": "New tile {{value}}",
+    "score": "Score {{score}}",
+    "gameOver": "Game over. Score {{score}}, best {{best}}",
+    "newRecord": "New record",
+    "preview": "Next {{display}}",
+    "tile": "{{value}} row {{row}} column {{col}}",
+    "dir": {
+      "up": "up",
+      "down": "down",
+      "left": "left",
+      "right": "right"
+    }
   }
 }

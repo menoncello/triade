@@ -98,24 +98,24 @@ export function GameOverOverlay({
         <View style={styles.content}>
           <View accessible accessibilityRole="alert" accessibilityLabel={a11yLabel}>
             <View style={styles.row}>
-              <Text style={styles.label}>{t('gameOver.score')}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
+              <Text style={styles.label} allowFontScaling>{t('gameOver.score')}</Text>
+              <Text allowFontScaling numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.score)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>{t('gameOver.best')}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
+              <Text style={styles.label} allowFontScaling>{t('gameOver.best')}</Text>
+              <Text allowFontScaling numberOfLines={1} ellipsizeMode="tail" style={isNewRecord ? styles.valueRecord : styles.value}>{String(stats.best)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>{t('gameOver.maxTile')}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.maxTile)}</Text>
+              <Text style={styles.label} allowFontScaling>{t('gameOver.maxTile')}</Text>
+              <Text allowFontScaling numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.maxTile)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>{t('gameOver.merges')}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.merges)}</Text>
+              <Text style={styles.label} allowFontScaling>{t('gameOver.merges')}</Text>
+              <Text allowFontScaling numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.merges)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>{t('gameOver.longestStreak')}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.longestStreak)}</Text>
+              <Text style={styles.label} allowFontScaling>{t('gameOver.longestStreak')}</Text>
+              <Text allowFontScaling numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{String(stats.longestStreak)}</Text>
             </View>
           </View>
           {/* AC5: Continue offer is Epic 3/4 — Clean shows only primary CTA here */}
@@ -126,12 +126,12 @@ export function GameOverOverlay({
             onPress={onRestart}
             style={styles.cta}
           >
-            <Text style={styles.ctaLabel}>{t('gameOver.restart')}</Text>
+            <Text style={styles.ctaLabel} allowFontScaling>{t('gameOver.restart')}</Text>
           </Pressable>
           {/* 3.3 Accelerated death-continue — discreet, once per game-over, ad first + IAP alternative + Cancel */}
           {activeLaneId === 'accelerated' && canContinue ? (
             <View style={styles.continueWrap} accessibilityLabel={t('gameOver.continueTitle')}>
-              <Text style={styles.continueTitle}>{t('gameOver.continueTitle')}</Text>
+              <Text style={styles.continueTitle} allowFontScaling>{t('gameOver.continueTitle')}</Text>
               <View style={styles.continueRow}>
                 <Pressable
                   onPress={onContinueAd}
@@ -139,7 +139,7 @@ export function GameOverOverlay({
                   accessibilityRole="button"
                   accessibilityLabel={t('gameOver.continueAd')}
                 >
-                  <Text style={styles.continueAdLabel}>{t('gameOver.continueAd')}</Text>
+                  <Text style={styles.continueAdLabel} allowFontScaling>{t('gameOver.continueAd')}</Text>
                 </Pressable>
                 <Pressable
                   onPress={onContinueIap}
@@ -147,7 +147,7 @@ export function GameOverOverlay({
                   accessibilityRole="button"
                   accessibilityLabel={t('gameOver.continueIap')}
                 >
-                  <Text style={styles.continueIapLabel}>{t('gameOver.continueIap')}</Text>
+                  <Text style={styles.continueIapLabel} allowFontScaling>{t('gameOver.continueIap')}</Text>
                 </Pressable>
               </View>
               <Pressable
@@ -156,7 +156,7 @@ export function GameOverOverlay({
                 accessibilityRole="button"
                 accessibilityLabel={t('gameOver.cancel')}
               >
-                <Text style={styles.continueCancelLabel}>{t('gameOver.cancel')}</Text>
+                <Text style={styles.continueCancelLabel} allowFontScaling>{t('gameOver.cancel')}</Text>
               </Pressable>
             </View>
           ) : null}
@@ -192,12 +192,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 8,
+    flexWrap: 'wrap',
+    minHeight: HIT_TARGET - 16,
   },
   label: {
     color: '#8a8578',
     fontSize: 13,
     fontWeight: '500',
     flexShrink: 0,
+    flexWrap: 'wrap',
   },
   value: {
     color: '#1a1d23',
@@ -206,6 +209,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
     flexShrink: 1,
     textAlign: 'right',
+    flexWrap: 'wrap',
   },
   valueRecord: {
     color: '#E8A33D',
@@ -214,6 +218,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
     flexShrink: 1,
     textAlign: 'right',
+    flexWrap: 'wrap',
   },
   cta: {
     minWidth: HIT_TARGET,
@@ -226,12 +231,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginTop: 12,
+    flexWrap: 'wrap',
   },
   ctaLabel: {
     color: '#1C1206',
     fontSize: 17,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
   continueWrap: {
     marginTop: 12,

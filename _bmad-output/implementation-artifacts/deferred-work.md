@@ -970,3 +970,19 @@ reason: doMove identity invalidates on every sessionBestMerge change — gesture
 status: done 2026-09-02
 resolution: closed by human decision: Keep current, functional updater avoids stale
 decision: 2026-09-02 Keep deps as stability still functional — Keep current, functional updater avoids stale
+
+### DW-112: Focus management after move — BoardA11yOverlay re-renders but never moves VoiceOver focus via setAccessibilityFocus
+
+origin: deferred from review of spec-9-2-screen-reader-contract (2026-09-02)
+location: triade/src/a11y/boardAccessibility.tsx
+reason: BoardA11yOverlay renders per-tile accessible elements and re-renders on board changes, but does not call AccessibilityInfo.setAccessibilityFocus to move VoiceOver focus after a move; a vanished tile leaves focus on a dead node. Requires platform focus API beyond current patch scope.
+status: open
+source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md`
+
+### DW-113: Skia Canvas duplicate accessibility nodes — GameBoard Canvas not hidden from accessibility tree
+
+origin: deferred from review of spec-9-2-screen-reader-contract (2026-09-02)
+location: triade/src/render/GameBoard.tsx
+reason: Skia Canvas may expose empty/duplicate accessibility nodes alongside the RN BoardA11yOverlay bridge; should set importantForAccessibility="no-hide-descendants" on Canvas wrapper to avoid duplicate announcements.
+status: open
+source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md`

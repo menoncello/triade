@@ -36,7 +36,7 @@ export function TutorialOverlay({ phase, insets, onSkip }: Props) {
           },
         ]}
       >
-        <Text style={styles.cueText} accessibilityRole="text">
+        <Text style={styles.cueText} accessibilityRole="text" allowFontScaling>
           {text}
         </Text>
       </View>
@@ -47,7 +47,7 @@ export function TutorialOverlay({ phase, insets, onSkip }: Props) {
           accessibilityRole="button"
           accessibilityLabel={t('tutorial.skipA11y')}
         >
-          <Text style={styles.skipLabel}>{t('tutorial.skip')}</Text>
+          <Text style={styles.skipLabel} allowFontScaling>{t('tutorial.skip')}</Text>
         </Pressable>
       </View>
     </View>
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#F2EEE3',
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
   skipWrap: {
     position: 'absolute',

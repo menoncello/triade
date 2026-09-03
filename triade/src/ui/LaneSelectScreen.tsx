@@ -68,8 +68,8 @@ export function LaneSelectScreen({
       accessibilityLabel="Lane Select"
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>{t('laneSelect.title')}</Text>
-        <Text style={styles.subtitle}>{t('laneSelect.subtitle')}</Text>
+        <Text style={styles.title} allowFontScaling>{t('laneSelect.title')}</Text>
+        <Text style={styles.subtitle} allowFontScaling>{t('laneSelect.subtitle')}</Text>
 
         <View style={styles.cardsRow}>
           {LANES.map((lane) => {
@@ -87,9 +87,9 @@ export function LaneSelectScreen({
                 accessibilityState={{ selected: isSelected }}
               >
                 {isSelected ? <View style={styles.accentBar} /> : null}
-                <Text style={styles.cardLabel}>{label}</Text>
-                {subtitle ? <Text style={styles.cardSubtitle}>{subtitle}</Text> : null}
-                <Text style={styles.cardTone}>{tone}</Text>
+                <Text style={styles.cardLabel} allowFontScaling>{label}</Text>
+                {subtitle ? <Text style={styles.cardSubtitle} allowFontScaling>{subtitle}</Text> : null}
+                <Text style={styles.cardTone} allowFontScaling>{tone}</Text>
               </Pressable>
             );
           })}
@@ -97,7 +97,7 @@ export function LaneSelectScreen({
 
         {pendingIndex !== null ? (
           <View style={styles.warningBanner} accessibilityLabel={t('laneSelect.switchWarning')}>
-            <Text style={styles.warningText}>{t('laneSelect.switchWarning')}</Text>
+            <Text style={styles.warningText} allowFontScaling>{t('laneSelect.switchWarning')}</Text>
             <View style={styles.warningActions}>
               <Pressable
                 onPress={handleConfirm}
@@ -105,7 +105,7 @@ export function LaneSelectScreen({
                 accessibilityRole="button"
                 accessibilityLabel={t('laneSelect.confirm')}
               >
-                <Text style={styles.warningConfirmLabel}>{t('laneSelect.confirm')}</Text>
+                <Text style={styles.warningConfirmLabel} allowFontScaling>{t('laneSelect.confirm')}</Text>
               </Pressable>
               <Pressable
                 onPress={handleCancel}
@@ -113,7 +113,7 @@ export function LaneSelectScreen({
                 accessibilityRole="button"
                 accessibilityLabel={t('laneSelect.cancel')}
               >
-                <Text style={styles.warningCancelLabel}>{t('laneSelect.cancel')}</Text>
+                <Text style={styles.warningCancelLabel} allowFontScaling>{t('laneSelect.cancel')}</Text>
               </Pressable>
             </View>
           </View>
@@ -125,7 +125,7 @@ export function LaneSelectScreen({
           accessibilityRole="button"
           accessibilityLabel={t('laneSelect.play')}
         >
-          <Text style={styles.ctaLabel}>{t('laneSelect.play')}</Text>
+          <Text style={styles.ctaLabel} allowFontScaling>{t('laneSelect.play')}</Text>
         </Pressable>
         {onRestorePurchases ? (
           <Pressable
@@ -136,11 +136,11 @@ export function LaneSelectScreen({
             accessibilityLabel={t('laneSelect.restore')}
             accessibilityState={{ busy: !!restoreBusy, disabled: !!restoreBusy }}
           >
-            <Text style={styles.restoreLabel}>{restoreBusy ? t('laneSelect.restoring') : t('laneSelect.restore')}</Text>
+            <Text style={styles.restoreLabel} allowFontScaling>{restoreBusy ? t('laneSelect.restoring') : t('laneSelect.restore')}</Text>
           </Pressable>
         ) : null}
         {hasActiveMatch && pendingIndex === null ? (
-          <Text style={styles.footerNote}>{t('laneSelect.footerNote')}</Text>
+          <Text style={styles.footerNote} allowFontScaling>{t('laneSelect.footerNote')}</Text>
         ) : null}
         {onLanguageChange ? (
           <View style={styles.langRow} accessibilityLabel="language selector">
@@ -151,7 +151,7 @@ export function LaneSelectScreen({
               accessibilityLabel="Português"
               accessibilityState={{ selected: language === 'pt' }}
             >
-              <Text style={[styles.langLabel, language === 'pt' ? styles.langLabelSelected : null]}>PT</Text>
+              <Text style={[styles.langLabel, language === 'pt' ? styles.langLabelSelected : null]} allowFontScaling>PT</Text>
             </Pressable>
             <Pressable
               onPress={() => onLanguageChange('en')}
@@ -160,7 +160,7 @@ export function LaneSelectScreen({
               accessibilityLabel="English"
               accessibilityState={{ selected: language === 'en' }}
             >
-              <Text style={[styles.langLabel, language === 'en' ? styles.langLabelSelected : null]}>EN</Text>
+              <Text style={[styles.langLabel, language === 'en' ? styles.langLabelSelected : null]} allowFontScaling>EN</Text>
             </Pressable>
           </View>
         ) : null}
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1a1d23',
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
   subtitle: {
     marginTop: 4,
@@ -194,11 +195,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#8a8578',
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
   cardsRow: {
     marginTop: 16,
     flexDirection: 'row',
     gap: 12,
+    flexWrap: 'wrap',
   },
   card: {
     flex: 1,
@@ -208,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#fff',
     justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   cardIdle: {
     borderColor: '#e7e4de',
