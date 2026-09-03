@@ -66,7 +66,9 @@ decision: 2026-09-02 Force dark status bar — Set StatusBar style dark on lands
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-5-layout-portrait-e-landscape (2026-08-17)"), 2026-09-01
 location: triade/src/ui/Hud.tsx:26
 reason: Preview placeholder Views aren't a11y-hidden (`accessible={false}`), and the raw score lacks a thousands separator vs the mockup's "3.240" (`triade/src/ui/Hud.tsx:26,48`). Out of scope — preview data is Epic 7, a11y is Epic 9.
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-hud-score-a11y-polish
+resolution-undo: cb5eeedd289a56083f613633339d9265d2313348c4f7d399b8a42cefc64c4510 2026-09-03 7374617475733a206f70656e
 
 ### DW-9: Temp move harness + ScrollView not `__DEV__`-gated — ships to production until story 1.6 replaces the input path. Documented temp state.
 

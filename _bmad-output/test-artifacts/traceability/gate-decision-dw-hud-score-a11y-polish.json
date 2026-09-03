@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-03T00:00:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-hud-score-a11y-polish",
+    "label": "dw-hud-score-a11y-polish — Hud pt-BR thousands + preview a11y polish (DW-8)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (7/7), P1 coverage is 100% (target 90%, minimum 80%), overall 100% (minimum 80%). All 2 high risks R-001 pt-BR locale divergence (toLocaleString pt-BR grouping . not comma) + R-002 accessible=false hides PreviewCard announce mitigated via dual P0 host pins plus static allowlists and preserves PreviewCard accessible label through hidden wrappers (portrait exact + landscape range both expose Próxima (Clean): 3 with pointerEvents none). Medium risks R-003 guard scope + R-004 long 1.000.000 chrome + R-005 pointerEvents also covered (Number.isFinite guard NaN/Infinity→0, 76×76/60×44 + pauseSlot chrome still hasStyle green at 1.000.000, thin-view Animated absent). No engine mutation (git diff --stat -- triade/src/engine empty, triade/src/game/preview.ts empty), tsc --noEmit clean (both tsconfigs), host gate 980 pass +385 skipped dormant (998 pass when 19 triade ATDD activated — 18/19 P3 bench variance 118ms vs 100ms informational only), gateway 14 + umbrella 8 + unit 19 dormant correctly RED-phase (60 skipped), ledger 1× cb5eeedd done 2026-09-03, sprint-status.yaml untouched. NFR PASS across i18n/reliability/a11y/maintainability/performance (bench O1 <150ms informational). No blockers.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "nfr_status": "PASS",
+  "nfr_assessment_path": "_bmad-output/test-artifacts/nfr-assessment-dw-hud-score-a11y-polish.md",
+  "categories": {
+    "performance": "PASS",
+    "security": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS",
+    "scalability": "PASS",
+    "compliance": "PASS",
+    "offline": "PASS"
+  },
+  "adr_score": "N/A",
+  "concerns": 0,
+  "blockers": false,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-hud-score-a11y-polish.md",
+    "nfr_report_path": "_bmad-output/test-artifacts/nfr-assessment-dw-hud-score-a11y-polish.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

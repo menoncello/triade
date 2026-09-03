@@ -8,6 +8,10 @@ type LaneId = 'clean' | 'accelerated';
 
 const FALLBACK_PREVIEW: Preview = { kind: 'range', values: [] };
 
+function fmt(n: number): string {
+  return Number.isFinite(n) ? n.toLocaleString('pt-BR') : '0';
+}
+
 export interface HudProps {
   score: number;
   best: number;
@@ -37,7 +41,7 @@ export interface HudProps {
 // `isLandscape` selects the per-orientation box size (pinned AC4 markers).
 function LanePreview({ label, preview, isLandscape }: { label: string; preview: Preview; isLandscape: boolean }) {
   return (
-    <View style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}>
+    <View accessible={false} style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}>
       <PreviewCard preview={preview} label={label} />
     </View>
   );
@@ -74,14 +78,14 @@ export function Hud({
         <View style={[styles.landscapeBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
           <View style={styles.landscapeLeft}>
             <Text style={styles.scoreLandscape} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
-              {score}
+              {fmt(score)}
             </Text>
             <Text style={styles.bestLandscape} allowFontScaling adjustsFontSizeToFit={false}>
-              Recorde {best}
+              Recorde {fmt(best)}
             </Text>
           </View>
           <View style={styles.landscapeRight}>
-            <View pointerEvents="none" style={styles.landscapePreviews}>
+            <View pointerEvents="none" accessible={false} style={styles.landscapePreviews}>
               <LanePreview label={activeLabel} preview={activePreview} isLandscape />
             </View>
             {showAssistance && onUndo ? (
@@ -121,17 +125,17 @@ export function Hud({
         <View style={styles.pauseSlot} />
         <View style={styles.scoreWrap}>
           <Text style={styles.scorePortrait} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
-            {score}
+            {fmt(score)}
           </Text>
           <Text style={styles.bestPortrait} allowFontScaling adjustsFontSizeToFit={false}>
-            Recorde {best}
+            Recorde {fmt(best)}
           </Text>
         </View>
         <View style={styles.pauseSlot}>
           <PauseButton />
         </View>
       </View>
-      <View pointerEvents="box-none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
+      <View pointerEvents="box-none" accessible={false} style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
         <LanePreview label={activeLabel} preview={activePreview} isLandscape={false} />
       </View>
       {showAssistance && (onUndo || onHint) ? (
