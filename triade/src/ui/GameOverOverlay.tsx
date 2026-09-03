@@ -216,8 +216,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   cta: {
-    width: HIT_TARGET,
-    height: HIT_TARGET,
+    minWidth: HIT_TARGET,
+    minHeight: HIT_TARGET,
+    paddingHorizontal: 24,
+    paddingVertical: 8,
     backgroundColor: '#E8A33D',
     borderRadius: 12,
     alignItems: 'center',
@@ -250,6 +252,7 @@ const styles = StyleSheet.create({
   },
   continueAd: {
     flex: 1,
+    minWidth: HIT_TARGET,
     minHeight: HIT_TARGET,
     backgroundColor: '#E8A33D',
     borderRadius: 8,
@@ -263,6 +266,7 @@ const styles = StyleSheet.create({
   },
   continueIap: {
     flex: 1,
+    minWidth: HIT_TARGET,
     minHeight: HIT_TARGET,
     backgroundColor: '#1a1d23',
     borderRadius: 8,
@@ -275,6 +279,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   continueCancel: {
+    minWidth: HIT_TARGET,
     minHeight: HIT_TARGET,
     borderWidth: 1,
     borderColor: '#e7e4de',

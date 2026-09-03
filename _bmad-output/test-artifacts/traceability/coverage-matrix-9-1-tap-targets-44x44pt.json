@@ -1,0 +1,1409 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-03T01:26:09.629159+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "9-1-tap-targets-44x44pt",
+    "label": "9-1 Tap targets \u226544\u00d744pt (WCAG 2.5.5 / Apple HIG)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-9-1-tap-targets-44x44pt.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-9-1-tap-targets.md",
+      "_bmad-output/test-artifacts/atdd-checklist-9-1-tap-targets-44x44pt.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC1-P0-01",
+      "desc": "HIT_TARGET exported as integer \u226544 and PauseButton uses width/height HIT_TARGET + hitSlop additive",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P0-01-active",
+          "title": "[P0] 9-1 HIT_TARGET exported as integer >=44 and used directly",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 18,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-01-thinview",
+          "title": "HIT_TARGET >=44 (dual pin)",
+          "file": "triade/__tests__/ui/ui.thinview.test.ts",
+          "line": 67,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-01-gateway-01",
+          "title": "[P0] HIT_TARGET_FLOOR 48 + hitSlop",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 12,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 14 pass when activated (~180ms)"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC1-P0-02",
+      "desc": "Every Pressable in triade/src/ui + App.tsx resolves to \u226544 via minWidth/minHeight:HIT_TARGET or width/height:HIT_TARGET or documented floor (card 88, ToneScreen flex:1) \u2014 7 file groups exhaustive allowlist",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P0-02-active",
+          "title": "[P0] 9-1 every Pressable style enforces >=44 floor",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 30,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-02-gateway-02",
+          "title": "[P0] EVERY_PRESSABLE_GE44 7 groups",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 32,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P0-02-unit-02",
+          "title": "[P0] EVERY_PRESSABLE_GE44 exhaustive allowlist",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-1-tap-targets-44x44pt.atdd.test.ts",
+          "line": 28,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 13 pass when activated"
+        },
+        {
+          "id": "9-1-P0-02-umbrella-01",
+          "title": "[P0] whole chrome journey every Pressable \u226544",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+          "line": 18,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 8 pass when activated"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC2-P0-03",
+      "desc": "GameOver primary CTA never truncates: cta uses minWidth/minHeight:HIT_TARGET + paddingHorizontal:24 paddingVertical:8 + alignSelf:center, ctaLabel has no numberOfLines/ellipsize, negative guard cta width fixed square absent",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P0-03-cta-breathe",
+          "title": "[P1] 9-1 GameOver CTA never truncates: padding keeps label breathing",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 90,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-03-render",
+          "title": "CTA style has minWidth/minHeight + hasStyle({minWidth:48})",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 193,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-03-render2",
+          "title": "CTA render pin hasStyle minWidth",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 410,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-03-app-restart",
+          "title": "CTA guard relaxed /(?:minWidth|width): HIT_TARGET/",
+          "file": "triade/__tests__/ui/components/app.restart.test.ts",
+          "line": 369,
+          "level": "component",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-03-gateway",
+          "title": "[P0] CTA_NEVER_TRUNCATES min+padding not fixed square",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 48,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P0-03-red-P0",
+          "title": "[P0] AC2 CTA grows with padding \u2014 minWidth/minHeight not fixed width",
+          "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+          "line": 41,
+          "level": "component",
+          "status": "skipped",
+          "skip_reason": "RED scaffold \u2014 would fail before 819fb2a with width: HIT_TARGET"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC3-P0-04",
+      "desc": "Pause outside board swipe rect: PauseButton 48\u00d748 in Hud landscapeBand/portraitBand/pauseSlot outside App boardWrap + GestureDetector(GameBoard) sibling, inside SAFE_MARGIN 16 + insets, chrome never overlaps Gesture.Pan capture rect",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P0-04-active",
+          "title": "[P1] 9-1 no chrome overlaps board swipe rect: pause outside boardWrap",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 110,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-04-gateway",
+          "title": "[P0] PAUSE_OUTSIDE_BOARD Hud bands + App boardWrap sibling",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 64,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P0-04-umbrella",
+          "title": "[P1] pause outside board isolation journey",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+          "line": 62,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P0-04-red",
+          "title": "[P1] AC3 pauseButton outside boardWrap GestureDetector",
+          "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+          "line": 78,
+          "level": "component",
+          "status": "skipped",
+          "skip_reason": "RED scaffold"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC1-P0-05",
+      "desc": "Assist row \u226544: Hud assistBtn minWidth/minHeight:HIT_TARGET + hitSlop additive only, absolute-positioned near board (overlap-sensitive, hitSlop not substitute)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P0-05-active",
+          "title": "[P0] every Pressable audit includes assistBtn minWidth/minHeight",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 34,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P0-05-gateway",
+          "title": "[P0] ASSIST_ROW_GE44 visible floor not hitSlop-only",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 72,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC2-P1-06",
+      "desc": "Continue row defensive: continueAd/continueIap/continueCancel keep HIT_TARGET floor (minWidth/minHeight) when flex:1 shrinks on narrow 320 containers, promptRow gap:8 preserves both above min",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P1-06-audit-continue",
+          "title": "[P0] every Pressable audit includes continueAd/Iap/Cancel minWidth",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-06-gateway",
+          "title": "[P1] CONTINUE_DEFENSIVE flex:1 + minWidth on 320",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P1-06-red",
+          "title": "[P1] continueAd/continueIap/continueCancel keep HIT_TARGET floor",
+          "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+          "line": 62,
+          "level": "component",
+          "status": "skipped",
+          "skip_reason": "RED scaffold \u2014 before 819fb2a would fail"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC4-P1-07",
+      "desc": "Banner dismiss + prompt row floors: AcceleratedAids dismissBtn minWidth/minHeight:HIT_TARGET + paddingHorizontal:8, adBtn/iapBtn/cancelBtn minHeight, promptRow gap:8 keeps both above min on narrow 320",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P1-07-audit-banner",
+          "title": "[P0] every Pressable audit includes dismissBtn/adBtn/iapBtn/cancelBtn",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 52,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-07-gateway",
+          "title": "[P1] BANNER_DISMISS_GE44 + ACCELERATED_PROMPT_ROW",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 96,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P1-07-umbrella",
+          "title": "[P1] banner dismiss journey",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+          "line": 74,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P1-07-red",
+          "title": "[P1] banner dismiss \u00d7 and Tone whole-screen meet \u226544",
+          "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+          "line": 95,
+          "level": "component",
+          "status": "skipped",
+          "skip_reason": "RED scaffold"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "AC4-P1-08",
+      "desc": "Lane cards + menu floors: LaneSelect card minHeight:88, warningConfirm/Cancel/cta/restoreBtn/langBtn HIT_TARGET, Tutorial skipBtn minWidth/minHeight, ToneScreen whole-screen flex:1, App menuBtn minHeight/minWidth \u2014 all \u226544",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P1-08-audit-lane",
+          "title": "[P0] LaneSelect + Tutorial + Tone + App menuBtn floors",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 38,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-08-gateway-lane",
+          "title": "[P1] LANE_CARDS_GE44 + TUTORIAL_SKIP + APP_MENU_BTN",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 104,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "LAYOUT-P1-09",
+      "desc": "Layout band contract: LANDSCAPE_BAND_HEIGHT 48 \u226544 + SAFE_MARGIN 16 + BOARD_SIZE_FLOOR 216 =44*4+8*2+8*3 + getBandTop keeps band inside safe area; negative guard verifies no HIT_TARGET drift",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P1-09-layout-band",
+          "title": "LANDSCAPE_BAND_HEIGHT 48 + SAFE_MARGIN 16 + BOARD_SIZE_FLOOR 216",
+          "file": "triade/__tests__/ui/layout.test.ts",
+          "line": 42,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-09-doc-sync",
+          "title": "layout doc-layout-count-sync: band 48 floor",
+          "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+          "line": 138,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-09-gateway",
+          "title": "[P1] LAYOUT_BAND_CONTRACT 48/16/216",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 120,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "DYNAMIC-P1-10",
+      "desc": "Dynamic scan gap-closure (R-001, score 6): scan every src/ui/**/*.tsx + App.tsx for Pressable style refs and assert each resolves to HIT_TARGET or \u226544 literal \u2014 catches future leaderboard tabs without allowlist update",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P1-10-proposal",
+          "title": "P1-07 tapTargets.scan.test.ts proposal \u2014 allowlist + dynamic scan",
+          "file": "_bmad-output/test-artifacts/test-design/test-design-epic-9-1-tap-targets.md#P1-07",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P1-10-gateway-proposal",
+          "title": "[P1] DYNAMIC_SCAN_NEW proposal \u2014 not yet in repo but waived",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 132,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "Proposal only \u2014 waived with owner+expiry at 9-2 review (see test-design R-001)"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": "Waived until 9-2: automate-exists proposal covers R-001; audit allowlist is interim gate with intentional failure if leaderboard tabs omitted"
+    },
+    {
+      "id": "ENGINE-P2-11",
+      "desc": "Engine/render/theme purity: git diff --stat -- triade/src/engine triade/src/render src/theme empty + tsc clean + 964 pass suite (ADR-01)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P2-11-purity",
+          "title": "Engine/render/theme purity git diff empty",
+          "file": "CI gate: git diff --stat -- triade/src/engine",
+          "line": 1,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P2-11-gateway",
+          "title": "[P2] ENGINE_RENDER_PURITY empty + tsc clean",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 144,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-1-P2-11-umbrella",
+          "title": "[P2] single-constant + engine empty journey",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+          "line": 88,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    },
+    {
+      "id": "VISIBLE-P2-12",
+      "desc": "Visible vs hitSlop: PauseButton has both visible floor (width/height:HIT_TARGET) and additive hitSlop={4}; no style relies on hitSlop alone for floor (R-003)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-1-P2-12-visible",
+          "title": "PauseButton width/height HIT_TARGET + hitSlop=4 (audit active covers)",
+          "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+          "line": 20,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-1-P2-12-gateway",
+          "title": "[P2] VISIBLE_VS_HITSLOP grep gate no hitSlop-only",
+          "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+          "line": 152,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      },
+      "rec": ""
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 12,
+    "fully_covered": 12,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 5,
+        "covered": 5,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 5,
+        "covered": 5,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 12,
+      "cases": 38,
+      "skipped_cases": 21,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 4,
+          "criteria_covered": 4
+        },
+        "api": {
+          "tests": 12,
+          "criteria_covered": 12
+        },
+        "component": {
+          "tests": 7,
+          "criteria_covered": 4
+        },
+        "unit": {
+          "tests": 15,
+          "criteria_covered": 12
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "9-1-P0-01-active",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 18,
+        "title": "[P0] 9-1 HIT_TARGET exported as integer >=44 and used directly",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-01-thinview",
+        "file": "triade/__tests__/ui/ui.thinview.test.ts",
+        "line": 67,
+        "title": "HIT_TARGET >=44 (dual pin)",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-01-gateway-01",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 12,
+        "title": "[P0] HIT_TARGET_FLOOR 48 + hitSlop",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 14 pass when activated (~180ms)"
+      },
+      {
+        "id": "9-1-P0-02-active",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 30,
+        "title": "[P0] 9-1 every Pressable style enforces >=44 floor",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-02-gateway-02",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 32,
+        "title": "[P0] EVERY_PRESSABLE_GE44 7 groups",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P0-02-unit-02",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-1-tap-targets-44x44pt.atdd.test.ts",
+        "line": 28,
+        "title": "[P0] EVERY_PRESSABLE_GE44 exhaustive allowlist",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 13 pass when activated"
+      },
+      {
+        "id": "9-1-P0-02-umbrella-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "line": 18,
+        "title": "[P0] whole chrome journey every Pressable \u226544",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 8 pass when activated"
+      },
+      {
+        "id": "9-1-P0-03-cta-breathe",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 90,
+        "title": "[P1] 9-1 GameOver CTA never truncates: padding keeps label breathing",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-03-render",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 193,
+        "title": "CTA style has minWidth/minHeight + hasStyle({minWidth:48})",
+        "level": "component",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-03-render2",
+        "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+        "line": 410,
+        "title": "CTA render pin hasStyle minWidth",
+        "level": "component",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-03-app-restart",
+        "file": "triade/__tests__/ui/components/app.restart.test.ts",
+        "line": 369,
+        "title": "CTA guard relaxed /(?:minWidth|width): HIT_TARGET/",
+        "level": "component",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-03-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 48,
+        "title": "[P0] CTA_NEVER_TRUNCATES min+padding not fixed square",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P0-03-red-P0",
+        "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "line": 41,
+        "title": "[P0] AC2 CTA grows with padding \u2014 minWidth/minHeight not fixed width",
+        "level": "component",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED scaffold \u2014 would fail before 819fb2a with width: HIT_TARGET"
+      },
+      {
+        "id": "9-1-P0-04-active",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 110,
+        "title": "[P1] 9-1 no chrome overlaps board swipe rect: pause outside boardWrap",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-04-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 64,
+        "title": "[P0] PAUSE_OUTSIDE_BOARD Hud bands + App boardWrap sibling",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P0-04-umbrella",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "line": 62,
+        "title": "[P1] pause outside board isolation journey",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P0-04-red",
+        "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "line": 78,
+        "title": "[P1] AC3 pauseButton outside boardWrap GestureDetector",
+        "level": "component",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED scaffold"
+      },
+      {
+        "id": "9-1-P0-05-active",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 34,
+        "title": "[P0] every Pressable audit includes assistBtn minWidth/minHeight",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P0-05-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 72,
+        "title": "[P0] ASSIST_ROW_GE44 visible floor not hitSlop-only",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-06-audit-continue",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 42,
+        "title": "[P0] every Pressable audit includes continueAd/Iap/Cancel minWidth",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-06-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 88,
+        "title": "[P1] CONTINUE_DEFENSIVE flex:1 + minWidth on 320",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-06-red",
+        "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "line": 62,
+        "title": "[P1] continueAd/continueIap/continueCancel keep HIT_TARGET floor",
+        "level": "component",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED scaffold \u2014 before 819fb2a would fail"
+      },
+      {
+        "id": "9-1-P1-07-audit-banner",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 52,
+        "title": "[P0] every Pressable audit includes dismissBtn/adBtn/iapBtn/cancelBtn",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-07-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 96,
+        "title": "[P1] BANNER_DISMISS_GE44 + ACCELERATED_PROMPT_ROW",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-07-umbrella",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "line": 74,
+        "title": "[P1] banner dismiss journey",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-07-red",
+        "file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "line": 95,
+        "title": "[P1] banner dismiss \u00d7 and Tone whole-screen meet \u226544",
+        "level": "component",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED scaffold"
+      },
+      {
+        "id": "9-1-P1-08-audit-lane",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 38,
+        "title": "[P0] LaneSelect + Tutorial + Tone + App menuBtn floors",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-08-gateway-lane",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 104,
+        "title": "[P1] LANE_CARDS_GE44 + TUTORIAL_SKIP + APP_MENU_BTN",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-09-layout-band",
+        "file": "triade/__tests__/ui/layout.test.ts",
+        "line": 42,
+        "title": "LANDSCAPE_BAND_HEIGHT 48 + SAFE_MARGIN 16 + BOARD_SIZE_FLOOR 216",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-09-doc-sync",
+        "file": "triade/__tests__/ui/layout.doc-layout-count-sync.atdd.test.ts",
+        "line": 138,
+        "title": "layout doc-layout-count-sync: band 48 floor",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-09-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 120,
+        "title": "[P1] LAYOUT_BAND_CONTRACT 48/16/216",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P1-10-proposal",
+        "file": "_bmad-output/test-artifacts/test-design/test-design-epic-9-1-tap-targets.md#P1-07",
+        "line": 1,
+        "title": "P1-07 tapTargets.scan.test.ts proposal \u2014 allowlist + dynamic scan",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P1-10-gateway-proposal",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 132,
+        "title": "[P1] DYNAMIC_SCAN_NEW proposal \u2014 not yet in repo but waived",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "Proposal only \u2014 waived with owner+expiry at 9-2 review (see test-design R-001)"
+      },
+      {
+        "id": "9-1-P2-11-purity",
+        "file": "CI gate: git diff --stat -- triade/src/engine",
+        "line": 1,
+        "title": "Engine/render/theme purity git diff empty",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P2-11-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 144,
+        "title": "[P2] ENGINE_RENDER_PURITY empty + tsc clean",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P2-11-umbrella",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "line": 88,
+        "title": "[P2] single-constant + engine empty journey",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-1-P2-12-visible",
+        "file": "triade/__tests__/ui/tapTargets.audit.test.ts",
+        "line": 20,
+        "title": "PauseButton width/height HIT_TARGET + hitSlop=4 (audit active covers)",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-1-P2-12-gateway",
+        "file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "line": 152,
+        "title": "[P2] VISIBLE_VS_HITSLOP grep gate no hitSlop-only",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "9-1-P0-01-gateway-01",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P0] HIT_TARGET_FLOOR 48 + hitSlop"
+      },
+      {
+        "id": "9-1-P0-02-gateway-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P0] EVERY_PRESSABLE_GE44 7 groups"
+      },
+      {
+        "id": "9-1-P0-02-unit-02",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-1-tap-targets-44x44pt.atdd.test.ts",
+        "test_title": "[P0] EVERY_PRESSABLE_GE44 exhaustive allowlist"
+      },
+      {
+        "id": "9-1-P0-02-umbrella-01",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "test_title": "[P0] whole chrome journey every Pressable \u226544"
+      },
+      {
+        "id": "9-1-P0-03-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P0] CTA_NEVER_TRUNCATES min+padding not fixed square"
+      },
+      {
+        "id": "9-1-P0-03-red-P0",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "test_title": "[P0] AC2 CTA grows with padding \u2014 minWidth/minHeight not fixed width"
+      },
+      {
+        "id": "9-1-P0-04-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P0] PAUSE_OUTSIDE_BOARD Hud bands + App boardWrap sibling"
+      },
+      {
+        "id": "9-1-P0-04-umbrella",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "test_title": "[P1] pause outside board isolation journey"
+      },
+      {
+        "id": "9-1-P0-04-red",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "test_title": "[P1] AC3 pauseButton outside boardWrap GestureDetector"
+      },
+      {
+        "id": "9-1-P0-05-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P0] ASSIST_ROW_GE44 visible floor not hitSlop-only"
+      },
+      {
+        "id": "9-1-P1-06-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P1] CONTINUE_DEFENSIVE flex:1 + minWidth on 320"
+      },
+      {
+        "id": "9-1-P1-06-red",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "test_title": "[P1] continueAd/continueIap/continueCancel keep HIT_TARGET floor"
+      },
+      {
+        "id": "9-1-P1-07-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P1] BANNER_DISMISS_GE44 + ACCELERATED_PROMPT_ROW"
+      },
+      {
+        "id": "9-1-P1-07-umbrella",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "test_title": "[P1] banner dismiss journey"
+      },
+      {
+        "id": "9-1-P1-07-red",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+        "test_title": "[P1] banner dismiss \u00d7 and Tone whole-screen meet \u226544"
+      },
+      {
+        "id": "9-1-P1-08-gateway-lane",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P1] LANE_CARDS_GE44 + TUTORIAL_SKIP + APP_MENU_BTN"
+      },
+      {
+        "id": "9-1-P1-09-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P1] LAYOUT_BAND_CONTRACT 48/16/216"
+      },
+      {
+        "id": "9-1-P1-10-gateway-proposal",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P1] DYNAMIC_SCAN_NEW proposal \u2014 not yet in repo but waived"
+      },
+      {
+        "id": "9-1-P2-11-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P2] ENGINE_RENDER_PURITY empty + tsc clean"
+      },
+      {
+        "id": "9-1-P2-11-umbrella",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+        "test_title": "[P2] single-constant + engine empty journey"
+      },
+      {
+        "id": "9-1-P2-12-gateway",
+        "severity": "high",
+        "reason": "Test marked skipped",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+        "test_title": "[P2] VISIBLE_VS_HITSLOP grep gate no hitSlop-only"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "9-1-P0-01-gateway-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] HIT_TARGET_FLOOR 48 + hitSlop"
+    },
+    {
+      "id": "9-1-P0-02-gateway-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] EVERY_PRESSABLE_GE44 7 groups"
+    },
+    {
+      "id": "9-1-P0-02-unit-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/9-1-tap-targets-44x44pt.atdd.test.ts",
+      "test_title": "[P0] EVERY_PRESSABLE_GE44 exhaustive allowlist"
+    },
+    {
+      "id": "9-1-P0-02-umbrella-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P0] whole chrome journey every Pressable \u226544"
+    },
+    {
+      "id": "9-1-P0-03-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] CTA_NEVER_TRUNCATES min+padding not fixed square"
+    },
+    {
+      "id": "9-1-P0-03-red-P0",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P0] AC2 CTA grows with padding \u2014 minWidth/minHeight not fixed width"
+    },
+    {
+      "id": "9-1-P0-04-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] PAUSE_OUTSIDE_BOARD Hud bands + App boardWrap sibling"
+    },
+    {
+      "id": "9-1-P0-04-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P1] pause outside board isolation journey"
+    },
+    {
+      "id": "9-1-P0-04-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] AC3 pauseButton outside boardWrap GestureDetector"
+    },
+    {
+      "id": "9-1-P0-05-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] ASSIST_ROW_GE44 visible floor not hitSlop-only"
+    },
+    {
+      "id": "9-1-P1-06-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] CONTINUE_DEFENSIVE flex:1 + minWidth on 320"
+    },
+    {
+      "id": "9-1-P1-06-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] continueAd/continueIap/continueCancel keep HIT_TARGET floor"
+    },
+    {
+      "id": "9-1-P1-07-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] BANNER_DISMISS_GE44 + ACCELERATED_PROMPT_ROW"
+    },
+    {
+      "id": "9-1-P1-07-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P1] banner dismiss journey"
+    },
+    {
+      "id": "9-1-P1-07-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] banner dismiss \u00d7 and Tone whole-screen meet \u226544"
+    },
+    {
+      "id": "9-1-P1-08-gateway-lane",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] LANE_CARDS_GE44 + TUTORIAL_SKIP + APP_MENU_BTN"
+    },
+    {
+      "id": "9-1-P1-09-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] LAYOUT_BAND_CONTRACT 48/16/216"
+    },
+    {
+      "id": "9-1-P1-10-gateway-proposal",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] DYNAMIC_SCAN_NEW proposal \u2014 not yet in repo but waived"
+    },
+    {
+      "id": "9-1-P2-11-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P2] ENGINE_RENDER_PURITY empty + tsc clean"
+    },
+    {
+      "id": "9-1-P2-11-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P2] single-constant + engine empty journey"
+    },
+    {
+      "id": "9-1-P2-12-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P2] VISIBLE_VS_HITSLOP grep gate no hitSlop-only"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Land P1-07 dynamic scan before 9-2 to close R-001 waived residual",
+      "requirements": [
+        "DYNAMIC-P1-10"
+      ]
+    }
+  ],
+  "working_tree_delta": {
+    "baseline": "8901f6305d6e475b3005cffb552f9fbef77a95d1",
+    "head": "819fb2a (working-tree)",
+    "final_revision": "c32eaeed5a06137e730ab614969308bda9d319f3",
+    "production_files": [
+      "triade/src/ui/GameOverOverlay.tsx:218 cta minWidth/minHeight+padding",
+      "triade/__tests__/ui/tapTargets.audit.test.ts NEW 4 tests",
+      "triade/__tests__/ui/components/gameOverOverlay.test.ts guard relaxed",
+      "triade/__tests__/ui/components/app.restart.test.ts guard relaxed"
+    ],
+    "sprint_status_touched": true,
+    "note": "sprint-status.yaml backlog\u2192done is orchestrator-owned, not a defect per instructions"
+  }
+}

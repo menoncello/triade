@@ -365,9 +365,9 @@ test('[P1] AC5 Clean only primary CTA', async () => {
   const allButtons = renderer.root.findAll((n) => typeof n.type === 'string' && n.props?.accessibilityRole === 'button');
   assert.strictEqual(allButtons.length, 1, 'no second button/Continue offer may exist — Clean only primary CTA');
 
-  // CTA style pins: width HIT_TARGET / height HIT_TARGET + alignSelf center + accent colors
-  assert.match(src, /width:\s*HIT_TARGET(?=[,}])/, 'CTA width must reference HIT_TARGET directly');
-  assert.match(src, /height:\s*HIT_TARGET(?=[,}])/, 'CTA height must reference HIT_TARGET directly');
+  // CTA style pins: width/minWidth HIT_TARGET / height/minHeight HIT_TARGET + alignSelf center + accent colors (9-1 relaxed to min+padding)
+  assert.match(src, /(?:minWidth|width):\s*HIT_TARGET(?=[,}])/, 'CTA width/minWidth must reference HIT_TARGET directly');
+  assert.match(src, /(?:minHeight|height):\s*HIT_TARGET(?=[,}])/, 'CTA height/minHeight must reference HIT_TARGET directly');
   assert.ok(/alignSelf:\s*['"]center['"]/.test(src), 'CTA must have alignSelf center (T2 layout pin)');
   assert.ok(hasStyle(renderer, { backgroundColor: '#E8A33D' }), 'CTA must have backgroundColor #E8A33D');
   assert.ok(src.includes('#1C1206') || hasStyle(renderer, { color: '#1C1206' }), 'CTA label must be dark ink #1C1206');
