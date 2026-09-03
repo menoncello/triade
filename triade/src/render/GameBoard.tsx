@@ -5,7 +5,7 @@ import type { SkFont } from '@shopify/react-native-skia';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withSequence, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import type { Board, Direction, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
-import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
+import { numeralSizeFor, tileInkFor, tileFillFor, tileShapeFor } from '../ui/tileNumerals.ts';
 import { presetFor } from '../feel/feel.ts';
 import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
 import { BULLET_TIME_MS, shouldTriggerBulletTime } from '../feel/bulletTime.ts';
@@ -70,13 +70,7 @@ function cellKey(r: number, c: number): string {
 
 function cellColor(value: number | null): string {
   if (value === null) return '#d8d3cc';
-  if (value === 1) return '#f9e3ae';
-  if (value === 2) return '#f7d488';
-  if (value === 3) return '#eec06e';
-  if (value <= 6) return '#e0a84f';
-  if (value <= 12) return '#cf8a2e';
-  if (value <= 24) return '#b46a1e';
-  return '#8f4d12';
+  return tileFillFor(value);
 }
 
 function pixel(cell: [number, number], cellSize: number): { x: number; y: number } {
@@ -202,6 +196,8 @@ function AnimatedTile({
     return matchFont({ fontFamily: TILE_FONT_FAMILY, fontSize: size, fontWeight: 'bold' });
   }, [cell, value]);
 
+  const shape = tileShapeFor(value);
+
   return (
     <Group transform={translate}>
       {/* Glow behind tile for 1536+ only — soft outer rect (only glow in system) */}
@@ -226,6 +222,35 @@ function AnimatedTile({
           color={cellColor(value)}
           opacity={opacity}
         />
+        {/* Facet grain beyond color — varying by tier band (FR-31, UX-DR-19) */}
+        {shape.grain > 0 ? (
+          <RoundedRect
+            x={3}
+            y={3}
+            width={cell - 6}
+            height={cell - 6}
+            r={CELL_RADIUS - 2}
+            color="#000000"
+            // @ts-ignore Skia stroke
+            style="stroke"
+            strokeWidth={shape.bevel}
+            opacity={shape.grain === 1 ? 0.14 : 0.22}
+          />
+        ) : null}
+        {shape.grain === 2 ? (
+          <RoundedRect
+            x={6}
+            y={6}
+            width={cell - 12}
+            height={cell - 12}
+            r={CELL_RADIUS - 4}
+            color="#000000"
+            // @ts-ignore Skia stroke
+            style="stroke"
+            strokeWidth={0.9}
+            opacity={0.12}
+          />
+        ) : null}
         {/* Flash overlay — imperative worklet via shared value, heavy tier only */}
         {hasFlash ? (
           <RoundedRect x={0} y={0} width={cell} height={cell} r={CELL_RADIUS} color="#fff7e0" opacity={flashOpacity} />

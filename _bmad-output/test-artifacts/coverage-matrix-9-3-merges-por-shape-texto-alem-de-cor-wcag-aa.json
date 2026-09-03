@@ -1,0 +1,403 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-03T23:45:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "9-3-merges-por-shape-texto-alem-de-cor-wcag-aa",
+    "label": "9-3 Merges por shape/texto além de cor + WCAG AA (dark canonical)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md",
+      "_bmad-output/test-artifacts/test-design-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md",
+      "_bmad-output/test-artifacts/test-design/test-design-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md",
+      "_bmad-output/test-artifacts/atdd-tests/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.red.spec.ts",
+      "triade/src/ui/tileNumerals.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/__tests__/ui/tileShape.test.ts",
+      "triade/__tests__/ui/tileContrast.audit.test.ts",
+      "triade/__tests__/ui/tileNumerals.test.ts",
+      "triade/src/a11y/announcements.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC1",
+      "desc": "Todas as 13 tiers 1–3072+ renderizam DESIGN hex exato e ink per-tier (dark #1C1206 em 1,2,3,6,12,192,1536,3072 / light #F6F0E1 em 24,48,96,384,768) e 6144/12288 caps a 3072+",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P0-01",
+          "title": "[P0] TILE_HEXES 13-tier exact design",
+          "file": "triade/__tests__/ui/tileShape.test.ts",
+          "line": 25,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-02",
+          "title": "[P0] TILE_INK per-tier design table",
+          "file": "triade/__tests__/ui/tileShape.test.ts",
+          "line": 35,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-03",
+          "title": "[P0] tileFillFor caps 6144/12288 →3072",
+          "file": "triade/__tests__/ui/tileShape.test.ts",
+          "line": 62,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-GW-01",
+          "title": "[P0-API-01] TILE_HEXES 13-tier palette identity",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 29,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-GW-02",
+          "title": "[P0-API-02] TILE_INK per-tier identity",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 40,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-GW-03",
+          "title": "[P0-API-03] cap 6144/12288 →3072",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 52,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-UMB-01",
+          "title": "[P0-UMB-01] Umbrella dark board journey 13-tier",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts",
+          "line": 18,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-U-01",
+          "title": "[P0-U-01] Unit 13-tier palette",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts",
+          "line": 20,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-ACTIVE",
+          "title": "[P0-API-ACTIVE] smoke 13-tier identity + cap",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 232,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "TILE_HEXES frozen 13 exact + TILE_INK dark/light per DESIGN + cap via interval cascade >=3072"
+      }
+    },
+    {
+      "id": "AC2",
+      "desc": "Valor legível além da cor: banda facet/grain (low grain0 bevel1 clean → mid grain1 bevel1.2 → emerald grain2 bevel1.6+inner 0.12 → incandescent grain0+glow) e 192 vs 1536 diferem por grain/glow/bevel, não só por hue",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P0-07",
+          "title": "[P0] 192 vs 1536 grain differ",
+          "file": "triade/__tests__/ui/tileShape.test.ts",
+          "line": 73,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P1-01",
+          "title": "[P1] grain monotonic low≤mid≤emerald",
+          "file": "triade/__tests__/ui/tileShape.test.ts",
+          "line": 86,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-GW-07",
+          "title": "[P0-API-07] 192 vs 1536 grain/glow/bevel",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 108,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-GW-08",
+          "title": "[P0-API-08] GameBoard delegation + grain contract",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 119,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P1-GW-04",
+          "title": "[P1-API-04] Skia prop contract RoundedRect stroke bevel",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 162,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-UMB-01",
+          "title": "[P0-UMB-01] Umbrella shape beyond color",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts",
+          "line": 18,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-ACTIVE-U",
+          "title": "[P0-U-ACTIVE] smoke grain+monotonic+delegation",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts",
+          "line": 150,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "tileShapeFor grain 0/1/2 + glow incandescent; GameBoard AnimatedTile RoundedRect style=\"stroke\" bevel/inset wiring"
+      }
+    },
+    {
+      "id": "AC3",
+      "desc": "WCAG AA dark canonical: todo tile numeral (13pt/9pt em 4–6+ dígitos) tem contrast(tileFill, ink) ≥4.5:1; mais fraco 384 #157A5C ≥4.7:1 e chrome text/muted/accent em board/surface/raised ≥4.5:1 e accent≥6.5 dark-on-accent≥7",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P0-04",
+          "title": "[P0] tile ink contrast every tier ≥4.5 weakest 384 ≥4.5",
+          "file": "triade/__tests__/ui/tileContrast.audit.test.ts",
+          "line": 15,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-05",
+          "title": "[P0] chrome contrast text/muted/accent ≥4.5 accent≥6.5 dark-on-accent≥7",
+          "file": "triade/__tests__/ui/tileContrast.audit.test.ts",
+          "line": 33,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P0-GW-04",
+          "title": "[P0-API-04] WCAG tile ink every tier ≥4.5 weakest 384",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 68,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-GW-05",
+          "title": "[P0-API-05] chrome ≥4.5 accent≥6.5 dark-on-accent≥7",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-UMB-02",
+          "title": "[P0-UMB-02] chrome WCAG umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P1-GW-02-helper",
+          "title": "[P1-API-03] contrast helper golden 21:1 4.54 4.65",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 153,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-ACTIVE",
+          "title": "[P0-API-ACTIVE] smoke weakest 384 ≥4.5 + golden",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 232,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "contrastRatio WCAG 0.2126/0.7152/0.0722 + 0.04045/12.92/2.4 verified; tileContrast.audit 3 tests exhaustive tier loop + chrome table + 3:1 smoke"
+      }
+    },
+    {
+      "id": "AC4",
+      "desc": "Merges anunciados a screen readers como texto de valor 'Merged: A plus B equals C' (nunca hue/cor), consistente com FR-31",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P1-05",
+          "title": "[P1-API-05] announcements value text not hue",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 181,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P1-UMB-04",
+          "title": "[P1-UMB-04] announcement value text umbrella",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts",
+          "line": 66,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P1-U-05",
+          "title": "[P1-U-05] announcements purity",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts",
+          "line": 96,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "a11y/announcements.ts Merged: A plus B equals C; does not import TILE_HEXES"
+      }
+    },
+    {
+      "id": "AC5",
+      "desc": "Validação escopada a dark canonical apenas; light + color-blind NÃO exigidos aqui — 9.4 define e audita",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P0-SCOPE",
+          "title": "dark canonical only scope — no light/color-blind hex asserted",
+          "file": "_bmad-output/test-artifacts/test-design-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md",
+          "line": 1,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "9-3-P2-SCOPE",
+          "title": "[P2] chrome staleness documented as 9.4 follow-up",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 211,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "spec Never + test-design Not in Scope + automation summary documents 9.4 follow-up"
+      }
+    },
+    {
+      "id": "AC6",
+      "desc": "Purity/robustez: tileNumerals puro (Object.freeze, sem RN/Skia), numerals 32/13/9, MIN_TILE_WIDTH 44, never-throw NaN/Infinity/0 e ajuda WCAG pura (3-digit + bad hex fallback)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-3-P1-06",
+          "title": "[P1-API-06] tileNumerals purity + numerals 32/13/9 MIN_TILE_WIDTH 44",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 191,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P1-02",
+          "title": "[P1-API-02] interval cap NaN/Infinity without throw",
+          "file": "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts",
+          "line": 144,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P2-U-03",
+          "title": "[P2] engine/theme purity",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts",
+          "line": 132,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-3-P0-ACTIVE",
+          "title": "[P0-U-ACTIVE] smoke purity + cap + helper",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts",
+          "line": 150,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "tileNumerals single source Object.freeze; helpers pure WCAG; tsc clean; numeralSizeFor clamped to 9pt"
+      }
+    }
+  ],
+  "coverage_summary": {
+    "P0_groups": 4,
+    "P0_covered": 4,
+    "P1_groups": 2,
+    "P1_covered": 2,
+    "P2_groups": 0,
+    "P2_covered": 0,
+    "P3_groups": 0,
+    "P3_covered": 0,
+    "total_gaps": 0,
+    "gate": "PASS"
+  },
+  "execution_evidence": {
+    "gateway": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts => 16 skipped + 1 pass (17 pass when de-skipped ~210ms)",
+    "umbrella": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts => 10 skipped + 1 pass (11 pass when de-skipped ~150ms)",
+    "unit": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts => 17 skipped + 1 pass (18 pass when de-skipped ~170ms)",
+    "atdd_red": "_bmad-output/test-artifacts/atdd-tests/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.red.spec.ts => 14 skipped (14 pass when de-skipped)",
+    "triade_oracle": "triade/__tests__/ui/tileShape.test.ts 6 pass + triade/__tests__/ui/tileContrast.audit.test.ts 3 pass + triade/__tests__/ui/tileNumerals.test.ts 3 pass (fleet 12) + full fleet 973 pass / 0 fail / 366 skipped",
+    "full_suite": "npm --prefix triade test triade/__tests__/ui/tileShape.test.ts triade/__tests__/ui/tileContrast.audit.test.ts -- --no-coverage => 9/9 pass; npm --prefix triade test => 973 pass 0 fail 366 skipped",
+    "tsc": "triade/node_modules/.bin/tsc --project triade/tsconfig.json --noEmit => 0 errors"
+  }
+}
