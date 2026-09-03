@@ -63,5 +63,21 @@
   "common": {
     "confirm": "Confirmar",
     "cancel": "Cancelar"
+  },
+  "a11y": {
+    "moved": "Moveu {{dir}}",
+    "merged": "Fundiu: {{a}} mais {{b}} igual a {{c}}",
+    "spawn": "Nova peça {{value}}",
+    "score": "Pontuação {{score}}",
+    "gameOver": "Fim de jogo. Pontuação {{score}}, recorde {{best}}",
+    "newRecord": "Novo recorde",
+    "preview": "Próxima {{display}}",
+    "tile": "{{value}} linha {{row}} coluna {{col}}",
+    "dir": {
+      "up": "cima",
+      "down": "baixo",
+      "left": "esquerda",
+      "right": "direita"
+    }
   }
 }

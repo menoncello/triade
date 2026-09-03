@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T18:45:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-grid-size-configurable",
+    "label": "dw-grid-size-configurable \u2014 BoardConfig / GRID_SIZE parameterization threaded through engine core + helpers"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (required: 100%), P1 coverage is 100% (target: 90%, minimum: 80%), and overall coverage is 100% (minimum: 80%). All 12 criteria FULL via host unit + API gateway + E2E umbrella (18 active triade oracle + 37 skipped dormant RED that are green when activated \u2014 accompanying automation-summary and atdd-checklist confirm 947 pass / 0 fail / 366 skipped host gate plus both tsc clean). No uncovered P0/P1. Single-source allowlists (validateGridSize 3, RangeError 2, resolveGridSize(boardConfig 4, oppCol size-1 1, size-1-k 2, a[r]?.[c] 1, r>=size 1) + ledger 0f53c41e 1 hit + sprint-status.yaml untouched verified.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability-matrix-dw-grid-size-configurable.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

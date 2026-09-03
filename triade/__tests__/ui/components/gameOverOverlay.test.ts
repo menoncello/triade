@@ -192,16 +192,16 @@ test('[P0] AC2/AC3 supersedes 6.1 timing guard — mount sync (no setTimeout gat
 
 test('[P0] AC2 CTA hit target is HIT_TARGET (44) via width+height directly (thinview gate thinview.test.ts:39-40)', async () => {
   const renderer = await renderOverlay();
-  // CTA style width: HIT_TARGET + height: HIT_TARGET directly (no arithmetic)
+  // CTA style width: HIT_TARGET + height: HIT_TARGET directly (no arithmetic) — 9-1 relaxed to minWidth/minHeight with padding
   const { readFileSync } = await import('node:fs');
   const { fileURLToPath } = await import('node:url');
   const { dirname, join } = await import('node:path');
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../src/ui/GameOverOverlay.tsx'), 'utf8');
-  assert.match(src, /width:\s*HIT_TARGET(?=[,}])/, 'CTA style width must reference HIT_TARGET directly (no arithmetic)');
-  assert.match(src, /height:\s*HIT_TARGET(?=[,}])/, 'CTA style height must reference HIT_TARGET directly (no arithmetic)');
-  // Rendered style also pins 44pt
-  assert.ok(hasStyle(renderer, { width: 44 }) || hasStyle(renderer, { width: 48 }), 'CTA must render with HIT_TARGET dimension (>=44)');
+  assert.match(src, /(?:minWidth|width):\s*HIT_TARGET(?=[,}])/, 'CTA style width/minWidth must reference HIT_TARGET directly (no arithmetic)');
+  assert.match(src, /(?:minHeight|height):\s*HIT_TARGET(?=[,}])/, 'CTA style height/minHeight must reference HIT_TARGET directly (no arithmetic)');
+  // Rendered style also pins 44pt — 9-1 uses minWidth/minHeight + padding for long labels
+  assert.ok(hasStyle(renderer, { width: 44 }) || hasStyle(renderer, { width: 48 }) || hasStyle(renderer, { minWidth: 44 }) || hasStyle(renderer, { minWidth: 48 }), 'CTA must render with HIT_TARGET dimension (>=44)');
   // fontVariant tabular-nums preserved (already pinned in CTA label)
 });
 
@@ -418,9 +418,9 @@ test('[P1] tokens + HIT_TARGET preserved through fade (DESIGN.md:153-279 table)'
   const { dirname, join } = await import('node:path');
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../../../src/ui/GameOverOverlay.tsx'), 'utf8');
-  assert.match(src, /width:\s*HIT_TARGET(?=[,}])/, 'CTA width must reference HIT_TARGET directly');
-  assert.match(src, /height:\s*HIT_TARGET(?=[,}])/, 'CTA height must reference HIT_TARGET directly');
-  assert.ok(hasStyle(renderer, { width: 44 }) || hasStyle(renderer, { width: 48 }), 'CTA must render HIT_TARGET dimension');
+  assert.match(src, /(?:minWidth|width):\s*HIT_TARGET(?=[,}])/, 'CTA width/minWidth must reference HIT_TARGET directly');
+  assert.match(src, /(?:minHeight|height):\s*HIT_TARGET(?=[,}])/, 'CTA height/minHeight must reference HIT_TARGET directly');
+  assert.ok(hasStyle(renderer, { width: 44 }) || hasStyle(renderer, { width: 48 }) || hasStyle(renderer, { minWidth: 44 }) || hasStyle(renderer, { minWidth: 48 }), 'CTA must render HIT_TARGET dimension');
 });
 
 test('[P1] thin-view + norolls still green (overlay imports only react-native + same-dir + SAFE_MARGIN)', async () => {

@@ -1,4 +1,4 @@
-import { GRID_SIZE, type Board, type Direction, type GameState, type MoveResult, type PendingSpawn, type Rng } from './types.ts';
+import { GRID_SIZE, resolveGridSize, type Board, type BoardConfig, type Direction, type GameState, type MoveResult, type PendingSpawn, type Rng } from './types.ts';
 import { canMerge } from './rules.ts';
 import { emptyBoard, boardsEqual } from './board.ts';
 import { movementLines, shiftLine, boardFromLines } from './line.ts';
@@ -17,11 +17,12 @@ function normalizeDisplayRoll(raw: unknown): number {
   return raw;
 }
 
-export function newGame(rng: Rng = Math.random): GameState {
-  const board = emptyBoard();
+export function newGame(rng: Rng = Math.random, boardConfig?: number | BoardConfig | null): GameState {
+  const size = resolveGridSize(boardConfig);
+  const board = emptyBoard(size);
   const empty: Array<[number, number]> = [];
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) empty.push([r, c]);
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) empty.push([r, c]);
   }
   for (let i = 0; i < 9; i++) {
     const cell = empty.splice(pickIndex(empty.length, rng), 1)[0];
@@ -50,9 +51,15 @@ function sanitizePending(raw: unknown): PendingSpawn {
 // result.pendingSpawn (output) = the value the NEXT effective move will
 // materialize. A noop does neither: no spawn, no score, no turn, no rng draw,
 // and the pending preview stays put.
-export function move(state: GameState, dir: Direction, rng: Rng = Math.random): MoveResult {
+export function move(
+  state: GameState,
+  dir: Direction,
+  rng: Rng = Math.random,
+  boardConfig?: number | BoardConfig | null
+): MoveResult {
+  const size = resolveGridSize(boardConfig);
   const safePending = sanitizePending((state as unknown as { pendingSpawn?: unknown }).pendingSpawn);
-  const lines = movementLines(state.board, dir);
+  const lines = movementLines(state.board, dir, size);
   const shifted: Array<ReturnType<typeof shiftLine>> = [];
   let score = 0;
   for (let i = 0; i < lines.length; i++) {
@@ -60,10 +67,10 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     shifted.push(res);
     score += res.score;
   }
-  const built = boardFromLines(shifted.map((s) => s.line), dir);
+  const built = boardFromLines(shifted.map((s) => s.line), dir, size);
   let effectiveBoard = built.board;
   let trace = built.trace;
-  const moved = !boardsEqual(state.board, effectiveBoard);
+  const moved = !boardsEqual(state.board, effectiveBoard, size);
   // DW-21: noop must not leak a full stationary trace — only meaningful
   // transitions are traceable; when nothing moved, emit an empty trace.
   if (!moved) trace = [];
@@ -78,12 +85,12 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     // effective-move budget.
     const candidates: Array<[number, number]> = [];
     if (dir === 'left' || dir === 'right') {
-      const oppCol = dir === 'left' ? GRID_SIZE - 1 : 0;
+      const oppCol = dir === 'left' ? size - 1 : 0;
       for (let i = 0; i < shifted.length; i++) {
         if (shifted[i].moved) candidates.push([i, oppCol]);
       }
     } else {
-      const oppRow = dir === 'up' ? GRID_SIZE - 1 : 0;
+      const oppRow = dir === 'up' ? size - 1 : 0;
       for (let i = 0; i < shifted.length; i++) {
         if (shifted[i].moved) candidates.push([oppRow, i]);
       }
@@ -95,7 +102,7 @@ export function move(state: GameState, dir: Direction, rng: Rng = Math.random): 
     // exception (pot value 3 can exceed a tiny ceiling) and harmless there.
     // The order is pinned by adaptive-spawn-integration.test.ts.
     const ceiling = ceilingDetector(effectiveBoard);
-    const spawn = spawnTile(effectiveBoard, safePending.value, rng, candidates);
+    const spawn = spawnTile(effectiveBoard, safePending.value, rng, candidates, size);
     effectiveBoard = spawn.board;
     if (spawn.cell && spawn.value !== null) {
       trace.push({
@@ -123,20 +130,21 @@ export function stateFromResult(result: MoveResult): GameState {
   return { board: result.board, pendingSpawn: result.pendingSpawn };
 }
 
-export function isGameOver(board: Board): boolean {
+export function isGameOver(board: Board, boardConfig?: number | BoardConfig | null): boolean {
+  const size = resolveGridSize(boardConfig);
   let r: number;
   let c: number;
-  for (r = 0; r < GRID_SIZE; r++) {
-    for (c = 0; c < GRID_SIZE; c++) {
-      if (board[r][c] === null) return false;
+  for (r = 0; r < size; r++) {
+    for (c = 0; c < size; c++) {
+      if (board[r]?.[c] === null) return false;
     }
   }
-  for (r = 0; r < GRID_SIZE; r++) {
-    for (c = 0; c < GRID_SIZE; c++) {
-      const v = board[r][c];
+  for (r = 0; r < size; r++) {
+    for (c = 0; c < size; c++) {
+      const v = board[r]?.[c];
       if (v === null) continue;
-      if (c + 1 < GRID_SIZE && canMerge(v, board[r][c + 1])) return false;
-      if (r + 1 < GRID_SIZE && canMerge(v, board[r + 1][c])) return false;
+      if (c + 1 < size && canMerge(v, board[r][c + 1])) return false;
+      if (r + 1 < size && canMerge(v, board[r + 1][c])) return false;
     }
   }
   return true;

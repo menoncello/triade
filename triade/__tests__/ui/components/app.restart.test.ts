@@ -148,7 +148,7 @@ test('[P0] AC1/AC2 handleRestart resets store immediately — 9 tiles, score 0 b
   // Extract handleRestart body — capture between `const handleRestart = useCallback(() => {` and `}, [`
   const handleStart = src.indexOf('const handleRestart');
   assert.ok(handleStart !== -1, 'App.tsx must define const handleRestart = useCallback');
-  const handleSlice = src.slice(handleStart, handleStart + 800);
+  const handleSlice = src.slice(handleStart, handleStart + 1200);
   // Must contain in that order (story T1 table): newGame(rngRef.current) → setGame(s) → setMoveResult(null) → setMatch(initialScore(persistedBest)) → setMatchStats(initialStats(s.board)) → busyRef.current = false
   const order = [
     /const\s+s\s*=\s*newGame\s*\(\s*rngRef\.current\s*\)/,
@@ -270,7 +270,7 @@ test('[P0] AC4 9-tile same lane', async () => {
   assert.ok(Array.isArray(avail), 'availablePot must be an array derived from potForTier(tierForCeiling(ceilingDetector(board)))');
 
   // After Epic 3 lane preservation is explicit per-lane best (3.4): handleRestart reads persistedBestByLane[activeLaneId] but never flips lane
-  const handleSlice2 = appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 800);
+  const handleSlice2 = appSrc.slice(appSrc.indexOf('handleRestart'), appSrc.indexOf('handleRestart') + 1200);
   assert.ok(handleSlice2.includes('persistedBest'), 'handleRestart must still use persistedBest* (now per-lane)');
   assert.ok(!/setSelectedLaneIndex|setLane\(/.test(handleSlice2), 'handleRestart must not flip lane — implicit same-lane (FR-26)');
 });
@@ -308,7 +308,7 @@ test('[P0] AC6/AC7 forfeited continue dies — never carried, never re-offered',
 
   // handleRestart is the single discard point — contains forfeited-continue comment + no carry
   const handleIdx = appSrc.indexOf('const handleRestart');
-  const handleSlice = appSrc.slice(handleIdx, handleIdx + 700);
+  const handleSlice = appSrc.slice(handleIdx, handleIdx + 1200);
   assert.ok(handleSlice.includes('forfeited continue dies'), 'handleRestart must contain "// AC6/7: forfeited continue dies..." comment (single discard point, ADR-02)');
   // No surviving continueBudget / continueRemaining carried into newGame
   // Allow the comment itself to mention continue but forbid a variable carry
@@ -365,9 +365,9 @@ test('[P1] AC5 Clean only primary CTA', async () => {
   const allButtons = renderer.root.findAll((n) => typeof n.type === 'string' && n.props?.accessibilityRole === 'button');
   assert.strictEqual(allButtons.length, 1, 'no second button/Continue offer may exist — Clean only primary CTA');
 
-  // CTA style pins: width HIT_TARGET / height HIT_TARGET + alignSelf center + accent colors
-  assert.match(src, /width:\s*HIT_TARGET(?=[,}])/, 'CTA width must reference HIT_TARGET directly');
-  assert.match(src, /height:\s*HIT_TARGET(?=[,}])/, 'CTA height must reference HIT_TARGET directly');
+  // CTA style pins: width/minWidth HIT_TARGET / height/minHeight HIT_TARGET + alignSelf center + accent colors (9-1 relaxed to min+padding)
+  assert.match(src, /(?:minWidth|width):\s*HIT_TARGET(?=[,}])/, 'CTA width/minWidth must reference HIT_TARGET directly');
+  assert.match(src, /(?:minHeight|height):\s*HIT_TARGET(?=[,}])/, 'CTA height/minHeight must reference HIT_TARGET directly');
   assert.ok(/alignSelf:\s*['"]center['"]/.test(src), 'CTA must have alignSelf center (T2 layout pin)');
   assert.ok(hasStyle(renderer, { backgroundColor: '#E8A33D' }), 'CTA must have backgroundColor #E8A33D');
   assert.ok(src.includes('#1C1206') || hasStyle(renderer, { color: '#1C1206' }), 'CTA label must be dark ink #1C1206');

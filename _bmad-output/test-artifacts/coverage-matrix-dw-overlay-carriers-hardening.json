@@ -1,0 +1,408 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T22:47:18.000Z",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-overlay-carriers-hardening",
+    "label": "Overlay carriers hardening (DW-91, DW-92, DW-101, DW-102)"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-overlay-carriers-hardening.md#intent-contract",
+      "_bmad-output/implementation-artifacts/spec-overlay-carriers-hardening.md#Acceptance Criteria",
+      "triade/src/ui/GameOverOverlay.tsx:40-44,52-83,94-118,190-215",
+      "_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-01",
+      "title": "reducedMotion toggle false→true→false reactive re-target via stopAnimation+setValue with clean restart on remount (FADE_MS 280 delay80 cubic useNativeDriver)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "DW-91-INT-001",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 162,
+          "title": "[P0] reducedMotion reactive re-target + unmount mid-fade clears and restarts cleanly (DW-91/DW-102)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-91-UNIT-001",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 351,
+          "title": "[P0] AC4 reducedMotion=true cuts fade/drift (setValue, drift 0, haptics/sound stay)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-91-UNIT-002",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 309,
+          "title": "[P0] AC2/AC3 soft fade + drift exist when reducedMotion=false (elegant fall)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-02",
+      "title": "Insets clamp degenerate NaN/-20/Infinity/undefined to finite >= SAFE_MARGIN (clampInset Number.isFinite && >=0 + SAFE_MARGIN per edge)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "DW-92-INT-001",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 81,
+          "title": "[P0] insets clamp to finite >=0 so NaN/negative/Infinity never propagates (DW-92/DW-102)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-92-UNIT-001",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 447,
+          "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-03",
+      "title": "Huge score 1999999999 overflow guard: value Texts numberOfLines=1 ellipsizeMode tail flexShrink:1 textAlign:right, label flexShrink:0 row space-between",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "DW-101-INT-001",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 126,
+          "title": "[P0] overflow guard: value Texts have numberOfLines=1 ellipsizeMode tail flexShrink 1 (DW-101)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-101-UNIT-001",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 86,
+          "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-04",
+      "title": "Unmount mid-fade then remount clears anim and restarts cleanly (anim.stop()+stopAnimation×3 cleanup, fresh start values)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "DW-102-INT-001",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 162,
+          "title": "[P0] reducedMotion reactive re-target + unmount mid-fade clears and restarts cleanly (DW-91/DW-102)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-102-UNIT-001",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 486,
+          "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak (restart during 280ms fade)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "AC-05",
+      "title": "Hud zIndex:1 vs overlay zIndex:2 layering + position:absolute + pointerEvents auto + elevation/SCrim rgba(12,14,17,0.7)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "DW-102-INT-002",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 66,
+          "title": "[P0] integration overlay zIndex 2 layers above Hud zIndex 1 (DW-102)",
+          "level": "unit"
+        },
+        {
+          "id": "DW-102-UNIT-002",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 160,
+          "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-01",
+      "title": "Reactive effect deps + stop/setValue ordering (useEffect deps reducedMotion + stopAnimation×6 + setValue(0|12) before timing)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-SCAN-001",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 56,
+          "title": "source scan: useEffect deps [reducedMotion, scrimOpacity, contentOpacity, contentY] + stopAnimation ordering",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-02",
+      "title": "Animated timing contract FADE_MS 280 delay80 cubic useNativeDriver×3 preserved",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-SCAN-002",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 69,
+          "title": "source scan: FADE_MS 280 delay80 Easing.out cubic useNativeDriver:true ×3",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-03",
+      "title": "Value/label flex contract flexShrink/textAlign (value flexShrink:1 textAlign:right, label flexShrink:0, row space-between)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-SCAN-003",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 196,
+          "title": "source scan: flexShrink/textAlign row space-between contracts",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-04",
+      "title": "Elevation + scrim + pointerEvents preservation (elevation:2 rgba(12,14,17,0.7) pointerEvents auto accessibilityViewIsModal)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-SCAN-004",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 169,
+          "title": "source scan: elevation scrim pointerEvents preservation",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-05",
+      "title": "Hud vs overlay clamp asymmetry documented (Hud clampInset 0 vs overlay 1+4, intentional low-sev drift)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-SCAN-005",
+          "file": "triade/src/ui/Hud.tsx",
+          "line": 59,
+          "title": "source scan: Hud vs overlay clamp asymmetry",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P1-06",
+      "title": "A11y alert+button siblings preservation (outer not accessible, inner alert, CTA sibling button)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-UNIT-006",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 95,
+          "title": "[P0] AC1 overlay accessibility announcement contains Game over + stats (a11y contract)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P2-01",
+      "title": "Single-constant / import allowlist (clampInset 1+4, SAFE_MARGIN 5, FADE_MS 1+3, numberOfLines 5)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-SCAN-001",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 40,
+          "title": "source scan: clampInset/SAFE_MARGIN/FADE_MS/numberOfLines allowlists",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P2-02",
+      "title": "Engine & layout byte-identical (git diff -- triade/src/engine empty, layout.ts unchanged)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-SCAN-002",
+          "file": "triade/src/engine",
+          "line": 1,
+          "title": "git diff --stat -- triade/src/engine empty",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P2-03",
+      "title": "Ledger resolution-undo hash 596c2f86… ×4 (DW-91/92/101/102 open→done 2026-09-02)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-SCAN-003",
+          "file": "_bmad-output/implementation-artifacts/deferred-work.md",
+          "line": 784,
+          "title": "rg ledger 596c2f86f89f421758063c068af190fef0052b181dcedd83fcf199fda88f29ce ×4",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P2-04",
+      "title": "t + a11yLabel vs score >1e9 preservation (t gameOver.* labels + a11yLabel stringify)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-UNIT-004",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 86,
+          "title": "[P0] AC1 overlay renders all five stats (t labels still present)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P3-01",
+      "title": "Exploratory narrow PT longest label (320×568 SE sequência máxima + 1999999999 tail 1…)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-EXPL-001",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 126,
+          "title": "[P0] overflow guard still passes (exploratory narrow PT relies on same pin)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P3-02",
+      "title": "Toggle thrash exploratory (false→true→false→true rapid 3 toggles still opacity 1)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-EXPL-002",
+          "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts",
+          "line": 162,
+          "title": "[P0] reducedMotion reactive still 1 after thrash (2-toggle already pinned, 3rd optional)",
+          "level": "unit"
+        }
+      ]
+    },
+    {
+      "id": "P3-03",
+      "title": "Cross-cutting negative scan (no insets?.top ??0 passthrough, no reanimated/skia import)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-SCAN-003",
+          "file": "triade/src/ui/GameOverOverlay.tsx",
+          "line": 40,
+          "title": "source scan: no ??0 passthrough, no reanimated/skia",
+          "level": "unit"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 18,
+    "fully_covered": 18,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": { "total": 5, "covered": 5, "percentage": 100 },
+      "P1": { "total": 6, "covered": 6, "percentage": 100 },
+      "P2": { "total": 4, "covered": 4, "percentage": 100 },
+      "P3": { "total": 3, "covered": 3, "percentage": 100 }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 3,
+      "cases": 24,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": { "tests": 0, "criteria_covered": 0 },
+        "api": { "tests": 0, "criteria_covered": 0 },
+        "component": { "tests": 0, "criteria_covered": 0 },
+        "unit": { "tests": 24, "criteria_covered": 18 },
+        "other": { "tests": 0, "criteria_covered": 0 }
+      }
+    },
+    "tests": [
+      { "id": "DW-91-INT-001", "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts", "line": 162, "title": "[P0] reducedMotion reactive re-target + unmount mid-fade clears and restarts cleanly (DW-91/DW-102)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-91-UNIT-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 351, "title": "[P0] AC4 reducedMotion=true cuts fade/drift (setValue, drift 0, haptics/sound stay)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-91-UNIT-002", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 309, "title": "[P0] AC2/AC3 soft fade + drift exist when reducedMotion=false (elegant fall)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-92-INT-001", "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts", "line": 81, "title": "[P0] insets clamp to finite >=0 so NaN/negative/Infinity never propagates (DW-92/DW-102)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-92-UNIT-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 447, "title": "[P1] AC4 insets fallback — undefined insets yields SAFE_MARGIN-only padding (defensive, App always passes insets)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-101-INT-001", "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts", "line": 126, "title": "[P0] overflow guard: value Texts have numberOfLines=1 ellipsizeMode tail flexShrink 1 (DW-101)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-101-UNIT-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 86, "title": "[P0] AC1 overlay renders all five stats as own Text nodes (score/best/maxTile/merges/longestStreak)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-102-INT-001", "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts", "line": 162, "title": "[P0] reducedMotion reactive re-target + unmount mid-fade clears and restarts cleanly (DW-91/DW-102)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-102-UNIT-001", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 486, "title": "[P1] AC2/AC3 unmount mid-fade cleans up animation without leak (restart during 280ms fade)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-102-INT-002", "file": "triade/__tests__/ui/components/overlayCarriers.integration.test.ts", "line": 66, "title": "[P0] integration overlay zIndex 2 layers above Hud zIndex 1 (DW-102)", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" },
+      { "id": "DW-102-UNIT-002", "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts", "line": 160, "title": "[P0] AC2 overlay sits above Hud (zIndex:2, elevation:2) and blocks gestures via pointerEvents auto", "level": "unit", "status": "active", "skipped": false, "fixme": false, "pending": false, "blocker_reason": "" }
+    ],
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    { "priority": "LOW", "action": "Run /bmad:tea:test-review to assess test quality", "requirements": [] }
+  ]
+}

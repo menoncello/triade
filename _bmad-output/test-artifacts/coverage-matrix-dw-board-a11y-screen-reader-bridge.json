@@ -1,0 +1,96 @@
+{
+  "storyKey": "dw-board-a11y-screen-reader-bridge",
+  "storyId": "dw-board-a11y-screen-reader-bridge",
+  "generatedAt": "2026-09-03",
+  "testFramework": "node:test + tsx + react-test-renderer (host, RN Expo 57)",
+  "workingTreeDelta": "4709640 a11y: board screen reader bridge focus + Skia hidden + deferred-work.md DW-112/113 open→done 2026-09-03 resolution-undo e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 7374617475733a206f70656e",
+  "sources": [
+    "triade/src/a11y/boardAccessibility.tsx",
+    "triade/src/render/GameBoard.tsx",
+    "triade/test-utils/rn-stub.ts",
+    "_bmad-output/implementation-artifacts/spec-board-a11y-screen-reader-bridge.md",
+    "_bmad-output/implementation-artifacts/deferred-work.md"
+  ],
+  "coverage": {
+    "P0": {
+      "count": 8,
+      "tests": [
+        "[P0-API-01] focus after board change targets first surviving non-null with mounted ref",
+        "[P0-API-02] vanished tile guard — never with dead node handle",
+        "[P0-API-03] first mount + missing API + non-array board → never calls, never throws",
+        "[P0-API-04] null findNodeHandle guard — suppress without throw",
+        "[P0-API-05] invalid board shapes — never throw (null/jagged/NaN/Infinity/-1 width)",
+        "[P0-API-06] Canvas wrapper hides Skia subtree — importantForAccessibility no-hide-descendants",
+        "[P0-API-07] tileRefs Map lifecycle — ref callback sets on mount and deletes on null",
+        "[P0-API-08] engine-derived parity + no engine duplication + width parity"
+      ],
+      "files": [
+        "_bmad-output/test-artifacts/tests/api/dw-board-a11y-screen-reader-bridge.gateway.spec.ts",
+        "_bmad-output/test-artifacts/tests/unit/dw-board-a11y-screen-reader-bridge.atdd.test.ts",
+        "triade/__tests__/a11y/dw-board-a11y-screen-reader-bridge.atdd.test.ts"
+      ]
+    },
+    "P1": {
+      "count": 7,
+      "tests": [
+        "[P1-API-01] findNodeHandle seam — import + single call + rn-stub export",
+        "[P1-API-02] tileRefs + isFirstRenderRef + prevBoardRef state refs + effect deps [board]",
+        "[P1-API-03] setAccessibilityFocus guards — missing-API + try/catch + if(tag)",
+        "[P1-API-04] Canvas wrapper nesting exact shape",
+        "[P1-API-05] existing 9-2 contract still green via source",
+        "[P1-API-06] rn-stub surface completeness",
+        "[P1-API-07] pointerEvents box-none + overlay accessible contract after shim"
+      ],
+      "files": [
+        "_bmad-output/test-artifacts/tests/api/dw-board-a11y-screen-reader-bridge.gateway.spec.ts",
+        "_bmad-output/test-artifacts/tests/unit/dw-board-a11y-screen-reader-bridge.atdd.test.ts",
+        "triade/__tests__/a11y/dw-board-a11y-screen-reader-bridge.atdd.test.ts"
+      ]
+    },
+    "P2": {
+      "count": 4,
+      "tests": [
+        "[P2-E2E-01] SCAN no engine duplication + width parity + null-guarded focus loop",
+        "[P2-E2E-02] SCAN ledger DW-112 + DW-113 resolution-undo e282524d + hex open",
+        "[P2-E2E-03] SCAN engine/layout/announcements/gestures empty diff + spec contract present",
+        "[P2-E2E-04] focus heuristic doc + manual VoiceOver ear-check placeholder"
+      ],
+      "files": [
+        "_bmad-output/test-artifacts/tests/e2e/dw-board-a11y-screen-reader-bridge.umbrella.spec.ts",
+        "_bmad-output/test-artifacts/tests/unit/dw-board-a11y-screen-reader-bridge.atdd.test.ts",
+        "triade/__tests__/a11y/dw-board-a11y-screen-reader-bridge.atdd.test.ts"
+      ]
+    },
+    "P3": {
+      "count": 3,
+      "tests": [
+        "[P3-E2E-01] manual VoiceOver ear-check — focus lands on live tile, Canvas duplicate gone",
+        "[P3-E2E-02] TalkBack divergence — setAccessibilityFocus missing does not crash",
+        "[P3-E2E-03] performance + never-throw hygiene — O(16) scan + ledger health"
+      ],
+      "files": [
+        "_bmad-output/test-artifacts/tests/e2e/dw-board-a11y-screen-reader-bridge.umbrella.spec.ts",
+        "_bmad-output/test-artifacts/tests/unit/dw-board-a11y-screen-reader-bridge.atdd.test.ts",
+        "triade/__tests__/a11y/dw-board-a11y-screen-reader-bridge.atdd.test.ts"
+      ]
+    }
+  },
+  "totals": {
+    "automateNew": 22,
+    "gateway": 15,
+    "umbrella": 7,
+    "unitMirror": 19,
+    "triadeOracle": 19,
+    "fixtures": 1,
+    "passWhenActivated": "gateway 15 + umbrella 7 + unit 19 + triade oracle 19 (all host node:test, no Playwright page.goto)"
+  },
+  "risksCovered": ["R-001", "R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011"],
+  "nfr": ["accessibility focus continuity + Canvas hide", "screen-reader contract 100%", "never-throw", "perf O(16) <1ms", "maintainability single focus effect + single wrapper", "offline installability"],
+  "ledger": {
+    "dw112": "status: done 2026-09-03 resolution: resolved by sweep bundle dw-board-a11y-screen-reader-bridge resolution-undo: e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 7374617475733a206f70656e",
+    "dw113": "status: done 2026-09-03 resolution: resolved by sweep bundle dw-board-a11y-screen-reader-bridge resolution-undo: e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 7374617475733a206f70656e",
+    "hashHits": 2,
+    "hexHits": 2
+  },
+  "sprintStatusYaml": "never write, never revert — git diff HEAD -- _bmad-output/implementation-artifacts/sprint-status.yaml must stay empty"
+}

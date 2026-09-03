@@ -5,8 +5,15 @@ export interface TutorialCompleted {
 
 export type SupportedLanguage = 'pt' | 'en';
 
+export type ThemeId = 'dark' | 'light' | 'colorBlind';
+export const THEME_IDS: readonly ThemeId[] = ['dark', 'light', 'colorBlind'] as const;
+
+function isThemeId(value: unknown): value is ThemeId {
+  return typeof value === 'string' && (THEME_IDS as readonly string[]).includes(value);
+}
+
 export interface Settings {
-  theme: string;
+  theme: ThemeId;
   reducedMotion: boolean;
   language: string;
   laneDefault: number;
@@ -55,7 +62,7 @@ export function loadSettings(raw: string): Settings {
     return { ...DEFAULT_SETTINGS };
   }
   return {
-    theme: typeof parsed.theme === 'string' ? parsed.theme : DEFAULT_SETTINGS.theme,
+    theme: isThemeId(parsed.theme) ? parsed.theme : DEFAULT_SETTINGS.theme,
     reducedMotion: typeof parsed.reducedMotion === 'boolean' ? parsed.reducedMotion : DEFAULT_SETTINGS.reducedMotion,
     language: typeof (parsed as Record<string, unknown>).language === 'string' ? ((parsed as Record<string, unknown>).language as string) : DEFAULT_SETTINGS.language,
     laneDefault: isValidLaneIndex(parsed.laneDefault) ? parsed.laneDefault : DEFAULT_SETTINGS.laneDefault,

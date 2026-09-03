@@ -28,6 +28,8 @@ import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
+import { THEMES, isThemeId } from './src/theme/index.ts';
+import type { ThemeId } from './src/theme/index.ts';
 import { useSyncedLayout } from './src/ui/useSyncedLayout.ts';
 import { statusBarStyle } from './src/ui/statusBar.ts';
 import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
@@ -77,6 +79,16 @@ import { ToneScreen } from './src/ui/ToneScreen.tsx';
 import { triggerHapticsForTrace } from './src/feel/haptics.ts';
 import { triggerSfxForTrace, triggerSfxForSpawn, triggerSfxForGameOver } from './src/feel/sfx.ts';
 import { nextSessionBest } from './src/feel/bulletTime.ts';
+import { BoardA11yOverlay } from './src/a11y/boardAccessibility.tsx';
+import { useScreenReaderEnabled, isThreeFingerMove } from './src/a11y/screenReaderGestures.ts';
+import {
+  announceMove,
+  announceMerge,
+  announceSpawn,
+  announceScoreThrottled,
+  announceGameOver,
+  announceNewRecord,
+} from './src/a11y/announcements.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
 import { useTranslation } from 'react-i18next';
@@ -100,6 +112,7 @@ function AppContent() {
   const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
   const stats = useFrameRateBaseline();
   const rngRef = useRef(mulberry32(20260808));
+  const rngSeedRef = useRef(20260808);
   const busyRef = useRef(false);
   const restartSeqRef = useRef(0);
   const gestureStartSeqRef = useRef(0);
@@ -109,6 +122,8 @@ function AppContent() {
   const purchaseBusyRef = useRef(false);
   const sessionStartBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const hydrationOkByLaneRef = useRef<Record<LaneId, boolean>>({ clean: true, accelerated: true });
+  const pendingSaveByLaneRef = useRef<Record<LaneId, Promise<boolean> | null>>({ clean: null, accelerated: null });
+  const persistedBestByLaneRef = useRef<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const [ready, setReady] = useState(false);
   const [persistedBestByLane, setPersistedBestByLane] = useState<Record<LaneId, number>>({ clean: 0, accelerated: 0 });
   const [settings, setSettings] = useState<Settings>({ ...DEFAULT_SETTINGS });
@@ -124,12 +139,21 @@ function AppContent() {
   const [undoBudget, setUndoBudget] = useState<UndoBudget>(() => initialUndoBudget());
   const [hintBudget, setHintBudget] = useState<HintBudget>(() => initialHintBudget(5));
   const [continueBudget, setContinueBudget] = useState<ContinueBudget>(() => initialContinueBudget());
+  // DW-86: forfeitedContinue — set on game-over, dies on continue attempt / new game
+  const [forfeitedContinue, setForfeitedContinue] = useState(false);
   const [hintHighlight, setHintHighlight] = useState<[[number, number], [number, number]] | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
   const [entitlements, setEntitlements] = useState<Entitlements>({});
   const [restoreBusy, setRestoreBusy] = useState(false);
   const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
+  // DW-107: board shake 5-8px must not be clipped — toggle parent overflow visible during 130ms shake
+  const [isBoardShaking, setIsBoardShaking] = useState(false);
+  const screenReaderEnabled = useScreenReaderEnabled();
+  const screenReaderEnabledRef = useRef(screenReaderEnabled);
+  useEffect(() => {
+    screenReaderEnabledRef.current = screenReaderEnabled;
+  }, [screenReaderEnabled]);
 
   // Sync i18n language with Settings.language — immediate apply per UX-DR-30
   // Normalizes pt-BR/en-US etc to pt/en for i18next (supportedLngs)
@@ -176,6 +200,7 @@ function AppContent() {
       if (cancelled) return;
       hydrationOkByLaneRef.current = { clean: byLane.clean.ok, accelerated: byLane.accelerated.ok };
       sessionStartBestByLaneRef.current = { clean: byLane.clean.best, accelerated: byLane.accelerated.best };
+      persistedBestByLaneRef.current = { clean: byLane.clean.best, accelerated: byLane.accelerated.best };
       setPersistedBestByLane({ clean: byLane.clean.best, accelerated: byLane.accelerated.best });
       const activeLane: LaneId = loadedSettings.laneDefault === 1 ? 'accelerated' : 'clean';
       setMatch(initialScore(byLane[activeLane].best));
@@ -206,17 +231,33 @@ function AppContent() {
     };
   }, []);
 
+  useEffect(() => {
+    persistedBestByLaneRef.current = persistedBestByLane;
+  }, [persistedBestByLane]);
+
   // Persist per-lane: only the active lane's best is ever written, gated on that
   // lane's session-start best (isNewRecord) and hydrationOk for that lane.
   useEffect(() => {
     const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
     if (!hydrationOkByLaneRef.current[activeLaneId]) return;
+    const sanitizedMatchBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+    const rawPersistedForCheck = persistedBestByLane[activeLaneId];
+    const sanitizedPersistedForCheck = Number.isFinite(rawPersistedForCheck) && rawPersistedForCheck >= 0 ? rawPersistedForCheck : 0;
     if (
-      isNewRecord(sessionStartBestByLaneRef.current[activeLaneId], match.best) &&
-      match.best > persistedBestByLane[activeLaneId]
+      isNewRecord(sessionStartBestByLaneRef.current[activeLaneId], sanitizedMatchBest) &&
+      sanitizedMatchBest > sanitizedPersistedForCheck
     ) {
-      void saveBestForLane(activeLaneId, match.best).then((ok) => {
-        if (ok) setPersistedBestByLane((prev) => ({ ...prev, [activeLaneId]: match.best }));
+      const p = saveBestForLane(activeLaneId, sanitizedMatchBest).then((ok) => {
+        if (ok) {
+          setPersistedBestByLane((prev) => ({ ...prev, [activeLaneId]: sanitizedMatchBest }));
+          persistedBestByLaneRef.current = { ...persistedBestByLaneRef.current, [activeLaneId]: sanitizedMatchBest };
+          sessionStartBestByLaneRef.current = { ...sessionStartBestByLaneRef.current, [activeLaneId]: sanitizedMatchBest };
+        }
+        return ok;
+      });
+      pendingSaveByLaneRef.current[activeLaneId] = p;
+      p.finally(() => {
+        if (pendingSaveByLaneRef.current[activeLaneId] === p) pendingSaveByLaneRef.current[activeLaneId] = null;
       });
     }
   }, [match.best, persistedBestByLane, selectedLaneIndex]);
@@ -231,6 +272,8 @@ function AppContent() {
     setUndoBudget(base);
     setHintBudget(initialHintBudget(5));
     setContinueBudget(initialContinueBudget());
+    // DW-86: forfeitedContinue dies with match
+    setForfeitedContinue(false);
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
@@ -252,6 +295,9 @@ function AppContent() {
           clearTimeout(fallbackBusyTimerRef.current);
           fallbackBusyTimerRef.current = null;
         }
+        // DW-93: RNG reseed — incrementing seed per newGame
+        rngSeedRef.current += 1;
+        rngRef.current = mulberry32(rngSeedRef.current);
         const s = newGame(rngRef.current);
         setGame(s);
         setMoveResult(null);
@@ -341,6 +387,17 @@ function AppContent() {
     [settings],
   );
 
+  const handleThemeChange = useCallback(
+    (id: ThemeId) => {
+      if (!isThemeId(id)) return;
+      if (id === settings.theme) return;
+      const nextSettings: Settings = { ...settings, theme: id as ThemeId };
+      setSettings(nextSettings);
+      void saveSettings(nextSettings);
+    },
+    [settings],
+  );
+
   const doMove = useCallback(
     (dir: Direction) => {
       // S8.3 capture swipe direction synchronously before move() for directional shake
@@ -423,21 +480,83 @@ function AppContent() {
             triggerSfxForGameOver();
           }
         } catch {}
+        // 9-2 a11y announcements — engine-derived, never blocking
+        try {
+          if (!result.moved) {
+            // noop silent — no announcement
+          } else {
+            const dirLabel = (() => {
+              try {
+                return i18n.t(`a11y.dir.${dir}`);
+              } catch {
+                return dir;
+              }
+            })();
+            announceMove(dirLabel);
+            // Merge announcements coalesced to one per move to avoid VoiceOver queue flood (patch P1)
+            const mergeEntries = result.trace.filter((e: any) => !e.spawned && e.from.length === 2);
+            if (mergeEntries.length > 0) {
+              const first = mergeEntries[0];
+              const aPos = first.from[0];
+              const bPos = first.from[1];
+              const aVal = snapshot.game.board[aPos[0]]?.[aPos[1]];
+              const bVal = snapshot.game.board[bPos[0]]?.[bPos[1]];
+              if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(first.value)) {
+                announceMerge(aVal as number, bVal as number, first.value);
+              } else if (Number.isFinite(first.value)) {
+                // fallback: announce generic merge with resulting value if source values stale
+                try { announceMerge(first.value / 2, first.value / 2, first.value); } catch {}
+              }
+            }
+            const spawnEntry = result.trace.find((e: any) => e.spawned);
+            if (spawnEntry && Number.isFinite(spawnEntry.value)) {
+              announceSpawn(spawnEntry.value);
+            }
+            if (result.score > 0) {
+              const curScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+              const newScore = curScore + result.score;
+              announceScoreThrottled(newScore);
+            }
+            if (isGameOver(result.board)) {
+              const curScore2 = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+              const newScore2 = curScore2 + result.score;
+              const curBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+              const newBest = Math.max(curBest, newScore2);
+              announceGameOver(newScore2, newBest);
+              const activeLaneIdForRecord: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+              const startBest = sessionStartBestByLaneRef.current[activeLaneIdForRecord] ?? 0;
+              const hydrationOk = hydrationOkByLaneRef.current[activeLaneIdForRecord] ?? true;
+              if (hydrationOk && isNewRecord(startBest, newScore2)) {
+                announceNewRecord();
+              }
+            }
+          }
+        } catch {}
       }
     },
-    [game, match, matchStats, sessionBestMerge, tutorialState, settings],
+    [game, match, matchStats, sessionBestMerge, tutorialState, settings, selectedLaneIndex],
   );
 
-  const handleRestart = useCallback(() => {
+  const handleRestart = useCallback(async () => {
+    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+    const pending = pendingSaveByLaneRef.current[activeLaneId];
+    if (pending) {
+      try {
+        await pending;
+      } catch {}
+    }
     // S8.3 clear last swipe direction on new game — board shake resets
     lastDirectionRef.current = null;
     setSessionBestMerge(0);
+    // DW-93: RNG reseed — incrementing seed per newGame
+    rngSeedRef.current += 1;
+    rngRef.current = mulberry32(rngSeedRef.current);
     // AC6/7: forfeited continue dies with game-over — any per-match continue budget is discarded here (ADR-02)
-    const activeLaneId: LaneId = laneFromIndex(selectedLaneIndex).id as LaneId;
+    // DW-86: forfeitedContinue — set on game-over, dies on continue attempt / new game
     const s = newGame(rngRef.current);
     setGame(s);
     setMoveResult(null);
-    setMatch(initialScore(persistedBestByLane[activeLaneId]));
+    setMatch(initialScore(persistedBestByLaneRef.current[activeLaneId]));
     setMatchStats(initialStats(s.board));
     busyRef.current = false;
     setUndoHistory([]);
@@ -449,6 +568,8 @@ function AppContent() {
     setHintHighlight(null);
     setBannerDismissed({ ceiling: false, stuck: false });
     setShowUndoPrompt(false);
+    // DW-86: forfeitedContinue dies with new game (never carried)
+    setForfeitedContinue(false);
     restartSeqRef.current += 1;
     if (fallbackBusyTimerRef.current) {
       clearTimeout(fallbackBusyTimerRef.current);
@@ -724,6 +845,8 @@ function AppContent() {
   }, [activeProfile, undoBudget, undoHistory, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt]);
 
   const handleContinueAd = useCallback(async () => {
+    // DW-86: forfeitedContinue dies on any continue attempt
+    setForfeitedContinue(false);
     if (hasNoAds && activeProfile.canContinue) { const tmp: OrchestratorState = { undoHistory, undoBudget, hintBudget, continueBudget, hintHighlight, bannerDismissed, showUndoPrompt }; const res = orchestratorConsumeContinueAd(tmp, activeProfile); if (!res.ok) return; if (res.snapshot) { setUndoHistory(res.state.undoHistory); setGame(res.snapshot.game); setMatch(res.snapshot.match); setMatchStats(res.snapshot.matchStats); setSessionBestMerge(Number.isFinite(res.snapshot.sessionBestMerge) ? res.snapshot.sessionBestMerge as number : 0); setMoveResult(null); } setContinueBudget(res.state.continueBudget); setHintHighlight(res.state.hintHighlight); setShowUndoPrompt(res.state.showUndoPrompt); if (fallbackBusyTimerRef.current) { clearTimeout(fallbackBusyTimerRef.current); fallbackBusyTimerRef.current = null; } busyRef.current = false; return; }
     if (adBusyRef.current) return;
     // Lane wall: allowAds/canContinue gated via canContinueDerived but also guard here if profile blocks
@@ -761,6 +884,8 @@ function AppContent() {
       setContinueBudget(res.state.continueBudget);
       setHintHighlight(res.state.hintHighlight);
       setShowUndoPrompt(res.state.showUndoPrompt);
+      // DW-86: forfeitedContinue dies on continue attempt
+      setForfeitedContinue(false);
       if (fallbackBusyTimerRef.current) {
         clearTimeout(fallbackBusyTimerRef.current);
         fallbackBusyTimerRef.current = null;
@@ -772,6 +897,8 @@ function AppContent() {
   }, [continueBudget, undoHistory, activeProfile, undoBudget, hintBudget, hintHighlight, bannerDismissed, showUndoPrompt, hasNoAds]);
 
   const handleContinueIap = useCallback(() => {
+    // DW-86: forfeitedContinue dies on any continue attempt
+    setForfeitedContinue(false);
     const tmp: OrchestratorState = {
       undoHistory,
       undoBudget,
@@ -794,6 +921,8 @@ function AppContent() {
     setContinueBudget(res.state.continueBudget);
     setHintHighlight(res.state.hintHighlight);
     setShowUndoPrompt(res.state.showUndoPrompt);
+    // DW-86: forfeitedContinue dies on continue attempt
+    setForfeitedContinue(false);
     if (fallbackBusyTimerRef.current) {
       clearTimeout(fallbackBusyTimerRef.current);
       fallbackBusyTimerRef.current = null;
@@ -862,63 +991,33 @@ function AppContent() {
         .onBegin(() => {
           gestureStartSeqRef.current = restartSeqRef.current;
         })
-        .onEnd((event, success) => {
+        .onEnd((event: any, success: boolean) => {
           // DW-96: drop dispatch if restart occurred mid-gesture (seq changed)
           if (gestureStartSeqRef.current !== restartSeqRef.current) return;
+          if (screenReaderEnabledRef.current) {
+            // VoiceOver active: single-finger reserved for navigation, only 3-finger swipes move
+            if (busyRef.current) return;
+            if (!success) return;
+            const dir = isThreeFingerMove(event);
+            if (!dir) return;
+            try {
+              doMoveRef.current(dir);
+            } catch {}
+            return;
+          }
           handleGestureEnd(event, success, busyRef, (dir) => doMoveRef.current(dir));
         }),
     [],
   );
 
-  if (!ready) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.stats}>preloading bundled assets…</Text>
-        <StatusBar style={statusBarStyle(isLandscape)} />
-      </View>
-    );
-  }
+  const themeId: ThemeId = (isThemeId(settings.theme) ? settings.theme : 'dark') as ThemeId;
+  const tokens = THEMES[themeId];
 
-  if (screen === 'tone') {
-    return (
-      <View style={styles.container}>
-        <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
-        <StatusBar style={statusBarStyle(isLandscape)} />
-      </View>
-    );
-  }
-
-  // Lane Select is the functional home surface (UX-DR-9)
-  if (screen === 'laneSelect') {
-    return (
-      <View style={styles.container}>
-        <LaneSelectScreen
-          selectedIndex={selectedLaneIndex}
-          hasActiveMatch={hasActiveMatch}
-          insets={insets}
-          onSelectLane={applyLaneSelection}
-          onJogar={handleJogar}
-          onRestorePurchases={handleRestorePurchases}
-          restoreBusy={restoreBusy}
-          language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
-          onLanguageChange={handleLanguageChange}
-        />
-        <StatusBar style={statusBarStyle(isLandscape)} />
-      </View>
-    );
-  }
-
-  // FR-43 "only 3 available" semantics: the spawnable pot set is driven by the
-  // live board ceiling — DW-94 deflate hygiene: recomputed every render from
-  // `game.board` (after `ready` guard) and shared by both lane previews so a
-  // pending rolled at a higher tier fans out through preview's defensive fallback
-  // when the board deflates (availablePot shrinks). Never memoized stale.
-  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
-
+  // Hooks must be unconditional — keep all hooks before any early return (Rules of Hooks).
+  // gameOver/profile/banners/gates + DW-86 effect must be before early returns to keep hook count stable (96 hooks always).
   const gameOver = isGameOver(game.board);
   const activeLaneId = laneFromIndex(selectedLaneIndex).id;
   const profile = profileForLaneId(activeLaneId);
-  // 3.3 banner relevance (contextual, dismissible, Accelerated only)
   const ceiling = ceilingDetector(game.board);
   const emptyCount = game.board.flat().filter((v) => v === null).length;
   const showCeilingBanner = profile.showLearningAids && !gameOver && !bannerDismissed.ceiling && ceiling >= 48;
@@ -935,12 +1034,65 @@ function AppContent() {
   const canUndoDerived = orchestratorCanUndoForState(tmpForGates, profile);
   const canHintDerived = orchestratorCanHintForState(tmpForGates, game.board, profile);
   const canContinueDerived = orchestratorCanContinueForState(tmpForGates, profile);
+  // DW-86: forfeitedContinue — set on game-over when a continue was available
+  useEffect(() => {
+    if (gameOver && canContinueDerived && !forfeitedContinue) {
+      setForfeitedContinue(true);
+    }
+  }, [gameOver, canContinueDerived, forfeitedContinue]);
+  const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+  const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+  const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
+  const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
+
+  if (!ready) {
+    return (
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
+        <Text style={[styles.stats, { color: tokens.chrome.text }]}>preloading bundled assets…</Text>
+        <StatusBar style={statusBarStyle(isLandscape)} />
+      </View>
+    );
+  }
+
+  if (screen === 'tone') {
+    return (
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
+        <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
+        <StatusBar style={statusBarStyle(isLandscape)} />
+      </View>
+    );
+  }
+
+  // Lane Select is the functional home surface (UX-DR-9)
+  if (screen === 'laneSelect') {
+    return (
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
+        <LaneSelectScreen
+          selectedIndex={selectedLaneIndex}
+          hasActiveMatch={hasActiveMatch}
+          insets={insets}
+          onSelectLane={applyLaneSelection}
+          onJogar={handleJogar}
+          onRestorePurchases={handleRestorePurchases}
+          restoreBusy={restoreBusy}
+          language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
+          onLanguageChange={handleLanguageChange}
+          theme={themeId}
+          onThemeChange={handleThemeChange}
+        />
+        <StatusBar style={statusBarStyle(isLandscape)} />
+      </View>
+    );
+  }
+
+  // FR-43 "only 3 available" — availablePot once per render after if(!ready), shared by both lane previews
+  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
       <Hud
-        score={match.score}
-        best={match.best}
+        score={sanitizedScore}
+        best={sanitizedBest}
         isLandscape={isLandscape}
         insets={insets}
         bandHeight={bandHeight}
@@ -955,8 +1107,8 @@ function AppContent() {
         onHint={handleHint}
         hintHighlight={hintHighlight}
       />
-      <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
-        <View style={[styles.boardWrap, { width: boardSize, height: boardSize }]}>
+      <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom, backgroundColor: tokens.chrome.surface }]}>
+        <View style={[styles.boardWrap, { width: boardSize, height: boardSize }, isBoardShaking ? { overflow: 'visible' } : null]}>
           <GestureDetector gesture={panGesture}>
             <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
               <GameBoard
@@ -968,7 +1120,10 @@ function AppContent() {
                 onMoveSettled={onMoveSettled}
                 hintHighlight={hintHighlight}
                 direction={lastDirectionRef.current ?? undefined}
+                onShakeActiveChange={setIsBoardShaking}
+                theme={themeId}
               />
+              <BoardA11yOverlay board={game.board} width={boardSize} />
             </View>
           </GestureDetector>
         </View>
@@ -991,27 +1146,27 @@ function AppContent() {
           <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
         ) : null}
         <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel={t('laneSelect.pistas')}>
-          <Text style={styles.menuLabel}>{t('laneSelect.pistas')}</Text>
+          <Text style={styles.menuLabel} allowFontScaling>{t('laneSelect.pistas')}</Text>
         </Pressable>
-        <Text style={styles.stats}>
+        <Text style={styles.stats} allowFontScaling>
           {stats
             ? `baseline: ${stats.fps.toFixed(1)} fps · p99 ${stats.p99Ms.toFixed(2)}ms · ${stats.frames} frames`
             : 'recording frame rate baseline…'}
         </Text>
-        <Text style={styles.stats}>
-          score: {match.score} · live best: {match.best} · persisted best: {persistedBestByLane[activeLaneId as LaneId]}
+        <Text style={styles.stats} allowFontScaling>
+          score: {sanitizedScore} · live best: {sanitizedBest} · persisted best: {sanitizedPersisted}
         </Text>
       </View>
       {gameOver ? (
         <GameOverOverlay
           stats={{
-            score: match.score,
-            best: match.best,
+            score: match.score === match.score && Number.isFinite(match.score) && match.score >= 0 ? match.score : 0,
+            best: match.best === match.best && Number.isFinite(match.best) && match.best >= 0 ? match.best : 0,
             maxTile: matchStats.maxTile,
             merges: matchStats.merges,
             longestStreak: matchStats.longestStreak,
           }}
-          isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score)}
+          isNewRecord={isNewRecord(sessionStartBestByLaneRef.current[activeLaneId as LaneId], match.score) && hydrationOkByLaneRef.current[activeLaneId as LaneId]}
           onRestart={handleRestart}
           reducedMotion={settings.reducedMotion}
           insets={insets}
@@ -1061,10 +1216,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#1a1d23',
+    flexWrap: 'wrap',
   },
   stats: {
     marginTop: 12,
     fontSize: 14,
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
 });

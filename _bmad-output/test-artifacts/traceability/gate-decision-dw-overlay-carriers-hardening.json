@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T22:47:18.000Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-overlay-carriers-hardening",
+    "label": "Overlay carriers hardening (DW-91, DW-92, DW-101, DW-102)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (5/5 FULL), P1 coverage is 100% (6/6 FULL), and overall coverage is 100% (18/18). 24/24 carrier tests green (4 integration overlayCarriers + 20 gameOverOverlay complement) and fleet 960/960 pass with tsc both clean. Working-tree delta is component-local GameOverOverlay.tsx clampInset + reactive reducedMotion + overflow guards verified against spec AC; no engine/layout drift, no sprint-status.yaml write, ledger 596c2f86×4 present.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-overlay-carriers-hardening.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

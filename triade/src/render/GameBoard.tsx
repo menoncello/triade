@@ -5,15 +5,17 @@ import type { SkFont } from '@shopify/react-native-skia';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withSequence, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import type { Board, Direction, MoveResult } from '../engine/core/index.ts';
 import { planTileTransitions, type TileTransition } from './transitionPlan.ts';
-import { numeralSizeFor, tileInkFor } from '../ui/tileNumerals.ts';
+import { numeralSizeFor, tileInkFor, tileFillFor, tileShapeFor } from '../ui/tileNumerals.ts';
 import { presetFor } from '../feel/feel.ts';
 import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
 import { BULLET_TIME_MS, shouldTriggerBulletTime } from '../feel/bulletTime.ts';
+import type { ThemeId } from '../theme/index.ts';
+import { THEMES } from '../theme/index.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
-function tileTextColor(value: number): string {
-  return tileInkFor(value);
+function tileTextColor(value: number, theme: ThemeId = 'dark'): string {
+  return tileInkFor(value, theme);
 }
 
 function centerX(font: SkFont, value: number, cell: number): number {
@@ -68,15 +70,11 @@ function cellKey(r: number, c: number): string {
   return `${r},${c}`;
 }
 
-function cellColor(value: number | null): string {
-  if (value === null) return '#d8d3cc';
-  if (value === 1) return '#f9e3ae';
-  if (value === 2) return '#f7d488';
-  if (value === 3) return '#eec06e';
-  if (value <= 6) return '#e0a84f';
-  if (value <= 12) return '#cf8a2e';
-  if (value <= 24) return '#b46a1e';
-  return '#8f4d12';
+function cellColor(value: number | null, theme: ThemeId = 'dark'): string {
+  if (value === null) {
+    return THEMES[theme]?.chrome.cell ?? '#262A31';
+  }
+  return tileFillFor(value, theme);
 }
 
 function pixel(cell: [number, number], cellSize: number): { x: number; y: number } {
@@ -97,6 +95,7 @@ interface AnimatedTileProps {
   isMerge?: boolean;
   reducedMotion?: boolean;
   onVanish: (id: string) => void;
+  theme?: ThemeId;
 }
 
 function AnimatedTile({
@@ -109,7 +108,8 @@ function AnimatedTile({
   delay = 0,
   isMerge = false,
   reducedMotion = false,
-  onVanish
+  onVanish,
+  theme = 'dark'
 }: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
   const toPos = pixel(to, cell);
@@ -202,6 +202,8 @@ function AnimatedTile({
     return matchFont({ fontFamily: TILE_FONT_FAMILY, fontSize: size, fontWeight: 'bold' });
   }, [cell, value]);
 
+  const shape = tileShapeFor(value);
+
   return (
     <Group transform={translate}>
       {/* Glow behind tile for 1536+ only — soft outer rect (only glow in system) */}
@@ -223,9 +225,38 @@ function AnimatedTile({
           width={cell}
           height={cell}
           r={CELL_RADIUS}
-          color={cellColor(value)}
+          color={cellColor(value, theme)}
           opacity={opacity}
         />
+        {/* Facet grain beyond color — varying by tier band (FR-31, UX-DR-19) */}
+        {shape.grain > 0 ? (
+          <RoundedRect
+            x={3}
+            y={3}
+            width={cell - 6}
+            height={cell - 6}
+            r={CELL_RADIUS - 2}
+            color="#000000"
+            // @ts-ignore Skia stroke
+            style="stroke"
+            strokeWidth={shape.bevel}
+            opacity={shape.grain === 1 ? 0.14 : 0.22}
+          />
+        ) : null}
+        {shape.grain === 2 ? (
+          <RoundedRect
+            x={6}
+            y={6}
+            width={cell - 12}
+            height={cell - 12}
+            r={CELL_RADIUS - 4}
+            color="#000000"
+            // @ts-ignore Skia stroke
+            style="stroke"
+            strokeWidth={0.9}
+            opacity={0.12}
+          />
+        ) : null}
         {/* Flash overlay — imperative worklet via shared value, heavy tier only */}
         {hasFlash ? (
           <RoundedRect x={0} y={0} width={cell} height={cell} r={CELL_RADIUS} color="#fff7e0" opacity={flashOpacity} />
@@ -236,7 +267,7 @@ function AnimatedTile({
             y={centerY(font, cell)}
             text={String(value)}
             font={font}
-            color={tileTextColor(value)}
+            color={tileTextColor(value, theme)}
             opacity={opacity}
           />
         ) : null}
@@ -310,10 +341,14 @@ export interface GameBoardProps {
   onMoveSettled?: () => void;
   hintHighlight?: [[number, number], [number, number]] | null;
   direction?: Direction;
+  onShakeActiveChange?: (active: boolean) => void;
+  theme?: ThemeId;
 }
 
-export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction }: GameBoardProps) {
-  const cell = Math.max((width - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
+export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction, onShakeActiveChange, theme = 'dark' }: GameBoardProps) {
+  const finiteWidth = Number.isFinite(width) ? (width as number) : 1;
+  const safeWidth = Math.max(1, finiteWidth);
+  const cell = Math.max((safeWidth - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
   // S8.3 screen shake — imperative worklet on board container only (never chrome)
   const shakeX = useSharedValue(0);
   const shakeY = useSharedValue(0);
@@ -325,14 +360,49 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
   const bulletFlashStyle = useAnimatedStyle(() => ({
     opacity: bulletFlash.value,
   }));
+  // DW-107: board shake 5-8px must not be clipped by parent overflow hidden — notify parent to toggle overflow visible during 130ms shake
+  const shakeNotifyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const notifyShakeActive = useCallback(
+    (active: boolean) => {
+      try {
+        onShakeActiveChange?.(active);
+      } catch {}
+    },
+    [onShakeActiveChange],
+  );
+  useEffect(() => {
+    return () => {
+      if (shakeNotifyTimerRef.current) {
+        clearTimeout(shakeNotifyTimerRef.current);
+        shakeNotifyTimerRef.current = null;
+      }
+    };
+  }, []);
+  // Schedule overflow visible for 130ms shake sequence; compensating padding (BOARD_PADDING + SHAKE_CAP) documented as alternative
+  const scheduleShakeVisible = useCallback(() => {
+    notifyShakeActive(true);
+    if (shakeNotifyTimerRef.current) clearTimeout(shakeNotifyTimerRef.current);
+    shakeNotifyTimerRef.current = setTimeout(() => {
+      shakeNotifyTimerRef.current = null;
+      notifyShakeActive(false);
+    }, 130);
+  }, [notifyShakeActive]);
+  const cancelShakeNotify = useCallback(() => {
+    if (shakeNotifyTimerRef.current) {
+      clearTimeout(shakeNotifyTimerRef.current);
+      shakeNotifyTimerRef.current = null;
+    }
+    notifyShakeActive(false);
+  }, [notifyShakeActive]);
   // Cancel shake immediately if Reduced Motion is enabled mid-animation (FR-30, UX-DR-16)
   useEffect(() => {
     if (reducedMotion) {
       shakeX.value = withTiming(0, { duration: 20 });
       shakeY.value = withTiming(0, { duration: 20 });
       bulletFlash.value = withTiming(0, { duration: 20 });
+      cancelShakeNotify();
     }
-  }, [reducedMotion, shakeX, shakeY, bulletFlash]);
+  }, [reducedMotion, shakeX, shakeY, bulletFlash, cancelShakeNotify]);
   const prevBoardRef = useRef(board);
   const idRef = useRef(0);
   const nextId = useCallback(() => `t${idRef.current++}`, []);
@@ -487,10 +557,12 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
     prevMoveResultRef.current = moveResult;
     // S8.3 directional screen shake — data-driven from FeelPreset.shakeMs, capped ≤SHAKE_CAP,
     // disabled under Reduced Motion, silent on NOOP/no-merge, board only.
+    // DW-107: toggle parent overflow visible during 130ms shake or add compensating padding (BOARD_PADDING + SHAKE_CAP spare)
     if (moveResult.moved && !reducedMotion && direction) {
       const maxShake = maxShakeForTrace(moveResult.trace, reducedMotion);
       const amplitude = Math.min(maxShake, SHAKE_CAP);
       if (amplitude > 0) {
+        scheduleShakeVisible();
         const vec = directionVector(direction);
         // Only drive the axis matching swipe direction; invalid dir -> zero vector -> no shake
         if (vec.x !== 0) {
@@ -513,11 +585,13 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
           // Invalid direction — suppress shake
           shakeX.value = withTiming(0, { duration: 20 });
           shakeY.value = withTiming(0, { duration: 20 });
+          cancelShakeNotify();
         }
       } else {
         // Effective move but no merge (slide-only) — cancel any prior shake so it doesn't bleed
         shakeX.value = withTiming(0, { duration: 20 });
         shakeY.value = withTiming(0, { duration: 20 });
+        cancelShakeNotify();
       }
     } else {
       // NOOP, Reduced Motion, or missing direction — cancel any residual shake
@@ -526,6 +600,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         shakeX.value = withTiming(0, { duration: 20 });
         shakeY.value = withTiming(0, { duration: 20 });
       }
+      cancelShakeNotify();
     }
     // S8.4 bullet time — rarity-gated flash on new session-best, ~200ms, board only
     // Never throws on invalid trace; Reduced Motion suppresses; NOOP never triggers
@@ -561,7 +636,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
         onMoveSettledRef.current?.();
       }, EARLY_INPUT_MS);
     }
-  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard]);
+  }, [moveResult, board, applyPlan, direction, reducedMotion, sessionBestMerge, shakeX, shakeY, bulletFlash, syncTiles, rebuildTilesFromBoard, scheduleShakeVisible, cancelShakeNotify]);
 
   const onVanish = useCallback((id: string) => {
     const next = tilesRef.current.filter((t) => t.id !== id);
@@ -576,11 +651,13 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
 
   const ordered = [...tiles].sort((a, b) => renderOrder(a.kind) - renderOrder(b.kind));
 
+  // board container is width, height: width (safeWidth alias keeps 1:1 square; DW-110 guard via safeWidth)
   return (
-    <View style={{ width, height: width }}>
+    <View style={{ width: safeWidth, height: safeWidth }}>
       <Animated.View style={shakeStyle}>
-        <Canvas style={{ width, height: width }}>
-          <RoundedRect x={0} y={0} width={width} height={width} r={14} color="#bdb6ab" />
+        <View importantForAccessibility="no-hide-descendants" accessible={false} style={{ width: safeWidth, height: safeWidth }}>
+          <Canvas style={{ width: safeWidth, height: safeWidth }}>
+          <RoundedRect x={0} y={0} width={safeWidth} height={safeWidth} r={14} color={THEMES[theme]?.chrome.board ?? '#1A1D23'} />
           {ordered.map((t) => (
             <AnimatedTile
               key={t.id}
@@ -594,11 +671,14 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
               isMerge={t.isMerge}
               reducedMotion={reducedMotion}
               onVanish={onVanish}
+              theme={theme}
             />
           ))}
         </Canvas>
+        </View>
       </Animated.View>
       {/* S8.4 bullet-time flash overlay — board only, ~200ms, suppressed under Reduced Motion */}
+      {/* DW-110: width guard — Math.max(1, finiteWidth) validated via safeWidth so NaN never propagates to overlay style */}
       <Animated.View
         pointerEvents="none"
         style={[
@@ -606,8 +686,8 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
             position: 'absolute',
             left: 0,
             top: 0,
-            width,
-            height: width,
+            width: safeWidth,
+            height: safeWidth,
             borderRadius: 14,
             backgroundColor: '#fff7e0',
           },
@@ -631,7 +711,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
                   width: cell,
                   height: cell,
                   borderWidth: 3,
-                  borderColor: '#E8A33D',
+                  borderColor: THEMES[theme]?.chrome.accent ?? '#E8A33D',
                   borderRadius: CELL_RADIUS,
                 }}
                 pointerEvents="none"

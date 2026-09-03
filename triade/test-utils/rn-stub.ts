@@ -12,7 +12,20 @@ type Props = { children?: React.ReactNode; [key: string]: any };
 
 export const View = (props: Props) => React.createElement('View', props, props.children);
 export const Text = (props: Props) => React.createElement('Text', props, props.children);
-export const Pressable = (props: Props) => React.createElement('Pressable', props, props.children);
+export const Pressable = React.forwardRef<any, Props>((props, ref) => {
+  const dummyRef = React.useRef({ __pressableRef: true } as any);
+  // Simulate RN native ref lifecycle for headless tests (boardAccessibility tileRefs)
+  React.useLayoutEffect(() => {
+    if (typeof ref === 'function') (ref as any)(dummyRef.current);
+    else if (ref && typeof ref === 'object' && 'current' in (ref as any)) (ref as any).current = dummyRef.current;
+    return () => {
+      if (typeof ref === 'function') (ref as any)(null);
+      else if (ref && typeof ref === 'object' && 'current' in (ref as any)) (ref as any).current = null;
+    };
+  }, [ref]);
+  return React.createElement('Pressable', props, props.children);
+}) as unknown as (props: Props) => React.ReactElement;
+(Pressable as any).displayName = 'Pressable';
 export const StyleSheet = {
   create: <T extends Record<string, any>>(s: T) => s,
   flatten: (style: any) => style,
@@ -97,6 +110,13 @@ export const AccessibilityInfo = {
   announceForAccessibility: (_msg: string) => {},
   announceForAccessibilityWithOptions: (_msg: string, _opts: any) => {},
   setAccessibilityFocus: (_id: number) => {},
+};
+
+export const findNodeHandle = (_ref: any) => (_ref ? 1 : null);
+
+export const BackHandler = {
+  addEventListener: (_event: string, _handler: () => boolean) => ({ remove: () => {} }),
+  removeEventListener: (_event: string, _handler: () => boolean) => {},
 };
 
 // --- Type-level shims so `react-native-gesture-handler` + RN component props ---

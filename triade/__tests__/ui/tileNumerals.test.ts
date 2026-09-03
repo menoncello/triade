@@ -23,9 +23,10 @@ const TOKEN_1_3_DIGITS: NumeralToken = { fontSize: 32, fontWeight: 800 };
 const TOKEN_4_5_DIGITS: NumeralToken = { fontSize: 13, fontWeight: 700 };
 const TOKEN_6_PLUS_DIGITS: NumeralToken = { fontSize: 9, fontWeight: 700 };
 
-// Ink boundary: value <= 12 => dark ink, value > 12 => light ink
-const DARK_INK = '#3a2f1d';
-const LIGHT_INK = '#fff8e8';
+// Ink per-tier per DESIGN.md (dark slate canonical, Story 9.3)
+// dark on pale/amber/emerald/incandescent; light on copper/bronze/iron/deep-emerald/obsidian
+const DARK_INK = '#1C1206';
+const LIGHT_INK = '#F6F0E1';
 
 // --- MIN_TILE_WIDTH constant ---
 
@@ -140,35 +141,34 @@ test('[P1] FIT_INSET_FACTOR is pinned and documented (AC-3)', async () => {
 
 // --- tileInkFor: ink map ---
 
-test('[P0] tileInkFor returns dark ink for values <= 12 (renderer boundary match)', async () => {
+test('[P0] tileInkFor returns dark ink for DESIGN dark tiers (renderer boundary per DESIGN table)', async () => {
   const { tileInkFor } = await import(SPEC) as {
     tileInkFor: (value: number) => string;
   };
-  const darkValues = [1, 2, 3, 6, 12];
+  const darkValues = [1, 2, 3, 6, 12, 192, 1536, 3072];
   for (const v of darkValues) {
     const ink = tileInkFor(v);
     assert.strictEqual(ink, DARK_INK, `value ${v}: ink must be ${DARK_INK}, got ${ink}`);
   }
 });
 
-test('[P0] tileInkFor returns light ink for values > 12 (renderer boundary match)', async () => {
+test('[P0] tileInkFor returns light ink for DESIGN light tiers (renderer boundary per DESIGN table)', async () => {
   const { tileInkFor } = await import(SPEC) as {
     tileInkFor: (value: number) => string;
   };
-  const lightValues = [13, 24, 48, 96, 192, 384, 768];
+  const lightValues = [24, 48, 96, 384, 768];
   for (const v of lightValues) {
     const ink = tileInkFor(v);
     assert.strictEqual(ink, LIGHT_INK, `value ${v}: ink must be ${LIGHT_INK}, got ${ink}`);
   }
 });
 
-test('[P0] tileInkFor(1536) and tileInkFor(3072) return light ink (E9-deferred, not DESIGN dark)', async () => {
+test('[P0] tileInkFor(1536) and tileInkFor(3072) return dark ink per DESIGN (incandescent bright tiles)', async () => {
   const { tileInkFor } = await import(SPEC) as {
     tileInkFor: (value: number) => string;
   };
-  // AC-3 risk point: 1536/3072 must use light ink on current dark fills
-  assert.strictEqual(tileInkFor(1536), LIGHT_INK, '1536 must use light ink (E9-deferred realignment)');
-  assert.strictEqual(tileInkFor(3072), LIGHT_INK, '3072 must use light ink (E9-deferred realignment)');
+  assert.strictEqual(tileInkFor(1536), DARK_INK, '1536 must use dark ink per DESIGN (incandescent #FFD9A0)');
+  assert.strictEqual(tileInkFor(3072), DARK_INK, '3072 must use dark ink per DESIGN (nucleus #FFF3DC)');
 });
 
 test('[P1] tileInkFor returns non-empty string for all value tiers (1..3072+)', async () => {

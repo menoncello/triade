@@ -1,5 +1,31 @@
 export const GRID_SIZE = 4;
 
+export interface BoardConfig {
+  readonly size: number;
+}
+
+export const DEFAULT_BOARD_CONFIG: BoardConfig = { size: GRID_SIZE };
+
+export function validateGridSize(size: number): void {
+  if (!Number.isInteger(size) || size !== GRID_SIZE) {
+    throw new RangeError(`[BoardConfig] unsupported grid size ${String(size)}: only ${GRID_SIZE} is supported`);
+  }
+}
+
+export function validateBoardConfig(config: BoardConfig): void {
+  if (!config || typeof (config as BoardConfig).size !== 'number') {
+    throw new RangeError(`[BoardConfig] invalid config: expected { size: ${GRID_SIZE} }`);
+  }
+  validateGridSize((config as BoardConfig).size);
+}
+
+export function resolveGridSize(input?: number | BoardConfig | null): number {
+  if (input == null) return GRID_SIZE;
+  const size = typeof input === 'number' ? input : (input as BoardConfig).size;
+  validateGridSize(size);
+  return size;
+}
+
 export type Cell = number | null;
 export type Board = Cell[][];
 export type Direction = 'left' | 'right' | 'up' | 'down';

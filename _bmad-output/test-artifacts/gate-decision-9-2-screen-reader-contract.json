@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-03T23:16:00+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "9-2-screen-reader-contract",
+    "label": "9-2 Screen Reader Contract"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (6/6), P1 coverage is 100% (no P1 requirements, effective 100% target 90% minimum 80%), overall 100% (minimum 80%). No P0 blockers, no NFR failures, 0 flaky. Working-tree delta is button→text patch (spec review fix) now 15/15 pass; committed delta b9db712 already on main with 964 pass fleet, tsc clean, engine purity hold. DW-112/DW-113 deferred with owner+expiry at 9-3 per spec residual — not blocking.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-9-2-screen-reader-contract.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

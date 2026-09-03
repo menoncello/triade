@@ -110,10 +110,10 @@ development_status:
   epic-8-retrospective: optional
 
   epic-9: backlog
-  9-1-tap-targets-44x44pt: backlog
-  9-2-screen-reader-contract: backlog
-  9-3-merges-por-shape-texto-alem-de-cor-wcag-aa: backlog
-  9-4-temas-light-dark-e-color-blind: backlog
+  9-1-tap-targets-44x44pt: done
+  9-2-screen-reader-contract: done
+  9-3-merges-por-shape-texto-alem-de-cor-wcag-aa: done
+  9-4-temas-light-dark-e-color-blind: done
   epic-9-retrospective: optional
 
   epic-10: backlog

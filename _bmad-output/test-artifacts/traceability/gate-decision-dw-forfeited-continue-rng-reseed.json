@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-02T20:30:00.000000+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-forfeited-continue-rng-reseed",
+    "label": "dw-forfeited-continue-rng-reseed \u2014 forfeitedContinue flag + RNG reseed per newGame (DW-86 + DW-93)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%). All P0 criteria FULL via 3 GREEN oracle + dormant scaffolds 32/32 when activated; no critical gaps; ledger 41838b7d done; sprint-status untouched.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "thresholds": {
+    "min_p0_coverage": 100,
+    "min_p0_pass_rate": 100,
+    "min_p1_coverage": 90,
+    "min_p1_pass_rate": 95,
+    "min_overall_pass_rate": 95,
+    "min_coverage": 80
+  },
+  "criteria": {
+    "p0_coverage": 100,
+    "p0_pass_rate": 100,
+    "p1_coverage": 100,
+    "p1_pass_rate": 100,
+    "overall_pass_rate": 100,
+    "overall_coverage": 100,
+    "security_issues": 0,
+    "critical_nfrs_fail": 0,
+    "flaky_tests": 0
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-forfeited-continue-rng-reseed.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": "",
+    "nfr_report_path": "_bmad-output/test-artifacts/nfr-assessment-dw-forfeited-continue-rng-reseed.md"
+  },
+  "evidence": {
+    "oracle": "3/3 active triade/__tests__/ui/components/app.forfeited-continue-rng-reseed.test.ts GREEN (DW86 lifecycle + DW93 reseed + determinism)",
+    "gateway": "11/11 pass when activated (api)",
+    "umbrella": "8/8 pass when activated (e2e)",
+    "atdd": "13/13 pass when activated (unit dormant) \u2192 total dormant 32/32 PASS",
+    "host_gate": "950 pass / 0 fail / 366 skipped ~4210ms (triade host) + tsc both configs EXIT 0 (verified 2026-09-02, no new error beyond forfeited seam)",
+    "scans": "forfeitedContinue 12 raw (8 literals decl1+true1+false6 + 4 DW-86 comments) + rngSeedRef 4 hits (useRef1 ++1\u00d72 mulberry32\u00d72) + mulberry32 3 + Math.random App 0 + Date.now 0 + 20260808 2 + DW-86 4 + DW-93 2 + rngSeedRef +=1 2 + rngRef=mulberry32 2 + git diff -- triade/src/engine empty + git diff -- sprint-status.yaml empty + ledger 41838b7d 2 hits",
+    "slices": "app.restart 1200 (order + lane + AC67) + app.contextualHelp 1300 bannerDismissed + app.continueAd 2200 granted/orchestratorConsumeContinueAd \u2014 all pinned inside widened windows via order array",
+    "working_tree": "triade/App.tsx 8 locations (102-103,128-129,237-238,260-262,443-445,464-465,740-742,961-966) + 3 slice widenings + spec + oracle untracked; triade/src/engine byte-identical"
+  },
+  "nfrs": {
+    "security": "PASS",
+    "performance": "PASS",
+    "reliability": "PASS",
+    "maintainability": "PASS"
+  }
+}

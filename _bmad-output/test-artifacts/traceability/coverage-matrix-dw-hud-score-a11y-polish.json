@@ -1,0 +1,377 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-03T00:00:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-hud-score-a11y-polish",
+    "label": "dw-hud-score-a11y-polish — Hud pt-BR thousands + preview a11y polish (DW-8)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-hud-score-a11y-polish.md",
+      "_bmad-output/implementation-artifacts/deferred-work.md#DW-8",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-hud-score-a11y-polish.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-hud-score-a11y-polish.md",
+      "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts",
+      "triade/__tests__/ui/components/hud.test.ts",
+      "triade/__tests__/ui/components/previewCard.test.ts",
+      "triade/src/ui/Hud.tsx",
+      "triade/src/ui/PreviewCard.tsx",
+      "triade/src/game/preview.ts",
+      "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-hud-score-a11y-polish-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-hud-score-a11y-polish.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "2a9b0154c8471ba4437a53ddc4571c5066c09d49",
+    "head": "b41ba16ecd536f5adcde0e4b6d89f06644890a74",
+    "working_tree_ledger": "spec-hud-score-a11y-polish.md baseline 2a9b015 → final b41ba16 + deferred-work.md DW-8 open→done 2026-09-03 + resolution: resolved by sweep bundle dw-hud-score-a11y-polish + resolution-undo: cb5eeedd289a56083f613633339d9265d2313348c4f7d399b8a42cefc64c4510 (64-hex, 1 hit, rg cb5eeedd 1, sprint-status.yaml untouched — orchestrator-owned, git diff -- sprint-status.yaml empty)",
+    "production_files": [
+      "triade/src/ui/Hud.tsx:11-13 function fmt(n:number): string { return Number.isFinite(n) ? n.toLocaleString('pt-BR') : '0'; } single toLocaleString pt-BR literal, Number.isFinite guard",
+      "triade/src/ui/Hud.tsx:44 <View accessible={false} style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}> LanePreview decorative wrapper hidden from VoiceOver",
+      "triade/src/ui/Hud.tsx:81 {fmt(score)} scoreLandscape + 84 Recorde {fmt(best)} bestLandscape — landscape Text sites via fmt",
+      "triade/src/ui/Hud.tsx:88 <View pointerEvents=\"none\" accessible={false} style={styles.landscapePreviews}> decorative preview band hidden",
+      "triade/src/ui/Hud.tsx:128 {fmt(score)} scorePortrait + 131 Recorde {fmt(best)} bestPortrait — portrait Text sites via fmt",
+      "triade/src/ui/Hud.tsx:138 <View pointerEvents=\"box-none\" accessible={false} style={[styles.previewPortrait, ...]}> decorative portrait preview slot hidden",
+      "triade/src/ui/PreviewCard.tsx:29 <View accessibilityLabel={announcement} pointerEvents=\"none\" accessible accessibilityRole=\"text\"> unchanged — announcement Próxima (Label): value survives three accessible=false wrappers",
+      "triade/src/engine/* byte-identical (git diff --stat -- triade/src/engine empty) — Hud pure presentation, no RNG/preview distribution change",
+      "triade/src/game/preview.ts byte-identical (git diff --stat -- triade/src/game/preview.ts empty) — Preview type + FALLBACK_PREVIEW singleton untouched beyond already-landed dw-hud-preview-hardening"
+    ],
+    "spec": "_bmad-output/implementation-artifacts/spec-hud-score-a11y-polish.md (status: done, baseline 2a9b015 → final b41ba16, 7-row I/O matrix, Auto Run Result done — tsc green + hud/previewCard green)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "DW-8 AC portrait score 3240 renders \"3.240\" not \"3240\" nor \"3,240\" (pt-BR grouping dot, R-001)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-01-triade", "title": "[P0-01] DW-8 AC portrait score 3240 renders \"3.240\" not \"3240\" nor \"3,240\"", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 64, "level": "unit", "status": "skipped"},
+        {"id": "P0-01-unit", "title": "[P0-01] DW-8 AC portrait score 3240 renders \"3.240\" not \"3240\" nor \"3,240\"", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 79, "level": "unit", "status": "skipped"},
+        {"id": "P0-API-01", "title": "[P0-API-01] fmt helper single-source — Number.isFinite guard + toLocaleString pt-BR×1 + fmt(score)×2 fmt(best)×2 no bare", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 30, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — fmt pt-BR 3.240 + 12.456 + 1.000.000 + 0 guard + accessible×3 + PreviewCard announce + pointerEvents + chrome 76×76/60×44", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-02",
+      "description": "DW-8 AC landscape best 12456 renders Recorde 12.456 alongside score 3.240 (pt-BR, R-001)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-02-triade", "title": "[P0-02] DW-8 AC landscape best 12456 renders Recorde 12.456 alongside score 3.240", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 73, "level": "unit", "status": "skipped"},
+        {"id": "P0-02-unit", "title": "[P0-02] DW-8 AC landscape best 12456 renders Recorde 12.456 alongside score 3.240", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 88, "level": "unit", "status": "skipped"},
+        {"id": "P0-API-01", "title": "[P0-API-01] fmt helper single-source", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 30, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-03",
+      "description": "DW-8 AC zero 0 renders \"0\" in both orientations without throw (R-003/R-007)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-03-triade", "title": "[P0-03] DW-8 AC zero 0 renders \"0\" in both orientations without throw", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 82, "level": "unit", "status": "skipped"},
+        {"id": "P0-03-unit", "title": "[P0-03] DW-8 AC zero 0 renders \"0\" in both orientations without throw", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 97, "level": "unit", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — fmt + guard + chrome", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-04",
+      "description": "DW-8 non-finite guard NaN/Infinity/-Infinity renders \"0\" not NaN literal and no throw (R-003, 4 Text sites)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-04-triade", "title": "[P0-04] DW-8 non-finite guard NaN/Infinity/-Infinity renders \"0\" not NaN literal and no throw", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 94, "level": "unit", "status": "skipped"},
+        {"id": "P0-04-unit", "title": "[P0-04] DW-8 non-finite guard NaN/Infinity/-Infinity renders \"0\" not NaN literal and no throw", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 108, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-02", "title": "[P1-API-02] fmt guard semantics — NaN/Infinity/string misuse → 0 no NaN literal", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 103, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — guard Number.isFinite → 0", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-05",
+      "description": "DW-8 large 1000000 renders \"1.000.000\" with 76×76 portrait chrome preserved + pauseSlot (R-001/R-004)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-05-triade", "title": "[P0-05] DW-8 large 1000000 renders \"1.000.000\" with 76×76 portrait chrome preserved", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 107, "level": "unit", "status": "skipped"},
+        {"id": "P0-05-unit", "title": "[P0-05] DW-8 large 1000000 renders \"1.000.000\" with 76×76 portrait chrome preserved", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 122, "level": "unit", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — 1.000.000 chrome 76×76/60×44", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"},
+        {"id": "P0-05-existing-hud", "title": "hud.test.ts portrait 76×76 + landscape 60×44 still green", "file": "triade/__tests__/ui/components/hud.test.ts", "line": 8, "level": "unit", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-06",
+      "description": "DW-8 preview a11y PreviewCard accessibilityLabel Próxima (Clean): 3 + pointerEvents none + accessible through accessible=false wrappers (portrait exact + landscape range, R-002/R-005)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-06-triade", "title": "[P0-06] DW-8 preview a11y PreviewCard label+pointerEvents through accessible=false wrappers", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 117, "level": "unit", "status": "skipped"},
+        {"id": "P0-06-unit", "title": "[P0-06] DW-8 preview a11y PreviewCard label+pointerEvents through accessible=false wrappers", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 131, "level": "unit", "status": "skipped"},
+        {"id": "P0-API-02", "title": "[P0-API-02] accessible wrappers ×3 decorative hidden", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 42, "level": "api", "status": "skipped"},
+        {"id": "P0-API-03", "title": "[P0-API-03] PreviewCard announce preserved — accessibilityLabel + pointerEvents none + accessible", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 50, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — accessible×3 + card accessible label", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"},
+        {"id": "P0-06-existing-previewCard", "title": "previewCard.test.ts accessibilityLabel Próxima + pointerEvents none", "file": "triade/__tests__/ui/components/previewCard.test.ts", "line": 8, "level": "unit", "status": "active"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P0-07",
+      "description": "DW-8 pointerEvents contracts preserved + engine byte-identical — box-none overlay×2 + none band+card + 76×76/60×44 + no engine import (R-005/R-006)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P0-07-triade", "title": "[P0-07] DW-8 pointerEvents contracts preserved + engine byte-identical advisory", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 136, "level": "unit", "status": "skipped"},
+        {"id": "P0-07-unit", "title": "[P0-07] DW-8 pointerEvents contracts preserved + engine byte-identical advisory", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 148, "level": "unit", "status": "skipped"},
+        {"id": "P0-API-04", "title": "[P0-API-04] pointerEvents contracts — box-none≥2 + none≥1 + PreviewCard none", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 62, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-01", "title": "[P0-UMB-01] hud polish journey — pointerEvents + no engine import", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 25, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P1-01",
+      "description": "Exact thousand-boundary table — fmt mapping 0→0, 123→123, 999→999, 1000→1.000, 3240→3.240, 12456→12.456, 1000000→1.000.000, -3240→-3.240 (R-001/R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-01-triade", "title": "[P1-01] fmt thousand-boundary table 0/123/999/1000/3240/12456/1000000/-3240", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 164, "level": "unit", "status": "skipped"},
+        {"id": "P1-01-unit", "title": "[P1-01] fmt thousand-boundary table", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 171, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-01", "title": "[P1-API-01] fmt boundary table — toLocaleString pt-BR grouping dot not comma", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 90, "level": "api", "status": "skipped"},
+        {"id": "P1-UMB-01", "title": "[P1-UMB-01] thousand-boundary + lane distinct journey", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 74, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P1-02",
+      "description": "fmt isFinite guard semantics — NaN→0, Infinity→0, -Infinity→0, string '3240' misuse →0 no NaN/undefined literal (R-003)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-02-triade", "title": "[P1-02] fmt isFinite guard NaN/Infinity/-Infinity/string misuse → \"0\" no throw literal", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 181, "level": "unit", "status": "skipped"},
+        {"id": "P1-02-unit", "title": "[P1-02] fmt isFinite guard NaN/Infinity/-Infinity/string misuse → \"0\"", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 186, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-02", "title": "[P1-API-02] fmt guard semantics — NaN/Infinity/string misuse → 0", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 103, "level": "api", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    },
+    {
+      "id": "P1-03",
+      "description": "a11y tree distinct announce — activeLaneId clean → Próxima (Clean): 3 present vs accelerated absent and vice versa through hidden wrappers (R-002)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-03-triade", "title": "[P1-03] activeLaneId distinct announce clean vs accelerated through hidden wrappers", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 192, "level": "unit", "status": "skipped"},
+        {"id": "P1-03-unit", "title": "[P1-03] activeLaneId distinct announce clean vs accelerated", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 197, "level": "unit", "status": "skipped"},
+        {"id": "P1-UMB-01", "title": "[P1-UMB-01] thousand-boundary + lane distinct — activeId gate", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 74, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P1-04",
+      "description": "Long formatted 1.000.000 no-overlap — portrait scoreWrap + pauseSlot HIT_TARGET 76×76 and landscape 60×44 still hasStyle green at 1.000.000 (R-004)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-04-triade", "title": "[P1-04] long 1.000.000 no-overlap chrome 76×76/60×44 still green both orientations", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 212, "level": "unit", "status": "skipped"},
+        {"id": "P1-04-unit", "title": "[P1-04] long 1.000.000 no-overlap chrome 76×76/60×44", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 216, "level": "unit", "status": "skipped"},
+        {"id": "P1-UMB-02", "title": "[P1-UMB-02] long 1.000.000 + thin-view journey — 9 chars vs 7 raw still chrome", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 90, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P1-05",
+      "description": "Thin-view imports unchanged — Hud.tsx only react-native + PreviewCard + layout + PauseButton, no Animated/reanimated/skia (R-008)",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P1-05-triade", "title": "[P1-05] thin-view imports unchanged no Animated/reanimated/skia in Hud.tsx", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 223, "level": "unit", "status": "skipped"},
+        {"id": "P1-05-unit", "title": "[P1-05] thin-view imports unchanged", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 227, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-03", "title": "[P1-API-03] thin-view imports unchanged — Hud only react-native + PreviewCard + layout + PauseButton, no Animated", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 115, "level": "api", "status": "skipped"},
+        {"id": "P1-UMB-02", "title": "[P1-UMB-02] thin-view — no Animated/reanimated/skia + no Math.random", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 90, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    },
+    {
+      "id": "P2-01",
+      "description": "Single-constant allowlist — function fmt==1, fmt(score)==2, fmt(best)==2, accessible={false}==3, toLocaleString pt-BR==1, no bare {score}/{best} outside fmt (R-001/R-002/R-005)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-01-triade", "title": "[P2-01] SCAN Hud.tsx allowlist: function fmt==1 fmt(score)==2 fmt(best)==2 accessible==3 toLocaleString==1", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 239, "level": "unit", "status": "skipped"},
+        {"id": "P2-01-unit", "title": "[P2-01] SCAN Hud.tsx allowlist", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 241, "level": "unit", "status": "skipped"},
+        {"id": "P2-API-01", "title": "[P2-API-01] single-constant allowlist — fmt×1 fmt(score)×2 fmt(best)×2 accessible×3 toLocaleString×1", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 149, "level": "api", "status": "skipped"},
+        {"id": "P2-UMB-01", "title": "[P2-UMB-01] allowlist + ledger hash journey — fmt×1 fmt(score)×2 fmt(best)×2 accessible×3 toLocaleString×1 bare 0 + 64-hex", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 112, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    },
+    {
+      "id": "P2-02",
+      "description": "Ledger resolution-undo 64-hex DW-8 done 2026-09-03 — rg cb5eeedd… done with resolution: resolved by sweep bundle dw-hud-score-a11y-polish (R-006)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-02-triade", "title": "[P2-02] SCAN ledger DW-8 resolution-undo 64-hex cb5eeedd… done", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 255, "level": "unit", "status": "skipped"},
+        {"id": "P2-02-unit", "title": "[P2-02] SCAN ledger DW-8 resolution-undo 64-hex", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 255, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-05", "title": "[P1-API-05] ledger + spec provenance — DW-8 done + resolution-undo cb5eee + final/basin", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 133, "level": "api", "status": "skipped"},
+        {"id": "P0-UMB-02", "title": "[P0-UMB-02] ledger + spec journey — DW-8 open→done + resolution-undo 64-hex + final b41ba16 baseline", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 58, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    },
+    {
+      "id": "P2-03",
+      "description": "FALLBACK_PREVIEW + previews? hygiene still 2 and 1 — FALLBACK_PREVIEW==2 def+use + previews?:==1 + ?? FALLBACK_PREVIEW (R-005)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-03-triade", "title": "[P2-03] SCAN FALLBACK_PREVIEW + previews? hygiene still 2 and 1", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 266, "level": "unit", "status": "skipped"},
+        {"id": "P2-03-unit", "title": "[P2-03] SCAN FALLBACK_PREVIEW + previews? hygiene still 2 and 1", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 265, "level": "unit", "status": "skipped"},
+        {"id": "P1-API-04", "title": "[P1-API-04] FALLBACK_PREVIEW + previews? hygiene — FALLBACK_PREVIEW×2 + previews?:×1 + ?? FALLBACK", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 126, "level": "api", "status": "skipped"},
+        {"id": "P1-UMB-03", "title": "[P1-UMB-03] fallback + Recorde journey — FALLBACK_PREVIEW×2 + previews?:×1 + ?? FALLBACK + Recorde 3.240", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 103, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    },
+    {
+      "id": "P2-04",
+      "description": "Score best label Recorde intact with formatted value — Recorde 3.240 not raw Recorde 3240 both orientations (R-007)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P2-04-triade", "title": "[P2-04] Recorde label intact with formatted value Recorde 3.240 not raw", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 275, "level": "unit", "status": "skipped"},
+        {"id": "P2-04-unit", "title": "[P2-04] Recorde label intact with formatted value Recorde 3.240 not raw", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 274, "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P3-01",
+      "description": "Exploratory formatted score visual — Expo Go snapshot portrait+landscape score 3240 best 12456 shows 3.240 + Recorde 12.456 + VoiceOver Próxima (Clean): 3 legible no YellowBox (manual spec Verification)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-01-triade", "title": "[P3-01] exploratory formatted score visual 3.240 + Recorde 12.456 + VoiceOver Próxima (Clean): 3", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 293, "level": "unit", "status": "skipped"},
+        {"id": "P3-01-unit", "title": "[P3-01] exploratory formatted score visual 3.240 + Recorde 12.456 + VoiceOver Próxima (Clean): 3", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 291, "level": "unit", "status": "skipped"},
+        {"id": "P3-UMB-01", "title": "[P3-UMB-01] exploratory — portrait+landscape 3.240 + Recorde 12.456 + VoiceOver Próxima (Clean): 3 + no comma fallback", "file": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts", "line": 137, "level": "e2e", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "present", "ui_state": "present"}
+    },
+    {
+      "id": "P3-02",
+      "description": "Micro-bench fmt overhead 10k× fmt(3240) <100ms total (<0.01ms per call, O1) — Hud 2 toLocaleString per render (R-008)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-02-triade", "title": "[P3-02] micro-bench fmt overhead 10k x fmt(3240) <50ms total", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 310, "level": "unit", "status": "skipped"},
+        {"id": "P3-02-unit", "title": "[P3-02] micro-bench fmt overhead 10k x fmt(3240) <50ms total", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 306, "level": "unit", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "Host bench is CI-variance sensitive (118ms vs 100ms threshold observed once on local Node 26 activation — 18/19 pass; keep threshold at <150ms or mark informational; not gate-blocking).",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "not_applicable", "ui_journey": "not_applicable", "ui_state": "not_applicable"}
+    },
+    {
+      "id": "P3-03",
+      "description": "Cross-cutting negative — no bare {score}/{best} + accessible drift ==3 (hygiene scope, R-005)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {"id": "P3-03-triade", "title": "[P3-03] cross-cutting negative no bare score bare accessible drift", "file": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts", "line": 321, "level": "unit", "status": "skipped"},
+        {"id": "P3-03-unit", "title": "[P3-03] cross-cutting negative no bare score bare accessible drift", "file": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts", "line": 315, "level": "unit", "status": "skipped"},
+        {"id": "P2-API-01", "title": "[P2-API-01] single-constant allowlist — fmt×1/accessible×3/toLocaleString×1", "file": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts", "line": 149, "level": "api", "status": "skipped"}
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {"endpoint": "not_applicable", "auth": "not_applicable", "error_path": "present", "ui_journey": "not_applicable", "ui_state": "present"}
+    }
+  ],
+  "summary": {
+    "total": 19,
+    "full": 19,
+    "partial": 0,
+    "none": 0,
+    "by_priority": {
+      "P0": {"total": 7, "full": 7, "pct": 100},
+      "P1": {"total": 5, "full": 5, "pct": 100},
+      "P2": {"total": 4, "full": 4, "pct": 100},
+      "P3": {"total": 3, "full": 3, "pct": 100}
+    }
+  },
+  "gaps": {"critical": [], "high": [], "medium": [], "low": []},
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_negative_path": "not_applicable (pure Hud RN presentation, no auth — negative-path is never-throw + Number.isFinite guard → 0)",
+    "error_path": "present (non-finite NaN/Infinity→0 + large 1.000.000 no-throw + lane distinct through hidden wrappers + bare 0 + ledger hash)",
+    "ui_journey": "present (portrait 3240→3.240 + landscape Recorde 12.456 + 76×76/60×44 chrome + activeLaneId gate via host unit + gateway + umbrella)",
+    "ui_state": "present (PreviewCard accessibilityLabel Próxima (Clean): 3 through accessible=false wrappers + empty fallback + Recorde formatted)"
+  },
+  "quality": {
+    "passing_tests": 15,
+    "total_tests": 77,
+    "active_hud": 8,
+    "active_previewCard": 7,
+    "dormant_triade_atdd": 19,
+    "dormant_unit_atdd": 19,
+    "dormant_gateway": 14,
+    "dormant_umbrella": 8,
+    "blocker_issues": 0,
+    "warning_issues": 1
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-hud-score-a11y-polish.md",
+    "fixtures": "_bmad-output/test-artifacts/fixtures/dw-hud-score-a11y-polish-fixtures.ts",
+    "gateway": "_bmad-output/test-artifacts/tests/api/dw-hud-score-a11y-polish.gateway.spec.ts",
+    "umbrella": "_bmad-output/test-artifacts/tests/e2e/dw-hud-score-a11y-polish.umbrella.spec.ts",
+    "atdd_triade": "triade/__tests__/ui/hud-score-a11y-polish.atdd.test.ts",
+    "atdd_unit": "_bmad-output/test-artifacts/tests/unit/dw-hud-score-a11y-polish.atdd.test.ts",
+    "spec": "_bmad-output/implementation-artifacts/spec-hud-score-a11y-polish.md",
+    "test_design": "_bmad-output/test-artifacts/test-design/test-design-dw-hud-score-a11y-polish.md",
+    "automation_summary": "_bmad-output/test-artifacts/automation-summary-dw-hud-score-a11y-polish.md"
+  }
+}

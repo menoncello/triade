@@ -8,6 +8,10 @@ type LaneId = 'clean' | 'accelerated';
 
 const FALLBACK_PREVIEW: Preview = { kind: 'range', values: [] };
 
+function fmt(n: number): string {
+  return Number.isFinite(n) ? n.toLocaleString('pt-BR') : '0';
+}
+
 export interface HudProps {
   score: number;
   best: number;
@@ -37,7 +41,7 @@ export interface HudProps {
 // `isLandscape` selects the per-orientation box size (pinned AC4 markers).
 function LanePreview({ label, preview, isLandscape }: { label: string; preview: Preview; isLandscape: boolean }) {
   return (
-    <View style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}>
+    <View accessible={false} style={isLandscape ? styles.laneBoxLandscape : styles.laneBoxPortrait}>
       <PreviewCard preview={preview} label={label} />
     </View>
   );
@@ -73,15 +77,15 @@ export function Hud({
       <View pointerEvents="box-none" style={styles.overlay}>
         <View style={[styles.landscapeBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
           <View style={styles.landscapeLeft}>
-            <Text style={styles.scoreLandscape} numberOfLines={1}>
-              {score}
+            <Text style={styles.scoreLandscape} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
+              {fmt(score)}
             </Text>
-            <Text style={styles.bestLandscape} numberOfLines={1}>
-              Recorde {best}
+            <Text style={styles.bestLandscape} allowFontScaling adjustsFontSizeToFit={false}>
+              Recorde {fmt(best)}
             </Text>
           </View>
           <View style={styles.landscapeRight}>
-            <View pointerEvents="none" style={styles.landscapePreviews}>
+            <View pointerEvents="none" accessible={false} style={styles.landscapePreviews}>
               <LanePreview label={activeLabel} preview={activePreview} isLandscape />
             </View>
             {showAssistance && onUndo ? (
@@ -93,7 +97,7 @@ export function Hud({
                 accessibilityLabel="Desfazer"
                 accessibilityState={{ disabled: !canUndo }}
               >
-                <Text style={styles.assistLabel}>↩</Text>
+                <Text style={styles.assistLabel} allowFontScaling>↩</Text>
               </Pressable>
             ) : null}
             {showAssistance && onHint ? (
@@ -105,7 +109,7 @@ export function Hud({
                 accessibilityLabel="Dica"
                 accessibilityState={{ disabled: !canHint }}
               >
-                <Text style={styles.assistLabel}>?</Text>
+                <Text style={styles.assistLabel} allowFontScaling>?</Text>
               </Pressable>
             ) : null}
             <PauseButton />
@@ -120,18 +124,18 @@ export function Hud({
       <View style={[styles.portraitBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
         <View style={styles.pauseSlot} />
         <View style={styles.scoreWrap}>
-          <Text style={styles.scorePortrait} numberOfLines={1}>
-            {score}
+          <Text style={styles.scorePortrait} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
+            {fmt(score)}
           </Text>
-          <Text style={styles.bestPortrait} numberOfLines={1}>
-            Recorde {best}
+          <Text style={styles.bestPortrait} allowFontScaling adjustsFontSizeToFit={false}>
+            Recorde {fmt(best)}
           </Text>
         </View>
         <View style={styles.pauseSlot}>
           <PauseButton />
         </View>
       </View>
-      <View pointerEvents="box-none" style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
+      <View pointerEvents="box-none" accessible={false} style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
         <LanePreview label={activeLabel} preview={activePreview} isLandscape={false} />
       </View>
       {showAssistance && (onUndo || onHint) ? (
@@ -145,7 +149,7 @@ export function Hud({
               accessibilityLabel="Desfazer"
               accessibilityState={{ disabled: !canUndo }}
             >
-              <Text style={styles.assistLabel}>↩</Text>
+              <Text style={styles.assistLabel} allowFontScaling>↩</Text>
             </Pressable>
           ) : null}
           {onHint ? (
@@ -157,7 +161,7 @@ export function Hud({
               accessibilityLabel="Dica"
               accessibilityState={{ disabled: !canHint }}
             >
-              <Text style={styles.assistLabel}>?</Text>
+              <Text style={styles.assistLabel} allowFontScaling>?</Text>
             </Pressable>
           ) : null}
         </View>
@@ -183,25 +187,30 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row',
     alignItems: 'flex-start',
+    flexWrap: 'wrap',
   },
   pauseSlot: {
     width: HIT_TARGET,
+    minHeight: HIT_TARGET,
   },
   scoreWrap: {
     flex: 1,
     alignItems: 'center',
+    minHeight: HIT_TARGET,
   },
   scorePortrait: {
     fontSize: 34,
     fontWeight: '700',
     color: '#1a1d23',
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
   bestPortrait: {
     marginTop: 2,
     fontSize: 13,
     fontWeight: '500',
     color: '#8a8578',
+    flexWrap: 'wrap',
   },
   previewPortrait: {
     position: 'absolute',
@@ -221,6 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
+    flexWrap: 'wrap',
   },
   assistBtnDisabled: {
     opacity: 0.4,
@@ -229,6 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#1a1d23',
+    flexWrap: 'wrap',
   },
   // FR-45 — per-lane preview box (chrome lives on PreviewCard). Pinned AC4
   // markers: square 76×76 portrait, compact 60×44 landscape band.
@@ -257,12 +268,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1a1d23',
     fontVariant: ['tabular-nums'],
+    flexWrap: 'wrap',
   },
   bestLandscape: {
     marginTop: 1,
     fontSize: 11,
     fontWeight: '500',
     color: '#8a8578',
+    flexWrap: 'wrap',
   },
   landscapeRight: {
     flexDirection: 'row',

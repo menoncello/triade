@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-03T01:26:09.631722+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "9-1-tap-targets-44x44pt",
+    "label": "9-1 Tap targets \u226544\u00d744pt (WCAG 2.5.5 / Apple HIG)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 coverage is 100% (5/5), P1 coverage is 100% (5/5 target 90% minimum 80%), overall 100% (minimum 80%). No P0 blockers, no NFR failures, 0 flaky. R-001 waived with expiry at 9-2 review (allowlist tripwire intentional).",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-9-1-tap-targets-44x44pt.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

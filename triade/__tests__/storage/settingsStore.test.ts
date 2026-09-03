@@ -92,10 +92,10 @@ test('loadSettingsFromStorage: no keys returns DEFAULT_SETTINGS', async () => {
 });
 
 test('loadSettingsFromStorage: merges persisted fields over defaults', async () => {
-  backend.set(storage.STORAGE_KEYS.theme, JSON.stringify('midnight'));
+  backend.set(storage.STORAGE_KEYS.theme, JSON.stringify('light'));
   backend.set(storage.STORAGE_KEYS.reducedMotion, JSON.stringify(true));
   const settings = await storage.loadSettingsFromStorage();
-  assert.strictEqual(settings.theme, 'midnight');
+  assert.strictEqual(settings.theme, 'light');
   assert.strictEqual(settings.reducedMotion, true);
   assert.strictEqual(settings.language, DEFAULT_SETTINGS.language);
 });
@@ -107,9 +107,9 @@ test('loadSettingsFromStorage: corrupt JSON for a field falls back to default', 
 });
 
 test('saveSettings: writes each field as JSON under its key', async () => {
-  const settings = { ...DEFAULT_SETTINGS, theme: 'midnight' as const, reducedMotion: true };
+  const settings = { ...DEFAULT_SETTINGS, theme: 'light' as const, reducedMotion: true };
   await storage.saveSettings(settings);
-  assert.strictEqual(backend.get(storage.STORAGE_KEYS.theme), JSON.stringify('midnight'));
+  assert.strictEqual(backend.get(storage.STORAGE_KEYS.theme), JSON.stringify('light'));
   assert.strictEqual(backend.get(storage.STORAGE_KEYS.reducedMotion), JSON.stringify(true));
   assert.strictEqual(backend.get(storage.STORAGE_KEYS.language), JSON.stringify(DEFAULT_SETTINGS.language));
 });

@@ -1,0 +1,1971 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-02T18:45:00+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-grid-size-configurable",
+    "label": "dw-grid-size-configurable \u2014 BoardConfig / GRID_SIZE parameterization threaded through engine core + helpers"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-grid-size-configurable.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-grid-size-configurable.md",
+      "_bmad-output/test-artifacts/automation-summary-dw-grid-size-configurable.md",
+      "triade/src/engine/core/types.ts",
+      "triade/src/engine/core/board.ts",
+      "triade/src/engine/core/game.ts",
+      "triade/src/engine/core/line.ts",
+      "triade/src/engine/core/spawn.ts",
+      "triade/src/engine/core/index.ts",
+      "triade/test-utils/helpers.ts",
+      "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-grid-size-configurable-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "ea21dce (main HEAD) -> working-tree dw-grid-size-configurable",
+    "head": "ea21dce + working-tree 8 files 147 insertions / 69 deletions",
+    "working_tree_ledger": "1\u00d7 DW-77 GRID_SIZE fixed 4x4 open\u2192done 2026-09-02 + resolution: resolved by sweep bundle dw-grid-size-configurable + resolution-undo: 0f53c41ea45ace614fe7900fb3fc0274670d9e52485d44085e37cfcd167ada1f (rg 1 hit, sprint-status.yaml untouched \u2014 orchestrator-owned)",
+    "production_files": [
+      "triade/src/engine/core/types.ts:1-27 \u2014 NEW BoardConfig {size}, DEFAULT_BOARD_CONFIG={size:GRID_SIZE}, validateGridSize(size){ if(!Number.isInteger(size)||size!==GRID_SIZE) throw RangeError(\"[BoardConfig] unsupported grid size \u2026\") }, validateBoardConfig(config){ if(!config||typeof config.size!=='number') throw RangeError(\"invalid config\u2026\"); validateGridSize(config.size) }, resolveGridSize(input?:number|BoardConfig|null){ if(input==null) return GRID_SIZE; const s=typeof input==='number'?input:input.size; validateGridSize(s); return s; } \u2014 hard-gate only 4, null\u21924 default",
+      "triade/src/engine/core/board.ts:1-22 \u2014 emptyBoard(boardConfig?) size=resolveGridSize(boardConfig); for(r<size) for(c<size) row.push(null); boardsEqual(a,b,boardConfig?) size=resolveGridSize(boardConfig); for(r<size) for(c<size) if(a[r]?.[c] !== b[r]?.[c]) return false \u2014 defensive ?. for jagged",
+      "triade/src/engine/core/game.ts:1-145 \u2014 newGame(rng,boardConfig?) size\u2192emptyBoard(size) + for(r<size) for(c<size) empty.push; move(state,dir,rng,boardConfig?) size=resolveGridSize(boardConfig); lines=movementLines(...,size); built=boardFromLines(...,size); moved=!boardsEqual(...,size); oppCol=size-1/oppRow=size-1; spawnTile(...,size); isGameOver(board,boardConfig?) size\u2192scan 0..size-1 + ?. + canMerge(v, board[r][c+1]) via ?.",
+      "triade/src/engine/core/line.ts:1-114 \u2014 movementLines(board,dir,boardConfig?) size=resolveGridSize(boardConfig); for(r<size) row.push(board[r]?.[c]??null) / for(c<size) col.push(board[r]?.[c]??null) reverse per dir; boardFromLines(lines,dir,boardConfig?) size=resolveGridSize(boardConfig); board=emptyBoard(size); c=size-1-k / r=size-1-k placement + full trace to:[r,c]",
+      "triade/src/engine/core/spawn.ts:1-127 \u2014 spawnTile(board,value,rng,candidates,boardConfig?) size=resolveGridSize(boardConfig); for(r<size) for(c<size) if(board[r]?.[c]===null) empty\u2026; candidates filter !Number.isInteger|| r<0||r>=size||c<0||c>=size||board[r]?.[c]!==null||seen",
+      "triade/src/engine/core/index.ts:1-4 \u2014 re-exports GRID_SIZE, DEFAULT_BOARD_CONFIG, validateGridSize, validateBoardConfig, resolveGridSize, BoardConfig",
+      "triade/test-utils/helpers.ts:1-170 \u2014 SIZE=GRID_SIZE alias, re-exports DEFAULT_BOARD_CONFIG/validateGridSize/validateBoardConfig/resolveGridSize; emptyBoard(boardConfig?) size=resolveGridSize; staticBoard(row,boardConfig?) size=resolveGridSize; boardWith(matrix,boardConfig?) size=resolveGridSize; occupiedCells(board,boardConfig?) size=boardConfig!=null?resolveGridSize(boardConfig):board.length||GRID_SIZE + validate when explicit; oppositeEdgeCandidates(board,dir,boardConfig?) size=resolveGridSize(boardConfig??board.length??GRID_SIZE); left\u2192[i,size-1] etc",
+      "triade/src/engine byte-identical except types/board/game/line/spawn/index/helpers threading \u2014 git diff --stat -- triade/src/engine shows 6 files + helpers, triade/src/render triade/src/ui byte-identical"
+    ],
+    "spec": "_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md status: completed baseline ea21dce \u2192 sweep bundle dw-grid-size-configurable (intent/boundaries/I-O matrix 8 rows + 10 risks R-001..R-010 3 high score 6 + P0 10/P1 8/P2 4/P3 3 + NFR planning)",
+    "sprint_status_touched": false
+  },
+  "requirements": [
+    {
+      "id": "AC-01",
+      "description": "validateGridSize / validateBoardConfig / resolveGridSize hard-gate only-4 \u2014 null\u21924, 4\u21924, {size:4}\u21924, 3/5/0/-1/3.5/NaN/Infinity/'4'\u2192RangeError propagated from every threaded entry point",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-01-triade-P0-01",
+          "title": "[P0-01] validateGridSize / validateBoardConfig / resolveGridSize hard-gate only-4",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 54,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-01-unit-P0-U-01",
+          "title": "[P0-U-01] hard-gate only-4: null\u21924, 4\u21924, {size:4}\u21924, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 12,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 green when test.skip\u2192test (host node:test)"
+        },
+        {
+          "id": "AC-01-gateway-P0-API-01",
+          "title": "[P0-API-01] validateGridSize hard-gate 10-case: null\u21924, 4, {size:4}, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 30,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 green when activated"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-02",
+      "description": "emptyBoard 4x4 shape parity \u2014 emptyBoard() vs emptyBoard(4) vs emptyBoard({size:4}) vs emptyBoard(null) vs helpers.emptyBoard all deepEqual 4x4; emptyBoard(5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-02-triade-P0-02",
+          "title": "[P0-02] emptyBoard 4x4 shape + default null vs explicit 4 parity",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 82,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-02-unit-P0-U-02",
+          "title": "[P0-U-02] emptyBoard 4x4 shape parity default vs explicit 4",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 21,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-02-gateway-P0-API-02",
+          "title": "[P0-API-02] emptyBoard 4x4 shape + default vs explicit 4 deepEquals",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 41,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-03",
+      "description": "newGame 4x4 identity \u2014 newGame(rngOf(20)) vs newGame(rngOf(20),4) vs newGame(rngOf(20),{size:4}) same 9-tile board + seeded order; newGame(rng,5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-03-triade-P0-03",
+          "title": "[P0-03] newGame default vs explicit 4 produces same 9-tile board + seeded rng 20 draws",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 107,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-03-unit-P0-U-03",
+          "title": "[P0-U-03] newGame seeded 20 draws identity",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 25,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-03-gateway-P0-API-03",
+          "title": "[P0-API-03] newGame default vs explicit 4 same 9 tiles + 20 draws preserved",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 51,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-04",
+      "description": "move 4-dir identity + draw-budget \u2014 4 dirs same board/score/trace/pendingSpawn and same calls.length (3 effective / 0 noop via rng throw-on-exhaust); move(...,5)\u2192RangeError, oppCol/oppRow size-1=3",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-04-triade-P0-04",
+          "title": "[P0-04] move default 4x4 vs explicit 4 identity \u2014 4 dirs same board/score/trace/pendingSpawn",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 124,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-04-unit-P0-U-04",
+          "title": "[P0-U-04] move 4-dir identity + boardsEqual defensive",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 33,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-04-gateway-P0-API-04",
+          "title": "[P0-API-04] move 4-dir identity default vs explicit 4 deepEquals trace/score",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 60,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-05",
+      "description": "boardsEqual defensive \u2014 boardsEqual(emptyBoard(),emptyBoard(),4)\u2192true, boardWith([[1]]) vs [[2]]\u2192false, jagged via a[r]?.[c] loop 0..size-1; boardsEqual(\u2026,5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-05-triade-P0-05",
+          "title": "[P0-05] boardsEqual 4x4 defensive \u2014 size param vs no param, cell diff, jagged",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 153,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-05-umbrella-P0-UMB-04",
+          "title": "[P0-UMB-04] boardsEqual defensive jagged via ?. loop size-1",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 38,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant \u2014 static scan + host"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-06",
+      "description": "movementLines size-aware \u2014 left/right rows \u00d74, up/down cols \u00d74, each line.length 4; right first cell board[r][3], down first cell board[3][c] reversed; movementLines(\u2026,5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-06-triade-P0-06",
+          "title": "[P0-06] movementLines 4x4 size-aware \u2014 left/right rows \u00d74, up/down cols \u00d74, reversed",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 175,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-06-unit-P0-U-05",
+          "title": "[P0-U-05] movementLines left/right rows\u00d74 up/down cols\u00d74",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 41,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-06-umbrella-P0-UMB-01",
+          "title": "[P0-UMB-01] movementLines rows\u00d74 reversed per dir",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 14,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-07",
+      "description": "boardFromLines size-1 placement \u2014 4-dir movementLines\u2192shift\u2192boardFromLines round-trip recovers occupancy, trace to within 0..3, c=size-1-k for right, r=size-1-k for down; boardFromLines(\u2026,5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-07-triade-P0-07",
+          "title": "[P0-07] boardFromLines placement size-1 \u2014 4-dir round-trip + c=size-1-k",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 201,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-07-unit-P0-U-06",
+          "title": "[P0-U-06] boardFromLines size-1-k placement",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 47,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-07-umbrella-P0-UMB-02",
+          "title": "[P0-UMB-02] boardFromLines round-trip within 0..3 size-1-k",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 22,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-08",
+      "description": "spawnTile OOB filter size-aware \u2014 candidates [[4,0],[0,4],[3,3]] pool only [3,3] eligible when empty; full occupied \u2192 nulls 0 draws clone!==input; spawnTile(\u2026,5)\u2192RangeError, check r>=size",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-08-triade-P0-08",
+          "title": "[P0-08] spawnTile OOB filter size-aware \u2014 [4,0]/[0,4] ignored, [3,3] eligible",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 232,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-08-unit-P0-U-07",
+          "title": "[P0-U-07] spawnTile OOB filter [4,0] ignored",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 53,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-08-gateway-P0-API-05",
+          "title": "[P0-API-05] spawnTile OOB filter size-aware [4,0] ignored, [3,3] eligible",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 71,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-09",
+      "description": "isGameOver 4x4 parity \u2014 emptyBoard\u2192false, fullNoMerge (game.test.ts:247) \u2192true, fullWithMerge 3,3 adjacent\u2192false; each default vs explicit 4 deepEqual; isGameOver(b,5)\u2192RangeError",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-09-triade-P0-09",
+          "title": "[P0-09] isGameOver 4x4 with size param parity \u2014 empty\u2192false, full+no-merge\u2192true, full+merge\u2192false",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 263,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-09-unit-P0-U-08",
+          "title": "[P0-U-08] isGameOver triad false/true/false",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 59,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-09-gateway-P0-API-06",
+          "title": "[P0-API-06] isGameOver 4x4 parity empty\u2192false full no-merge\u2192true merge\u2192false",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 78,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-10",
+      "description": "oppositeEdgeCandidates size-1 mapping \u2014 left\u2192[row,3] right\u2192[row,0] up\u2192[3,col] down\u2192[0,col] for size 4; explicit 4 vs inferred board.length same; 5\u2192RangeError (helpers.ts:154-170 single-source oracle for 12.1)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-10-triade-P0-10",
+          "title": "[P0-10] oppositeEdgeCandidates size-1 mapping \u2014 left\u2192[row,3] right\u2192[row,0] up\u2192[3,col] down\u2192[0,col]",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 292,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-10-unit-P0-U-09",
+          "title": "[P0-U-09] oppositeEdgeCandidates left\u2192col3 size-1",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 65,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-10-umbrella-P0-UMB-03",
+          "title": "[P0-UMB-03] oppositeEdgeCandidates left\u21923 right\u21920 up\u21923 down\u21920",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 30,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-11",
+      "description": "BoardConfig object vs number parity \u2014 every entry point accepts both 4 and {size:4} identical deepEqual; helpers SIZE===GRID_SIZE===4 and DEFAULT_BOARD_CONFIG.size===4",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-11-triade-P1-01",
+          "title": "[P1-01] BoardConfig object vs number param parity across all entry points",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 318,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-11-triade-P1-02",
+          "title": "[P1-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG parity",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 333,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-11-unit-P1-U-01",
+          "title": "[P1-U-01] BoardConfig object vs number + SIZE alias",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 71,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-11-gateway-P1-API-01",
+          "title": "[P1-API-01] BoardConfig object vs number parity across entry points",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 89,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-11-umbrella-P1-UMB-01",
+          "title": "[P1-UMB-01] helpers SIZE alias + re-export scan helpers FROM core/index",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 48,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "AC-12",
+      "description": "re-export surface + helper mirror + ledger \u2014 core/index.ts re-exports GRID_SIZE, DEFAULT_BOARD_CONFIG, validateGridSize, validateBoardConfig, resolveGridSize, BoardConfig; helpers.ts FROM ../src/engine/core/index single-source; helpers re-exports pass 5\u2192RangeError same message; deferred-work.md single 0f53c41ea45ace614fe7900fb3fc0274670d9e52485d44085e37cfcd167ada1f hit; sprint-status.yaml untouched; occupiedCells/statiBoard/boardWith threading; no Math.random; Board Cell[][] additive",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "AC-12-triade-P1-03",
+          "title": "[P1-03] movementLines/boardFromLines round-trip via helpers threaded variant",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 341,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P1-04",
+          "title": "[P1-04] occupiedCells legacy inference vs explicit 4 validated",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 356,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P1-05",
+          "title": "[P1-05] re-export surface index.ts exposes BoardConfig and validators",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 370,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P1-06",
+          "title": "[P1-06] deferred-work.md resolution-undo 0f53c41e 64-hex single DW entry",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 384,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P1-07",
+          "title": "[P1-07] helpers helpers.ts re-exports single-source from core/index not reimplements",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 390,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P2-01",
+          "title": "[P2-01] NaN/Infinity/float/string rejected via resolveGridSize",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 399,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P2-02",
+          "title": "[P2-02] helpers staticBoard/boardWith threading preserves 4x4 fill",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 405,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P2-03",
+          "title": "[P2-03] no prod merge logic changed \u2014 canMerge/mergeValue/shiftLine still driven by GRID_SIZE",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 415,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-triade-P2-04",
+          "title": "[P2-04] Board shape is Cell[][] additive-only, GameState unchanged",
+          "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+          "line": 421,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "AC-12-unit-P1-U-04",
+          "title": "[P1-U-04] ledger single 0f53c41e hit + deferred-work single hunk",
+          "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+          "line": 82,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-gateway-P1-API-02",
+          "title": "[P1-API-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG.size===4",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 94,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-gateway-P1-API-03",
+          "title": "[P1-API-03] ledger resolution-undo 0f53c41e single hit",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 101,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-gateway-P1-API-04",
+          "title": "[P1-API-04] re-export surface index.ts GRID_SIZE/BoardConfig/validateGridSize",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 106,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-gateway-P2-API-01",
+          "title": "[P2-API-01] NaN/Infinity/float/string rejected",
+          "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+          "line": 112,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P1-UMB-02",
+          "title": "[P1-UMB-02] occupiedCells inference vs explicit 4 validated",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 56,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P1-UMB-03",
+          "title": "[P1-UMB-03] helpers staticBoard/boardWith threading",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 64,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P1-UMB-04",
+          "title": "[P1-UMB-04] index.ts re-export surface BoardConfig/validateGridSize",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 72,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P1-UMB-05",
+          "title": "[P1-UMB-05] ledger single DW 0f53c41e + sprint-status untouched",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 80,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P2-UMB-01",
+          "title": "[P2-UMB-01] types.ts single GRID_SIZE definition + BoardConfig additive",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 88,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "AC-12-umbrella-P2-UMB-02",
+          "title": "[P2-UMB-02] Board type Cell[][] unchanged",
+          "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+          "line": 96,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint_coverage": "not_applicable",
+        "auth_negative_path": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 12,
+    "fully_covered": 12,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 10,
+        "covered": 10,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 5,
+      "cases": 55,
+      "skipped_cases": 37,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 11,
+          "criteria_covered": 6
+        },
+        "api": {
+          "tests": 11,
+          "criteria_covered": 8
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 33,
+          "criteria_covered": 12
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "AC-01-triade-P0-01",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 54,
+        "title": "[P0-01] validateGridSize / validateBoardConfig / resolveGridSize hard-gate only-4",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-01-unit-P0-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 12,
+        "title": "[P0-U-01] hard-gate only-4: null\u21924, 4\u21924, {size:4}\u21924, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 green when test.skip\u2192test (host node:test)"
+      },
+      {
+        "id": "AC-01-gateway-P0-API-01",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 30,
+        "title": "[P0-API-01] validateGridSize hard-gate 10-case: null\u21924, 4, {size:4}, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 green when activated"
+      },
+      {
+        "id": "AC-02-triade-P0-02",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 82,
+        "title": "[P0-02] emptyBoard 4x4 shape + default null vs explicit 4 parity",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-02-unit-P0-U-02",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 21,
+        "title": "[P0-U-02] emptyBoard 4x4 shape parity default vs explicit 4",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-02-gateway-P0-API-02",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 41,
+        "title": "[P0-API-02] emptyBoard 4x4 shape + default vs explicit 4 deepEquals",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-03-triade-P0-03",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 107,
+        "title": "[P0-03] newGame default vs explicit 4 produces same 9-tile board + seeded rng 20 draws",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-03-unit-P0-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 25,
+        "title": "[P0-U-03] newGame seeded 20 draws identity",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-03-gateway-P0-API-03",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 51,
+        "title": "[P0-API-03] newGame default vs explicit 4 same 9 tiles + 20 draws preserved",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-04-triade-P0-04",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 124,
+        "title": "[P0-04] move default 4x4 vs explicit 4 identity \u2014 4 dirs same board/score/trace/pendingSpawn",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-04-unit-P0-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 33,
+        "title": "[P0-U-04] move 4-dir identity + boardsEqual defensive",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-04-gateway-P0-API-04",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 60,
+        "title": "[P0-API-04] move 4-dir identity default vs explicit 4 deepEquals trace/score",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-05-triade-P0-05",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 153,
+        "title": "[P0-05] boardsEqual 4x4 defensive \u2014 size param vs no param, cell diff, jagged",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-05-umbrella-P0-UMB-04",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 38,
+        "title": "[P0-UMB-04] boardsEqual defensive jagged via ?. loop size-1",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant \u2014 static scan + host"
+      },
+      {
+        "id": "AC-06-triade-P0-06",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 175,
+        "title": "[P0-06] movementLines 4x4 size-aware \u2014 left/right rows \u00d74, up/down cols \u00d74, reversed",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-06-unit-P0-U-05",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 41,
+        "title": "[P0-U-05] movementLines left/right rows\u00d74 up/down cols\u00d74",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-06-umbrella-P0-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 14,
+        "title": "[P0-UMB-01] movementLines rows\u00d74 reversed per dir",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-07-triade-P0-07",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 201,
+        "title": "[P0-07] boardFromLines placement size-1 \u2014 4-dir round-trip + c=size-1-k",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-07-unit-P0-U-06",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 47,
+        "title": "[P0-U-06] boardFromLines size-1-k placement",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-07-umbrella-P0-UMB-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 22,
+        "title": "[P0-UMB-02] boardFromLines round-trip within 0..3 size-1-k",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-08-triade-P0-08",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 232,
+        "title": "[P0-08] spawnTile OOB filter size-aware \u2014 [4,0]/[0,4] ignored, [3,3] eligible",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-08-unit-P0-U-07",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 53,
+        "title": "[P0-U-07] spawnTile OOB filter [4,0] ignored",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-08-gateway-P0-API-05",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 71,
+        "title": "[P0-API-05] spawnTile OOB filter size-aware [4,0] ignored, [3,3] eligible",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-09-triade-P0-09",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 263,
+        "title": "[P0-09] isGameOver 4x4 with size param parity \u2014 empty\u2192false, full+no-merge\u2192true, full+merge\u2192false",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-09-unit-P0-U-08",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 59,
+        "title": "[P0-U-08] isGameOver triad false/true/false",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-09-gateway-P0-API-06",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 78,
+        "title": "[P0-API-06] isGameOver 4x4 parity empty\u2192false full no-merge\u2192true merge\u2192false",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-10-triade-P0-10",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 292,
+        "title": "[P0-10] oppositeEdgeCandidates size-1 mapping \u2014 left\u2192[row,3] right\u2192[row,0] up\u2192[3,col] down\u2192[0,col]",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-10-unit-P0-U-09",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 65,
+        "title": "[P0-U-09] oppositeEdgeCandidates left\u2192col3 size-1",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-10-umbrella-P0-UMB-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 30,
+        "title": "[P0-UMB-03] oppositeEdgeCandidates left\u21923 right\u21920 up\u21923 down\u21920",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-11-triade-P1-01",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 318,
+        "title": "[P1-01] BoardConfig object vs number param parity across all entry points",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-11-triade-P1-02",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 333,
+        "title": "[P1-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG parity",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-11-unit-P1-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 71,
+        "title": "[P1-U-01] BoardConfig object vs number + SIZE alias",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-11-gateway-P1-API-01",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 89,
+        "title": "[P1-API-01] BoardConfig object vs number parity across entry points",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-11-umbrella-P1-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 48,
+        "title": "[P1-UMB-01] helpers SIZE alias + re-export scan helpers FROM core/index",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-triade-P1-03",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 341,
+        "title": "[P1-03] movementLines/boardFromLines round-trip via helpers threaded variant",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P1-04",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 356,
+        "title": "[P1-04] occupiedCells legacy inference vs explicit 4 validated",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P1-05",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 370,
+        "title": "[P1-05] re-export surface index.ts exposes BoardConfig and validators",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P1-06",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 384,
+        "title": "[P1-06] deferred-work.md resolution-undo 0f53c41e 64-hex single DW entry",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P1-07",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 390,
+        "title": "[P1-07] helpers helpers.ts re-exports single-source from core/index not reimplements",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P2-01",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 399,
+        "title": "[P2-01] NaN/Infinity/float/string rejected via resolveGridSize",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P2-02",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 405,
+        "title": "[P2-02] helpers staticBoard/boardWith threading preserves 4x4 fill",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P2-03",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 415,
+        "title": "[P2-03] no prod merge logic changed \u2014 canMerge/mergeValue/shiftLine still driven by GRID_SIZE",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-triade-P2-04",
+        "file": "triade/__tests__/engine/grid-size-configurable.atdd.test.ts",
+        "line": 421,
+        "title": "[P2-04] Board shape is Cell[][] additive-only, GameState unchanged",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "AC-12-unit-P1-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "line": 82,
+        "title": "[P1-U-04] ledger single 0f53c41e hit + deferred-work single hunk",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-02",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 94,
+        "title": "[P1-API-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG.size===4",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-03",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 101,
+        "title": "[P1-API-03] ledger resolution-undo 0f53c41e single hit",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-04",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 106,
+        "title": "[P1-API-04] re-export surface index.ts GRID_SIZE/BoardConfig/validateGridSize",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-gateway-P2-API-01",
+        "file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "line": 112,
+        "title": "[P2-API-01] NaN/Infinity/float/string rejected",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 56,
+        "title": "[P1-UMB-02] occupiedCells inference vs explicit 4 validated",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-03",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 64,
+        "title": "[P1-UMB-03] helpers staticBoard/boardWith threading",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-04",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 72,
+        "title": "[P1-UMB-04] index.ts re-export surface BoardConfig/validateGridSize",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-05",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 80,
+        "title": "[P1-UMB-05] ledger single DW 0f53c41e + sprint-status untouched",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P2-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 88,
+        "title": "[P2-UMB-01] types.ts single GRID_SIZE definition + BoardConfig additive",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "AC-12-umbrella-P2-UMB-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "line": 96,
+        "title": "[P2-UMB-02] Board type Cell[][] unchanged",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "fixtures-dw-grid-size-configurable",
+        "file": "_bmad-output/test-artifacts/fixtures/dw-grid-size-configurable-fixtures.ts",
+        "line": 1,
+        "title": "fixtures/dw-grid-size-configurable-fixtures.ts \u2014 deterministic boardHold/boardFullNoMerge/cloneBoard + SCAN_STRINGS 26 + LEDGER 0f53c41e + scan helpers",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      }
+    ],
+    "blockers": [
+      {
+        "id": "AC-01-unit-P0-U-01",
+        "severity": "high",
+        "reason": "RED-phase dormant \u2014 green when test.skip\u2192test (host node:test)",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-01] hard-gate only-4: null\u21924, 4\u21924, {size:4}\u21924, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError"
+      },
+      {
+        "id": "AC-01-gateway-P0-API-01",
+        "severity": "high",
+        "reason": "RED-phase dormant \u2014 green when activated",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-01] validateGridSize hard-gate 10-case: null\u21924, 4, {size:4}, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError"
+      },
+      {
+        "id": "AC-02-unit-P0-U-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-02] emptyBoard 4x4 shape parity default vs explicit 4"
+      },
+      {
+        "id": "AC-02-gateway-P0-API-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-02] emptyBoard 4x4 shape + default vs explicit 4 deepEquals"
+      },
+      {
+        "id": "AC-03-unit-P0-U-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-03] newGame seeded 20 draws identity"
+      },
+      {
+        "id": "AC-03-gateway-P0-API-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-03] newGame default vs explicit 4 same 9 tiles + 20 draws preserved"
+      },
+      {
+        "id": "AC-04-unit-P0-U-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-04] move 4-dir identity + boardsEqual defensive"
+      },
+      {
+        "id": "AC-04-gateway-P0-API-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-04] move 4-dir identity default vs explicit 4 deepEquals trace/score"
+      },
+      {
+        "id": "AC-05-umbrella-P0-UMB-04",
+        "severity": "high",
+        "reason": "RED-phase dormant \u2014 static scan + host",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P0-UMB-04] boardsEqual defensive jagged via ?. loop size-1"
+      },
+      {
+        "id": "AC-06-unit-P0-U-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-05] movementLines left/right rows\u00d74 up/down cols\u00d74"
+      },
+      {
+        "id": "AC-06-umbrella-P0-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P0-UMB-01] movementLines rows\u00d74 reversed per dir"
+      },
+      {
+        "id": "AC-07-unit-P0-U-06",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-06] boardFromLines size-1-k placement"
+      },
+      {
+        "id": "AC-07-umbrella-P0-UMB-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P0-UMB-02] boardFromLines round-trip within 0..3 size-1-k"
+      },
+      {
+        "id": "AC-08-unit-P0-U-07",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-07] spawnTile OOB filter [4,0] ignored"
+      },
+      {
+        "id": "AC-08-gateway-P0-API-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-05] spawnTile OOB filter size-aware [4,0] ignored, [3,3] eligible"
+      },
+      {
+        "id": "AC-09-unit-P0-U-08",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-08] isGameOver triad false/true/false"
+      },
+      {
+        "id": "AC-09-gateway-P0-API-06",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P0-API-06] isGameOver 4x4 parity empty\u2192false full no-merge\u2192true merge\u2192false"
+      },
+      {
+        "id": "AC-10-unit-P0-U-09",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P0-U-09] oppositeEdgeCandidates left\u2192col3 size-1"
+      },
+      {
+        "id": "AC-10-umbrella-P0-UMB-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P0-UMB-03] oppositeEdgeCandidates left\u21923 right\u21920 up\u21923 down\u21920"
+      },
+      {
+        "id": "AC-11-unit-P1-U-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P1-U-01] BoardConfig object vs number + SIZE alias"
+      },
+      {
+        "id": "AC-11-gateway-P1-API-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P1-API-01] BoardConfig object vs number parity across entry points"
+      },
+      {
+        "id": "AC-11-umbrella-P1-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P1-UMB-01] helpers SIZE alias + re-export scan helpers FROM core/index"
+      },
+      {
+        "id": "AC-12-unit-P1-U-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+        "test_title": "[P1-U-04] ledger single 0f53c41e hit + deferred-work single hunk"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P1-API-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG.size===4"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P1-API-03] ledger resolution-undo 0f53c41e single hit"
+      },
+      {
+        "id": "AC-12-gateway-P1-API-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P1-API-04] re-export surface index.ts GRID_SIZE/BoardConfig/validateGridSize"
+      },
+      {
+        "id": "AC-12-gateway-P2-API-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+        "test_title": "[P2-API-01] NaN/Infinity/float/string rejected"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P1-UMB-02] occupiedCells inference vs explicit 4 validated"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P1-UMB-03] helpers staticBoard/boardWith threading"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P1-UMB-04] index.ts re-export surface BoardConfig/validateGridSize"
+      },
+      {
+        "id": "AC-12-umbrella-P1-UMB-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P1-UMB-05] ledger single DW 0f53c41e + sprint-status untouched"
+      },
+      {
+        "id": "AC-12-umbrella-P2-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P2-UMB-01] types.ts single GRID_SIZE definition + BoardConfig additive"
+      },
+      {
+        "id": "AC-12-umbrella-P2-UMB-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+        "test_title": "[P2-UMB-02] Board type Cell[][] unchanged"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "id": "AC-01-unit-P0-U-01",
+      "severity": "high",
+      "reason": "RED-phase dormant \u2014 green when test.skip\u2192test (host node:test)",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-01] hard-gate only-4: null\u21924, 4\u21924, {size:4}\u21924, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError"
+    },
+    {
+      "id": "AC-01-gateway-P0-API-01",
+      "severity": "high",
+      "reason": "RED-phase dormant \u2014 green when activated",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-01] validateGridSize hard-gate 10-case: null\u21924, 4, {size:4}, 3/5/0/-1/3.5/NaN/Infinity \u2192 RangeError"
+    },
+    {
+      "id": "AC-02-unit-P0-U-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-02] emptyBoard 4x4 shape parity default vs explicit 4"
+    },
+    {
+      "id": "AC-02-gateway-P0-API-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-02] emptyBoard 4x4 shape + default vs explicit 4 deepEquals"
+    },
+    {
+      "id": "AC-03-unit-P0-U-03",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-03] newGame seeded 20 draws identity"
+    },
+    {
+      "id": "AC-03-gateway-P0-API-03",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-03] newGame default vs explicit 4 same 9 tiles + 20 draws preserved"
+    },
+    {
+      "id": "AC-04-unit-P0-U-04",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-04] move 4-dir identity + boardsEqual defensive"
+    },
+    {
+      "id": "AC-04-gateway-P0-API-04",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-04] move 4-dir identity default vs explicit 4 deepEquals trace/score"
+    },
+    {
+      "id": "AC-05-umbrella-P0-UMB-04",
+      "severity": "high",
+      "reason": "RED-phase dormant \u2014 static scan + host",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P0-UMB-04] boardsEqual defensive jagged via ?. loop size-1"
+    },
+    {
+      "id": "AC-06-unit-P0-U-05",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-05] movementLines left/right rows\u00d74 up/down cols\u00d74"
+    },
+    {
+      "id": "AC-06-umbrella-P0-UMB-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P0-UMB-01] movementLines rows\u00d74 reversed per dir"
+    },
+    {
+      "id": "AC-07-unit-P0-U-06",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-06] boardFromLines size-1-k placement"
+    },
+    {
+      "id": "AC-07-umbrella-P0-UMB-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P0-UMB-02] boardFromLines round-trip within 0..3 size-1-k"
+    },
+    {
+      "id": "AC-08-unit-P0-U-07",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-07] spawnTile OOB filter [4,0] ignored"
+    },
+    {
+      "id": "AC-08-gateway-P0-API-05",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-05] spawnTile OOB filter size-aware [4,0] ignored, [3,3] eligible"
+    },
+    {
+      "id": "AC-09-unit-P0-U-08",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-08] isGameOver triad false/true/false"
+    },
+    {
+      "id": "AC-09-gateway-P0-API-06",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P0-API-06] isGameOver 4x4 parity empty\u2192false full no-merge\u2192true merge\u2192false"
+    },
+    {
+      "id": "AC-10-unit-P0-U-09",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P0-U-09] oppositeEdgeCandidates left\u2192col3 size-1"
+    },
+    {
+      "id": "AC-10-umbrella-P0-UMB-03",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P0-UMB-03] oppositeEdgeCandidates left\u21923 right\u21920 up\u21923 down\u21920"
+    },
+    {
+      "id": "AC-11-unit-P1-U-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P1-U-01] BoardConfig object vs number + SIZE alias"
+    },
+    {
+      "id": "AC-11-gateway-P1-API-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P1-API-01] BoardConfig object vs number parity across entry points"
+    },
+    {
+      "id": "AC-11-umbrella-P1-UMB-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P1-UMB-01] helpers SIZE alias + re-export scan helpers FROM core/index"
+    },
+    {
+      "id": "AC-12-unit-P1-U-04",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/grid-size-configurable.atdd.test.ts",
+      "test_title": "[P1-U-04] ledger single 0f53c41e hit + deferred-work single hunk"
+    },
+    {
+      "id": "AC-12-gateway-P1-API-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P1-API-02] helper SIZE===GRID_SIZE and DEFAULT_BOARD_CONFIG.size===4"
+    },
+    {
+      "id": "AC-12-gateway-P1-API-03",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P1-API-03] ledger resolution-undo 0f53c41e single hit"
+    },
+    {
+      "id": "AC-12-gateway-P1-API-04",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P1-API-04] re-export surface index.ts GRID_SIZE/BoardConfig/validateGridSize"
+    },
+    {
+      "id": "AC-12-gateway-P2-API-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/api/grid-size-configurable.gateway.spec.ts",
+      "test_title": "[P2-API-01] NaN/Infinity/float/string rejected"
+    },
+    {
+      "id": "AC-12-umbrella-P1-UMB-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P1-UMB-02] occupiedCells inference vs explicit 4 validated"
+    },
+    {
+      "id": "AC-12-umbrella-P1-UMB-03",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P1-UMB-03] helpers staticBoard/boardWith threading"
+    },
+    {
+      "id": "AC-12-umbrella-P1-UMB-04",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P1-UMB-04] index.ts re-export surface BoardConfig/validateGridSize"
+    },
+    {
+      "id": "AC-12-umbrella-P1-UMB-05",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P1-UMB-05] ledger single DW 0f53c41e + sprint-status untouched"
+    },
+    {
+      "id": "AC-12-umbrella-P2-UMB-01",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P2-UMB-01] types.ts single GRID_SIZE definition + BoardConfig additive"
+    },
+    {
+      "id": "AC-12-umbrella-P2-UMB-02",
+      "severity": "high",
+      "reason": "RED-phase dormant",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/grid-size-configurable.umbrella.spec.ts",
+      "test_title": "[P2-UMB-02] Board type Cell[][] unchanged"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "summary": {
+    "total_requirements": 12,
+    "fully_covered": 12,
+    "overall_coverage": 100
+  },
+  "gaps": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "heuristics_summary": {
+    "endpoint_gaps": 0,
+    "auth_gaps": 0,
+    "error_path_gaps": 0
+  },
+  "quality": {
+    "passing_tests": 18,
+    "total_tests": 55,
+    "blocker_issues": 0,
+    "warning_issues": 0
+  },
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability-matrix-dw-grid-size-configurable.md",
+    "trace_report_url": "",
+    "artifact_url": ""
+  }
+}

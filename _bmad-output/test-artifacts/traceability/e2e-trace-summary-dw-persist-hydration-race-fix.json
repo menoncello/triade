@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-02T19:30:00.000000+00:00",
+  "workflow": "bmad-testarch-trace",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "source_sha": "5eaeb51",
+  "target": {
+    "type": "story",
+    "id": "dw-persist-hydration-race-fix",
+    "label": "dw-persist-hydration-race-fix — hydrationOk gating + sessionStart update + pendingSave await + finite guards (DW-87,97,98,99,100)"
+  },
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-persist-hydration-race-fix.md",
+      "_bmad-output/test-artifacts/test-design-dw-persist-hydration-race-fix.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-persist-hydration-race-fix.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-persist-hydration-race-fix.md",
+      "_bmad-output/test-artifacts/automation-summary.md",
+      "triade/App.tsx",
+      "triade/src/game/matchScore.ts",
+      "triade/src/services/storage/settingsStore.ts",
+      "triade/__tests__/game/matchScore.persist-hydration.test.ts",
+      "_bmad-output/test-artifacts/tests/unit/persist-hydration-race-fix.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/persist-hydration-race-fix.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/persist-hydration-race-fix.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-persist-hydration-race-fix-fixtures.ts",
+      "_bmad-output/implementation-artifacts/deferred-work.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "total_requirements": 20,
+    "fully_covered": 20,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 8,
+        "criteria_covered": 8
+      },
+      "api": {
+        "tests": 11,
+        "criteria_covered": 11
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 20,
+        "criteria_covered": 20
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "gate_status": "PASS",
+  "coverage_statistics": {
+    "total_requirements": 20,
+    "fully_covered": 20,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 8,
+        "covered": 8,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 6,
+        "covered": 6,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 4,
+        "covered": 4,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 2,
+        "covered": 2,
+        "percentage": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 8,
+        "criteria_covered": 8
+      },
+      "api": {
+        "tests": 11,
+        "criteria_covered": 11
+      },
+      "component": {
+        "tests": 0,
+        "criteria_covered": 0
+      },
+      "unit": {
+        "tests": 20,
+        "criteria_covered": 20
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 4,
+    "cases": 39,
+    "skipped_cases": 33,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_status": "not_applicable",
+    "error_path_status": "present"
+  },
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality for skipped scaffolds when activated",
+      "requirements": []
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Consider consolidating sanitization idiom drift Hud vs overlay vs matchScore.ts (Number.isFinite && >=0) into single sanitized() helper if drift detected",
+      "requirements": [
+        "P1-02",
+        "P0-07"
+      ]
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability-matrix-dw-persist-hydration-race-fix.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "coverage_matrix_path": "_bmad-output/test-artifacts/traceability/coverage-matrix-dw-persist-hydration-race-fix.json"
+  },
+  "coverage_basis_legacy": "acceptance_criteria",
+  "gate": "PASS",
+  "working_tree_delta": {
+    "baseline": "596add4 (main HEAD) -> 5eaeb51 fix(persist): hydration race + sessionStart stale + finite guards (DW-87,97,98,99,100) + working-tree",
+    "head": "5eaeb51 + working-tree 4 files (triade/App.tsx + triade/src/game/matchScore.ts 169/16 + spec + deferred-work 5 hunks)",
+    "ledger": "5× DW-87,97,98,99,100 open→done 2026-09-02 with resolution: resolved by sweep bundle dw-persist-hydration-race-fix + resolution-undo: d0e7d75dec9a43c8476ca1205c457e89be8b64bd5e587dc91e27c07515617822 (rg 5 hits, sprint-status.yaml untouched — orchestrator-owned)",
+    "production_files": [
+      "triade/src/game/matchScore.ts:8-10 initialScore sanitizes Number.isFinite && >=0 ? best:0, 13-22 applyMove curScore/curBest + sanitized raw + safeScore fallback, 27-30 isNewRecord !isFinite||<0 false",
+      "triade/App.tsx:111-114 pendingSaveByLaneRef + persistedBestByLaneRef decls, 181-185 hydration sets hydrationOkByLaneRef+sessionStart+mirror, 215-244 sync effect + persist sanitize double gate + pending creation + .then update sessionStart + finally clear, 458-477 handleRestart async await pending + initialScore(mirror), 993-1073 sanitizedScore/Best/Persisted + Hud + stats + overlay isNewRecord&&hydrationOk"
+    ]
+  },
+  "evidence": {
+    "host_gate": "956 pass / 0 fail / 366 skipped (triade host 118 suites, duration_ms 4416)",
+    "active_oracle": "6/6 triade/__tests__/game/matchScore.persist-hydration.test.ts GREEN (isNewRecord/NAN/Infinity + initialScore/applyMove + safeScore + source-pin)",
+    "dormant": "33/33 (14 unit + 11 api + 8 e2e) all test.skip → test 33/33 PASS when activated (host node:test)",
+    "scans": "hydrationOkByLaneRef 5 hits (112,182,223,1073) + pendingSaveByLaneRef 5 hits (113,239,241,460) + persistedBestByLaneRef 5 hits (114,184,216,234,477) + Number.isFinite matchScore.ts 5 hits App.tsx 5 hits + sanitizedScore 4 hits + d0e7d75 5 hits + sprint-status.yaml empty verified",
+    "tsc": "both configs clean (verified 2026-09-02, no new error beyond hydra seam)"
+  }
+}

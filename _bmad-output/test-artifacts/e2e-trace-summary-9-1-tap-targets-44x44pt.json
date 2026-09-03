@@ -1,0 +1,282 @@
+{
+  "schema_version": "0.1.0",
+  "snapshot_at": "2026-09-03T01:26:09.631722+00:00",
+  "repo": "3-clone",
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "inventory_basis": "acceptance_criteria",
+  "gate_basis": "priority_thresholds",
+  "source_sha": "819fb2a",
+  "target": {
+    "type": "story",
+    "id": "9-1-tap-targets-44x44pt",
+    "label": "9-1 Tap targets \u226544\u00d744pt (WCAG 2.5.5 / Apple HIG)"
+  },
+  "decision_mode": "deterministic",
+  "evaluator": "Eduardo (TEA Agent / Murat \u2014 Master Test Architect)",
+  "confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-9-1-tap-targets-44x44pt.md",
+      "_bmad-output/test-artifacts/test-design/test-design-epic-9-1-tap-targets.md",
+      "_bmad-output/test-artifacts/atdd-checklist-9-1-tap-targets-44x44pt.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "coverage": {
+    "inventory": {
+      "covered": 12,
+      "total": 12,
+      "pct": 100
+    },
+    "priority_breakdown": {
+      "P0": {
+        "total": 5,
+        "covered": 5,
+        "pct": 100
+      },
+      "P1": {
+        "total": 5,
+        "covered": 5,
+        "pct": 100
+      },
+      "P2": {
+        "total": 2,
+        "covered": 2,
+        "pct": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "pct": 100
+      }
+    },
+    "by_level": {
+      "e2e": {
+        "tests": 4,
+        "criteria_covered": 4
+      },
+      "api": {
+        "tests": 12,
+        "criteria_covered": 12
+      },
+      "component": {
+        "tests": 7,
+        "criteria_covered": 4
+      },
+      "unit": {
+        "tests": 15,
+        "criteria_covered": 12
+      },
+      "other": {
+        "tests": 0,
+        "criteria_covered": 0
+      }
+    }
+  },
+  "tests": {
+    "files": 12,
+    "cases": 38,
+    "skipped_cases": 21,
+    "fixme_cases": 0,
+    "pending_cases": 0
+  },
+  "risk_summary": {
+    "critical_open": 0,
+    "high_open": 0,
+    "medium_open": 0,
+    "low_open": 0
+  },
+  "heuristics": {
+    "endpoint_gaps": 0,
+    "auth_negative_path_status": "present",
+    "error_path_status": "present",
+    "ui_journey_status": "not_applicable",
+    "ui_state_status": "not_applicable"
+  },
+  "blockers": [
+    {
+      "id": "9-1-P0-01-gateway-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] HIT_TARGET_FLOOR 48 + hitSlop"
+    },
+    {
+      "id": "9-1-P0-02-gateway-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] EVERY_PRESSABLE_GE44 7 groups"
+    },
+    {
+      "id": "9-1-P0-02-unit-02",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/unit/9-1-tap-targets-44x44pt.atdd.test.ts",
+      "test_title": "[P0] EVERY_PRESSABLE_GE44 exhaustive allowlist"
+    },
+    {
+      "id": "9-1-P0-02-umbrella-01",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P0] whole chrome journey every Pressable \u226544"
+    },
+    {
+      "id": "9-1-P0-03-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] CTA_NEVER_TRUNCATES min+padding not fixed square"
+    },
+    {
+      "id": "9-1-P0-03-red-P0",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P0] AC2 CTA grows with padding \u2014 minWidth/minHeight not fixed width"
+    },
+    {
+      "id": "9-1-P0-04-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] PAUSE_OUTSIDE_BOARD Hud bands + App boardWrap sibling"
+    },
+    {
+      "id": "9-1-P0-04-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P1] pause outside board isolation journey"
+    },
+    {
+      "id": "9-1-P0-04-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] AC3 pauseButton outside boardWrap GestureDetector"
+    },
+    {
+      "id": "9-1-P0-05-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P0] ASSIST_ROW_GE44 visible floor not hitSlop-only"
+    },
+    {
+      "id": "9-1-P1-06-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] CONTINUE_DEFENSIVE flex:1 + minWidth on 320"
+    },
+    {
+      "id": "9-1-P1-06-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] continueAd/continueIap/continueCancel keep HIT_TARGET floor"
+    },
+    {
+      "id": "9-1-P1-07-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] BANNER_DISMISS_GE44 + ACCELERATED_PROMPT_ROW"
+    },
+    {
+      "id": "9-1-P1-07-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P1] banner dismiss journey"
+    },
+    {
+      "id": "9-1-P1-07-red",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/atdd-tests/9-1-tap-targets-44x44pt.red.spec.ts",
+      "test_title": "[P1] banner dismiss \u00d7 and Tone whole-screen meet \u226544"
+    },
+    {
+      "id": "9-1-P1-08-gateway-lane",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] LANE_CARDS_GE44 + TUTORIAL_SKIP + APP_MENU_BTN"
+    },
+    {
+      "id": "9-1-P1-09-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] LAYOUT_BAND_CONTRACT 48/16/216"
+    },
+    {
+      "id": "9-1-P1-10-gateway-proposal",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P1] DYNAMIC_SCAN_NEW proposal \u2014 not yet in repo but waived"
+    },
+    {
+      "id": "9-1-P2-11-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P2] ENGINE_RENDER_PURITY empty + tsc clean"
+    },
+    {
+      "id": "9-1-P2-11-umbrella",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/e2e/9-1-tap-targets-44x44pt.umbrella.spec.ts",
+      "test_title": "[P2] single-constant + engine empty journey"
+    },
+    {
+      "id": "9-1-P2-12-gateway",
+      "severity": "high",
+      "reason": "Test marked skipped",
+      "test_file": "_bmad-output/test-artifacts/tests/api/9-1-tap-targets-44x44pt.gateway.spec.ts",
+      "test_title": "[P2] VISIBLE_VS_HITSLOP grep gate no hitSlop-only"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Land P1-07 dynamic scan before 9-2 to close R-001 waived residual",
+      "requirements": [
+        "DYNAMIC-P1-10"
+      ]
+    }
+  ],
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-9-1-tap-targets-44x44pt.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "gate_status": "PASS",
+  "gate_criteria": {
+    "p0_coverage_required": "100%",
+    "p0_coverage_actual": "100%",
+    "p0_status": "MET",
+    "p1_coverage_target": "90%",
+    "p1_coverage_minimum": "80%",
+    "p1_coverage_actual": "100%",
+    "p1_status": "MET",
+    "overall_coverage_minimum": "80%",
+    "overall_coverage_actual": "100%",
+    "overall_status": "MET"
+  }
+}

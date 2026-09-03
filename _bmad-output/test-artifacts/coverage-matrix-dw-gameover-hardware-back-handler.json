@@ -1,0 +1,1154 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-03T00:00:00.000000+00:00",
+  "trace_target": {
+    "type": "story",
+    "id": "dw-gameover-hardware-back-handler",
+    "label": "dw-gameover-hardware-back-handler — GameOverOverlay BackHandler hardwareBackPress (DW-95)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-gameover-hardware-back-handler.md",
+      "_bmad-output/test-artifacts/test-design-dw-gameover-hardware-back-handler.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-gameover-hardware-back-handler.md",
+      "_bmad-output/test-artifacts/atdd-checklist-dw-gameover-hardware-back-handler.md",
+      "triade/src/ui/GameOverOverlay.tsx",
+      "triade/test-utils/rn-stub.ts",
+      "triade/App.tsx",
+      "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+      "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/fixtures/dw-gameover-hardware-back-handler-fixtures.ts",
+      "_bmad-output/test-artifacts/automation-summary-dw-gameover-hardware-back-handler.md"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "working_tree_delta": {
+    "baseline": "6335c4178ddb844283ce6fd533aef208904837c1 -> working-tree dw-gameover-hardware-back-handler",
+    "head": "6335c41 (sweep dw-hud-score-a11y-polish)",
+    "working_tree_ledger": "DW-95 open→done 2026-09-03 + resolution: resolved by sweep bundle dw-gameover-hardware-back-handler + resolution-undo: 5f794ee020c7ad819636f62a5b15cd2efb524f733191ac5ca13117f096dc4b00 2026-09-03 7374617475733a206f70656e (rg 1 hit, sprint-status.yaml untouched — orchestrator-owned)",
+    "production_files": [
+      "triade/src/ui/GameOverOverlay.tsx:2 import { Animated, BackHandler, Easing, Pressable, StyleSheet, Text, View } from 'react-native' — added BackHandler to existing RN primitives — rg BackHandler 1",
+      "triade/src/ui/GameOverOverlay.tsx:84-95 NEW second useEffect DW-95: const handler = () => true; const sub:any = BackHandler.addEventListener('hardwareBackPress', handler); return () => { if (sub && typeof sub.remove === 'function') sub.remove(); else BackHandler.removeEventListener('hardwareBackPress', handler); }}, []); — rg addEventListener('hardwareBackPress' 1, removeEventListener('hardwareBackPress' 1, () => true 1, typeof sub.remove 1, }, []); 1",
+      "triade/test-utils/rn-stub.ts:102-105 NEW export const BackHandler = { addEventListener: (_event:string,_handler:()=>boolean)=>({remove:()=>{}}), removeEventListener: (_event:string,_handler:()=>boolean)=>{} } — rg BackHandler 1, addEventListener 1, removeEventListener 1",
+      "triade/App.tsx byte-identical — {gameOver ? ( <GameOverOverlay .../> : null } sibling still at 1165 — rg GameOverOverlay 1, GameBoard 1, git diff --stat -- triade/App.tsx empty",
+      "triade/src/engine byte-identical — git diff --stat -- triade/src/engine empty",
+      "triade/src/ui/layout.ts byte-identical — git diff --stat -- triade/src/ui/layout.ts empty",
+      "_bmad-output/implementation-artifacts/deferred-work.md:822-829 DW-95 flipped open→done 2026-09-03 with resolution-undo 5f794ee… + hex 7374617475733a206f70656e + undo-base deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b — rg 1 each",
+      "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts:1-487 NEW 22 RED-phase scaffolds (7 P0 +7 P1 +5 P2 +3 P3) it.skip host node:test + tsx + react-test-renderer + rn-stub spy — 22 pass when activated ~250ms (after harness fix for P2-01/P2-02/P0-04/P0-07)",
+      "_bmad-output/test-artifacts/fixtures/dw-gameover-hardware-back-handler-fixtures.ts:1-195 NEW 195 LOC host-only deterministic baseOverlayProps + BackHandlerSpy + SCAN_STRINGS 30 + LEDGER 5f794ee + GATE_CONSTANTS + validation helpers",
+      "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts:1-173 NEW 14 gateway tests (7 P0 +7 P1) — mount subscribes hardwareBackPress exactly once + handler returns true + unmount sub.remove + fallback removeEventListener + no subscription when no overlay + reducedMotion does not duplicate + remount leak + BackHandler import allowlist + exact hardwareBackPress ×2 + () => true + dual-path + empty deps + rn-stub surface + thin-view — 14 pass ~230ms (cache-busted for P0-04)",
+      "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts:1-96 NEW 8 umbrella tests (5 P2 +3 P3) — single BackHandler effect + BackHandler×3-4 + engine/layout/App empty diff + ledger 5f794ee + a11yLabel + no navigation + thrash 3 cycles + manual Expo Go + negative hygiene — 8 pass ~180ms",
+      "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts:1-487 NEW 22 unit mirror (7 P0+7 P1+5 P2+3 P3) — 22 pass ~250ms (mirrors triade oracle for test_artifacts compliance)"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "P0-01",
+      "description": "AC-2 Mount subscribes hardwareBackPress exactly once — BackHandler.addEventListener('hardwareBackPress', handler) called exactly once with literal 'hardwareBackPress' (addCalls===1, lastEvent==='hardwareBackPress')",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-01-triade",
+          "title": "[P0-01] mount subscribes hardwareBackPress exactly once",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 97,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — passes when activated (addCalls===1, hardwareBackPress literal)"
+        },
+        {
+          "id": "P0-01-gateway",
+          "title": "[P0-API-01] mount subscribes hardwareBackPress exactly once",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 28,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — 14 pass when activated"
+        },
+        {
+          "id": "P0-01-unit",
+          "title": "[P0-01] mount subscribes hardwareBackPress exactly once",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 97,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-02",
+      "description": "AC-1 Hardware back consumed while overlay mounted — spy.handler() returns true (consumes event) not false/undefined/null, Activity not finished",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-02-triade",
+          "title": "[P0-02] handler returns true to consume hardware back",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 115,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — handler()===true verified"
+        },
+        {
+          "id": "P0-02-gateway",
+          "title": "[P0-API-02] handler returns true",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 44,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-02-unit",
+          "title": "[P0-02] handler returns true to consume hardware back",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 115,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-03",
+      "description": "AC-3 Unmount removes subscription without throw — act(()=>renderer.unmount()) calls sub.remove() exactly once without throw, removeCalls===1, removeEventListenerCalls===0",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-03-triade",
+          "title": "[P0-03] unmount calls sub.remove exactly once without throw",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 133,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-03-gateway",
+          "title": "[P0-API-03] unmount calls sub.remove exactly once",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 58,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-03-unit",
+          "title": "[P0-03] unmount calls sub.remove exactly once without throw",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 133,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-04",
+      "description": "AC-4 Fallback legacy removeEventListener when add returns undefined/null — cleanup calls BackHandler.removeEventListener('hardwareBackPress', handler) exactly once without sub.remove (old RN <0.65)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-04-triade",
+          "title": "[P0-04] fallback legacy removeEventListener when add returns undefined",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 152,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — fallback branch pinned, cache-busted import"
+        },
+        {
+          "id": "P0-04-gateway",
+          "title": "[P0-API-04] fallback legacy removeEventListener",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 72,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-04-unit",
+          "title": "[P0-04] fallback legacy removeEventListener when add returns undefined",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 152,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-05",
+      "description": "AC-5 No subscription when no overlay — gameOver===false fragment addCalls===0 so hardware back retains default navigation (no global trap)",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-05-triade",
+          "title": "[P0-05] no subscription when no overlay (gameOver false)",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 175,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — App.tsx {gameOver ? (<GameOverOverlay) pin"
+        },
+        {
+          "id": "P0-05-gateway",
+          "title": "[P0-API-05] no subscription when no overlay",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 88,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-05-unit",
+          "title": "[P0-05] no subscription when no overlay (gameOver false)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 175,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-06",
+      "description": "AC-6 reducedMotion independent — false→true toggle via renderer.update does not increment addCalls (still 1) and handler()===true after toggle (deps [] not [reducedMotion])",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-06-triade",
+          "title": "[P0-06] reducedMotion toggle does not duplicate subscription",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 213,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — deps [] lifetime proven"
+        },
+        {
+          "id": "P0-06-gateway",
+          "title": "[P0-API-06] reducedMotion toggle does not duplicate",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 102,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-06-unit",
+          "title": "[P0-06] reducedMotion toggle does not duplicate subscription",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 213,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P0-07",
+      "description": "AC-3 mount→unmount→remount leak check + CTA reachable — add 2/rem 2 after second cycle, handler true, toJSON() !== null, every add eventually remove",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P0-07-triade",
+          "title": "[P0-07] mount→unmount→remount leak check + CTA reachable",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 242,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — 2 cycles add 2/rem 2"
+        },
+        {
+          "id": "P0-07-gateway",
+          "title": "[P0-API-07] mount→unmount→remount leak check",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 118,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P0-07-unit",
+          "title": "[P0-07] mount→unmount→remount leak check + CTA reachable",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 242,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-01",
+      "description": "BackHandler import from react-native allowlist — import { Animated, BackHandler, Easing, Pressable, StyleSheet, Text, View } from 'react-native' exact literal, not expo/navigation/gesture-handler",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-01-triade",
+          "title": "[P1-01] BackHandler import from react-native allowlist",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 290,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg import allowlist"
+        },
+        {
+          "id": "P1-01-gateway",
+          "title": "[P1-API-08] BackHandler import allowlist",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 134,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-01-unit",
+          "title": "[P1-01] BackHandler import from react-native allowlist",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 290,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-02",
+      "description": "Exact event name hardwareBackPress literal ×2 — addEventListener('hardwareBackPress' 1 + removeEventListener('hardwareBackPress' 1, no variable, no typo hardwareBackPresss",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-02-triade",
+          "title": "[P1-02] exact hardwareBackPress literal ×2",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 298,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg literal ×2"
+        },
+        {
+          "id": "P1-02-gateway",
+          "title": "[P1-API-09] exact hardwareBackPress literal ×2",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 140,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-02-unit",
+          "title": "[P1-02] exact hardwareBackPress literal ×2",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 298,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-03",
+      "description": "Handler literal () => true — source contains const handler = () => true (not () => false or alias), trap intent visible in review",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-03-triade",
+          "title": "[P1-03] handler literal () => true",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 307,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg () => true 1"
+        },
+        {
+          "id": "P1-03-gateway",
+          "title": "[P1-API-10] handler literal () => true",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 146,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-03-unit",
+          "title": "[P1-03] handler literal () => true",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 307,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-04",
+      "description": "Dual-path cleanup sub.remove + removeEventListener — if (sub && typeof sub.remove === 'function') sub.remove(); else BackHandler.removeEventListener, typed as any to silence TS2339",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-04-triade",
+          "title": "[P1-04] dual-path cleanup sub.remove + as any removeEventListener",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 314,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — R-001 BLOCK until as any, rg typeof sub.remove"
+        },
+        {
+          "id": "P1-04-gateway",
+          "title": "[P1-API-11] dual-path cleanup sub.remove + removeEventListener",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 152,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-04-unit",
+          "title": "[P1-04] dual-path cleanup sub.remove + as any removeEventListener",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 314,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-05",
+      "description": "Empty deps [] lifetime subscription — useEffect(() => { …BackHandler… }, []) exactly 1 BackHandler effect, not per-render, reducedMotion not in block",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-05-triade",
+          "title": "[P1-05] empty deps [] lifetime subscription",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 330,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — deps [] 1"
+        },
+        {
+          "id": "P1-05-gateway",
+          "title": "[P1-API-12] empty deps [] lifetime subscription",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 158,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-05-unit",
+          "title": "[P1-05] empty deps [] lifetime subscription",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 330,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P1-06",
+      "description": "rn-stub BackHandler surface — export const BackHandler = { addEventListener: (_event:string,_handler:()=>boolean)=>({remove:()=>{}}), removeEventListener noop } via tsconfig.test.json path mapping",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-06-triade",
+          "title": "[P1-06] rn-stub BackHandler surface",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 345,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — stub 102-105 + tsconfig mapping"
+        },
+        {
+          "id": "P1-06-gateway",
+          "title": "[P1-API-13] rn-stub BackHandler surface",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 164,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-06-unit",
+          "title": "[P1-06] rn-stub BackHandler surface",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 345,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P1-07",
+      "description": "Thin-view + never-throw + CTA 44 still green — no reanimated/skia/setTimeout regression, HIT_TARGET preserved, scrim rgba(12,14,17,0.7) + zIndex 2, gameOverOverlay.test 20 still green",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P1-07-triade",
+          "title": "[P1-07] thin-view + never-throw + CTA 44 still green",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 355,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg reanimated|skia 0 + HIT_TARGET 1"
+        },
+        {
+          "id": "P1-07-gateway",
+          "title": "[P1-API-14] thin-view + never-throw + CTA 44",
+          "file": "_bmad-output/test-artifacts/tests/api/dw-gameover-hardware-back-handler.gateway.spec.ts",
+          "line": 168,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P1-07-unit",
+          "title": "[P1-07] thin-view + never-throw + CTA 44 still green",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 355,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "existing-thinview",
+          "title": "ui.thinview: GameOverOverlay imports only react-native primitives",
+          "file": "triade/__tests__/ui/ui.thinview.test.ts",
+          "line": 9,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "existing-gameover",
+          "title": "gameOverOverlay 20 — scrim rgba(12,14,17,0.7) + zIndex 2 + fade 280/80/cubic + CTA + thin-view",
+          "file": "triade/__tests__/ui/components/gameOverOverlay.test.ts",
+          "line": 8,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "present",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-01",
+      "description": "Single BackHandler effect + BackHandler×3-4 allowlist — exactly 1 useEffect containing BackHandler, BackHandler hits 3 (import+add+remove) or 4 with as any",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-01-triade",
+          "title": "[P2-01] SCAN single BackHandler effect + BackHandler×3-4",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 371,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg BackHandler 3-4 + single effect"
+        },
+        {
+          "id": "P2-01-umbrella",
+          "title": "[P2-E2E-01] single BackHandler effect + BackHandler×3-4 allowlist",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 14,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — 8 pass when activated"
+        },
+        {
+          "id": "P2-01-unit",
+          "title": "[P2-01] SCAN single BackHandler effect + BackHandler×3-4",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 371,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-02",
+      "description": "Engine/layout/render/App empty diff — git diff --stat -- triade/src/engine empty + layout.ts empty + render empty + App.tsx byte-identical {gameOver ? (<GameOverOverlay), overlay is presentation-only thin-view",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-02-triade",
+          "title": "[P2-02] SCAN engine/layout/render/App empty diff (via byte-identical check)",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 381,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — no engine import + App sibling pin"
+        },
+        {
+          "id": "P2-02-umbrella",
+          "title": "[P2-E2E-02] engine/layout/render/App empty diff — overlay is presentation-only",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 22,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P2-02-unit",
+          "title": "[P2-02] SCAN engine/layout/render/App empty diff (via byte-identical check)",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 381,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-03",
+      "description": "Ledger resolution-undo 5f794ee + deb5edf9 + hex — deferred-work.md DW-95 status: done 2026-09-03 + resolution-undo 5f794ee020c7ad819636f62a5b15cd2efb524f733191ac5ca13117f096dc4b00 + 7374617475733a206f70656e + undo-base deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-03-triade",
+          "title": "[P2-03] ledger resolution-undo 5f794ee + deb5edf9 + hex",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 390,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — ledger 5f794ee 64-hex + open hex"
+        },
+        {
+          "id": "P2-03-umbrella",
+          "title": "[P2-E2E-03] ledger resolution-undo 5f794ee + deb5edf9 + hex",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 32,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P2-03-unit",
+          "title": "[P2-03] ledger resolution-undo 5f794ee + deb5edf9 + hex",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 390,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P2-04",
+      "description": "a11yLabel + t gameOver.restart unchanged — Game over. Score … stringifies stats and isNewRecord, t('gameOver.restart') still Jogar de novo after BackHandler",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-04-triade",
+          "title": "[P2-04] a11yLabel + t gameOver.restart unchanged",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 402,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — a11yLabel + restart CTA still pinned"
+        },
+        {
+          "id": "P2-04-umbrella",
+          "title": "[P2-E2E-04] a11yLabel + t gameOver.restart unchanged",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 42,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P2-04-unit",
+          "title": "[P2-04] a11yLabel + t gameOver.restart unchanged",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 402,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P2-05",
+      "description": "No navigation dep — GameOverOverlay.tsx not importing useNavigation/router.push/expo-router, package.json has no expo-router/@react-navigation for this bundle (spec Never)",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P2-05-triade",
+          "title": "[P2-05] no navigation dep",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 410,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg navigation 0"
+        },
+        {
+          "id": "P2-05-umbrella",
+          "title": "[P2-E2E-05] no navigation dep",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 50,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P2-05-unit",
+          "title": "[P2-05] no navigation dep",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 410,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "not_applicable"
+      }
+    },
+    {
+      "id": "P3-01",
+      "description": "Thrash 3 cycles no leak — mount→unmount→mount→unmount→mount addCalls===3 && removeCalls===2 before final, 3===3 after final, handler()===true still, no duplicate yellowbox",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-01-triade",
+          "title": "[P3-01] thrash 3 cycles no leak",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 421,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — 3 cycles thrash"
+        },
+        {
+          "id": "P3-01-umbrella",
+          "title": "[P3-E2E-01] thrash 3 cycles no leak",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 58,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P3-01-unit",
+          "title": "[P3-01] thrash 3 cycles no leak",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 421,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-02",
+      "description": "Manual Android hardware back — Expo Go on Android with GameOverOverlay open: physical hardware back does nothing, Jogar de novo still tappable, hardware back after restart does default (host spy handler()===true is automatable proxy)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-02-triade",
+          "title": "[P3-02] manual Expo Go hardware back does nothing",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 471,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "documented manual — host spy is automatable proxy, manual device smoke required before release"
+        },
+        {
+          "id": "P3-02-umbrella",
+          "title": "[P3-E2E-02] manual Expo Go hardware back does nothing",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 68,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "manual device — automatable proxy is handler()===true"
+        },
+        {
+          "id": "P3-02-unit",
+          "title": "[P3-02] manual Expo Go hardware back does nothing",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 471,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "manual device"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "not_applicable",
+        "ui_journey": "present",
+        "ui_state": "present"
+      }
+    },
+    {
+      "id": "P3-03",
+      "description": "Negative no false + no typo — BackHandler hardwareBackPress => false ==0 and hardwareBackPresss typo ==0 (hygiene)",
+      "priority": "P3",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "P3-03-triade",
+          "title": "[P3-03] negative no false + no typo",
+          "file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 480,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant — rg negative hygiene"
+        },
+        {
+          "id": "P3-03-umbrella",
+          "title": "[P3-E2E-03] negative no false + no typo",
+          "file": "_bmad-output/test-artifacts/tests/e2e/dw-gameover-hardware-back-handler.umbrella.spec.ts",
+          "line": 78,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "P3-03-unit",
+          "title": "[P3-03] negative no false + no typo",
+          "file": "_bmad-output/test-artifacts/tests/unit/dw-gameover-hardware-back-handler.atdd.test.ts",
+          "line": 480,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "gaps": [],
+      "recommendation": "",
+      "heuristics": {
+        "endpoint": "not_applicable",
+        "auth": "not_applicable",
+        "error_path": "present",
+        "ui_journey": "not_applicable",
+        "ui_state": "not_applicable"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 22,
+    "fully_covered": 22,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 7,
+        "covered": 7,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 7,
+        "covered": 7,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 5,
+        "covered": 5,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 66,
+      "skipped_cases": 64,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 8,
+          "criteria_covered": 8
+        },
+        "api": {
+          "tests": 14,
+          "criteria_covered": 14
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 44,
+          "criteria_covered": 22
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [],
+    "blockers": []
+  },
+  "blockers": [
+    {
+      "id": "P0-04-triade",
+      "severity": "high",
+      "reason": "Test marked skipped during trace collection — RED-phase dormant. Dormant until activated: 22 triade oracle + 22 unit mirror + 14 gateway + 8 umbrella = 64 skipped. All pass when activated ~180-250ms each, but prod tsc still TS2339 until (BackHandler as any).removeEventListener.",
+      "test_file": "triade/__tests__/ui/dw-gameover-hardware-back-handler.atdd.test.ts",
+      "test_title": "[P0-04] fallback legacy removeEventListener when add returns undefined"
+    },
+    {
+      "id": "tsc-prod-TS2339",
+      "severity": "high",
+      "reason": "Production tsc gate: triade/tsconfig.json TS2339 at GameOverOverlay.tsx:92 BackHandler.removeEventListener does not exist on BackHandlerStatic (RN 0.86.2). Requires (BackHandler as any).removeEventListener?.('hardwareBackPress', handler) before merge — R-001 BLOCK score 9.",
+      "test_file": "triade/src/ui/GameOverOverlay.tsx",
+      "test_title": "tsc --noEmit --project triade/tsconfig.json"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "action": "Fix R-001 BLOCK before merge: change GameOverOverlay.tsx:92 BackHandler.removeEventListener('hardwareBackPress', handler) → (BackHandler as any).removeEventListener?.('hardwareBackPress', handler) so tsc prod 0 errors (currently 1 TS2339). triade/tsconfig.test.json already 0 via stub.",
+      "requirements": [
+        "P1-04"
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality — currently 64 skipped RED-phase dormant (22 triade + 22 unit + 14 gateway + 8 umbrella). All pass when activated (22+14+8 =44 new + 22 mirror). Consider activating a subset into triade host gate for CI.",
+      "requirements": []
+    }
+  ]
+}
