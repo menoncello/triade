@@ -107,14 +107,16 @@ resolution: CLOSED (2026-08-19): visual pass confirmed on simulator — thin 22p
 origin: migrated from legacy ledger ("Deferred from: code review (2026-08-06)"), 2026-09-01
 location: n/a
 reason: `user-scalable=no` + `maximum-scale=1.0` block pinch-zoom — accessibility tradeoff for a swipe game; revisit for a11y pass.
-status: open
+status: done 2026-09-03
+resolution: already resolved: grep -r user-scalable triade/src triade/app.json returns 0 hits — native Expo app has no viewport meta blocking pinch-zoom; only node_modules/hammerjs fixtures contain it
 
 ### DW-14: Board `role="grid"` has no row/gridcell semantics or live-region score announcements — screen readers get an empty grid.
 
 origin: migrated from legacy ledger ("Deferred from: code review (2026-08-06)"), 2026-09-01
 location: n/a
 reason: Board `role="grid"` has no row/gridcell semantics or live-region score announcements — screen readers get an empty grid.
-status: open
+status: done 2026-09-03
+resolution: already resolved: grep role=.grid across triade/src returns 0 hits — GameBoard Canvas has no grid semantics; a11y now via BoardA11yOverlay triade/src/a11y/boardAccessibility.tsx:34-66
 
 ### DW-15: dev-build boot on a physical iOS device (Expo prebuild + Xcode; requires connected iPhone + CocoaPods). Simulator boot validated instead (2026-08-10): dev build boots and the Skia board renders on the iOS runtime.
 
