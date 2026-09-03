@@ -89,7 +89,7 @@ export function GameOverOverlay({
     const sub: any = BackHandler.addEventListener('hardwareBackPress', handler);
     return () => {
       if (sub && typeof sub.remove === 'function') sub.remove();
-      else BackHandler.removeEventListener('hardwareBackPress', handler);
+      else (BackHandler as any).removeEventListener?.('hardwareBackPress', handler);
     };
   }, []);
 
