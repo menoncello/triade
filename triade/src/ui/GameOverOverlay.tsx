@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, BackHandler, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import '../i18n/index.ts';
 import { HIT_TARGET } from './PauseButton';
@@ -80,6 +80,18 @@ export function GameOverOverlay({
       contentY.stopAnimation();
     };
   }, [reducedMotion, scrimOpacity, contentOpacity, contentY]);
+
+  // DW-95: Block Android hardware back while GameOverOverlay is visible so the
+  // game is not dismissed unintentionally. Returns true to consume the event.
+  // Subscription is tied to overlay lifetime — removed on unmount when overlay dismisses.
+  useEffect(() => {
+    const handler = () => true;
+    const sub: any = BackHandler.addEventListener('hardwareBackPress', handler);
+    return () => {
+      if (sub && typeof sub.remove === 'function') sub.remove();
+      else BackHandler.removeEventListener('hardwareBackPress', handler);
+    };
+  }, []);
 
   // D1 fix (a11y aninhada): outer overlay NÃO é `accessible` — bloqueia gestos via `pointerEvents="auto"`
   // e centra o card. Inner `View accessible alert` agrupa só as stats para anúncio; CTA `Pressable`

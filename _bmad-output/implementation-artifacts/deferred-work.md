@@ -824,7 +824,9 @@ resolution-undo: deb5edf9a5c1ba65538a59e096c803fb18a3d6013763403da9311b7175da14b
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-3-restart-1-tap (2026-08-27)"), 2026-09-01
 location: triade/src/ui/GameOverOverlay.tsx:56-64
 reason: Navigation/hardware-back não bloqueado — `triade/src/ui/GameOverOverlay.tsx:56-64` + `triade/App.tsx:184` — não bloqueia `BackHandler` — deferred, medium (Epic 3/4).
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-gameover-hardware-back-handler
+resolution-undo: 5f794ee020c7ad819636f62a5b15cd2efb524f733191ac5ca13117f096dc4b00 2026-09-03 7374617475733a206f70656e
 
 ### DW-96: Stroke tiling restart during gesture race — `triade/App.tsx:119-139` `doMoveRef` + `panGesture` `runOnJS:true` — Df1-4 ledger — deferred, medium.
 

@@ -99,6 +99,11 @@ export const AccessibilityInfo = {
   setAccessibilityFocus: (_id: number) => {},
 };
 
+export const BackHandler = {
+  addEventListener: (_event: string, _handler: () => boolean) => ({ remove: () => {} }),
+  removeEventListener: (_event: string, _handler: () => boolean) => {},
+};
+
 // --- Type-level shims so `react-native-gesture-handler` + RN component props ---
 // resolve under the stub's path mapping (ViewStyle etc. are imported by RNGH
 // types via `react-native`). Keeping them as `any` preserves host-testable

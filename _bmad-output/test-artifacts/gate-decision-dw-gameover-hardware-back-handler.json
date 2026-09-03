@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-03T05:39:43.478351+00:00",
+  "repo": "3-clone",
+  "target": {
+    "type": "story",
+    "id": "dw-gameover-hardware-back-handler",
+    "label": "dw-gameover-hardware-back-handler — GameOverOverlay BackHandler hardwareBackPress (DW-95)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "CONCERNS",
+  "rationale": "P0 coverage is 100%, P1 coverage is 100% (target: 90%), and overall coverage is 100% (minimum: 80%) — thresholds MET. However production tsc gate FAILS: triade/tsconfig.json TS2339 at GameOverOverlay.tsx:92 BackHandler.removeEventListener does not exist on BackHandlerStatic (RN 0.86.2) — requires (BackHandler as any).removeEventListener?. before merge (R-001 BLOCK score 9). Additionally 64 new tests are RED-phase dormant (22 triade oracle + 22 unit mirror + 14 gateway + 8 umbrella, all it.skip/test.skip). Host gate shows 980 pass / 0 fail / 407 skipped fleet, but dedicated BackHandler seam has 0 active and 64 skipped until activated (~180-250ms each when de-skipped, all pass). Sprint-status.yaml untouched (orchestrator-owned). Ledger DW-95 done 2026-09-03 with 5f794ee 64-hex. Gate is CONCERNS pending tsc prod fix and activation of at least P0 dormant into CI.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-gameover-hardware-back-handler.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  },
+  "thresholds": {
+    "min_p0_coverage": 100,
+    "min_p1_coverage": 90,
+    "min_overall": 80
+  },
+  "tsc_prod": "FAIL TS2339",
+  "dormant_tests": 64,
+  "active_dedicated": 0
+}
