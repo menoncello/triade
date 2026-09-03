@@ -655,7 +655,8 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
   return (
     <View style={{ width: safeWidth, height: safeWidth }}>
       <Animated.View style={shakeStyle}>
-        <Canvas style={{ width: safeWidth, height: safeWidth }}>
+        <View importantForAccessibility="no-hide-descendants" accessible={false} style={{ width: safeWidth, height: safeWidth }}>
+          <Canvas style={{ width: safeWidth, height: safeWidth }}>
           <RoundedRect x={0} y={0} width={safeWidth} height={safeWidth} r={14} color={THEMES[theme]?.chrome.board ?? '#1A1D23'} />
           {ordered.map((t) => (
             <AnimatedTile
@@ -674,6 +675,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
             />
           ))}
         </Canvas>
+        </View>
       </Animated.View>
       {/* S8.4 bullet-time flash overlay — board only, ~200ms, suppressed under Reduced Motion */}
       {/* DW-110: width guard — Math.max(1, finiteWidth) validated via safeWidth so NaN never propagates to overlay style */}

@@ -982,7 +982,9 @@ decision: 2026-09-02 Keep deps as stability still functional — Keep current, f
 origin: deferred from review of spec-9-2-screen-reader-contract (2026-09-02)
 location: triade/src/a11y/boardAccessibility.tsx
 reason: BoardA11yOverlay renders per-tile accessible elements and re-renders on board changes, but does not call AccessibilityInfo.setAccessibilityFocus to move VoiceOver focus after a move; a vanished tile leaves focus on a dead node. Requires platform focus API beyond current patch scope.
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-board-a11y-screen-reader-bridge
+resolution-undo: e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 2026-09-03 7374617475733a206f70656e
 source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md`
 
 ### DW-113: Skia Canvas duplicate accessibility nodes — GameBoard Canvas not hidden from accessibility tree
@@ -990,5 +992,7 @@ source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contr
 origin: deferred from review of spec-9-2-screen-reader-contract (2026-09-02)
 location: triade/src/render/GameBoard.tsx
 reason: Skia Canvas may expose empty/duplicate accessibility nodes alongside the RN BoardA11yOverlay bridge; should set importantForAccessibility="no-hide-descendants" on Canvas wrapper to avoid duplicate announcements.
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-board-a11y-screen-reader-bridge
+resolution-undo: e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 2026-09-03 7374617475733a206f70656e
 source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md`
