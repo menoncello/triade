@@ -1013,6 +1013,39 @@ function AppContent() {
   const themeId: ThemeId = (isThemeId(settings.theme) ? settings.theme : 'dark') as ThemeId;
   const tokens = THEMES[themeId];
 
+  // Hooks must be unconditional — keep all hooks before any early return (Rules of Hooks).
+  // FR-43 pot hygiene + DW-94 deflate: availablePot derived every render from live board.
+  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
+  const gameOver = isGameOver(game.board);
+  const activeLaneId = laneFromIndex(selectedLaneIndex).id;
+  const profile = profileForLaneId(activeLaneId);
+  const ceiling = ceilingDetector(game.board);
+  const emptyCount = game.board.flat().filter((v) => v === null).length;
+  const showCeilingBanner = profile.showLearningAids && !gameOver && !bannerDismissed.ceiling && ceiling >= 48;
+  const showStuckBanner = profile.showLearningAids && !gameOver && !bannerDismissed.stuck && emptyCount <= 2;
+  const tmpForGates: OrchestratorState = {
+    undoHistory,
+    undoBudget,
+    hintBudget,
+    continueBudget,
+    hintHighlight,
+    bannerDismissed,
+    showUndoPrompt,
+  };
+  const canUndoDerived = orchestratorCanUndoForState(tmpForGates, profile);
+  const canHintDerived = orchestratorCanHintForState(tmpForGates, game.board, profile);
+  const canContinueDerived = orchestratorCanContinueForState(tmpForGates, profile);
+  // DW-86: forfeitedContinue — set on game-over when a continue was available
+  useEffect(() => {
+    if (gameOver && canContinueDerived && !forfeitedContinue) {
+      setForfeitedContinue(true);
+    }
+  }, [gameOver, canContinueDerived, forfeitedContinue]);
+  const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
+  const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+  const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
+  const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
+
   if (!ready) {
     return (
       <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
@@ -1052,46 +1085,6 @@ function AppContent() {
       </View>
     );
   }
-
-  // FR-43 "only 3 available" semantics: the spawnable pot set is driven by the
-  // live board ceiling — DW-94 deflate hygiene: recomputed every render from
-  // `game.board` (after `ready` guard) and shared by both lane previews so a
-  // pending rolled at a higher tier fans out through preview's defensive fallback
-  // when the board deflates (availablePot shrinks). Never memoized stale.
-  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
-
-  const gameOver = isGameOver(game.board);
-  const activeLaneId = laneFromIndex(selectedLaneIndex).id;
-  const profile = profileForLaneId(activeLaneId);
-  // 3.3 banner relevance (contextual, dismissible, Accelerated only)
-  const ceiling = ceilingDetector(game.board);
-  const emptyCount = game.board.flat().filter((v) => v === null).length;
-  const showCeilingBanner = profile.showLearningAids && !gameOver && !bannerDismissed.ceiling && ceiling >= 48;
-  const showStuckBanner = profile.showLearningAids && !gameOver && !bannerDismissed.stuck && emptyCount <= 2;
-  const tmpForGates: OrchestratorState = {
-    undoHistory,
-    undoBudget,
-    hintBudget,
-    continueBudget,
-    hintHighlight,
-    bannerDismissed,
-    showUndoPrompt,
-  };
-  const canUndoDerived = orchestratorCanUndoForState(tmpForGates, profile);
-  const canHintDerived = orchestratorCanHintForState(tmpForGates, game.board, profile);
-  const canContinueDerived = orchestratorCanContinueForState(tmpForGates, profile);
-
-  // DW-86: forfeitedContinue — set on game-over when a continue was available, dies on continue/new game
-  useEffect(() => {
-    if (gameOver && canContinueDerived && !forfeitedContinue) {
-      setForfeitedContinue(true);
-    }
-  }, [gameOver, canContinueDerived, forfeitedContinue]);
-
-  const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
-  const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
-  const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
-  const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
 
   return (
     <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
