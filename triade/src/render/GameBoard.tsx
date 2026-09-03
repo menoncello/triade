@@ -9,11 +9,13 @@ import { numeralSizeFor, tileInkFor, tileFillFor, tileShapeFor } from '../ui/til
 import { presetFor } from '../feel/feel.ts';
 import { maxShakeForTrace, directionVector, SHAKE_CAP } from '../feel/shake.ts';
 import { BULLET_TIME_MS, shouldTriggerBulletTime } from '../feel/bulletTime.ts';
+import type { ThemeId } from '../theme/index.ts';
+import { THEMES } from '../theme/index.ts';
 
 const TILE_FONT_FAMILY = Platform.select({ ios: 'Helvetica', android: 'sans-serif', default: 'sans-serif' });
 
-function tileTextColor(value: number): string {
-  return tileInkFor(value);
+function tileTextColor(value: number, theme: ThemeId = 'dark'): string {
+  return tileInkFor(value, theme);
 }
 
 function centerX(font: SkFont, value: number, cell: number): number {
@@ -68,9 +70,11 @@ function cellKey(r: number, c: number): string {
   return `${r},${c}`;
 }
 
-function cellColor(value: number | null): string {
-  if (value === null) return '#d8d3cc';
-  return tileFillFor(value);
+function cellColor(value: number | null, theme: ThemeId = 'dark'): string {
+  if (value === null) {
+    return THEMES[theme]?.chrome.cell ?? '#262A31';
+  }
+  return tileFillFor(value, theme);
 }
 
 function pixel(cell: [number, number], cellSize: number): { x: number; y: number } {
@@ -91,6 +95,7 @@ interface AnimatedTileProps {
   isMerge?: boolean;
   reducedMotion?: boolean;
   onVanish: (id: string) => void;
+  theme?: ThemeId;
 }
 
 function AnimatedTile({
@@ -103,7 +108,8 @@ function AnimatedTile({
   delay = 0,
   isMerge = false,
   reducedMotion = false,
-  onVanish
+  onVanish,
+  theme = 'dark'
 }: AnimatedTileProps) {
   const fromPos = pixel(from, cell);
   const toPos = pixel(to, cell);
@@ -219,7 +225,7 @@ function AnimatedTile({
           width={cell}
           height={cell}
           r={CELL_RADIUS}
-          color={cellColor(value)}
+          color={cellColor(value, theme)}
           opacity={opacity}
         />
         {/* Facet grain beyond color — varying by tier band (FR-31, UX-DR-19) */}
@@ -261,7 +267,7 @@ function AnimatedTile({
             y={centerY(font, cell)}
             text={String(value)}
             font={font}
-            color={tileTextColor(value)}
+            color={tileTextColor(value, theme)}
             opacity={opacity}
           />
         ) : null}
@@ -336,9 +342,10 @@ export interface GameBoardProps {
   hintHighlight?: [[number, number], [number, number]] | null;
   direction?: Direction;
   onShakeActiveChange?: (active: boolean) => void;
+  theme?: ThemeId;
 }
 
-export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction, onShakeActiveChange }: GameBoardProps) {
+export function GameBoard({ board, moveResult, width, reducedMotion = false, sessionBestMerge, onMoveSettled, hintHighlight, direction, onShakeActiveChange, theme = 'dark' }: GameBoardProps) {
   const finiteWidth = Number.isFinite(width) ? (width as number) : 1;
   const safeWidth = Math.max(1, finiteWidth);
   const cell = Math.max((safeWidth - BOARD_PADDING * 2 - CELL_GAP * (GRID - 1)) / GRID, 1);
@@ -649,7 +656,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
     <View style={{ width: safeWidth, height: safeWidth }}>
       <Animated.View style={shakeStyle}>
         <Canvas style={{ width: safeWidth, height: safeWidth }}>
-          <RoundedRect x={0} y={0} width={safeWidth} height={safeWidth} r={14} color="#bdb6ab" />
+          <RoundedRect x={0} y={0} width={safeWidth} height={safeWidth} r={14} color={THEMES[theme]?.chrome.board ?? '#1A1D23'} />
           {ordered.map((t) => (
             <AnimatedTile
               key={t.id}
@@ -663,6 +670,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
               isMerge={t.isMerge}
               reducedMotion={reducedMotion}
               onVanish={onVanish}
+              theme={theme}
             />
           ))}
         </Canvas>
@@ -701,7 +709,7 @@ export function GameBoard({ board, moveResult, width, reducedMotion = false, ses
                   width: cell,
                   height: cell,
                   borderWidth: 3,
-                  borderColor: '#E8A33D',
+                  borderColor: THEMES[theme]?.chrome.accent ?? '#E8A33D',
                   borderRadius: CELL_RADIUS,
                 }}
                 pointerEvents="none"

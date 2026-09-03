@@ -7,6 +7,8 @@ import { SAFE_MARGIN } from './layout';
 import type { EdgeInsets } from './layout';
 import { LANES } from '../game/lanes';
 
+import type { ThemeId } from '../theme/index.ts';
+
 export interface LaneSelectScreenProps {
   selectedIndex: number;
   hasActiveMatch: boolean;
@@ -17,6 +19,8 @@ export interface LaneSelectScreenProps {
   restoreBusy?: boolean;
   language?: 'pt' | 'en';
   onLanguageChange?: (lng: 'pt' | 'en') => void;
+  theme?: ThemeId;
+  onThemeChange?: (id: ThemeId) => void;
 }
 
 export function LaneSelectScreen({
@@ -29,6 +33,8 @@ export function LaneSelectScreen({
   restoreBusy,
   language,
   onLanguageChange,
+  theme = 'dark',
+  onThemeChange,
 }: LaneSelectScreenProps) {
   const { t } = useTranslation();
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
@@ -162,6 +168,30 @@ export function LaneSelectScreen({
             >
               <Text style={[styles.langLabel, language === 'en' ? styles.langLabelSelected : null]} allowFontScaling>EN</Text>
             </Pressable>
+          </View>
+        ) : null}
+        {onThemeChange ? (
+          <View style={styles.themeRow} accessibilityLabel="theme selector">
+            {([
+              ['dark', 'Escuro', 'Dark'],
+              ['light', 'Claro', 'Light'],
+              ['colorBlind', 'Daltônico', 'Color-blind'],
+            ] as const).map(([id, ptLabel, enLabel]) => {
+              const isSelected = theme === id;
+              const label = language === 'pt' ? ptLabel : enLabel;
+              return (
+                <Pressable
+                  key={id}
+                  onPress={() => onThemeChange(id as ThemeId)}
+                  style={[styles.themeBtn, isSelected ? styles.themeBtnSelected : styles.themeBtnIdle]}
+                  accessibilityRole="button"
+                  accessibilityLabel={label}
+                  accessibilityState={{ selected: isSelected }}
+                >
+                  <Text style={[styles.themeLabel, isSelected ? styles.themeLabelSelected : null]} allowFontScaling>{label}</Text>
+                </Pressable>
+              );
+            })}
           </View>
         ) : null}
       </View>
@@ -365,6 +395,38 @@ const styles = StyleSheet.create({
     color: '#1a1d23',
   },
   langLabelSelected: {
+    color: '#1C1206',
+  },
+  themeRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    gap: 8,
+    alignSelf: 'center',
+    flexWrap: 'wrap',
+  },
+  themeBtn: {
+    minHeight: HIT_TARGET,
+    minWidth: HIT_TARGET,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  themeBtnIdle: {
+    borderColor: '#e7e4de',
+    backgroundColor: '#fff',
+  },
+  themeBtnSelected: {
+    borderColor: '#E8A33D',
+    backgroundColor: '#E8A33D',
+  },
+  themeLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1a1d23',
+  },
+  themeLabelSelected: {
     color: '#1C1206',
   },
 });

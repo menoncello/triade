@@ -1,3 +1,5 @@
+import { THEMES, isThemeId as _isThemeId } from '../theme/index.ts';
+
 interface NumeralToken {
   fontSize: number;
   fontWeight: number;
@@ -85,7 +87,27 @@ export const TILE_INK: Readonly<Record<number, string>> = Object.freeze({
 } as const);
 
 // Resolve any tile value to its canonical fill hex (capped at 3072+)
-export function tileFillFor(value: number): string {
+// Theme-aware: optional themeId delegates to THEMES pure data (default dark for backward compat)
+export function tileFillFor(value: number, themeId?: string): string {
+  if (themeId && _isThemeId(themeId)) {
+    const map = THEMES[themeId].tileHexes;
+    if (!Number.isFinite(value)) return map[3072];
+    if (value in map) return map[value as keyof typeof map];
+    if (value >= 3072) return map[3072];
+    if (value > 1536) return map[1536];
+    if (value > 768) return map[768];
+    if (value > 384) return map[384];
+    if (value > 192) return map[192];
+    if (value > 96) return map[96];
+    if (value > 48) return map[48];
+    if (value > 24) return map[24];
+    if (value > 12) return map[12];
+    if (value > 6) return map[6];
+    if (value > 3) return map[3];
+    if (value === 2) return map[2];
+    if (value === 1) return map[1];
+    return map[3];
+  }
   if (!Number.isFinite(value)) return TILE_HEXES[3072];
   if (value in TILE_HEXES) return TILE_HEXES[value as keyof typeof TILE_HEXES];
   if (value >= 3072) return TILE_HEXES[3072];
@@ -105,7 +127,26 @@ export function tileFillFor(value: number): string {
   return TILE_HEXES[3];
 }
 
-export function tileInkFor(value: number): string {
+export function tileInkFor(value: number, themeId?: string): string {
+  if (themeId && _isThemeId(themeId)) {
+    const map = THEMES[themeId].tileInk;
+    if (!Number.isFinite(value)) return map[3072] ?? TILE_INK_DARK;
+    if (value in map) return map[value as keyof typeof map];
+    if (value >= 3072) return map[3072];
+    if (value > 1536) return map[1536];
+    if (value > 768) return map[768];
+    if (value > 384) return map[384];
+    if (value > 192) return map[192];
+    if (value > 96) return map[96];
+    if (value > 48) return map[48];
+    if (value > 24) return map[24];
+    if (value > 12) return map[12];
+    if (value > 6) return map[6];
+    if (value > 3) return map[3];
+    if (value === 2) return map[2];
+    if (value === 1) return map[1];
+    return map[3] ?? TILE_INK_DARK;
+  }
   if (!Number.isFinite(value)) return TILE_INK_DARK;
   if (value in TILE_INK) return TILE_INK[value as keyof typeof TILE_INK];
   if (value >= 3072) return TILE_INK[3072];

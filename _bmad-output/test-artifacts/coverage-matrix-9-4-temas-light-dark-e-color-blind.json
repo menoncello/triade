@@ -1,0 +1,967 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-03T04:28:41Z",
+  "trace_target": {
+    "type": "story",
+    "id": "9-4-temas-light-dark-e-color-blind",
+    "label": "9-4 Temas light, dark e color-blind (3 free themes pure data, WCAG AA all themes)"
+  },
+  "collection_mode": "contract_static",
+  "collection_status": "COLLECTED",
+  "allow_gate": true,
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/implementation-artifacts/spec-9-4-temas-light-dark-e-color-blind.md",
+      "_bmad-output/test-artifacts/test-design-9-4-temas-light-dark-e-color-blind.md",
+      "_bmad-output/test-artifacts/test-design/test-design-9-4-temas-light-dark-e-color-blind.md",
+      "_bmad-output/test-artifacts/atdd-tests/9-4-temas-light-dark-e-color-blind.red.spec.ts",
+      "triade/src/theme/index.ts",
+      "triade/src/ui/tileNumerals.ts",
+      "triade/src/render/GameBoard.tsx",
+      "triade/src/services/storage/schema.ts",
+      "triade/App.tsx",
+      "triade/src/ui/LaneSelectScreen.tsx",
+      "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+      "triade/__tests__/ui/tileTheme.test.ts"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC1",
+      "desc": "Theme tokens frozen pure data \u2014 THEMES dark/light/colorBlind each with chrome surface/surfaceRaised/board/cell/text/muted/border/accent/accentInk/scrim + 13 tiers tileHexes/tileInk frozen, CHROME_DARK #23262D vs CHROME_LIGHT #F6F0E1 warm off-white, Object.freeze, no RN/Skia",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-4-P0-01",
+          "title": "[P0] THEMES frozen pure data each chrome + 13 tiers",
+          "file": "triade/__tests__/ui/tileTheme.test.ts",
+          "line": 8,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-GW-01",
+          "title": "[P0-API-01] theme tokens frozen pure data",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 22,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-GW-02",
+          "title": "[P0-API-02] light surfaces flipped warm off-white",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 38,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-01",
+          "title": "[P0-U-01] THEMES frozen chrome + 13 tiers",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 18,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-ACTIVE",
+          "title": "[P0-U-ACTIVE] smoke THEMES frozen + chrome exact",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 120,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-API-ACTIVE",
+          "title": "[P0-API-ACTIVE] smoke THEMES frozen + chrome",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 170,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "THEMES Object.freeze 3 ids dark/light/colorBlind, CHROME_DARK #23262D/#E8A33D vs CHROME_LIGHT #F6F0E1/#8A4E00, TILE_HEXES_DARK 13 frozen, pure no RN/Skia"
+      }
+    },
+    {
+      "id": "AC2",
+      "desc": "Color-blind distinct id reuses dark ramp (shape/grain carries FR-31), isThemeId colorBlind true, THEMES.colorBlind.chrome === dark chrome, tileHexes[3]===dark[3] distinct object not alias",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-4-P0-GW-03",
+          "title": "[P0-API-03] colorBlind distinct id reuses dark ramp",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 52,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-03",
+          "title": "[P0-U-03] colorBlind distinct id reuses dark",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 36,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-UMB-01",
+          "title": "[P0-UMB-01] umbrella color-blind journey",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+          "line": 18,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-ACTIVE",
+          "title": "[P0-API-ACTIVE] colorBlind equality pins",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 170,
+          "level": "api",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "isThemeId colorBlind true, THEMES.colorBlind.chrome.surface===dark.surface, tileHexes[384]===dark[384], distinct object"
+      }
+    },
+    {
+      "id": "AC3",
+      "desc": "Tile render per theme + cap at ceiling 3072+ \u2014 tileFillFor/tileInkFor(value,theme) per theme 13-tier, resolveTile interval cascade >1536/768/384 etc, 6144/12288/5000\u21923072, NaN/Infinity\u21923072 without throw, tileNumerals wrappers delegate to THEMES, GameBoard theme prop reads THEMES[theme].chrome.board/accent/cell",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-4-P0-04",
+          "title": "[P0] cap 6144/12288\u21923072 per theme",
+          "file": "triade/__tests__/ui/tileTheme.test.ts",
+          "line": 20,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-GW-04",
+          "title": "[P0-API-04] cap per theme tileFillFor/tileInkFor resolveTile",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 62,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-GW-01",
+          "title": "[P1-API-01] tileNumerals wrappers delegate",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 95,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-GW-02",
+          "title": "[P1-API-02] GameBoard theme prop delegation",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 104,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-04",
+          "title": "[P0-U-04] cap per theme",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 44,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P2-U-03",
+          "title": "[P2] interval non-canonical sweep",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 85,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "THEMES[t].tileHexes 13 + resolveTile capped >=3072 via Number.isFinite, tileNumerals optional themeId isThemeId else dark, GameBoard theme?:ThemeId default dark THEMES[theme].chrome.board/accent/cell"
+      }
+    },
+    {
+      "id": "AC4",
+      "desc": "WCAG AA for all 3 themes \u2014 every tier contrast(tileFill,ink)\u22654.5 weakest 384 4.65 holds 13pt/9pt, chrome text/muted/accent on surface/board/raised \u22654.5 and accentInk on accent \u22654.5 (dark 8.55 light 6.62) light muted on board 4.75 weakest",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-4-P0-05",
+          "title": "[P0] tile ink all themes every tier \u22654.5 weakest 384 4.65",
+          "file": "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+          "line": 9,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-06",
+          "title": "[P0] chrome all themes \u22654.5 dark 8.55 light 6.62",
+          "file": "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+          "line": 35,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-GW-05",
+          "title": "[P0-API-05] WCAG tile ink all 3 themes weakest 384",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 72,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-GW-06",
+          "title": "[P0-API-06] WCAG chrome all 3 themes",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 82,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-05",
+          "title": "[P0-U-05] WCAG tile ink all themes",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 54,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-U-ACTIVE",
+          "title": "[P0-U-ACTIVE] smoke WCAG weakest + chrome",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 120,
+          "level": "unit",
+          "status": "active"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "contrastRatio 0.2126/0.7152/0.0722 audit exhaustive 13 tiers x3 + 8 chrome checks x3, weakest 384 4.65\u00d73, light muted on board 4.75, dark accentInk 8.55 light 6.62"
+      }
+    },
+    {
+      "id": "AC5",
+      "desc": "Instant switch via Settings + persistence + fallback to dark \u2014 Settings theme selector 3 Pressables Claro/Escuro/Dalt\u00f4nico HIT_TARGET 44 selected accent #E8A33D, App themeId=isThemeId(settings.theme)?settings.theme:'dark' tokens=THEMES[themeId] GameBoard theme={themeId} containers tokens.chrome.surface handleThemeChange persisting via saveSettings, invalid/missing/corrupt\u2192dark, THEME_IDS duplication drift guard, no useColorScheme, StatusBar DW-7 preserved",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "9-4-P0-07",
+          "title": "[P0] persistence fallback midnight/42/null/empty\u2192dark",
+          "file": "triade/__tests__/ui/tileTheme.test.ts",
+          "line": 30,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "9-4-P0-GW-07",
+          "title": "[P0-API-07] persistence fallback loadSettings",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 92,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-GW-08",
+          "title": "[P0-API-08] isThemeId + no useColorScheme + engine purity",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 102,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-U-04",
+          "title": "[P1-U-04] LaneSelectScreen 3 Pressables HIT_TARGET 44",
+          "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+          "line": 95,
+          "level": "unit",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-GW-03",
+          "title": "[P1-API-03] App wiring tokens surface",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 114,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-GW-05",
+          "title": "[P1-API-05] handleThemeChange idempotence",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 134,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P1-GW-06",
+          "title": "[P1-API-06] THEME_IDS drift + DW-7",
+          "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+          "line": 143,
+          "level": "api",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        },
+        {
+          "id": "9-4-P0-UMB-02",
+          "title": "[P0-UMB-02] umbrella persistence + chrome + StatusBar",
+          "file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+          "line": 42,
+          "level": "e2e",
+          "status": "skipped",
+          "skip_reason": "RED-phase dormant"
+        }
+      ],
+      "heuristics": {
+        "selected": true,
+        "evidence": "App themeId guard + handleThemeChange isThemeId+same-value no-op void saveSettings, LaneSelectScreen 3 Pressables Escuro/Claro/Dalt\u00f4nico 44 selected #E8A33D, loadSettings THEME_IDS.includes fallback dark, THEME_IDS join equality 2 sites, StatusBar statusBarStyle(isLandscape) 4 mounts, no useColorScheme"
+      }
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 5,
+        "covered": 5,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 5,
+      "cases": 29,
+      "skipped_cases": 21,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 2,
+          "criteria_covered": 2
+        },
+        "api": {
+          "tests": 15,
+          "criteria_covered": 5
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 12,
+          "criteria_covered": 5
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "tests": [
+      {
+        "id": "9-4-P0-01",
+        "file": "triade/__tests__/ui/tileTheme.test.ts",
+        "line": 8,
+        "title": "[P0] THEMES frozen pure data each chrome + 13 tiers",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-GW-01",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 22,
+        "title": "[P0-API-01] theme tokens frozen pure data",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-GW-02",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 38,
+        "title": "[P0-API-02] light surfaces flipped warm off-white",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-U-01",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 18,
+        "title": "[P0-U-01] THEMES frozen chrome + 13 tiers",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-U-ACTIVE",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 120,
+        "title": "[P0-U-ACTIVE] smoke THEMES frozen + chrome exact",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-API-ACTIVE",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 170,
+        "title": "[P0-API-ACTIVE] smoke THEMES frozen + chrome",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-GW-03",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 52,
+        "title": "[P0-API-03] colorBlind distinct id reuses dark ramp",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 36,
+        "title": "[P0-U-03] colorBlind distinct id reuses dark",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-UMB-01",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+        "line": 18,
+        "title": "[P0-UMB-01] umbrella color-blind journey",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-ACTIVE",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 170,
+        "title": "[P0-API-ACTIVE] colorBlind equality pins",
+        "level": "api",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-04",
+        "file": "triade/__tests__/ui/tileTheme.test.ts",
+        "line": 20,
+        "title": "[P0] cap 6144/12288\u21923072 per theme",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-GW-04",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 62,
+        "title": "[P0-API-04] cap per theme tileFillFor/tileInkFor resolveTile",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-GW-01",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 95,
+        "title": "[P1-API-01] tileNumerals wrappers delegate",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-GW-02",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 104,
+        "title": "[P1-API-02] GameBoard theme prop delegation",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 44,
+        "title": "[P0-U-04] cap per theme",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P2-U-03",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 85,
+        "title": "[P2] interval non-canonical sweep",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-05",
+        "file": "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+        "line": 9,
+        "title": "[P0] tile ink all themes every tier \u22654.5 weakest 384 4.65",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-06",
+        "file": "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+        "line": 35,
+        "title": "[P0] chrome all themes \u22654.5 dark 8.55 light 6.62",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-GW-05",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 72,
+        "title": "[P0-API-05] WCAG tile ink all 3 themes weakest 384",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-GW-06",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 82,
+        "title": "[P0-API-06] WCAG chrome all 3 themes",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-U-05",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 54,
+        "title": "[P0-U-05] WCAG tile ink all themes",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-07",
+        "file": "triade/__tests__/ui/tileTheme.test.ts",
+        "line": 30,
+        "title": "[P0] persistence fallback midnight/42/null/empty\u2192dark",
+        "level": "unit",
+        "status": "active",
+        "skipped": false,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": ""
+      },
+      {
+        "id": "9-4-P0-GW-07",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 92,
+        "title": "[P0-API-07] persistence fallback loadSettings",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-GW-08",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 102,
+        "title": "[P0-API-08] isThemeId + no useColorScheme + engine purity",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-U-04",
+        "file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "line": 95,
+        "title": "[P1-U-04] LaneSelectScreen 3 Pressables HIT_TARGET 44",
+        "level": "unit",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-GW-03",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 114,
+        "title": "[P1-API-03] App wiring tokens surface",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-GW-05",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 134,
+        "title": "[P1-API-05] handleThemeChange idempotence",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P1-GW-06",
+        "file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "line": 143,
+        "title": "[P1-API-06] THEME_IDS drift + DW-7",
+        "level": "api",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      },
+      {
+        "id": "9-4-P0-UMB-02",
+        "file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+        "line": 42,
+        "title": "[P0-UMB-02] umbrella persistence + chrome + StatusBar",
+        "level": "e2e",
+        "status": "skipped",
+        "skipped": true,
+        "fixme": false,
+        "pending": false,
+        "blocker_reason": "RED-phase dormant"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "9-4-P0-GW-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-01] theme tokens frozen pure data"
+      },
+      {
+        "id": "9-4-P0-GW-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-02] light surfaces flipped warm off-white"
+      },
+      {
+        "id": "9-4-P0-U-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P0-U-01] THEMES frozen chrome + 13 tiers"
+      },
+      {
+        "id": "9-4-P0-GW-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-03] colorBlind distinct id reuses dark ramp"
+      },
+      {
+        "id": "9-4-P0-U-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P0-U-03] colorBlind distinct id reuses dark"
+      },
+      {
+        "id": "9-4-P0-UMB-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+        "test_title": "[P0-UMB-01] umbrella color-blind journey"
+      },
+      {
+        "id": "9-4-P0-GW-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-04] cap per theme tileFillFor/tileInkFor resolveTile"
+      },
+      {
+        "id": "9-4-P1-GW-01",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P1-API-01] tileNumerals wrappers delegate"
+      },
+      {
+        "id": "9-4-P1-GW-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P1-API-02] GameBoard theme prop delegation"
+      },
+      {
+        "id": "9-4-P0-U-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P0-U-04] cap per theme"
+      },
+      {
+        "id": "9-4-P2-U-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P2] interval non-canonical sweep"
+      },
+      {
+        "id": "9-4-P0-GW-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-05] WCAG tile ink all 3 themes weakest 384"
+      },
+      {
+        "id": "9-4-P0-GW-06",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-06] WCAG chrome all 3 themes"
+      },
+      {
+        "id": "9-4-P0-U-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P0-U-05] WCAG tile ink all themes"
+      },
+      {
+        "id": "9-4-P0-GW-07",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-07] persistence fallback loadSettings"
+      },
+      {
+        "id": "9-4-P0-GW-08",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P0-API-08] isThemeId + no useColorScheme + engine purity"
+      },
+      {
+        "id": "9-4-P1-U-04",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts",
+        "test_title": "[P1-U-04] LaneSelectScreen 3 Pressables HIT_TARGET 44"
+      },
+      {
+        "id": "9-4-P1-GW-03",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P1-API-03] App wiring tokens surface"
+      },
+      {
+        "id": "9-4-P1-GW-05",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P1-API-05] handleThemeChange idempotence"
+      },
+      {
+        "id": "9-4-P1-GW-06",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts",
+        "test_title": "[P1-API-06] THEME_IDS drift + DW-7"
+      },
+      {
+        "id": "9-4-P0-UMB-02",
+        "severity": "high",
+        "reason": "RED-phase dormant",
+        "test_file": "_bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts",
+        "test_title": "[P0-UMB-02] umbrella persistence + chrome + StatusBar"
+      }
+    ]
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Run /bmad:tea:test-review to assess test quality",
+      "requirements": []
+    }
+  ],
+  "coverage_summary": {
+    "P0_groups": 9,
+    "P0_covered": 9,
+    "P1_groups": 8,
+    "P1_covered": 8,
+    "P2_groups": 6,
+    "P2_covered": 6,
+    "P3_groups": 2,
+    "P3_covered": 0,
+    "total_gaps": 0,
+    "gate": "PASS"
+  },
+  "execution_evidence": {
+    "gateway": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/api/9-4-temas-light-dark-e-color-blind.gateway.spec.ts => 16 skipped + 1 pass (17 pass when de-skipped ~210ms)",
+    "umbrella": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/e2e/9-4-temas-light-dark-e-color-blind.umbrella.spec.ts => 10 skipped + 1 pass (11 pass when de-skipped ~150ms)",
+    "unit": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/unit/9-4-temas-light-dark-e-color-blind.atdd.test.ts => 19 skipped + 1 pass (20 pass when de-skipped ~160ms)",
+    "atdd_red": "_bmad-output/test-artifacts/atdd-tests/9-4-temas-light-dark-e-color-blind.red.spec.ts => 14 skipped (14 pass when de-skipped)",
+    "triade_oracle": "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts 3 pass (39+24 checks weakest 384 4.65 + muted on board 4.75) + triade/__tests__/ui/tileTheme.test.ts 4 pass + triade/__tests__/ui/tileShape.test.ts 6 pass + triade/__tests__/ui/tileContrast.audit.test.ts 3 pass (fleet 16) + full fleet 980 pass / 0 fail / 366 skipped",
+    "full_suite": "npm --prefix triade test triade/__tests__/ui/tileContrast.allThemes.audit.test.ts triade/__tests__/ui/tileTheme.test.ts -- --no-coverage => 7/7 pass; npm --prefix triade test => 980 pass 0 fail 366 skipped (per spec Auto Run Result 2026-09-03)",
+    "tsc": "npx tsc --project triade/tsconfig.json --noEmit => 0 errors"
+  }
+}

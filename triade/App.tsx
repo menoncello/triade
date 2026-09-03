@@ -28,6 +28,8 @@ import type { Settings } from './src/services/storage/schema.ts';
 import { DEFAULT_SETTINGS } from './src/services/storage/schema.ts';
 import { preloadAssets } from './src/services/assets/assetManifest.ts';
 import { mulberry32 } from './src/utils/mulberry32.ts';
+import { THEMES, isThemeId } from './src/theme/index.ts';
+import type { ThemeId } from './src/theme/index.ts';
 import { useSyncedLayout } from './src/ui/useSyncedLayout.ts';
 import { statusBarStyle } from './src/ui/statusBar.ts';
 import { SWIPE_THRESHOLD } from './src/ui/swipe.ts';
@@ -381,6 +383,17 @@ function AppContent() {
       setSettings(nextSettings);
       void saveSettings(nextSettings);
       void i18n.changeLanguage(lng);
+    },
+    [settings],
+  );
+
+  const handleThemeChange = useCallback(
+    (id: ThemeId) => {
+      if (!isThemeId(id)) return;
+      if (id === settings.theme) return;
+      const nextSettings: Settings = { ...settings, theme: id as ThemeId };
+      setSettings(nextSettings);
+      void saveSettings(nextSettings);
     },
     [settings],
   );
@@ -997,10 +1010,13 @@ function AppContent() {
     [],
   );
 
+  const themeId: ThemeId = (isThemeId(settings.theme) ? settings.theme : 'dark') as ThemeId;
+  const tokens = THEMES[themeId];
+
   if (!ready) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.stats}>preloading bundled assets…</Text>
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
+        <Text style={[styles.stats, { color: tokens.chrome.text }]}>preloading bundled assets…</Text>
         <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
     );
@@ -1008,7 +1024,7 @@ function AppContent() {
 
   if (screen === 'tone') {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
         <ToneScreen insets={insets} onDismiss={handleToneDismiss} />
         <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
@@ -1018,7 +1034,7 @@ function AppContent() {
   // Lane Select is the functional home surface (UX-DR-9)
   if (screen === 'laneSelect') {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
         <LaneSelectScreen
           selectedIndex={selectedLaneIndex}
           hasActiveMatch={hasActiveMatch}
@@ -1029,6 +1045,8 @@ function AppContent() {
           restoreBusy={restoreBusy}
           language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
           onLanguageChange={handleLanguageChange}
+          theme={themeId}
+          onThemeChange={handleThemeChange}
         />
         <StatusBar style={statusBarStyle(isLandscape)} />
       </View>
@@ -1076,7 +1094,7 @@ function AppContent() {
   const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
       <Hud
         score={sanitizedScore}
         best={sanitizedBest}
@@ -1094,7 +1112,7 @@ function AppContent() {
         onHint={handleHint}
         hintHighlight={hintHighlight}
       />
-      <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom }]}>
+      <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom, backgroundColor: tokens.chrome.surface }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }, isBoardShaking ? { overflow: 'visible' } : null]}>
           <GestureDetector gesture={panGesture}>
             <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
@@ -1108,6 +1126,7 @@ function AppContent() {
                 hintHighlight={hintHighlight}
                 direction={lastDirectionRef.current ?? undefined}
                 onShakeActiveChange={setIsBoardShaking}
+                theme={themeId}
               />
               <BoardA11yOverlay board={game.board} width={boardSize} />
             </View>
