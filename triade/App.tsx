@@ -1014,8 +1014,7 @@ function AppContent() {
   const tokens = THEMES[themeId];
 
   // Hooks must be unconditional — keep all hooks before any early return (Rules of Hooks).
-  // FR-43 pot hygiene + DW-94 deflate: availablePot derived every render from live board.
-  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
+  // gameOver/profile/banners/gates + DW-86 effect must be before early returns to keep hook count stable (96 hooks always).
   const gameOver = isGameOver(game.board);
   const activeLaneId = laneFromIndex(selectedLaneIndex).id;
   const profile = profileForLaneId(activeLaneId);
@@ -1085,6 +1084,9 @@ function AppContent() {
       </View>
     );
   }
+
+  // FR-43 "only 3 available" — availablePot once per render after if(!ready), shared by both lane previews
+  const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   return (
     <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
