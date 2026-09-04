@@ -912,7 +912,8 @@ resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9
 origin: migrated from legacy ledger ("Deferred from: code review of story 3-1-selecao-de-pista-no-menu-lane-select (2026-08-28 — dev-auto review)"), 2026-09-01
 location: n/a
 reason: Per-lane best tracking still global — `match.best`/`persistedBest` not yet scoped per lane (belongs to 3.4 leaderboards)
-status: open
+status: done 2026-09-03
+resolution: already resolved: triade/App.tsx:123-128 sessionStartBestByLaneRef/persistedBestByLaneRef + triade/src/services/storage/settingsStore.ts:87-121 bestKeyForLane per-lane storage — Epic 3.4 (3-4-leaderboards-por-pista: done) implemented; per-lane best is now lane-scoped, verified in current tree
 
 ### DW-105: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
 
