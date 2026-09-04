@@ -124,10 +124,10 @@ development_status:
   10-5-privacy-policy-publica: backlog
   epic-10-retrospective: optional
 
-  epic-11: backlog
-  11-1-icone-screenshots-mineral-quente: backlog
-  11-2-metadata-completa: backlog
-  11-3-confirmacao-de-nome-double-check: backlog
+  epic-11: done
+  11-1-icone-screenshots-mineral-quente: done
+  11-2-metadata-completa: done
+  11-3-confirmacao-de-nome-double-check: done
   epic-11-retrospective: optional
 
   # ORPHAN — Preserved from previous status. Not found in epics.md (no Epic 12 definition). Tracked to avoid data loss; add Epic 12 to epics.md or remove this block to clear validation warning.
