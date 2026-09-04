@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "evaluated_at": "2026-09-04T02:11:13.294466Z",
+  "repo": "3-clone",
+  "target": {
+    "type": "hotfix",
+    "id": "dw-undo-iap-stub-cleanup",
+    "label": "dw-undo-iap-stub-cleanup (DW-105)"
+  },
+  "collection_status": "COLLECTED",
+  "gate_basis": "priority_thresholds",
+  "gate_status": "PASS",
+  "rationale": "P0 100% (3/3), P1 100% (1/1), overall 100% (5/5); 63/63 active tests pass (42 repo + 21 automate); source gates clean; sprint-status.yaml untouched.",
+  "p0_status": "MET",
+  "p1_status": "MET",
+  "overall_status": "MET",
+  "critical_open": 0,
+  "links": {
+    "trace_report_path": "_bmad-output/test-artifacts/traceability/traceability-matrix-dw-undo-iap-stub-cleanup.md",
+    "trace_report_url": "",
+    "artifact_url": "",
+    "journey_evidence_url": ""
+  }
+}

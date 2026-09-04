@@ -920,7 +920,9 @@ resolution: already resolved: triade/App.tsx:123-128 sessionStartBestByLaneRef/p
 origin: migrated from legacy ledger ("Deferred from: code review of story 3-3-accelerated-lane-com-assistencia (2026-08-28 — dev-auto review)"), 2026-09-01
 location: n/a
 reason: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-undo-iap-stub-cleanup
+resolution-undo: 596e493bc62a5b5f2f7f357b5d0fd8a87ba834bc7e3cadd2b1f9f292b1491c30 2026-09-03 7374617475733a206f70656e
 
 ### DW-106: Rapid second swipe before first shake 130ms completes overwrites withSequence without cancelAnimation — truncated overlap/jank
 
