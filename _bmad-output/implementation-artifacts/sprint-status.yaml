@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-08-28 14:30
-last_updated: 2026-09-01 16:20 (revenuecat+appstore MCP — 4-3,4-4,4-6 operator done via automation; Epic 4 closed; 37/55 stories done)
+last_updated: 2026-09-03
 
 project: 3-clone
 project_key: NOKEY
@@ -117,11 +117,11 @@ development_status:
   epic-9-retrospective: optional
 
   epic-10: backlog
-  10-1-crashlytics-com-crash-free-sessions: backlog
-  10-2-funil-de-retencao: backlog
-  10-3-funil-de-receita: backlog
-  10-4-gdpr-consent-mode-att-prompt: backlog
-  10-5-privacy-policy-publica: backlog
+  10-1-crashlytics-com-crash-free-sessions: done
+  10-2-funil-de-retencao: done
+  10-3-funil-de-receita: done
+  10-4-gdpr-consent-mode-att-prompt: awaiting-operator
+  10-5-privacy-policy-publica: done
   epic-10-retrospective: optional
 
   epic-11: done
