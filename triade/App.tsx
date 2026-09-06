@@ -111,7 +111,10 @@ type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; se
 function AppContent() {
   const { t } = useTranslation();
   const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
-  const stats = useFrameRateBaseline();
+  // DW-32 AC-5: restartable 120-frame probe — bumped when the playing screen
+  // mounts so the window covers board frames, not launch-screen frames.
+  const [baselineGeneration, setBaselineGeneration] = useState(0);
+  const stats = useFrameRateBaseline(baselineGeneration);
   const rngRef = useRef(mulberry32(20260808));
   const rngSeedRef = useRef(20260808);
   const busyRef = useRef(false);
@@ -1000,6 +1003,49 @@ function AppContent() {
       }
     };
   }, []);
+
+  // DW-32 AC-5: restart the frame-rate baseline when the playing screen mounts
+  // so the 120-frame window covers board frames (not launch-screen frames).
+  const playingBaselineArmedRef = useRef(false);
+  useEffect(() => {
+    if (screen === 'playing' && ready) {
+      if (!playingBaselineArmedRef.current) {
+        playingBaselineArmedRef.current = true;
+        setBaselineGeneration((g) => g + 1);
+      }
+    } else if (screen !== 'playing') {
+      playingBaselineArmedRef.current = false;
+    }
+  }, [screen, ready]);
+
+  // DW-32 AC-5: strictly __DEV__-gated seeded auto-drive for simulator runs —
+  // boots straight to the board and cycles deterministic moves through the
+  // existing doMove path so no manual taps are needed. Release is untouched:
+  // __DEV__ is false in release bundles and the flag defaults off in dev.
+  // Enable locally with: EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1 npx expo start
+  // (Expo SDK 57 inlines EXPO_PUBLIC_* at bundle time).
+  const devAutoDrive =
+    typeof __DEV__ !== 'undefined' && __DEV__ && process.env.EXPO_PUBLIC_TRIADE_AUTO_DRIVE === '1';
+  useEffect(() => {
+    if (!devAutoDrive || !ready || screen === 'playing') return;
+    setScreen('playing');
+  }, [devAutoDrive, ready, screen]);
+  useEffect(() => {
+    if (!devAutoDrive || !ready || screen !== 'playing') return;
+    const dirs: Direction[] = ['left', 'up', 'right', 'down'];
+    let i = 0;
+    const id = setInterval(() => {
+      try {
+        if (pausedRef.current) return;
+        if (gameOverGuardRef.current) {
+          void handleRestart();
+          return;
+        }
+        doMoveRef.current(dirs[i++ % dirs.length]);
+      } catch {}
+    }, 500);
+    return () => clearInterval(id);
+  }, [devAutoDrive, ready, screen, handleRestart]);
 
   const panGesture = useMemo(
     () =>
