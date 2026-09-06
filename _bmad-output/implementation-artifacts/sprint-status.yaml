@@ -121,7 +121,7 @@ development_status:
   10-3-funil-de-receita: done
   10-4-gdpr-consent-mode-att-prompt: done
   10-5-privacy-policy-publica: done
-  10-6-gate-de-calibracao-da-curva-dono-eduardo: backlog
+  10-6-gate-de-calibracao-da-curva-dono-eduardo: awaiting-operator
   epic-10-retrospective: optional
 
   epic-11: done
