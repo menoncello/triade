@@ -714,7 +714,8 @@ resolution: already resolved: triade/test-utils/rn-stub.ts:80-114 exports useWin
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-1-overlay-de-game-over-com-stats-imediatos (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: pending-spawn-contract.test.ts
 reason: Testes 7.4 acoplados no mesmo branch: 4 pins de isolamento/snapshot/noop/direction-agnostic em `pending-spawn-contract.test.ts` + inclusão de `GameOverOverlay.tsx` no guard `ui.thinview.test.ts` — engine byte-identical, preview byte-identical; correto mas escopo cruzado com Epic 7, já deferido em `## Deferred from: code review of story 7-4...`.
-status: open
+status: done 2026-09-06
+resolution: already resolved: triade/__tests__/ui/ui.thinview.test.ts:18 GameOverOverlay already in VIEW_FILES since 6.1; triade/__tests__/engine/pending-spawn-contract.test.ts has 7 tests with 0 direction-agnostic hits — described 4-pin coupling gone
 
 ### DW-84: Ledger pré-existente ainda aberto (ULP 0.6 no boundary 0.6, fallback além do ladder 192>96, mutable pot slices `slice()` sem freeze, board shallow ref `gameState` por referência) — `triade/src/game/preview.ts:53,62,80` + `triade/src/engine/core/game.ts:88` permanecem latentes, não causados por 6.1 (`git diff --stat -- triade/src/game/preview.ts` vazio, `triade/src/engine` vazio). Já deferido em 7-4, não reabrir aqui.
 
