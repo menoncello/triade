@@ -268,6 +268,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-bo
 location: App.tsx
 reason: AC-5 (60 FPS / 10-min session) has no completed rendering-side evidence — only the planner micro-benchmark exists; the simulator/device frame-rate reading stays open as "Manual validation remaining" (project rule: Skia animation is manual validation; informative only). Trigger to close: run the temporary move harness in App.tsx on the iOS simulator/device and record fps·p99.
 status: open
+decision: 2026-09-06 Re-target and measure — Re-target the AC-5 reading to useFrameRateBaseline plus the seeded session harness, run it on simulator or device, and record fps and p99 for the 10-minute session.
 
 ### DW-33: `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
 

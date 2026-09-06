@@ -16,5 +16,14 @@
     "key": "1",
     "label": "Measure baseline now",
     "resolution": ""
+  },
+  "DW-32": {
+    "answered_at": "2026-09-06",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Re-target the AC-5 reading to useFrameRateBaseline plus the seeded session harness, run it on simulator or device, and record fps and p99 for the 10-minute session.",
+    "key": "1",
+    "label": "Re-target and measure",
+    "resolution": ""
   }
 }
