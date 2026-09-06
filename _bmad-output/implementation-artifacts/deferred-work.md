@@ -126,6 +126,7 @@ origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (202
 location: n/a
 reason: dev-build boot on a physical iOS device (Expo prebuild + Xcode; requires connected iPhone + CocoaPods). Simulator boot validated instead (2026-08-10): dev build boots and the Skia board renders on the iOS runtime.
 status: open
+decision: 2026-09-06 Run physical boot now — Run Expo prebuild plus dev-build boot on a connected iPhone and record boot plus Skia board render evidence against DW-15.
 
 ### DW-16: on-device frame-rate baseline
 

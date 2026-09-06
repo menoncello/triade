@@ -1,1 +1,11 @@
-{}
+{
+  "DW-15": {
+    "answered_at": "2026-09-06",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Run Expo prebuild plus dev-build boot on a connected iPhone and record boot plus Skia board render evidence against DW-15.",
+    "key": "1",
+    "label": "Run physical boot now",
+    "resolution": ""
+  }
+}
