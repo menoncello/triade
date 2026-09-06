@@ -13,6 +13,11 @@ export const TILE_NUMERAL_TOKENS: Record<string, NumeralToken> = {
 
 export const MIN_TILE_WIDTH = 44;
 
+// Horizontal-inset budget (absolute pts) the fit estimate subtracts from
+// tileWidth before comparing against the estimated text width.
+// Pinned as a named constant so tests assert against it; calibrated small
+// (0.5pt) so the estimate stays conservative: never report "fits" when the
+// estimate is already at its padding limit.
 export const FIT_INSET_FACTOR = 0.5;
 
 function digitBucket(digitCount: number): string {
@@ -26,9 +31,15 @@ export function numeralTokenFor(value: number): NumeralToken {
   return TILE_NUMERAL_TOKENS[digitBucket(digits)];
 }
 
+// Approximate width estimator: fontSize * ESTIMATED_WIDTH_FACTOR per digit.
+// Pure (no font engine in `node --test`); conservative at >= MIN_TILE_WIDTH
+// by design (AC-3), ~10% optimistic for 6-digit Helvetica bold at sub-floor
+// widths (deferred review item) — which is why sub-44pt tiles fall through
+// to the scaling path below.
+const ESTIMATED_WIDTH_FACTOR = 0.55;
 function estimatedWidth(token: NumeralToken, value: number): number {
   const digits = String(value).length;
-  return token.fontSize * 0.55 * digits;
+  return token.fontSize * ESTIMATED_WIDTH_FACTOR * digits;
 }
 
 export function numeralFits(value: number, tileWidth: number): boolean {
@@ -43,9 +54,22 @@ export function numeralSizeFor(value: number, tileWidth: number): number {
   if (numeralFits(value, tileWidth)) {
     return token.fontSize;
   }
+  if (!Number.isFinite(tileWidth) || !Number.isFinite(value)) {
+    return token.fontSize;
+  }
   const available = tileWidth - FIT_INSET_FACTOR;
-  const scaled = available / (0.55 * digits);
-  return Math.max(scaled, 9);
+  if (!(available > 0)) {
+    return 1;
+  }
+  const scaled = available / (ESTIMATED_WIDTH_FACTOR * digits);
+  if (!Number.isFinite(scaled) || !(scaled > 0)) {
+    return 1;
+  }
+  // 9pt floor holds only when even 9pt fits (then scaled >= 9 by
+  // construction and min(token, scaled) honors it); otherwise the tile is
+  // too small to read by design (AC-3) and min(token, scaled) is the largest
+  // fitting size, so the numeral never clips the FIT_INSET_FACTOR budget.
+  return Math.min(token.fontSize, scaled);
 }
 
 // Canonical 13-tier palette — DESIGN.md dark canonical (E9 canonical identity)

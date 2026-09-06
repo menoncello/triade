@@ -106,6 +106,17 @@ test('[P0] numeralSizeFor returns token fontSize when numeralFits is true (no gr
   assert.strictEqual(size3digit, 32, '3-digit at 80pt should return 32pt token');
 });
 
+test('[P0] numeralSizeFor gates on numeralFits: 4-digit at 30pt fits 13pt so returns exactly the token (review regression)', async () => {
+  const { numeralFits, numeralSizeFor } = await import(SPEC) as {
+    numeralFits: (value: number, tileWidth: number) => boolean;
+    numeralSizeFor: (value: number, tileWidth: number) => number;
+  };
+  // 13pt * 0.55 * 4 = 28.6 <= 30 - 0.5 = 29.5 → fits → must return token 13,
+  // not a sub-token proportional size (legacy heuristic returned 12.75 here).
+  assert.strictEqual(numeralFits(1000, 30), true, '1000 at 30pt must fit the 13pt token');
+  assert.strictEqual(numeralSizeFor(1000, 30), 13, '1000 at 30pt must return exactly the 13pt token');
+});
+
 test('[P0] numeralSizeFor returns scaled-down size when token does not fit (AC-2 re-run)', async () => {
   const { numeralSizeFor } = await import(SPEC) as {
     numeralSizeFor: (value: number, tileWidth: number) => number;
@@ -203,6 +214,23 @@ test('[P0] Purity: same input produces same output for all functions', async () 
   assert.strictEqual(numeralSizeFor(1536, 44), numeralSizeFor(1536, 44), 'numeralSizeFor must be deterministic');
 
   assert.strictEqual(tileInkFor(1536), tileInkFor(1536), 'tileInkFor must be deterministic');
+});
+
+test('[P0] 6-digit risk point at MIN_TILE_WIDTH never clips the inset budget (AC-3)', async () => {
+  const { numeralSizeFor, FIT_INSET_FACTOR } = await import(SPEC) as {
+    numeralSizeFor: (value: number, tileWidth: number) => number;
+    FIT_INSET_FACTOR: number;
+  };
+  // 6-digit token 9pt: estimated 9*0.55*6=29.7 <= 44-0.5 → fits → returns 9,
+  // and the returned size never clips the FIT_INSET_FACTOR budget.
+  for (const v of [100000, 153600, 999999]) {
+    const size = numeralSizeFor(v, MIN_TILE_WIDTH_EXPECTED);
+    assert.ok(size >= 9, `${v} at 44pt must return >= 9pt, got ${size}`);
+    assert.ok(
+      size * 0.55 * String(v).length <= MIN_TILE_WIDTH_EXPECTED - FIT_INSET_FACTOR,
+      `${v} at 44pt size ${size} must not clip the inset budget`
+    );
+  }
 });
 
 // --- numeralSizeFor: largest fitting size fallback ---

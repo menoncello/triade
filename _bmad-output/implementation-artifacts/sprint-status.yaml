@@ -49,7 +49,7 @@ development_status:
   1-4-offline-capability-instalavel-e-persistencia: done
   1-5-layout-portrait-e-landscape: ready-for-dev
   1-6-input-por-swipe-rngh-edge-cases-contract: awaiting-operator
-  1-7-legibilidade-dos-numerais-em-landscape: ready-for-dev
+  1-7-legibilidade-dos-numerais-em-landscape: awaiting-operator
   epic-1-retrospective: done
 
   epic-2: done
