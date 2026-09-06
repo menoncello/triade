@@ -2,7 +2,7 @@
 title: '9-3 Merges por shape/texto além de cor + WCAG AA'
 type: 'feature'
 created: '2026-09-03'
-status: 'done'
+status: 'ready-for-dev'
 baseline_revision: '9448b3f2c4427c34d374d89161a10387fe252ea4'
 final_revision: '7e314ab405967412348b81519ad582fc592ced60'
 review_loop_iteration: 0

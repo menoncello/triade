@@ -1,5 +1,5 @@
 # generated: 2026-09-06 00:50
-# last_updated: 2026-09-06 00:50 (reopen 7 stories do proposal 2026-09-05 p/ verification pass: 1-5,1-6,1-7,7-2,8-2,9-2,9-3 -> review)
+# last_updated: 2026-09-06 00:50 (reopen 7 stories do proposal 2026-09-05 p/ verification pass: 1-5,1-6,1-7,7-2,8-2,9-2,9-3 -> review; depois movidas p/ ready-for-dev p/ o loop rodar)
 # project: 3-clone
 # project_key: NOKEY
 # tracking_system: file-system
@@ -47,9 +47,9 @@ development_status:
   1-2-port-completo-do-engine-de-regras-para-typescript: done
   1-3-board-skia-declarativo-dirigido-pelo-trace: done
   1-4-offline-capability-instalavel-e-persistencia: done
-  1-5-layout-portrait-e-landscape: review
-  1-6-input-por-swipe-rngh-edge-cases-contract: review
-  1-7-legibilidade-dos-numerais-em-landscape: review
+  1-5-layout-portrait-e-landscape: ready-for-dev
+  1-6-input-por-swipe-rngh-edge-cases-contract: ready-for-dev
+  1-7-legibilidade-dos-numerais-em-landscape: ready-for-dev
   epic-1-retrospective: done
 
   epic-2: done
@@ -94,14 +94,14 @@ development_status:
 
   epic-7: in-progress
   7-1-pendingspawn-pre-resolvido-no-snapshot: done
-  7-2-preview-card-no-hud-60-40-nas-duas-pistas: review
+  7-2-preview-card-no-hud-60-40-nas-duas-pistas: ready-for-dev
   7-3-faixa-ambigua-correta: done
   7-4-invariante-preview-nunca-altera-o-spawn: done
   epic-7-retrospective: done
 
   epic-8: in-progress
   8-1-haptics: done
-  8-2-punch-visual: review
+  8-2-punch-visual: ready-for-dev
   8-3-screen-shake: done
   8-4-bullet-time: done
   8-5-reduced-motion: done
@@ -110,8 +110,8 @@ development_status:
 
   epic-9: in-progress
   9-1-tap-targets-44x44pt: done
-  9-2-screen-reader-contract: review
-  9-3-merges-por-shape-texto-alem-de-cor-wcag-aa: review
+  9-2-screen-reader-contract: ready-for-dev
+  9-3-merges-por-shape-texto-alem-de-cor-wcag-aa: ready-for-dev
   9-4-temas-light-dark-e-color-blind: done
   epic-9-retrospective: optional
 

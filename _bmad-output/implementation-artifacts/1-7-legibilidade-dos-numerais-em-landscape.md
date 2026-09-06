@@ -1,11 +1,11 @@
 ---
 baseline_commit: d72cbb8
-status: done
+status: ready-for-dev
 ---
 
 # Story 1.7: Legibilidade dos numerais em landscape
 
-Status: done
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

@@ -4,7 +4,7 @@ baseline_commit: 870c9ab147d34dad91343486b17a0fc30dcb837e
 
 # Story 7.2: Preview card no HUD (60/40) nas duas pistas
 
-Status: done
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

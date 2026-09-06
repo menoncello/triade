@@ -2,7 +2,7 @@
 title: '9-2 Screen Reader Contract'
 type: 'feature'
 created: '2026-09-02'
-status: 'done'
+status: 'ready-for-dev'
 baseline_revision: '6576273e92d976376ff47e6f1c56f90b3776a53f'
 final_revision: '7832d3c80953d18f72f156bd33d19bc8816abc14'
 review_loop_iteration: 0

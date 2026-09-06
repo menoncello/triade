@@ -1,11 +1,11 @@
 ---
 baseline_commit: fb6f8dd
-status: done
+status: ready-for-dev
 ---
 
 # Story 1.5: Layout portrait e landscape
 
-Status: done
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

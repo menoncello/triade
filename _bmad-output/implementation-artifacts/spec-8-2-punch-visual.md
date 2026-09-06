@@ -2,7 +2,7 @@
 title: '8-2 Punch visual'
 type: 'feature'
 created: '2026-09-01'
-status: 'done'
+status: 'ready-for-dev'
 review_loop_iteration: 0
 followup_review_recommended: false
 context: []

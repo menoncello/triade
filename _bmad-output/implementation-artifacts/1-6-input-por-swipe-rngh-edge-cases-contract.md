@@ -1,11 +1,11 @@
 ---
 baseline_commit: e0f5786
-status: done
+status: ready-for-dev
 ---
 
 # Story 1.6: Input por swipe RNGH + edge-cases contract
 
-Status: done
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
