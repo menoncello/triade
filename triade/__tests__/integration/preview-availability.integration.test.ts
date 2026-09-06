@@ -25,16 +25,25 @@ function pending(value: number, displayRoll: number): PendingSpawn {
 }
 
 // AC5 — the availability set is a DERIVED function of the board ceiling, not a
-// constant. Pin the mapping at the integration boundary.
+// constant. Pin the mapping at the integration boundary (POT_LADDER_DELAY=2:
+// tiers 0-2 collapse to [3]; 6 unlocks at 192, 12 at 384, 24 at 768).
 test('[P0] AC5/FR-43 — available pot set is derived from the live board ceiling', () => {
   assert.deepStrictEqual(previewForBoard(boardWithCeiling(24), pending(3, 0.9)).availablePot, [3]);
-  assert.deepStrictEqual(previewForBoard(boardWithCeiling(48), pending(3, 0.9)).availablePot, [3, 6]);
+  assert.deepStrictEqual(previewForBoard(boardWithCeiling(48), pending(3, 0.9)).availablePot, [3]);
   assert.deepStrictEqual(
     previewForBoard(boardWithCeiling(96), pending(3, 0.9)).availablePot,
-    [3, 6, 12]
+    [3]
   );
   assert.deepStrictEqual(
     previewForBoard(boardWithCeiling(192), pending(3, 0.9)).availablePot,
+    [3, 6]
+  );
+  assert.deepStrictEqual(
+    previewForBoard(boardWithCeiling(384), pending(3, 0.9)).availablePot,
+    [3, 6, 12]
+  );
+  assert.deepStrictEqual(
+    previewForBoard(boardWithCeiling(768), pending(3, 0.9)).availablePot,
     [3, 6, 12, 24]
   );
 });
@@ -47,16 +56,17 @@ test('[P0] AC3/FR-43 — low ceiling (only 3 available) collapses value 3 to ran
   if (preview.kind === 'range') assert.deepStrictEqual(preview.values, [3]);
 });
 
-// AC4/FR-43 — as the ceiling rises, the range grows as a contiguous slice of the
-// available pot sequence starting at value, capped at 3.
+// AC4/FR-43 — as the ceiling rises past the delay-2 unlock points, the range
+// grows as a contiguous slice of the available pot sequence starting at value,
+// capped at 3 (6 unlocks at 192, 12 at 384, 24 at 768).
 test('[P0] AC4/FR-43 — rising ceiling widens the range as a contiguous slice from value', () => {
-  const low = previewForBoard(boardWithCeiling(48), pending(3, 0.9)).preview;
+  const low = previewForBoard(boardWithCeiling(192), pending(3, 0.9)).preview;
   if (low.kind === 'range') assert.deepStrictEqual(low.values, [3, 6]);
 
-  const mid = previewForBoard(boardWithCeiling(96), pending(6, 0.9)).preview;
+  const mid = previewForBoard(boardWithCeiling(384), pending(6, 0.9)).preview;
   if (mid.kind === 'range') assert.deepStrictEqual(mid.values, [6, 12]);
 
-  const high = previewForBoard(boardWithCeiling(192), pending(6, 0.9)).preview;
+  const high = previewForBoard(boardWithCeiling(768), pending(6, 0.9)).preview;
   if (high.kind === 'range') assert.deepStrictEqual(high.values, [6, 12, 24]);
 });
 

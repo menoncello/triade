@@ -1009,5 +1009,7 @@ source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contr
 origin: surfaced incidentally during verification of spec-10-6-gate-de-calibracao-da-curva-dono-eduardo (2026-09-06)
 location: triade/__tests__/integration/preview-availability.integration.test.ts:54
 reason: Full `npm test` run fails at preview-availability.integration.test.ts (`actual: [3]`, `expected: [3, 6]`); the test does not import calibrationGate.ts and no tracked file was modified by 10-6 (only new untracked files), so the failure predates this story.
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-preview-availability-sync
+resolution-undo: d8b884cad67ef72339f150e65c0e8bbaef3474f8a067d6af73642a880c1bdcad 2026-09-06 7374617475733a206f70656e
 source_spec: `_bmad-output/implementation-artifacts/spec-10-6-gate-de-calibracao-da-curva-dono-eduardo.md`
