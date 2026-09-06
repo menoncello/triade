@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Leaderboard</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (raised rows, border hairlines, accent só na tab ativa) · Typography (score 700; timestamp caption muted) · Components (leaderboard-tab ≥44 hit, active accent/dark ink; leaderboard-row rank+score+data; empty state muted sem CTA) · Layout & Spacing (coluna única, 44pt rows)
+   EXPERIENCE.md: Information Architecture (per-lane top-10 local; tabs Melhores/Recentes D-014) · Component Patterns (tab toggle; loading skeleton, nunca spinner) · State Patterns (Empty: "Sem registros ainda"; Loading skeleton) · Voice and Tone (factual, sem funil) · Key Flows (Théo §7: Clean nunca mistura assistido — P3) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:64px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px}
+h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700;text-align:center}
+.lane-pill{text-align:center;font-size:13px;color:#A39C8F;margin-top:4px}
+.tabs{display:flex;gap:8px;margin-top:12px;background:#2B2F38;border-radius:12px;padding:4px}
+.tab{flex:1;min-height:44px;border:none;border-radius:8px;font-size:15px;font-weight:700;background:transparent;color:#A39C8F;cursor:pointer}
+.tab.on{background:#E8A33D;color:#1C1206}
+.list{margin-top:12px;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 16px;border-bottom:1px solid #3A3F49;font-size:15px}
+.row:last-child{border-bottom:none}
+.rank{width:24px;color:#A39C8F;font-weight:700}
+.score{font-weight:700}
+.date{margin-left:auto;font-size:13px;color:#A39C8F}
+.row.top .score{color:#E8A33D}
+.back{margin-top:auto;min-height:48px;background:#2B2F38;border:1px solid #3A3F49;color:#F2EEE3;border-radius:12px;font-size:17px}
+.caption{font-size:13px;color:#A39C8F;max-width:360px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <h2>Placar · Leaderboard</h2>
+  <div class="lane-pill">Pista · Lane: <b style="color:#F2EEE3">Pura (Clean)</b> · local, por pista</div>
+  <div class="tabs"><button class="tab on">Melhores · Best</button><button class="tab">Recentes · Recent</button></div>
+  <div class="list">
+    <div class="row top"><span class="rank">1</span><span class="score">3.042</span><span class="date">04/09 21:12</span></div>
+    <div class="row"><span class="rank">2</span><span class="score">2.880</span><span class="date">03/09 19:40</span></div>
+    <div class="row"><span class="rank">3</span><span class="score">2.415</span><span class="date">02/09 22:05</span></div>
+    <div class="row"><span class="rank">4</span><span class="score">1.902</span><span class="date">01/09 18:31</span></div>
+    <div class="row"><span class="rank">5</span><span class="score">1.536</span><span class="date">30/08 20:14</span></div>
+    <div class="row"><span class="rank">6</span><span class="score">1.284</span><span class="date">29/08 21:47</span></div>
+    <div class="row"><span class="rank">7</span><span class="score">986</span><span class="date">28/08 19:02</span></div>
+  </div>
+  <button class="back">Voltar · Back</button>
+</div></div>
+<div class="caption"><b>key-leaderboard</b> — top-10 por pista, tabs Melhores/Recentes com data+hora; vazio seria só texto muted.</div>
+</body>
+</html>

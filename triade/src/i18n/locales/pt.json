@@ -40,6 +40,11 @@
     "cancel": "Cancelar",
     "newRecord": "Novo recorde"
   },
+  "pause": {
+    "title": "Pausa",
+    "resume": "Continuar",
+    "reducedMotion": "Movimento reduzido"
+  },
   "laneSelect": {
     "title": "Tríade",
     "subtitle": "Escolha sua pista",

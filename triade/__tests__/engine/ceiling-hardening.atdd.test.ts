@@ -102,26 +102,26 @@ describe('ATDD dw-engine-ceiling-hardening — P0 critical (spec AC + DW-41/44/4
 });
 
 describe('ATDD dw-engine-ceiling-hardening — P1 wiring (ceiling->tier->pot chain + pipeline + ledger)', () => {
-  it.skip('[P1-01] very-large finite + pot cap 30: 1e15->45 len31, MAX_SAFE_INTEGER->48 len31 capped', () => {
-    // Unbounded tier 48*2^(k-1) forever; potForTier caps at 30.
+  it.skip('[P1-01] very-large finite + pot cap 30: 1e15->45 len44, MAX_SAFE_INTEGER->48 len29 capped (delay-2)', () => {
+    // Unbounded tier 48*2^(k-1) forever; potForTier caps at 30 then delay-2.
     assert.equal(tierForCeiling(1e15), 45);
     assert.equal(tierForCeiling(Number.MAX_SAFE_INTEGER), 48);
     assert.ok(Number.isFinite(tierForCeiling(1e15)));
     assert.ok(Number.isFinite(tierForCeiling(Number.MAX_SAFE_INTEGER)));
-    assert.equal(potForTier(45).length, 31);
-    assert.equal(potForTier(48).length, 31);
-    assert.equal(potForTier(Number.MAX_SAFE_INTEGER as unknown as number).length, 31);
+    assert.equal(potForTier(45).length, 44);
+    assert.equal(potForTier(48).length, 29);
+    assert.equal(potForTier(Number.MAX_SAFE_INTEGER as unknown as number).length, 29);
   });
 
-  it.skip('[P1-02] chain ceiling->tier->pot: ceiling 96->tier2->pot len3; 384->4 len5; Infinity ceiling never propagates', () => {
+  it.skip('[P1-02] chain ceiling->tier->pot: ceiling 96->tier2->pot len1; 384->4 len3; Infinity ceiling never propagates (delay-2)', () => {
     const b96 = boardWith([[96, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]]);
     const c96 = ceilingDetector(b96);
     assert.equal(c96, 96);
     assert.equal(tierForCeiling(c96), 2);
-    assert.equal(potForTier(tierForCeiling(c96)).length, 3);
+    assert.equal(potForTier(tierForCeiling(c96)).length, 1);
 
     const b384 = boardWith([[384, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]]);
-    assert.equal(potForTier(tierForCeiling(ceilingDetector(b384))).length, 5);
+    assert.equal(potForTier(tierForCeiling(ceilingDetector(b384))).length, 3);
 
     const bad = ceilingDetector([[Infinity, 96] as unknown as Board[0]] as Board);
     assert.equal(bad, 96);
@@ -145,7 +145,7 @@ describe('ATDD dw-engine-ceiling-hardening — P1 wiring (ceiling->tier->pot cha
     const tier = tierForCeiling(ceiling);
     assert.equal(tier, 5);
     assert.ok(Number.isFinite(tier));
-    assert.equal(potForTier(tier).length, 6);
+    assert.equal(potForTier(tier).length, 4);
   });
 
   it.skip('[P1-05] DEGRADE non-finite tier via potForTier: Infinity tier->0, NaN tier->0 length 1', () => {

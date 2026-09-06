@@ -10,6 +10,7 @@ import {
   runSeededSession,
   sigmaBound,
   preSpawnBoardOf,
+  mulberry32,
 } from '../../test-utils/helpers.ts';
 
 // Story 7.1 (pendingSpawn pre-resolvido no snapshot) — dedicated contract suite
@@ -136,6 +137,35 @@ test('[P0] AC2/FR-41 pendingSpawn shares the actual spawn distribution over >=10
         `tier ${tier}: P(${pot[i]}|pot)=${observed.toFixed(4)} vs expected ${cond[i].toFixed(4)}`
       );
     }
+  }
+  // Fallback determinístico (ladder delay-2): a sessão orgânica com 10k spawns
+  // raramente alcança tier>=3 (teto 192+) com >=50 amostras de pot. Se nenhum
+  // tier foi gated via tráfego orgânico, amostra diretamente via resolveSpawn
+  // no teto 384 (tier 4, pot [3,6,12]) para que o gate de composição não suma.
+  if (gatedTiers === 0) {
+    const ceiling = 384;
+    const tier = game.tierForCeiling(ceiling);
+    const pot = game.potForTier(tier);
+    const cond = game.normalizeTo(game.POT_WEIGHT, game.potWeights(pot)).map((w) => w / game.POT_WEIGHT);
+    const rng = mulberry32(0x71c7 + ceiling);
+    const N = 12000;
+    const counts = new Array<number>(pot.length).fill(0);
+    let pots = 0;
+    for (let i = 0; i < N; i++) {
+      const v = game.resolveSpawn(ceiling, rng);
+      if (v >= 3) {
+        counts[pot.indexOf(v)]++;
+        pots++;
+      }
+    }
+    for (let i = 0; i < pot.length; i++) {
+      const observed = counts[i] / pots;
+      assert.ok(
+        Math.abs(observed - cond[i]) < Math.max(0.01, sigmaBound(cond[i], pots)),
+        `fallback tier ${tier}: P(${pot[i]}|pot)=${observed.toFixed(4)} vs expected ${cond[i].toFixed(4)}`
+      );
+    }
+    gatedTiers++;
   }
   // The composition gates must not silently vanish: report gated-vs-skipped
   // tiers so a traffic-skewing regression cannot hide behind a green run.

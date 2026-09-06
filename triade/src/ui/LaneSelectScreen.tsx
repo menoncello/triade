@@ -8,6 +8,7 @@ import type { EdgeInsets } from './layout';
 import { LANES } from '../game/lanes';
 
 import type { ThemeId } from '../theme/index.ts';
+import { THEMES, isThemeId } from '../theme/index.ts';
 
 export interface LaneSelectScreenProps {
   selectedIndex: number;
@@ -68,14 +69,19 @@ export function LaneSelectScreen({
   const laneSubtitle = (id: string) => (id === 'clean' ? '' : t('lane.accelerated.subtitle'));
   const laneTone = (id: string) => (id === 'clean' ? t('lane.clean.tone') : t('lane.accelerated.tone'));
 
+  // Theme wiring: the screen previously ignored `theme` (hardcoded light).
+  // Colors resolve from THEMES pure data; layout stays in static `styles`.
+  const tokens = THEMES[isThemeId(theme) ? theme : 'dark'];
+  const chrome = tokens.chrome;
+
   return (
     <View
-      style={[styles.container, { paddingTop: topPad, paddingBottom: bottomPad, paddingLeft: leftPad, paddingRight: rightPad }]}
+      style={[styles.container, { backgroundColor: chrome.surface, paddingTop: topPad, paddingBottom: bottomPad, paddingLeft: leftPad, paddingRight: rightPad }]}
       accessibilityLabel="Lane Select"
     >
       <View style={styles.inner}>
-        <Text style={styles.title} allowFontScaling>{t('laneSelect.title')}</Text>
-        <Text style={styles.subtitle} allowFontScaling>{t('laneSelect.subtitle')}</Text>
+        <Text style={[styles.title, { color: chrome.text }]} allowFontScaling>{t('laneSelect.title')}</Text>
+        <Text style={[styles.subtitle, { color: chrome.muted }]} allowFontScaling>{t('laneSelect.subtitle')}</Text>
 
         <View style={styles.cardsRow}>
           {LANES.map((lane) => {
@@ -87,39 +93,39 @@ export function LaneSelectScreen({
               <Pressable
                 key={lane.id}
                 onPress={() => handleCardPress(lane.index)}
-                style={[styles.card, isSelected ? styles.cardSelected : styles.cardIdle]}
+                style={[styles.card, styles.cardIdle, { backgroundColor: chrome.surfaceRaised, borderColor: isSelected ? chrome.accent : chrome.border }]}
                 accessibilityRole="button"
                 accessibilityLabel={`${label}${subtitle ? ` ${subtitle}` : ''}`}
                 accessibilityState={{ selected: isSelected }}
               >
-                {isSelected ? <View style={styles.accentBar} /> : null}
-                <Text style={styles.cardLabel} allowFontScaling>{label}</Text>
-                {subtitle ? <Text style={styles.cardSubtitle} allowFontScaling>{subtitle}</Text> : null}
-                <Text style={styles.cardTone} allowFontScaling>{tone}</Text>
+                {isSelected ? <View style={[styles.accentBar, { backgroundColor: chrome.accent }]} /> : null}
+                <Text style={[styles.cardLabel, { color: chrome.text }]} allowFontScaling>{label}</Text>
+                {subtitle ? <Text style={[styles.cardSubtitle, { color: chrome.muted }]} allowFontScaling>{subtitle}</Text> : null}
+                <Text style={[styles.cardTone, { color: chrome.muted }]} allowFontScaling>{tone}</Text>
               </Pressable>
             );
           })}
         </View>
 
         {pendingIndex !== null ? (
-          <View style={styles.warningBanner} accessibilityLabel={t('laneSelect.switchWarning')}>
-            <Text style={styles.warningText} allowFontScaling>{t('laneSelect.switchWarning')}</Text>
+          <View style={[styles.warningBanner, { backgroundColor: chrome.surfaceRaised, borderColor: chrome.accent, borderLeftColor: chrome.accent }]} accessibilityLabel={t('laneSelect.switchWarning')}>
+            <Text style={[styles.warningText, { color: chrome.text }]} allowFontScaling>{t('laneSelect.switchWarning')}</Text>
             <View style={styles.warningActions}>
               <Pressable
                 onPress={handleConfirm}
-                style={styles.warningConfirm}
+                style={[styles.warningConfirm, { backgroundColor: chrome.accent }]}
                 accessibilityRole="button"
                 accessibilityLabel={t('laneSelect.confirm')}
               >
-                <Text style={styles.warningConfirmLabel} allowFontScaling>{t('laneSelect.confirm')}</Text>
+                <Text style={[styles.warningConfirmLabel, { color: chrome.accentInk }]} allowFontScaling>{t('laneSelect.confirm')}</Text>
               </Pressable>
               <Pressable
                 onPress={handleCancel}
-                style={styles.warningCancel}
+                style={[styles.warningCancel, { backgroundColor: chrome.surfaceRaised, borderColor: chrome.border }]}
                 accessibilityRole="button"
                 accessibilityLabel={t('laneSelect.cancel')}
               >
-                <Text style={styles.warningCancelLabel} allowFontScaling>{t('laneSelect.cancel')}</Text>
+                <Text style={[styles.warningCancelLabel, { color: chrome.text }]} allowFontScaling>{t('laneSelect.cancel')}</Text>
               </Pressable>
             </View>
           </View>
@@ -127,47 +133,47 @@ export function LaneSelectScreen({
 
         <Pressable
           onPress={onJogar}
-          style={styles.cta}
+          style={[styles.cta, { backgroundColor: chrome.accent }]}
           accessibilityRole="button"
           accessibilityLabel={t('laneSelect.play')}
         >
-          <Text style={styles.ctaLabel} allowFontScaling>{t('laneSelect.play')}</Text>
+          <Text style={[styles.ctaLabel, { color: chrome.accentInk }]} allowFontScaling>{t('laneSelect.play')}</Text>
         </Pressable>
         {onRestorePurchases ? (
           <Pressable
             onPress={onRestorePurchases}
             disabled={!!restoreBusy}
-            style={[styles.restoreBtn, restoreBusy ? styles.restoreBtnBusy : null]}
+            style={[styles.restoreBtn, { borderColor: chrome.border, backgroundColor: chrome.surfaceRaised }, restoreBusy ? styles.restoreBtnBusy : null]}
             accessibilityRole="button"
             accessibilityLabel={t('laneSelect.restore')}
             accessibilityState={{ busy: !!restoreBusy, disabled: !!restoreBusy }}
           >
-            <Text style={styles.restoreLabel} allowFontScaling>{restoreBusy ? t('laneSelect.restoring') : t('laneSelect.restore')}</Text>
+            <Text style={[styles.restoreLabel, { color: chrome.text }]} allowFontScaling>{restoreBusy ? t('laneSelect.restoring') : t('laneSelect.restore')}</Text>
           </Pressable>
         ) : null}
         {hasActiveMatch && pendingIndex === null ? (
-          <Text style={styles.footerNote} allowFontScaling>{t('laneSelect.footerNote')}</Text>
+          <Text style={[styles.footerNote, { color: chrome.muted }]} allowFontScaling>{t('laneSelect.footerNote')}</Text>
         ) : null}
         {onLanguageChange ? (
           <View style={styles.langRow} accessibilityLabel="language selector">
-            <Pressable
-              onPress={() => onLanguageChange('pt')}
-              style={[styles.langBtn, language === 'pt' ? styles.langBtnSelected : styles.langBtnIdle]}
-              accessibilityRole="button"
-              accessibilityLabel="Português"
-              accessibilityState={{ selected: language === 'pt' }}
-            >
-              <Text style={[styles.langLabel, language === 'pt' ? styles.langLabelSelected : null]} allowFontScaling>PT</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => onLanguageChange('en')}
-              style={[styles.langBtn, language === 'en' ? styles.langBtnSelected : styles.langBtnIdle]}
-              accessibilityRole="button"
-              accessibilityLabel="English"
-              accessibilityState={{ selected: language === 'en' }}
-            >
-              <Text style={[styles.langLabel, language === 'en' ? styles.langLabelSelected : null]} allowFontScaling>EN</Text>
-            </Pressable>
+              <Pressable
+                onPress={() => onLanguageChange('pt')}
+                style={[styles.langBtn, styles.langBtnIdle, { borderColor: language === 'pt' ? chrome.accent : chrome.border, backgroundColor: chrome.surfaceRaised }]}
+                accessibilityRole="button"
+                accessibilityLabel="Português"
+                accessibilityState={{ selected: language === 'pt' }}
+              >
+                <Text style={[styles.langLabel, styles.langLabelSelected, { color: language === 'pt' ? chrome.accent : chrome.text }]} allowFontScaling>PT</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => onLanguageChange('en')}
+                style={[styles.langBtn, styles.langBtnIdle, { borderColor: language === 'en' ? chrome.accent : chrome.border, backgroundColor: chrome.surfaceRaised }]}
+                accessibilityRole="button"
+                accessibilityLabel="English"
+                accessibilityState={{ selected: language === 'en' }}
+              >
+                <Text style={[styles.langLabel, styles.langLabelSelected, { color: language === 'en' ? chrome.accent : chrome.text }]} allowFontScaling>EN</Text>
+              </Pressable>
           </View>
         ) : null}
         {onThemeChange ? (
@@ -183,12 +189,12 @@ export function LaneSelectScreen({
                 <Pressable
                   key={id}
                   onPress={() => onThemeChange(id as ThemeId)}
-                  style={[styles.themeBtn, isSelected ? styles.themeBtnSelected : styles.themeBtnIdle]}
+                  style={[styles.themeBtn, styles.themeBtnIdle, { borderColor: isSelected ? chrome.accent : chrome.border, backgroundColor: isSelected ? chrome.accent : chrome.surfaceRaised }]}
                   accessibilityRole="button"
                   accessibilityLabel={label}
                   accessibilityState={{ selected: isSelected }}
                 >
-                  <Text style={[styles.themeLabel, isSelected ? styles.themeLabelSelected : null]} allowFontScaling>{label}</Text>
+                  <Text style={[styles.themeLabel, styles.themeLabelSelected, { color: isSelected ? chrome.accentInk : chrome.text }]} allowFontScaling>{label}</Text>
                 </Pressable>
               );
             })}

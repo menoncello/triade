@@ -149,11 +149,11 @@ test('[P0] AC3/FR-43 — Hud wiring: low ceiling (only 3 available) collapses va
 });
 
 test('[P0] AC4/FR-43 — Hud wiring: rising ceiling widens range as joined slice through Hud', () => {
-  // Arrange: ceilings 48→[3,6], 96→[3,6,12], 192→[3,6,12,24]
+  // Arrange: ceilings 192→[3,6], 384→[3,6,12], 768→[3,6,12,24] (delay-2 ladder)
   const cases: Array<{ ceiling: number; value: number; expectedJoined: string }> = [
-    { ceiling: 48, value: 3, expectedJoined: '3/6' },
-    { ceiling: 96, value: 3, expectedJoined: '3/6/12' },
-    { ceiling: 192, value: 6, expectedJoined: '6/12/24' },
+    { ceiling: 192, value: 3, expectedJoined: '3/6' },
+    { ceiling: 384, value: 3, expectedJoined: '3/6/12' },
+    { ceiling: 768, value: 6, expectedJoined: '6/12/24' },
   ];
   for (const { ceiling, value, expectedJoined } of cases) {
     const board = boardWithCeiling(ceiling);
@@ -199,7 +199,7 @@ test('[P0] AC2/FR-43 — Hud wiring: value 1/2 always renders "1/2" independent 
 test('[P0] AC5/FR-43 — Hud wiring derives availablePot from live board ceiling (not hardcoded ladder)', () => {
   // Arrange: same pending, two boards with different ceilings → different previews → different Hud text
   const lowBoard = boardWithCeiling(24); // [3]
-  const highBoard = boardWithCeiling(96); // [3,6,12]
+  const highBoard = boardWithCeiling(384); // [3,6,12] (delay-2 ladder)
   const pending = { value: 3, displayRoll: 0.9 } as PendingSpawn;
   const lowWired = wiredPreviewForBoard(lowBoard, pending);
   const highWired = wiredPreviewForBoard(highBoard, pending);

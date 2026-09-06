@@ -39,6 +39,16 @@ export function sfxKindForValue(_value: number): SfxKind {
 let audioModulePromise: Promise<any> | null = null;
 let audioAvailabilityChecked = false;
 let audioAvailable: boolean | null = null;
+// One cached player per kind — creating a one-shot player per merge leaks
+// native players (never released) and each creation re-takes the audio
+// session. Reused players are rewound (seekTo 0) and replayed; same-tick
+// overlapping merges of one kind collapse into a single audible thock.
+const playerCache = new Map<SfxKind, any>();
+// Session configured once so SFX blend with background audio from other apps
+// instead of taking exclusive focus (the iOS default). Short effects must
+// not silence other apps — expo-audio docs: 'mixWithOthers' is ideal for
+// short sound effects (also skips Android audio-focus request).
+let audioModeConfigured = false;
 function isExpoAudioAvailable(): boolean {
   if (audioAvailabilityChecked && audioAvailable !== null) return audioAvailable;
   audioAvailabilityChecked = true;
@@ -75,6 +85,16 @@ async function playViaExpoAudio(kind: SfxKind, volume: number): Promise<void> {
     if (!modPromise) return;
     const mod: any = await modPromise;
     if (!mod) return;
+    // Mix with other apps' audio instead of interrupting it. Once per process;
+    // partial mode object keeps every other session flag at its default.
+    if (!audioModeConfigured && typeof mod.setAudioModeAsync === 'function') {
+      audioModeConfigured = true;
+      try {
+        await mod.setAudioModeAsync({ interruptionMode: 'mixWithOthers' });
+      } catch {
+        // never throw; playback still attempted below with default session
+      }
+    }
     // SDK 57 expo-audio: createAudioPlayer(source, options) or AudioPlayer
     // SFX WAVs são sintéticos cálidos gerados via tools/gen-thock.py — obrigatórios para Metro bundling (não opcionais);
     // o try/catch aqui degrada apenas quando expo-audio falta (test host), e if (!source) return evita throw.
@@ -89,23 +109,26 @@ async function playViaExpoAudio(kind: SfxKind, volume: number): Promise<void> {
       source = null;
     }
     if (!source) return;
-    if (typeof mod.createAudioPlayer === 'function') {
-      const player = mod.createAudioPlayer(source);
-      if (player) {
-        if (typeof player.setVolume === 'function') player.setVolume(vol);
-        else if ('volume' in player) player.volume = vol;
-        if (typeof player.seekTo === 'function') try { player.seekTo(0); } catch {}
-        if (typeof player.play === 'function') player.play();
-        else if (typeof player.replay === 'function') player.replay();
-      }
-    } else if (mod.AudioPlayer) {
-      try {
-        const player = new mod.AudioPlayer(source);
-        if (player) {
-          if (typeof player.setVolume === 'function') player.setVolume(vol);
-          if (typeof player.play === 'function') player.play();
+    // Reuse one player per kind (see playerCache note above).
+    let player: any = playerCache.get(kind) ?? null;
+    if (!player) {
+      if (typeof mod.createAudioPlayer === 'function') {
+        player = mod.createAudioPlayer(source);
+      } else if (mod.AudioPlayer) {
+        try {
+          player = new mod.AudioPlayer(source);
+        } catch {
+          player = null;
         }
-      } catch {}
+      }
+      if (player) playerCache.set(kind, player);
+    }
+    if (player) {
+      if (typeof player.setVolume === 'function') player.setVolume(vol);
+      else if ('volume' in player) player.volume = vol;
+      if (typeof player.seekTo === 'function') try { player.seekTo(0); } catch {}
+      if (typeof player.play === 'function') player.play();
+      else if (typeof player.replay === 'function') player.replay();
     }
   } catch {
     // never throw

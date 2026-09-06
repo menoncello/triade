@@ -35,20 +35,21 @@ function boardWithMax(max: number | null): Board {
 // ── Chain mapping ─────────────────────────────────────────────────────────
 
 test('[P0] DW-103 ladder chain end-to-end: ceilingDetector→tierForCeiling→potForTier matches expected ladder', () => {
-  // Spec ladder: <48→0, 48→1, 96→2, 192→3, 384→4, 768→5, 1536→6, 3072→7
+  // Spec ladder (delay-2): tier = f(ceiling) unchanged (<48→0, 48→1, 96→2, 192→3, …),
+  // pot atrasa 2 tiers: 6@192, 12@384, 24@768, …
   const cases: Array<{ ceiling: number; tier: number; pot: number[] }> = [
     { ceiling: 0, tier: 0, pot: [3] },
     { ceiling: 3, tier: 0, pot: [3] },
     { ceiling: 12, tier: 0, pot: [3] },
     { ceiling: 24, tier: 0, pot: [3] },
     { ceiling: 47, tier: 0, pot: [3] },
-    { ceiling: 48, tier: 1, pot: [3, 6] },
-    { ceiling: 96, tier: 2, pot: [3, 6, 12] },
-    { ceiling: 192, tier: 3, pot: [3, 6, 12, 24] },
-    { ceiling: 384, tier: 4, pot: [3, 6, 12, 24, 48] },
-    { ceiling: 768, tier: 5, pot: [3, 6, 12, 24, 48, 96] },
-    { ceiling: 1536, tier: 6, pot: [3, 6, 12, 24, 48, 96, 192] },
-    { ceiling: 3072, tier: 7, pot: [3, 6, 12, 24, 48, 96, 192, 384] },
+    { ceiling: 48, tier: 1, pot: [3] },
+    { ceiling: 96, tier: 2, pot: [3] },
+    { ceiling: 192, tier: 3, pot: [3, 6] },
+    { ceiling: 384, tier: 4, pot: [3, 6, 12] },
+    { ceiling: 768, tier: 5, pot: [3, 6, 12, 24] },
+    { ceiling: 1536, tier: 6, pot: [3, 6, 12, 24, 48] },
+    { ceiling: 3072, tier: 7, pot: [3, 6, 12, 24, 48, 96] },
   ];
   for (const { ceiling, tier, pot } of cases) {
     const board = boardWithMax(ceiling === 0 ? null : ceiling);

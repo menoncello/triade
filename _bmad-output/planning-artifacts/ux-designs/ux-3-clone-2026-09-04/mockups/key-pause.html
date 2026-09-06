@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Pause</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (scrim #0C0E11 ~70%; raised panels) · Typography (title 22/700) · Components (button secundário; menu-item família única; pause substitui, nunca empilha) · Elevation & Depth (scrim + overlay shadow; board congelado pós-animação)
+   EXPERIENCE.md: Information Architecture (Pause: Resume/Restart/Quit SÓ — D-012; settings ficam no menu) · State Patterns (Paused: congela após settle; pause é estado, não rota) · Interaction Primitives (tap 1-frame pressed pair) · Accessibility Floor (anel focus; sem pressão de tempo) · Key Flows (Dora §6 Quit sem culpa) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:60px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px;z-index:3}
+.board{margin-top:64px;background:#1A1D23;border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;opacity:.55}
+.tile{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-weight:800;font-size:28px}
+.t1{background:#EFE3C2;color:#1C1206}.t3{background:#E4A53B;color:#1C1206}.t12{background:#C96E2E;color:#1C1206}.t48{background:#6E5A45;color:#F6F0E1}.t192{background:#28A074;color:#1C1206}.t6{background:#E08532;color:#1C1206}
+.scrim{position:absolute;inset:0;background:rgba(12,14,17,.70);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;gap:10px}
+.card{width:100%;max-width:330px;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:24px 16px;box-shadow:0 12px 32px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:10px}
+.card h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700;text-align:center}
+.card p{font-size:13px;color:#A39C8F;text-align:center}
+.btn{min-height:48px;border-radius:12px;font-size:17px;font-weight:700;border:none;cursor:pointer}
+.primary{background:#E8A33D;color:#1C1206;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.secondary{background:#2B2F38;color:#F2EEE3;border:1px solid #3A3F49}
+.note{font-size:13px;color:#A39C8F;text-align:center}
+.caption{font-size:13px;color:#A39C8F;max-width:360px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <div class="board">
+    <div class="tile t192">192</div><div class="tile t48">48</div><div class="tile t12">12</div><div class="tile t3">3</div>
+    <div class="tile t48">48</div><div class="tile t12">12</div><div class="tile t6">6</div><div class="tile t1">1</div>
+    <div class="tile t12">12</div><div class="tile t6">6</div><div class="tile t3">3</div><div class="tile t1">1</div>
+    <div class="tile t48">48</div><div class="tile t6">6</div><div class="tile t3">3</div><div class="tile t1">1</div>
+  </div>
+  <div class="scrim"><div class="card">
+    <h2>Pausa · Paused</h2>
+    <p>Pontuação 1.284 · Score 1,284 — Iniciante</p>
+    <button class="btn primary">Continuar · Resume</button>
+    <button class="btn secondary">Recomeçar · Restart</button>
+    <button class="btn secondary">Sair · Quit</button>
+  </div><div class="note">Puro: sem ajustes aqui · Pure: no settings here</div></div>
+</div></div>
+<div class="caption"><b>key-pause</b> — pause puro sobre board congelado: Resume / Restart / Quit, nada mais.</div>
+</body>
+</html>

@@ -1,9 +1,9 @@
 ---
 title: 'Game Architecture'
 project: '3-clone'
-date: '2026-08-07'
+date: '2026-09-05'
 author: 'Eduardo'
-version: '1.0'
+version: '1.1'
 stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 status: 'complete'
 engine: 'React Native 0.86 + @shopify/react-native-skia 2.11 (Expo SDK 57)'
@@ -43,9 +43,14 @@ This architecture document is being created through the GDS Architecture Workflo
 **Project Structure:** Domain-driven organization with 15 core systems mapped
 to explicit locations and hard architectural boundaries.
 
-**Implementation Patterns:** 7 patterns defined (3 novel — Adaptive Spawn
-Resolver, Lane Wall, Ambiguous Preview) plus a feel data model, ensuring AI
-agent consistency.
+**Implementation Patterns:** 7 standard + 5 novel defined (Adaptive Spawn
+Resolver, Lane Wall + label provenance, Ambiguous Preview + 16pt/chip/no-feel,
+Guaranteed VO Path, Deterministic Input Edge) plus feel data model with bloom
+ceiling, ensuring AI agent consistency.
+
+**UX Delta 2026-09-04 (D-008):** Custom Actions + D-pad isolado em `src/a11y`,
+Pan só no board, banda landscape 56pt congelada, chrome state contract global,
+RM como preset total — E1/E8/E9 como acceptance-device, não invariantes CI.
 
 **Ready for:** implementation via the S1.1 spike (engine port + Skia board +
 CI benchmark).
@@ -73,7 +78,7 @@ CI benchmark).
 |---|---|---|
 | Rules Engine (TypeScript) | High | Single source of truth; 26 tests; UI never duplicates rules |
 | Skia Rendering + Animation | High | 60 FPS sustained; slide/merge/spawn driven by engine per-tile trace |
-| Adaptive Spawn | Medium | Tiered pot by ceiling; fixed 40/40 1/2; configurable halving-decay curve |
+| Adaptive Spawn | Medium | Tiered pot by ceiling (48 base); 1/2 auto-balanced w1=40-4Δ clamp [8,72] (D-018); configurable halving-decay curve |
 | Two Lanes + Persistence | Medium | Lane rules, per-lane local leaderboards, lane memory |
 | Monetization | High | Rewarded ads (undo/continue), IAP (hint/undo/no-ads); nothing alters rules |
 | Game Feel | Medium | Scaled haptics, visual punch, shake, bullet time; Reduced Motion aware |
@@ -453,6 +458,33 @@ bundled via expo-asset. No CDN, offline self-contained (GDD constraint).
   feel layer; frame math pure and host-testable.
 - **ADR-06 Deterministic undo:** immutable snapshots include PRNG state, so
   undo is a true rewind and seeded runs (v2 Daily Puzzle) stay reproducible.
+- **ADR-07 VoiceOver guaranteed path (D-008):** per-direction Custom Actions
+  + isolated `a11y-input` D-pad active only with VO; three-finger stays
+  shortcut; action moves call the same `move()` (`ok | rejected`).
+- **ADR-08 Input determinism (D-008):** dominant-axis lock at activation until
+  `onEnd`; in-flight swipe = rejected silent noop; `~20pt` threshold;
+  `Gesture.Pan` mounted on board view only, preview/pause outside hit-rect,
+  no `simultaneousHandlers`, first-finger-wins; `input.buffer: off |
+  single-300ms` (off default).
+- **ADR-09 Frozen landscape HUD (D-008):** 56pt single-row band
+  (score+best left, preview center-right, pause far right); preview 16pt +
+  PRÓX chip (never ≥18pt, ratio ≥1.35x); caption 12pt/600; 12pt preview↔pause
+  gap, swipe-rect = board + 8pt with ≥12pt exclusion.
+- **ADR-10 Chrome contract (D-005/D-008):** pressed = fill+shadow pair;
+  focus = double ring 2px accent + 1px scrim; disabled only on consumed offer
+  (40%, no shadow); toggle off = muted edge + I/O glyph; leaderboard loading =
+  skeleton rows.
+- **ADR-11 Feel ceiling + bridge (D-008):** bloom ≤12% width / ≤35% opacity,
+  transient, never over chrome, off in RM; RM gates the whole feel layer
+  (shake, bullet, flash, overshoot, glow, fade) keeping haptics+sound, and is
+  the 60 FPS fallback; Skia→UIAccessibility bridge (board labels from engine
+  trace, chrome from i18n); announcement order score→preview→best; noop
+  silent + one throttled hint per session for undelivered gestures.
+- **Device acceptance (E1/E8/E9, not CI invariants):** outdoor best 30cm @80%,
+  1/60s bloom photo with 4 neighbors legible, 48-vs-96 @40cm + grayscale,
+  6-digit no-clip, 384 re-check.
+
+**Sources (delta 2026-09-04):** `_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-09-04/EXPERIENCE.md`, `DESIGN.md`, `validation-report.md`, `review-hud.md`, `review-input.md`.
 
 ---
 
@@ -545,6 +577,20 @@ type EngineEvent =
 **Activation:** dev gesture (shake / long-press on logo). **Never compiled into
 release builds.** (Production observability is telemetry, per GDD.)
 
+### Cross-cutting Amendments (D-008)
+
+- **Input como Result (negrito): `rejected` NÃO é erro** — gesto cancelado,
+  release off-board resolvido, segundo dedo, swipe in-flight = `rejected`
+  silencioso, sem turno, sem spawn, sem log ERROR/WARN.
+- **Proveniência de labels:** tile labels leem `engine.grid[r][c]` + trace
+  (`TilesMerged.from.length ≥ 2`); chrome lê i18n catalog.
+  `// NUNCA: accessibilityLabel="Tile 3" hardcoded`.
+- **RM como preset:** `reducedMotion` desliga shake/bullet/flash/overshoot/glow/
+  fade, mantém haptics+som; fallback 60 FPS.
+- **Chrome global (7 com `focusRing`):** button, pause-button, lane-card,
+  menu-item, leaderboard-tab, settings-row, settings-toggle — pressed
+  fill+shadow, double ring 2px accent + 1px scrim, skeleton no leaderboard.
+
 ---
 
 ## Project Structure
@@ -568,7 +614,13 @@ triade/
 │   │   ├── config/              # spawnConfig.ts (curve), constants.ts
 │   │   └── events.ts            # typed EngineEvent (discriminated)
 │   ├── game/                    # orchestration: state machine, undo stack, lanes
+│   │                            # + input.ts (dominant-axis, reject, buffer flag — pure)
+│   ├── a11y/                    # D-008 first-class VO path (top-level domain)
+│   │   ├── customActions.ts     # per-direction UIAccessibilityCustomAction (i18n names)
+│   │   ├── Dpad.tsx             # accessible D-pad, mounted only when VO active
+│   │   └── bridge.ts            # Skia→UIAccessibility: tile labels from engine trace
 │   ├── render/                  # Skia board — declarative, derived from trace
+│   │                            # + board/BoardGestureView.tsx (Pan lives HERE, never Screen)
 │   ├── feel/                    # worklet effects — particles, shake, bullet time
 │   ├── ui/                      # RN views: HUD, lane select, tone, game-over, settings
 │   ├── services/                # app layer: native SDKs
@@ -602,7 +654,9 @@ triade/
 | Render (Skia) | `src/render` | Declarative board from trace; **tile overshoot/snap** |
 | Feel effects | `src/feel` | Imperative worklets: **flash, particles, shake, slow-mo** |
 | HUD/UI | `src/ui` | Views; a11y; i18n |
-| Screen-state machine | `src/game` | Flow; lanes; undo stack |
+| Screen-state machine | `src/game` | Flow; lanes; undo stack; `input.ts` pure contract |
+| A11y input (D-008) | `src/a11y` | Custom Actions + D-pad (VO-only) + Skia bridge; labels from trace |
+| Board gesture (D-008) | `src/render/board/BoardGestureView` | Pan mounted here only; preview/pause outside hit-rect |
 | Monetization | `src/services/monetization` | RevenueCat/AdMob gateways |
 | Telemetry | `src/services/telemetry` | Firebase observer |
 | Audio | `src/services/audio` | expo-audio observer |
@@ -713,6 +767,11 @@ leaderboard routed on match end.
 reads the app state to decide ad/IAP offers — **never to the engine**. The
 engine sees only the atomic contract.
 
+**Label provenance (D-008):** board labels (tile value+position, merge,
+noop, spawn, score) come from engine trace; chrome labels (buttons, tabs,
+banners, reward copy) come from i18n catalog. UI never hardcodes a tile
+label.
+
 **Implementation Guide:**
 ```ts
 type LaneProfile =
@@ -753,6 +812,72 @@ function previewFor(pending: PendingSpawn): Preview {
 
 **Usage:** HUD only, both lanes (strategy info, not a learning aid).
 
+**Display contract (D-008):** landscape `valueSize` 16pt + `PRÓX` chip (never
+≥18pt, ratio score:preview ≥1.35x); portrait 20pt. The preview card **never
+animates with feel effects** — chrome, not board. Announcement follows
+score→preview→best.
+
+#### N4 — Guaranteed VO Path (D-008)
+
+**Purpose:** VoiceOver move can never depend on a system-reserved gesture
+alone — a guaranteed path always exists.
+
+**Components:**
+- `src/a11y/customActions.ts` — per-direction `UIAccessibilityCustomAction`
+  (`Mover para cima/baixo/esquerda/direita`, i18n names); rotor announces
+  "actions available".
+- `src/a11y/Dpad.tsx` — accessible D-pad, mounted only when
+  `UIAccessibilityIsVoiceOverRunning`.
+- `src/a11y/bridge.ts` — Skia→UIAccessibility per-tile elements
+  (`tile {v}, row {r}, column {c}` from engine grid).
+
+**Data Flow:** action/D-pad/three-finger → same `move(state, dir)` →
+`ok | rejected` → announcements from trace (merge via `from.length ≥ 2`,
+score on merge throttled, spawn, game-over, record). Noop stays silent; an
+undelivered gesture earns one throttled hint per session (light haptic + one
+verbal tip).
+
+**State Management:** stateless adapters; board truth stays in the snapshot.
+
+**Implementation Guide:**
+```ts
+boardElement.addAction('move-up', () => move(state, 'up')) // same move()
+```
+
+**Usage:** E9 acceptance — complete 3 moves by actions only, with VO on
+(device, not CI). CI mirror: `__tests__/a11y/customActions` calls `move()`
+3x with VO mocked.
+
+#### N5 — Deterministic Input Edge (D-008)
+
+**Purpose:** every swipe resolves identically no matter which agent binds it.
+
+**Components:**
+- `src/game/input.ts` — pure: `lockAxis(dx,dy)`, `thresholdPt ~20`,
+  `resolveInFlight → rejected`, `input.buffer: off | single-300ms`.
+  **Pure — no RN/gesture imports; binding lives in `BoardGestureView`.**
+- `src/render/board/BoardGestureView.tsx` — the ONLY `Gesture.Pan` mount;
+  preview/pause outside hit-rect, no `simultaneousHandlers`, first-finger-wins.
+
+**Data Flow:** Pan activate → dominant-axis lock (`|dx|>|dy|` → horizontal
+else vertical, frozen until `onEnd`) → threshold check → `move()` or silent
+noop → never a mid-animation mutation.
+
+**State Management:** no state; `input.buffer` is config data (off default;
+single-slot 300ms only if playtest demands).
+
+**Implementation Guide:**
+```ts
+function onPanActivate(dx: number, dy: number) {
+  return Math.abs(dx) > Math.abs(dy) ? 'h' : 'v' // locked until onEnd
+}
+// in-flight swipe → { ok: false, reason: 'locked' } — silent, no turn, no spawn
+```
+
+**Usage:** acceptance — 8-direction + 4 exact-diagonal matrix; 50 top-third
+swipes never fire pause (device). CI covers pure `lockAxis` + `previewFor`
+only.
+
 ### Feel Data Model
 
 **`FeelPreset`** — feel is **data, not code**. Per tier band:
@@ -767,8 +892,13 @@ type FeelPreset = {
 const FEEL_PRESETS: Record<TierBand, FeelPreset> = { ... }
 ```
 - `presetFor(value)` is a **pure, tested** function — no logic inside presets.
-- **Reduced Motion is a preset**, not a flag (reduces shake, cuts flash/slow-mo,
-  keeps haptics + sound).
+- **Reduced Motion is a preset**, not a flag — it gates the **whole feel
+  layer** (shake, bullet 200ms, flash/particles, overshoot-and-snap, `1536+`
+  glow, game-over soft fade) **while keeping haptics + sound**; it is also the
+  sanctioned 60 FPS fallback profile.
+- **`1536+` bloom ceiling (D-008):** outer ≤12% tile width, ≤35% opacity,
+  transient with the merge splash, never over preview/score, off entirely in
+  RM. Acceptance: 1/60s photo keeps the bright tile + 4 neighbors legible.
 - The benchmark **sweeps every preset** (full and reduced profiles).
 - **`sessionBestMerge` lives in the snapshot** — bullet time fires only on a new
   session record; undo rewinds it with the board.
@@ -840,26 +970,29 @@ const label = t('lane.beginner')        // i18n, never inline
 
 | Check | Result | Notes |
 |---|---|---|
-| Decision Compatibility | PASS | Engine purity + patterns + cross-cutting align; no conflicts |
-| GDD Coverage | PASS | All core systems + technical requirements supported |
-| Pattern Completeness | PASS | Creation, communication, state, error, data, events |
-| Epic Mapping | PASS | All 11 epics mapped to locations + patterns |
-| Document Completeness | PASS | Executive summary added; stale section updated |
+| Decision Compatibility | PASS | Engine purity + patterns + cross-cutting align; D-008 no conflicts |
+| GDD Coverage | PASS | All core systems + technical requirements; device as explicit acceptance |
+| Pattern Completeness | PASS | Creation, communication, state, error, data, events; 5 novel documented |
+| Epic Mapping | PASS | All 11 epics mapped (E9 → `src/a11y`, E7 → preview + input, E8 → presets) |
+| Document Completeness | PASS | v1.1 delta saved; zero placeholders |
 
 ### Coverage Report
 
-**Systems Covered:** 15/15
-**Patterns Defined:** 7 (3 novel + 4 standard) + feel data model
-**Decisions Made:** 11
+**Systems Covered:** 15/15 (+ `src/a11y`, `BoardGestureView`, `game/input.ts`)
+**Patterns Defined:** 7 standard + 5 novel + feel data model
+**Decisions Made:** 11 ADRs (ADR-01..06 + ADR-07..11 D-008)
 
 ### Issues Resolved
 
 1. Missing executive summary → added (2-3 sentences).
 2. Stale "Remaining Architectural Decisions" (Step 3) → repointed to Step 4 resolutions.
+3. UX 2026-09-04 drift → ADR-07..11, cross-cutting amendments, `src/a11y`
+   domain, N4/N5 novel patterns, frozen landscape HUD, bloom ceiling + RM
+   preset total (v1.1, 2026-09-05).
 
 ### Validation Date
 
-2026-08-07
+2026-09-05 (v1.1 revalidation; original 2026-08-07)
 
 ---
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Tutorial (3 guided moves)</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (areia #EFE3C2 vs ocre #C9963B legíveis de relance — regra GDD) · Typography (body 17/500 instrução; tile 32/800) · Components (prompt-banner accent edge; button secundário Pular) · Elevation & Depth (feel layer só no board; banner raised)
+   EXPERIENCE.md: Information Architecture (Tutorial: 3 guided moves, 1+2 primeiro, skippable) · Component Patterns (prompt/banner contextual Iniciante) · Voice and Tone (instrui e sai do caminho; sem hype) · State Patterns (Tutorial active; tap-through libera o board) · Key Flows (Lia §3-4 + failure branch; E5/S5.1) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:60px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px}
+.steps{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.steps i{width:32px;height:3px;border-radius:9999px;background:#3A3F49}
+.steps i.on{background:#E8A33D}
+.banner{background:#2B2F38;border-left:2px solid #E8A33D;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:500;line-height:1.5;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.banner small{display:block;color:#A39C8F;font-size:13px;margin-top:4px}
+.board{margin-top:12px;background:#1A1D23;border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{background:#262A31;border-radius:6px;aspect-ratio:1}
+.tile{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-weight:800;font-size:32px;box-shadow:0 2px 0 rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.35)}
+.guide{outline:2px solid #E8A33D;outline-offset:2px}
+.t1{background:#EFE3C2;color:#1C1206}.t2{background:#C9963B;color:#1C1206}.t3{background:#E4A53B;color:#1C1206}.t6{background:#E08532;color:#1C1206}
+.arrow{position:relative;text-align:center;font-size:13px;color:#E8A33D;margin:8px 0 0;font-weight:700}
+.row3{display:flex;gap:8px;margin-top:12px}
+.move{flex:1;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:12px;font-size:13px;color:#A39C8F;line-height:1.5}
+.move b{display:block;color:#F2EEE3;font-size:13px;margin-bottom:4px}
+.move.done{border-color:#E8A33D}
+.skip{margin-top:auto;min-height:48px;background:#2B2F38;border:1px solid #3A3F49;color:#F2EEE3;border-radius:12px;font-size:17px;font-weight:500}
+.caption{font-size:13px;color:#A39C8F;max-width:360px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <div class="steps"><i class="on"></i><i></i><i></i></div>
+  <div class="banner">Junte <b>1 + 2</b> — só eles se fundem.<br><small>Merge <b>1 + 2</b> — only they fuse. · Passo 1 de 3</small></div>
+  <div class="arrow">← deslize · swipe</div>
+  <div class="board">
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="tile t1 guide">1</div><div class="tile t2 guide">2</div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+  </div>
+  <div class="row3">
+    <div class="move done"><b>1 · 1+2 primeiro</b>Regra contraintuitiva antes de tudo.</div>
+    <div class="move"><b>2 · mover 1 casa</b>Cada gesto anda uma célula.</div>
+    <div class="move"><b>3 · 3+3 vira 6</b>Iguais se fundem a partir do 3.</div>
+  </div>
+  <button class="skip">Pular · Skip</button>
+</div></div>
+<div class="caption"><b>key-tutorial</b> — 3 guided moves, regra 1+2 primeiro; Pular libera o board na hora.</div>
+</body>
+</html>

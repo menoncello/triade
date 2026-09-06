@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Game landscape HUD</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Typography (score-landscape 22/700, caption-landscape 11/500; stepped 24/18/13 em tiles ~44pt) · Layout & Spacing (landscape D-006: thin top edge band, 16pt safe margins, board maximizado na dimensão curta) · Colors (tiers + ink) · Elevation & Depth (board recessed; preview raised) · Components (tile, preview-card chip, pause-button top-right)
+   EXPERIENCE.md: Responsive & Platform (landscape first-class D-006; nada morre, tudo encolhe) · HUD & Diegetic UI (banda fina: score+best esq., preview dir., pause oposto) · Interaction Primitives (swipe RNGH, one-thumb) · Accessibility Floor (targets 44; numeral fixo legível no tile mínimo) · Key Flows (Dora §3) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:844px;max-width:96vw;height:420px;background:#23262D;border-radius:44px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:34px;overflow:hidden;display:flex;flex-direction:column;padding:12px 16px}
+.band{display:flex;align-items:center;gap:12px}
+.score{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700}
+.best{font-size:11px;color:#A39C8F}
+.preview{margin-left:auto;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:6px 12px;font-size:11px;color:#A39C8F;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.preview b{color:#E8A33D;font-size:15px;margin-left:6px}
+.pause{width:44px;height:44px;min-width:44px;background:#2B2F38;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.main{flex:1;display:flex;gap:12px;margin-top:10px;min-height:0}
+.board{flex:1;background:#1A1D23;border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(2,1fr);gap:8px}
+.tile{border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-weight:800;font-size:18px;box-shadow:0 2px 0 rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.35)}
+.t1{background:#EFE3C2;color:#1C1206}.t2{background:#C9963B;color:#1C1206}.t3{background:#E4A53B;color:#1C1206}.t6{background:#E08532;color:#1C1206}.t12{background:#C96E2E;color:#1C1206}.t24{background:#A2521F;color:#F6F0E1}.t48{background:#6E5A45;color:#F6F0E1}.t96{background:#4E5560;color:#F6F0E1}.t192{background:#28A074;color:#1C1206}.t384{background:#157A5C;color:#F6F0E1}.t768{background:#0E3B2E;color:#F6F0E1}.t1536{background:#FFD9A0;color:#1C1206;box-shadow:0 2px 0 rgba(0,0,0,.35),0 0 18px 2px rgba(255,237,196,.5)}
+.cell{background:#262A31;border-radius:6px}
+.side{width:150px;display:flex;flex-direction:column;justify-content:center;gap:8px;font-size:11px;color:#A39C8F;line-height:1.6}
+.side b{color:#F2EEE3}
+.caption{font-size:13px;color:#A39C8F;max-width:560px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="band"><div><div class="score">1.284</div><div class="best">Best · Pura · 1.536</div></div>
+    <div class="preview">Próxima · Next<b>1 / 2</b></div><div class="pause">⏸</div></div>
+  <div class="main">
+    <div class="board" style="grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)">
+      <div class="tile t1536">1536</div><div class="tile t192">192</div><div class="tile t48">48</div><div class="tile t12">12</div>
+      <div class="tile t384">384</div><div class="tile t96">96</div><div class="tile t24">24</div><div class="tile t6">6</div>
+      <div class="tile t96">96</div><div class="tile t48">48</div><div class="tile t12">12</div><div class="tile t3">3</div>
+      <div class="tile t24">24</div><div class="tile t6">6</div><div class="tile t2">2</div><div class="cell"></div>
+    </div>
+    <div class="side"><div><b>Movimento 52</b> · Move 52</div><div>Banda fina · thin band<br>22pt score · 11pt best</div><div>Nada morre em landscape — tudo encolhe.</div></div>
+  </div>
+</div></div>
+<div class="caption"><b>key-game-landscape</b> — HUD thin top band: score+best à esq., preview à dir., pause top-right; board domina.</div>
+</body>
+</html>

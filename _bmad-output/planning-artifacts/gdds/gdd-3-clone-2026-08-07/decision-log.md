@@ -90,3 +90,9 @@
 - **Decision:** Story 1.2 delivers best-score tracking **in-memory only** (`src/game/matchScore.ts`, pure orchestration state). App-storage persistence (AsyncStorage/MMKV decision from the spike benchmark) ships in **Story 1.4** (FR-4 / Epic 1 AC). This is an intentional refinement of the epic AC ("best score persists" → in-memory now, persisted in 1.4), not a dropped requirement.
 - **Rationale:** Keeps Story 1.2 (engine parity proof + score state) free of a storage dependency; persistence is bundled with the offline/persistence story where storage infrastructure lands.
 - **Status:** Closed
+
+## D-018 — Auto-balance 1/2 aprovado (addendum pós-readiness 2026-09-06)
+- **Date:** 2026-09-06
+- **Decision:** RN app usa `w1 = 40 − 4·(count1−count2)`, `w2 = 40 + 4·(count1−count2)`, clamp [8,72], `w1+w2=80` sempre (Epics FR6/S2.2). Web PWA congelada segue 40/40 fixo.
+- **Rationale (P1/P3 + fairness):** evita entupimento do majoritário sem par (P1 controle); não é "ajuda" direcionada — só reequilibra 1 vs 2, nunca toca pot 20%, merge, score ou ceiling tiers (P3). Fairness preservada: spawn continua sem ler intenção, só contagem 1/2.
+- **Status:** Closed
