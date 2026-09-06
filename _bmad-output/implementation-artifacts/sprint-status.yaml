@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-09-06 00:50
-last_updated: 2026-09-06 00:50
+last_updated: 2026-09-06
 project: 3-clone
 project_key: NOKEY
 tracking_system: file-system
@@ -121,7 +121,7 @@ development_status:
   10-3-funil-de-receita: done
   10-4-gdpr-consent-mode-att-prompt: done
   10-5-privacy-policy-publica: done
-  10-6-gate-de-calibracao-da-curva-dono-eduardo: awaiting-operator
+  10-6-gate-de-calibracao-da-curva-dono-eduardo: done
   epic-10-retrospective: optional
 
   epic-11: done

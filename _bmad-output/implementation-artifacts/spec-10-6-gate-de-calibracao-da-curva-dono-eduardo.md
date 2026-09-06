@@ -2,7 +2,7 @@
 title: '10-6 Gate de calibracao da curva (dono: Eduardo)'
 type: 'feature'
 created: '2026-09-06'
-status: 'awaiting-operator'
+status: done
 baseline_revision: 272efcd91b86d58106e27639c8aac20ba682c599
 final_revision: 20b91aa8e4152c485bbac25aac3a0b5f2db39607
 review_loop_iteration: 0
@@ -105,3 +105,14 @@ Review: 2 patches applied (null-summary tolerance, positive-value guard), 1 defe
 Verification: calibration-gate 12/12 pass, spawn-config 8/8 pass, `npx tsc --noEmit` clean; `git status` confirms nothing under `triade/src/engine/core/` and no `sprint-status.yaml` write. Full-suite `preview-availability.integration.test.ts` failure is pre-existing and unrelated (deferred as DW-114).
 
 Residual risks: gate verdicts are only as good as the operator-supplied dashboard summaries; no automated telemetry feed exists yet (10.2/10.3 pipeline not present in repo).
+
+## Operator Confirmation
+
+Confirmed 2026-09-06: the external actions this story owed were carried out.
+
+- Abrir os dashboards de telemetria (eventos 10.2/10.3) e extrair first-merge p50, first-gameover p50 e max-tile mediana da mesma janela de analise.
+- Preencher o baseline de playtest (max-tile mediana) em docs/decisoes/calibracao-10-6-PADRAO.md a partir de dados reais — nao inventar numeros.
+- Rodar evaluateCalibrationGate com os resumos e registrar o veredito (ok | retune | unknown) no log de decisao.
+- Se veredito retune, decidir como Eduardo se retuna a curva editando SOMENTE triade/src/engine/config/spawnConfig.ts, revalidar com validateSpawnConfig mais testes e CI, e registrar antes/depois no log.
+
+_Appended by the bmad-loop orchestrator (`bmad-loop confirm`, #335): a human confirmed these external actions out of band, and the story was advanced from `awaiting-operator` to `done`._
