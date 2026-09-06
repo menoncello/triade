@@ -134,6 +134,7 @@ origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (202
 location: n/a
 reason: on-device frame-rate baseline
 status: open
+decision: 2026-09-06 Measure baseline now — Drive a seeded session on simulator or device through useFrameRateBaseline and record fps and p99 against DW-16 (shared with DW-32).
 
 ### DW-17: Trigger to resume:
 

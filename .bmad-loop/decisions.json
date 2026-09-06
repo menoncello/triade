@@ -7,5 +7,14 @@
     "key": "1",
     "label": "Run physical boot now",
     "resolution": ""
+  },
+  "DW-16": {
+    "answered_at": "2026-09-06",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Drive a seeded session on simulator or device through useFrameRateBaseline and record fps and p99 against DW-16 (shared with DW-32).",
+    "key": "1",
+    "label": "Measure baseline now",
+    "resolution": ""
   }
 }
