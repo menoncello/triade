@@ -214,7 +214,44 @@ test('[P0] AC7 — exact path is preserved (no regression) for every ladder valu
   }
 });
 
-// AC8/FR-44 — previewFor stays a pure projection: same input -> deep-equal output
+// ===== D-008 verification pass (story 7-2): null-input guards =====
+// previewFor is called unguarded from App.tsx with game.pendingSpawn, and
+// availablePotValues comes from a live ceiling chain — neither may throw.
+
+// AC2/D-008 — null/undefined pending degrades to a safe Preview, never throws.
+test('[P0] AC2 — previewFor(null) does not throw and returns a safe Preview', () => {
+  let p: unknown;
+  assert.doesNotThrow(() => {
+    p = previewFor(null);
+  });
+  assert.deepStrictEqual(p, { kind: 'exact', value: 0 });
+});
+
+test('[P0] AC2 — previewFor(undefined) does not throw and returns a safe Preview', () => {
+  let p: unknown;
+  assert.doesNotThrow(() => {
+    p = previewFor(undefined);
+  });
+  assert.deepStrictEqual(p, { kind: 'exact', value: 0 });
+});
+
+// AC2/D-008 — explicit-null availablePotValues falls back to the full ladder
+// (default parameters only apply to undefined, not null).
+test('[P0] AC2 — previewFor(validPending, null) does not throw and falls back to the full ladder', () => {
+  let p: unknown;
+  assert.doesNotThrow(() => {
+    p = previewFor(pending(12, 0.9), null);
+  });
+  assert.strictEqual((p as { kind: string }).kind, 'range');
+  if ((p as { kind: string }).kind === 'range') {
+    const values = (p as { kind: 'range'; values: number[] }).values;
+    assert.ok(values.includes(12), 'null-ladder fallback window must contain the truth');
+    assert.ok(values.length >= 1 && values.length <= 3, 'null-ladder fallback window capped at 3');
+    assert.ok(isContiguousSlice(values), 'null-ladder fallback window is contiguous');
+  }
+});
+
+// AC8 — previewFor is deterministic: identical input yields deep-equal output
 // and no engine roll imports. (Purity of the module against the resolver is owned
 // by 7.4's hard invariant; this is the 7.3 smoke pin.)
 test('[P0] AC8 — previewFor is deterministic: identical input yields deep-equal output', () => {

@@ -1015,3 +1015,10 @@ status: done 2026-09-06
 resolution: resolved by sweep bundle dw-preview-availability-sync
 resolution-undo: d8b884cad67ef72339f150e65c0e8bbaef3474f8a067d6af73642a880c1bdcad 2026-09-06 7374617475733a206f70656e
 source_spec: `_bmad-output/implementation-artifacts/spec-10-6-gate-de-calibracao-da-curva-dono-eduardo.md`
+
+- source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
+  summary: previewFor dereferences pending before validating it, so a null/undefined pendingSpawn crashes the HUD instead of degrading
+  evidence: triade/src/game/preview.ts:103-104 Number.isFinite(pending.displayRoll) throws on null/undefined; call site triade/App.tsx:1179-1180 passes game.pendingSpawn unguarded, while Hud FALLBACK_PREVIEW only covers missing previews prop
+- source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
+  summary: explicit-null availablePotValues bypasses the default and throws on indexOf
+  evidence: triade/src/game/preview.ts:59,98 availablePotValues.indexOf(value); default parameter only applies to undefined, not null

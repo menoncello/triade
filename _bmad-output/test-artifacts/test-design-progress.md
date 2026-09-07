@@ -4,69 +4,42 @@ totalSteps: 5
 stepsCompleted: ['step-01-detect-mode', 'step-02-load-context', 'step-03-risk-and-testability', 'step-04-coverage-plan', 'step-05-generate-output']
 lastStep: 'step-05-generate-output'
 nextStep: ''
-lastSaved: '2026-09-02'
-inputDocuments:
-  - '_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md'
-  - '_bmad-output/implementation-artifacts/epic-9-context.md'
-  - '_bmad-output/implementation-artifacts/deferred-work.md'
-  - '_bmad-output/implementation-artifacts/sprint-status.yaml'
-  - 'triade/src/a11y/announcements.ts'
-  - 'triade/src/a11y/boardAccessibility.tsx'
-  - 'triade/src/a11y/screenReaderGestures.ts'
-  - 'triade/App.tsx'
-  - 'triade/src/ui/ToneScreen.tsx'
-  - 'triade/src/render/GameBoard.tsx'
-  - 'triade/__tests__/a11y/screenReader.contract.test.tsx'
-  - '_bmad/tea/config.yaml'
+lastSaved: '2026-09-07'
 ---
 
-# Test Design Progress — dw-overlay-carriers-hardening
+# Test-design progress — Story 7.2 preview-card-no-hud-60-40-nas-duas-pistas
 
-Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `67a1b51 fix(ui): harden GameOverOverlay carriers (DW-91/92/101/102)` vs `58e036c` — 3 files `410/14` — `triade/src/ui/GameOverOverlay.tsx` clampInset + SAFE_MARGIN×4, reactive reducedMotion re-target (stopAnimation+setValue+anim 280/80/cubic/native) + cleanup mid-fade, numberOfLines tail flexShrink:1 textAlign:right on 5 Texts + label flexShrink:0 row fix, `overlayCarriers.integration.test.ts` 4 zIndex/clamp/overflow/reducedMotion+unmount pins. Output is `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md` (mirrored to `test-design/test-design-dw-overlay-carriers-hardening.md`).
+## Step 1 — Detect mode
 
-Prior bundles: dw-persist-hydration-race-fix still archived as `_bmad-output/test-artifacts/test-design-dw-persist-hydration-race-fix.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
----
+- **Mode: Epic-Level.** Story spec `7-2-preview-card-no-hud-60-40-nas-duas-pistas.md` carries 7 acceptance criteria;
+  sprint-status.yaml exists (orchestrator-owned, read-only, not modified).
+- Prerequisites present: story ACs, `triade/src/game/preview.ts`, `triade/src/ui/PreviewCard.tsx`,
+  `triade/src/ui/Hud.tsx`, `triade/App.tsx` wiring, `preview.test.ts` (26 pins), component tests.
 
-# Test Design Progress — dw-board-shake-width-hardening
+## Step 2 — Load context
 
-Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `e3c4155 sweep dw-board-shake-width-hardening: DW-107, DW-110` vs `e3c52ae` — 2 production files `+150/-10` — `triade/src/render/GameBoard.tsx` safeWidth guard `Math.max(1, Number.isFinite(width)?width:1)` + 5 style sites on safeWidth + `onShakeActiveChange` callback `shakeNotifyTimerRef 130ms` with `scheduleShakeVisible/cancelShakeNotify` symmetric branches + `triade/App.tsx` `isBoardShaking` state + `boardWrap overflow:visible` conditional. Output is `_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md` (mirrored to `test-design/test-design-dw-board-shake-width-hardening.md`).
+- Config: `_bmad/tea/config.yaml` (test_artifacts `_bmad-output/test-artifacts`,
+  test_design_output `_bmad-output/test-artifacts/test-design`, risk_threshold p1).
+- Persistent fact: `_bmad-output/project-context.md` (engine-puro, preview lê pendingSpawn 60/40,
+  nunca anima com feel, 26 testes engine gate, CI cobre puro / device cobre gesto-pixel).
+- Scope under review: D-008 delta (commit ee3ce91 — null guards in `previewFor` + 3 pins) against the
+  current tree. Working tree itself is clean except orchestrator-owned sprint-status.yaml, so the
+  committed 7.2 surface + D-008 delta is the review target. Production code NOT modified by this workflow.
+- Knowledge fragments: risk-governance, probability-impact, test-levels-framework, test-priorities-matrix.
+- NFR note: preview is HUD chrome (not hot path); full screen-reader bridge is Epic 9; feel layer is Epic 8.
 
-Prior bundle: dw-overlay-carriers-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`; dw-grid-size-configurable as `_bmad-output/test-artifacts/test-design-dw-grid-size-configurable.md`.
+## Step 3 — Risk & testability
 
----
+- Testability: STRONG — `previewFor` pure (no rng/Math.random/roll imports), host-testable; thin-view
+  boundary enforced by `ui.thinview` / `ui.norolls` / `ui.purity` guards; pinned layout markers.
+- 7 risks scored (P×I). Highest: R-002 and R-003 at 4 (MEDIUM). No risk ≥ 6, no score-9 blocker.
+- See final document for the full matrix.
 
-# Test Design Progress — 9-2-screen-reader-contract
+## Step 4 — Coverage plan
 
-Epic-Level (Phase 4) deep-dive. Working-tree delta is `6576273` → `HEAD` (b9db712 + 7832d3c/417549b spec finalisation) — 17 files `+825/-56` — 3 new `src/a11y/*` modules (`announcements.ts` announceForAccessibilityWithOptions queue+500ms throttle, `boardAccessibility.tsx` overlay 4×4 GRID=4 PAD=8 GAP=8 safeWidth, `screenReaderGestures.ts` isThreeFingerMove + useScreenReaderEnabled), `App.tsx` pan gate (screenReaderEnabledRef → isThreeFingerMove → doMove, single-finger reserved) + announcement wiring (coalesced merge 1/move, spawn, score throttled, gameOver/newRecord), `ToneScreen.tsx` pause (`paused=voiceOverActive||announcementPending`, 2s timer + 5s fallback, announcementFinished), 8 chrome files `allowFontScaling+flexWrap/minHeight`, `en.json/pt.json:63` a11y keys, `screenReader.contract.test.tsx` 13 P0 tests. Output is `_bmad-output/test-artifacts/test-design/test-design-epic-9-2-screen-reader-contract.md` (mirrored to `test-design-9-2-screen-reader-contract.md`).
-
-Prior bundles: dw-board-shake-width-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-board-shake-width-hardening.md`; dw-overlay-carriers-hardening as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`.
----
-
-# Test Design Progress — 9-4-temas-light-dark-e-color-blind
-
-Epic-Level (Phase 4) deep-dive. Working-tree delta is `568987a feat(9-4): temas light/dark e color-blind` vs baseline `fde6f8f` (10 files 539 ins) plus working-tree docs `a80ae0e spec final_revision + sprint-status 9-4 backlog→done`; no uncommitted production delta (`git diff HEAD --stat` 2 docs). Delta: `triade/src/theme/index.ts` NEW pure-data `THEMES dark/light/colorBlind` frozen (`CHROME_DARK #23262D…#E8A33D/#1C1206`, `CHROME_LIGHT #F6F0E1…#8A4E00/#FFFFFF` warm off-white, `colorBlind` re-uses dark ramp shape carries) 13 tiers `TILE_HEXES_DARK/TILE_INK_DARK`, `isThemeId/themeFor/tileFillFor/tileInkFor resolveTile` capped `3072+`; `tileNumerals.ts` theme-aware optional `themeId` delegates to `THEMES` fallback dark; `GameBoard theme prop` reads `THEMES[theme].chrome.board/accent/cell`; `schema.ts` `ThemeId/THEME_IDS` fallback `dark`; `App.tsx` `themeId/tokens` + `handleThemeChange` + `GameBoard theme` + container `tokens.chrome.surface`; `LaneSelectScreen` 3 `Pressable dark/light/colorBlind` `Claro/Escuro/Daltônico` `HIT_TARGET 44` accent `#E8A33D/#1C1206 8.55`; `tileContrast.allThemes.audit.test.ts` 3 WCAG all-themes + `tileTheme.test.ts` 4 mapping/fallback; `python` cross-check `384 4.65` + light `muted on board 4.75` `dark accentInk 8.55/light white 6.62`. Output is `_bmad-output/test-artifacts/test-design-9-4-temas-light-dark-e-color-blind.md` (mirrored to `test-design/test-design-9-4-temas-light-dark-e-color-blind.md`).
-
-Prior: 9-3 dark canonical `_bmad-output/test-artifacts/test-design-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md` remains.
-
----
-
-# Test Design Progress — dw-gameover-hardware-back-handler
-
-Epic-Level (Phase 4) sweep-bundle deep-dive. Working-tree delta is `6335c41 → HEAD` working-tree (baseline `6335c4178ddb844283ce6fd533aef208904837c1` per `spec-gameover-hardware-back-handler.md`) — 2 production files `+21/-2` — `triade/src/ui/GameOverOverlay.tsx:2 BackHandler import + :84-95 useEffect(() => { handler () => true; sub=BackHandler.addEventListener('hardwareBackPress',handler); return () => sub.remove() / (as any)removeEventListener } ,[])` lifetime subscription tied to `{gameOver ? <GameOverOverlay/>:null}` sibling, `triade/test-utils/rn-stub.ts:102-105 BackHandler stub {add→{remove}, removeEventListener}`. Deferred-work `DW-95 5f794ee020c7ad819636f62a5b15cd2efb524f733191ac5ca13117f096dc4b00 2026-09-03` (open→done). Output is `_bmad-output/test-artifacts/test-design-dw-gameover-hardware-back-handler.md` (mirrored to `test-design/test-design-dw-gameover-hardware-back-handler.md`). R-001 BLOCK: `npx tsc --noEmit -p triade/tsconfig.test.json` currently `TS2339 removeEventListener` until fallback typed `as any` — must be ` (BackHandler as any).removeEventListener?.` before merge. Coverage: P0 6 groups (mount `hardwareBackPress→true`, `handler()===true` consume, unmount `remove()` 1, legacy `undefined`→`removeEventListener` 1, `gameOver=false→0`, `reducedMotion` independent), P1 7 groups (import + exact event name ×2 + `()=>true` + dual-path `as any` + `[]` deps + `rn-stub` surface + thin-view), P2/P3 5 groups (ledger `5f794ee…/deb5edf9…` + engine/layout empty + `t/a11yLabel` + thrash 3 cycles + manual Android `Expo Go` back `does nothing`). Host gate `<10 min` (`npx tsc` dual + `npm --prefix triade test -- __tests__/ui/components/gameOverOverlay.test.ts` 14+ pass + `npm --prefix triade test` full `980 pass 385 skipped` pre new file).
-
-Prior bundle: dw-overlay-carriers-hardening still archived as `_bmad-output/test-artifacts/test-design-dw-overlay-carriers-hardening.md`; dw-forfeited-continue-rng-reseed as `_bmad-output/test-artifacts/test-design-dw-forfeited-continue-rng-reseed.md`.
----
-
-# Test Design Progress — 10-6-gate-de-calibracao-da-curva-dono-eduardo
-
-Epic-Level (Phase 4). Working-tree delta is `20b91aa feat(10-6)` (+ `a071db1` frontmatter) vs baseline `272efcd` — 7 new files, 0 tracked modifications: `triade/src/engine/config/calibrationGate.ts` (pure `evaluateCalibrationGate`, thresholds 25s/210s/1-tier-drop, `unknown`-blocks-retune), `triade/__tests__/engine/calibration-gate.test.ts` (12 tests: breach×3, ok, missing→unknown, boundary, 1-vs-2 tiers, off-ladder, null, non-positive, invalid-candidate), `docs/calibracao-da-curva.md` (runbook), `docs/decisoes/calibracao-10-6-PADRAO.md` (OPERATOR template, no invented numbers). No `triade/src/engine/core/` touch; `sprint-status.yaml` untouched (10-6 stays `awaiting-operator` — orchestrator bookkeeping, not a defect). Evidence: `node --test calibration-gate` 12/12 pass, `spawn-config` 8/8 pass; full-suite `preview-availability` failure pre-existing DW-114. Output is `_bmad-output/test-artifacts/test-design/test-design-epic-10-6.md` (8 risks, 3 high: R-001 operator-summary error, R-002 future-retune invariant breakage, R-004 no automated feed; 19 scenarios P0 7 / P1 6 / P2 4 / P3 2; ~12-25h verification-heavy).
----
-
-# Test Design Progress — dw-preview-availability-sync
-
-Epic-Level (Phase 4). Working-tree delta is `1617827 fix(tests): sync preview-availability expectations with POT_LADDER_DELAY=2 (DW-114)` (committed) + 2 uncommitted bookkeeping edits (spec `status: done` + Auto Run Result; deferred-work DW-114 `status: done` + resolution pointer) — test-only, 0 production files touched: `triade/__tests__/integration/preview-availability.integration.test.ts` AC5 mapping synced to delay-2 ladder (24/48/96→[3]; 192→[3,6]; 384→[3,6,12]; 768→[3,6,12,24]) + AC4 widening slices shifted to 192/384/768; `sprint-status.yaml` untouched (orchestrator-owned). Evidence cited: target file 6/6 green, full triade suite 1012 pass / 0 fail / 426 skipped. Output is `_bmad-output/test-artifacts/test-design/test-design-dw-preview-availability-sync.md` (7 risks, 1 high residual: R-002 vacuous AC4 conditional assertions, mitigation T-P2-1 proposed not implemented; 6 P0 + 2 P1 suites + 4 P2 + 3 P3 follow-ups; re-verification ~0.5–1h, ~5.5–13h if all follow-ups scheduled).
----
-
-# Test Design Progress — 1-6-input-por-swipe-rngh-edge-cases-contract
-
-Epic-Level (Phase 4) story deep-dive (TEA `bmad-testarch-test-design`, 2026-09-06). Working tree carries no production diff (only orchestrator-owned `sprint-status.yaml` bookkeeping, untouched); assessment targets the shipped 1-6 input contract at `final_revision d7ee643` (story `awaiting-operator`). Inputs: story file (AC-1..AC-6 + review log D1/D2/P1-P8/Df1-Df5), `project-context.md`, `triade/src/ui/swipe.ts`, `App.tsx` gesture + `busyRef` gate, `GameBoard.tsx` early-input timer (84ms), `swipe.test.ts` (10), `ui.gesture.test.ts` (1), `render-gate-hardening.atdd.test.ts`. Output: `_bmad-output/test-artifacts/test-design/test-design-epic-1-6-input-por-swipe.md` — 10 risks (1 high: R-001 operator manual validation pending, P2×I3=6; 6 medium; 3 low), NFR planning (perf/reliability/maintainability + 1 UNKNOWN threshold), coverage P0 13 / P1 6 / P2 ~5 / P3 2, remaining effort ~5-11h (~1-2 days, device-gated). No production code modified.
+- P0: unit boundary/containment/purity/D-008 null pins + component chip/wiring/layout-marker pins
+  (all exist — verify green, no new tests proposed).
+- P1: real previewFor→Hud range wiring, distinct per-lane fixture, NOOP stability pin.
+- P2: defensive ladder cases, a11y label-shape forward-compat.
+- Execution: `npm test` in `triade/` (node:test, <15 min) on PR. No nightly needed for this scope.
+- See final document for the full matrix, estimates (~5–11h), and gates.
