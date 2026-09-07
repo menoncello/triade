@@ -80,3 +80,75 @@ This evidence file is shared with DW-32 (same fps/p99 readout need).
 
 NONE. No files under `triade/` were modified; no boot-blocking fix was needed
 (the app boots and renders laneSelect cleanly).
+
+---
+
+# Re-measurement: 2026-09-07 (UTC; host local 2026-09-06 21:05–21:25 -0300)
+
+Spec: `_bmad-output/implementation-artifacts/spec-decision-dw-16-frame-rate-baseline-2.md`.
+The 2026-09-06 section above is left intact.
+
+## Runtime identity
+
+- Simulator: iPhone 17 Pro, UDID EF376678-61DF-4782-A01F-E058C05A476A, iOS 26.5
+  (already `Booted` at run start; no boot needed)
+- Build config: Debug (`Debug-iphonesimulator/triade.app`, dev-client + Metro bundler,
+  Metro already serving on :8081 and reused)
+- Seed: 20260808 (`mulberry32(20260808)`, `triade/App.tsx:118`)
+- Auto-drive: `EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1` (`__DEV__`-only, boots straight to
+  board, cycles left/up/right/down every 500ms)
+- Fallback not needed: `xcrun devicectl list devices` reports the iPhone 14 Pro
+  `available (paired)` this time, but the simulator path was used per spec priority.
+
+## Commands run (with exit codes)
+
+| # | Command | Exit | Outcome |
+|---|---------|------|---------|
+| 1 | `xcrun simctl list devices available` | 0 | iPhone 17 Pro `Booted`, 11 more runtimes `Shutdown` |
+| 2 | `xcrun devicectl list devices` | 0 | iPhone 14 Pro `available (paired)` — fallback reachable, not used |
+| 3 | `cd triade && EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1 npx expo run:ios --device EF376678-61DF-4782-A01F-E058C05A476A --non-interactive` | 0 | `› Build Succeeded`, 0 errors, 3 warnings (duplicate `-lc++`; GoogleMobileAds `ios_app_id key not found`; ambiguous-dependencies script). Installed on iPhone 17 Pro, opened `com.menontech.triade` via dev-client URL |
+| 4 | `xcrun simctl io <sim> screenshot` ×4 (sim clock 21:12 / 21:17 / 21:19 / 21:20) | 0 | All four show the playing screen (Skia 4x4 board, score line, pause button), no Metro redbox, no native crash |
+| 5 | Host determinism: `runSeededSession(20260808, 200)` via `node --import tsx` (twice) | 0 | `{"spawns":200,"first5":[2,1,1,3,2],"ms1":4,"ms2":1,"deterministic":true}` — identical spawn output, no stuck failure |
+| 6 | `xcrun simctl spawn <sim> log show --predicate 'process == "triade"' --last 3m` (grep error/redbox/exception/baseline) | 0 | Only MediaToolbox `FigFilePlayer err=-12864` noise (ads); no redbox, no crash, no baseline log (expected — worklets/frame math never log) |
+| 7 | `cd triade && npx tsc --noEmit` | 0 | clean, no output |
+| 8 | `cd triade && npm test` | 0 | 1469 tests · 129 suites · 1024 pass · 0 fail · 445 skipped · ~5.4s |
+
+## Frame readout
+
+BOARD REACHED — but the completed `fps · p99Ms · frames` readout was NEVER OBSERVED.
+
+Verbatim on-screen text in all four screenshots (playing screen, above the score line):
+
+```text
+recording frame rate baseline…
+```
+
+(`…` is U+2026, matching `triade/App.tsx:1228`.)
+
+- Booted: YES. Board rendered: YES (shot1 score 36, shot2 score 450, shot3 score 9
+  after an auto-restart, shot4 score 156 — the auto-drive plays and restarts games).
+- Completed `baseline: <fps> fps · p99 <p99>ms · <n> frames` readout: NO —
+  `stats` stayed `null` across ~4 minutes of sustained board play, so the restarted
+  120-frame window never published via `runOnJS(setStats)`. No redbox or crash
+  accompanied this; the game itself renders and plays normally.
+- This is a probe-observation limitation, not a verdict on the engine: per spec
+  (`triade/` untouched, WINDOW/fps-p99 math unchanged) no product code was changed
+  to diagnose or fix it. Suspect for the orchestrator: the `useFrameCallback`
+  window either never accumulates 120 samples in this build or the generation
+  restart never settles — left to DW-32 / a follow-up, NOT fixed here.
+
+## Budget verdict vs p99 < 16.7ms / fps >= 59
+
+NO VERDICT POSSIBLE — zero completed frame samples recorded, so there is nothing
+to compare against the T5.2 budget. Prior context (unchanged): the only
+frame-rate numbers on record remain the 2026-08-10 simulator informative reading
+(60 fps · p99 16.67ms · 120 frames, Mac GPU).
+
+## Sharing
+
+This evidence file remains shared with DW-32 (same fps/p99 readout need).
+
+## Product-code changes (2026-09-07 run)
+
+NONE. No files under `triade/` were modified; no boot-blocking fix was needed
+(the app builds, installs, boots straight to the board, and plays via auto-drive).

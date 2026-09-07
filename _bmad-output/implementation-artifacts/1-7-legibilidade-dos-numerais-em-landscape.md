@@ -2,16 +2,13 @@
 baseline_commit: d72cbb8
 baseline_revision: e681b0d
 final_revision: 3e8a021
-status: awaiting-operator
+status: done
 followup_review_recommended: false
-operator_actions:
-  - "Rotate the iOS simulator (or device) to landscape and confirm 1-3 digit (32pt), 4-5 digit (13pt), and 6-digit 1536/3072+ (9pt) numerals stay legible at the smallest landscape tile."
-  - "Confirm the min-tile floor keeps tiles at >= ~44pt on a typical landscape window and numerals never clip, then record the evidence in the spec completion note."
 ---
 
 # Story 1.7: Legibilidade dos numerais em landscape
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -198,4 +195,4 @@ mimo-v2.5 (opencode-go/mimo-v2.5)
 - Review: 3 low patches applied, 0 deferred, 5 rejected as noise.
 - Follow-up review recommended: false (final pass made only localized low-consequence fixes; suite green).
 - Verification: `npx tsc --noEmit` clean (exit 0); `npm test` 1454 tests / 1024 pass / 0 fail / 430 skipped.
-- Residual risks: estimator ~10% optimistic for 6-digit Helvetica bold below the 44pt floor (by design, sub-44pt illegible-per-design); real Skia render legibility unproven until the operator runs T3.2.
+- Residual risks: estimator ~10% optimistic for 6-digit Helvetica bold below the 44pt floor (by design, sub-44pt illegible-per-design); real Skia render legibility confirmed by operator on 2026-09-07 (T3.2 OK), closing awaiting-operator.
