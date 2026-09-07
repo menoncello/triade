@@ -125,7 +125,9 @@ resolution: already resolved: grep role=.grid across triade/src returns 0 hits â
 origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (2026-08-10)"), 2026-09-01
 location: n/a
 reason: dev-build boot on a physical iOS device (Expo prebuild + Xcode; requires connected iPhone + CocoaPods). Simulator boot validated instead (2026-08-10): dev build boots and the Skia board renders on the iOS runtime.
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-decision-dw-15
+resolution-undo: 923d8da75ac945a8a1351bd8d57a0ee3b2acca61362b1b8fd4292f4335a4769c 2026-09-06 7374617475733a206f70656e
 decision: 2026-09-06 Run physical boot now â€” Run Expo prebuild plus dev-build boot on a connected iPhone and record boot plus Skia board render evidence against DW-15.
 
 ### DW-16: on-device frame-rate baseline

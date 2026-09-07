@@ -1,0 +1,26 @@
+  --non-interactive is not supported, use $CI=1 instead
+Starting project at /Users/eduardomenoncello/Documents/projects/jogos/3-clone/triade
+Starting Metro Bundler
+
+Waiting on http://localhost:8081
+
+Logs for your project will appear below.
+iOS Bundled 539ms index.ts (1319 modules)
+iOS Bundled 238ms node_modules/expo-asset/build/index.js (1 module)
+iOS Bundled 254ms node_modules/react-native-mmkv/src/index.ts (633 modules)
+iOS Bundled 7ms src/services/storage/settingsStore.ts (1 module)
+iOS Bundled 113ms node_modules/expo-secure-store/build/SecureStore.js (589 modules)
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+iOS Bundled 245ms node_modules/expo-haptics/src/Haptics.ts (703 modules)
+iOS Bundled 259ms node_modules/expo-audio/build/index.js (1 module)
