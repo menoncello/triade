@@ -1022,7 +1022,8 @@ origin: migrated from legacy ledger ("7-2-preview-card-no-hud-60-40-nas-duas-pis
 location: triade/src/game/preview.ts:103-104
 source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
 reason: previewFor dereferences pending before validating it, so a null/undefined pendingSpawn crashes the HUD instead of degrading — triade/src/game/preview.ts:103-104 Number.isFinite(pending.displayRoll) throws on null/undefined; call site triade/App.tsx:1179-1180 passes game.pendingSpawn unguarded, while Hud FALLBACK_PREVIEW only covers a missing previews prop.
-status: open
+status: done 2026-09-06
+resolution: already resolved: triade/src/game/preview.ts:112-114 previewFor returns {kind:'exact',value:0} for null/undefined pending plus 118-119 Number.isFinite guards — null pending no longer throws on displayRoll
 
 ### DW-116: explicit-null availablePotValues bypasses the default and throws on indexOf
 
@@ -1030,4 +1031,5 @@ origin: migrated from legacy ledger ("7-2-preview-card-no-hud-60-40-nas-duas-pis
 location: triade/src/game/preview.ts:59
 source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
 reason: explicit-null availablePotValues bypasses the default and throws on indexOf — triade/src/game/preview.ts:59,98 availablePotValues.indexOf(value); the default parameter only applies to undefined, not null, so an explicit null caller crashes instead of falling back to the ladder default.
-status: open
+status: done 2026-09-06
+resolution: already resolved: triade/src/game/preview.ts:55,60-62 ambiguousRange accepts null|undefined and normalizes via Array.isArray to FULL_POT_LADDER — explicit null no longer throws on indexOf
