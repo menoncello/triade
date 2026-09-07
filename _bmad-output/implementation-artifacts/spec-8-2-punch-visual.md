@@ -2,12 +2,13 @@
 title: '8-2 Punch visual'
 type: 'feature'
 created: '2026-09-01'
-status: 'ready-for-dev'
+status: 'done'
 review_loop_iteration: 0
 followup_review_recommended: false
 context: []
 warnings: []
-baseline_revision: '7604cd1'
+baseline_revision: '8fa09108c8503a47fe4914b96e181c03f69811b0'
+final_revision: '7a85c3376a867c7fbfe3b37f0c66e58c398e143d'
 final_revision: 'punch-visual-8-2'
 ---
 
@@ -70,6 +71,15 @@ final_revision: 'punch-visual-8-2'
 
 ## Review Triage Log
 
+### 2026-09-07 — Review pass (verification re-run)
+- intent_gap: 0
+- bad_spec: 0
+- patch: 0
+- defer: 0
+- reject: 12 (all low-or-noise: Blind Hunter findings critique only the metadata-only working-tree diff of this verification pass — epic-context regen wording, frontmatter status/baseline flip, and absence of story code in the diff — not defects in the story change itself, which was committed in the prior run and re-verified here via tsc + full test suite)
+- addressed_findings:
+  - none
+
 ### 2026-09-01 — Review pass
 - intent_gap: 0
 - bad_spec: 0
@@ -123,4 +133,27 @@ export interface FeelPreset { haptic: HapticStyle; shakeMs: number; particleBurs
 **Residual risks:**
 - expo-haptics not declared in triade/package.json — dynamic import best-effort keeps tests green; deferred per R-006.
 - Tutorial 1+2 climax fires 2 Lights (tutorial + feel) — cosmetic, deferred per R-001.
+
+### 2026-09-07 — Verification pass (bmad-dev-auto re-run, prior run's code recommitted nothing new)
+
+**Summary:** Re-verified punch visual (S8.2) — implementation from the 2026-09-01 run intact in tree (no code changes required); epic-8-context regenerated from planning artifacts (epics.md newer than cache); review of this pass's working-tree diff (metadata-only) produced no actionable findings.
+
+**Files changed (this pass):**
+- `_bmad-output/implementation-artifacts/epic-8-context.md` -- regenerated via compile-epic-context (planning docs changed since last cache)
+- `_bmad-output/implementation-artifacts/spec-8-2-punch-visual.md` -- frontmatter status/baseline + triage log + this entry (this file)
+
+**Review findings (this pass):**
+- patches applied: 0
+- items deferred: 0
+- items rejected: 12 (Blind Hunter noise on the metadata-only diff) + Edge Case Hunter 0 findings
+- followup_review_recommended: false
+
+**Verification (this pass):**
+- `npx tsc --noEmit` (triade/) -- clean
+- `npm test` -- 1034 pass / 0 fail / 457 skipped (134 suites); punch.test.ts 9/9 pass; R-001/R-006 EXPECTED RED now zero
+- `git diff --stat -- triade/src/engine` -- empty
+
+**Residual risks (this pass):**
+- Cosmética: matriz I/O cita `~1.18` vs tasks/código `1.15` (código segue as tasks).
+- `GameOverOverlay` recebe `settings.reducedMotion` em vez do literal `false` citado no log antigo (comportamento correto).
 

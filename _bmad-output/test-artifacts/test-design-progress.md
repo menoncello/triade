@@ -43,3 +43,13 @@ lastSaved: '2026-09-07'
 - P2: defensive ladder cases, a11y label-shape forward-compat.
 - Execution: `npm test` in `triade/` (node:test, <15 min) on PR. No nightly needed for this scope.
 - See final document for the full matrix, estimates (~5–11h), and gates.
+
+## 2026-09-07 — Refresh: Story 8-2 punch-visual (epic-level, sequential)
+
+- **Mode: Epic-Level.** Spec `spec-8-2-punch-visual.md` (status `done`, passes `7a85c33`/`0ba441b` in triage log) + `epic-8-context.md` (regen 2026-09-07); sprint-status.yaml exists (orchestrator-owned, read-only, not modified).
+- Production delta committed as `e4629cd` (feel.ts overshootScale + punch.ts + GameBoard isMerge/overshoot/flash/glow/bursts + App reducedMotion wiring + punch.test.ts 9 cases + punch.atdd.test.ts); follow-ups metadata-only; working tree metadata-only. Engine untouched (no engine files in delta).
+- Config `_bmad/tea/config.yaml` (test_artifacts `_bmad-output/test-artifacts`, test_design_output `.../test-design`, risk_threshold p1); persistent fact `_bmad-output/project-context.md` loaded.
+- 10 risks (P×I), 3 high ≥6 (R-001 PERF burst jank 2×3, R-002 TECH early-input orphan 2×3, R-003 BUS FR-30 gate 2×3); forward-compat noted for landed 8-3/8-4 sharing GameBoard main-thread budget.
+- Coverage: P0 9 groups (host unit, green), P1 6 (fixtures + wiring + device smoke), P2 5, P3 3 exploratory; ~5.5–12.5 h host + device → ~12–22 h elapsed; PR host gate <15 min; one 15-min iPhone pass pre-merge.
+- Verified this run: full `triade/` suite `1034 pass / 0 fail / 457 skipped` (134 suites). No production code modified.
+- Output: `_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md` (canonical) + mirror `_bmad-output/test-artifacts/test-design-epic-8-2-punch-visual.md`.

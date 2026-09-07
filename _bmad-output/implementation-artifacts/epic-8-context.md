@@ -1,49 +1,53 @@
-# Epic 8 Context: Core Feel Feedback — O Merge como Momento
+# Epic 8 Context: Feel como momento
 
 <!-- Generated from planning artifacts. Regenerate with compile-epic-context if planning docs change. -->
 
 ## Goal
 
-Players feel the big merge as a physical and visual event — scaled haptics, punch, directional shake, and rare bullet time — with Reduced Motion as a graceful fallback and sound+haptics coupled, so the moment lands without breaking 60 FPS.
+Every merge lands as a physical moment — hand, eye, and ear confirm what the engine decided — with the biggest merge of the session staged as a single quiet peak, all of it tunable as data and safe to switch off without losing information.
 
 ## Stories
 
-- Story 8.1: Haptics
-- Story 8.2: Punch visual
-- Story 8.3: Screen shake
-- Story 8.4: Bullet time
-- Story 8.5: Reduced Motion
-- Story 8.6: SFX haptics
+- Story 8.1: Haptics escalados
+- Story 8.2: Punch visual overshoot + flash + partículas
+- Story 8.3: Screen shake direcional contido
+- Story 8.4: Bullet time no session-best
+- Story 8.5: Reduced Motion preset total
+- Story 8.6: SFX mínimos cálidos + haptics acoplados
 
 ## Requirements & Constraints
 
-- Haptics fire via expo-haptics scaled by merge value: 3 light, 6 medium, 12+ heavy; mapping from FeelPreset tier band (data, not code); presetFor(value) pure and tested; haptics remain enabled under Reduced Motion (FR-30, S8.1, UX-DR-16).
-- FeelPreset model: haptic type, shakeMs (2/5 capped 8), particleBurst, overshootMs, flash boolean per tier band; data-driven tuning.
-- Visual punch: merged tile overshoots/snap driven declaratively from trace in src/render; flash+particles as imperative worklets in src/feel; only on board, never chrome; 1536/3072+ incandescent glow is the only glow (S8.2).
-- Directional shake on merge, subtle ~2ms medium, ~5ms large capped 8ms, from FeelPreset shakeMs, disabled/smoothed under Reduced Motion, silent on NOOP (S8.3).
-- Bullet time ~200ms+flash only on new session-best merge; sessionBestMerge lives in snapshot so undo rewinds it (S8.4, UX-DR-28).
-- Reduced Motion gates entire feel layer (shake, bullet time, flash/particles, overshoot scale, 1536+ glow, game-over soft fade) but keeps haptics+sound; Reduced Motion is a preset, not a flag (FR-30, UX-DR-16).
-- Sound+haptics coupled, scaling with value; minimal SFX via expo-audio (merge/spawn/game-over), cálido thock, no music, swappable observer (S8.6).
+- The full core feel suite ships in MVP: scaled haptics, visual punch, directional shake, and bullet time. Only depth (larger shake, extra celebrations) stays out.
+- Haptic bands are fixed: light on 3, medium on 6, heavy on 12 and above; Reduced Motion always keeps haptics.
+- Visual punch scales with merged value: overshoot-and-snap plus flash and particle burst, with a one-frame shadow compress on landing.
+- Shake is subtle and capped: around 2ms on medium merges, 5ms on large, never above 8ms.
+- Bullet time fires only on a new session-best merge: about 200ms slowdown plus a single flash; all other merges stay quiet.
+- A Reduced Motion setting gates the entire visual feel layer (shake, bullet, flash, particles, overshoot, glow, fade) while keeping haptics and sound; it doubles as the sanctioned emergency 60 FPS fallback.
+- Performance is evidence, not a slogan: 60 FPS sustained over a 10-minute play session, CI benchmark gates engine cost per turn under 2ms and frame logic worst case under 8ms, device job p99 under 16.7ms per frame with the full feel preset; the benchmark sweeps the full preset.
+- MVP audio is minimal SFX only — merge, spawn, game-over — bundled locally with no external assets and no music; volume and timbre scale with tile value coupled to the haptic; warm organic timbre is a hypothesis to validate with external players.
+- Feel magnitudes are starting values flagged for playtest calibration; tuning happens through config data, never code changes.
 
 ## Technical Decisions
 
-- Hybrid rendering: declarative board from trace (src/render) + imperative feel layer worklets (src/feel); frame math in pure TS host-testable functions; worklet is thin binding.
-- Pure TS FeelPreset + presetFor(value) — no logic inside presets; benchmark sweeps every preset (full and reduced).
-- Engine remains pure TS single source of truth; feel/audio/haptics are observers of TilesMerged events; engine never throws, returns ok|rejected.
-- State placement master rule: anything undo must revert lives in snapshot (ADR-06); sessionBestMerge in snapshot.
-- Two-level benchmark (CI deterministic <2ms engine/<8ms frame + device p99 <16.7ms); Reduced Motion is sanctioned emergency fallback (ADR-04).
-- expo-haptics SDK 57 pinned (impactAsync); expo-audio 57.0.3 SFX; Reanimated 4 worklets for feel.
+- Hybrid rendering: declarative trace-derived board plus an imperative feel layer in UI-thread worklets; frame math lives in pure testable TypeScript functions, worklets are thin bindings.
+- Feel, audio, haptics, and telemetry are observers of engine events; they never touch rules and never drive state.
+- Haptic selection is a pure band function over merged value; audio is an observer manager with preloaded bundled SFX.
+- Session-best merge lives in the immutable snapshot alongside PRNG state, so undo rewinds the golden moment together with the board and never re-triggers bullet time.
+- Bloom ceiling: outer bloom at most 12% of tile width and 35% opacity, transient with the merge splash, never over chrome, fully off under Reduced Motion.
+- Feel layer lives in its own module with worklet effects (flash, particles, shake, slow-mo); worklets and frame math log nothing in release builds.
+- Version pins: expo-haptics via SDK 57, expo-audio 57.0.3, react-native-reanimated 4.3.x with react-native-worklets 0.8.x as the Skia peer pair.
 
 ## UX & Interaction Patterns
 
-- Haptics map directly to merge weight; light tap for 3, decisive for heavy 12+; always tactile.
-- Feel effects fire only on board tiles, never on preview card or score (chrome rule UX-DR-27).
-- Bullet time is rare emotional peak; ordinary merges don't slow.
-- Reduced Motion keeps game feel via haptics+sound while removing motion.
+- Feel fires on the board only; chrome (preview card, score) never animates with feel effects.
+- Merged tile overshoots and snaps back with a proportional splash; the landing frame compresses the tile shadow for tactile closure.
+- The 1536+ glow is the only glow in the system — scarcity is the message — and legibility of the bright tile plus neighbors must hold during the flash.
+- Tone is calm and precise: the record stays a highlighted number, no confetti, no hype; the quiet bullet-time peak is the only celebration.
+- Reduced Motion replaces visual feel with stillness while haptics and sound persist; game-over soft fade is part of the gated set.
 
 ## Cross-Story Dependencies
 
-- 8.1 (haptics data model + presetFor) is prerequisite for 8.2–8.4 (visual/shake/bullet use same FeelPreset) and 8.5 (Reduced Motion preset).
-- 8.5 depends on 8.1–8.4 being present to gate.
-- 8.6 (audio) couples to same value scaling as haptics but is swappable observer.
-- All 8.x depend on Epic 1 (engine+board+trace) and respect ADR-01 purity boundaries.
+- Builds on the Epic 1 board: per-tile engine trace drives all feel triggers, and the S1.1 CI plus device benchmark is the gate that proves the full preset holds 60 FPS.
+- Within the epic, Reduced Motion (8.5) gates the visual stories (8.2 punch, 8.3 shake, 8.4 bullet); haptics (8.1) and sound (8.6) persist underneath it and are coupled per merge.
+- Undo integration (Epic 4 / Epic 7 snapshot contract): undo rewinds session-best and pending spawn together with the board, and a rewound position must not re-fire bullet time.
+- Shares the soft-fade treatment with Epic 6 game-over and the immediate-apply timing question with Epic 9 accessibility (whether the Reduced Motion toggle takes effect mid-run is deferred to architecture confirmation).
