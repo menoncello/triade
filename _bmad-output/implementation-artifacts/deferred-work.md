@@ -135,7 +135,9 @@ decision: 2026-09-06 Run physical boot now — Run Expo prebuild plus dev-build 
 origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (2026-08-10)"), 2026-09-01
 location: n/a
 reason: on-device frame-rate baseline
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-frame-rate-baseline-measure
+resolution-undo: 3ec020b045a05cb4c53423ee07820404cb50ff251970557b092acc25e973c363 2026-09-06 7374617475733a206f70656e
 decision: 2026-09-06 Measure baseline now — Drive a seeded session on simulator or device through useFrameRateBaseline and record fps and p99 against DW-16 (shared with DW-32).
 
 ### DW-17: Trigger to resume:
@@ -269,7 +271,9 @@ resolution: already resolved: triade/__tests__/engine/engine.purity.test.ts:7-27
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13, re-review)"), 2026-09-01
 location: App.tsx
 reason: AC-5 (60 FPS / 10-min session) has no completed rendering-side evidence — only the planner micro-benchmark exists; the simulator/device frame-rate reading stays open as "Manual validation remaining" (project rule: Skia animation is manual validation; informative only). Trigger to close: run the temporary move harness in App.tsx on the iOS simulator/device and record fps·p99.
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-frame-rate-baseline-measure
+resolution-undo: 3ec020b045a05cb4c53423ee07820404cb50ff251970557b092acc25e973c363 2026-09-06 7374617475733a206f70656e
 decision: 2026-09-06 Re-target and measure — Re-target the AC-5 reading to useFrameRateBaseline plus the seeded session harness, run it on simulator or device, and record fps and p99 for the 10-minute session.
 
 ### DW-33: `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).

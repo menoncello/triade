@@ -152,3 +152,76 @@ This evidence file remains shared with DW-32 (same fps/p99 readout need).
 
 NONE. No files under `triade/` were modified; no boot-blocking fix was needed
 (the app builds, installs, boots straight to the board, and plays via auto-drive).
+
+---
+
+# Diagnosis + probe-wiring fix: 2026-09-07 (bundle frame-rate-baseline-measure)
+
+Spec: `_bmad-output/implementation-artifacts/spec-frame-rate-baseline-measure.md`.
+Both sections above are left intact. Per the bundle intent, this run diagnoses the
+probe-side window/generation wiring instead of re-running measurement as-is, so no
+new simulator build was attempted and no new frame numbers are claimed.
+
+## Static findings (no `triade/` behavior changed to obtain them)
+
+F1 — frame callback re-registered every render. `useFrameCallback` received a fresh
+inline arrow on every `AppContent` render, so Reanimated re-registers the callback
+and resets the `timeSinceFirstFrame` base each time. The `__DEV__` auto-drive moves
+every 500ms (each move re-renders), so deltas computed as `now - last.current`
+straddle resets and go corrupt (large negatives) mid-window. The official
+Reanimated docs recommend wrapping frame callbacks in `useCallback` for exactly
+this reason. Consistent with history: the probe DID publish on 2026-08-10
+(60 fps · p99 16.67ms · 120 frames) before the DW-32 generation-restart +
+auto-drive landed.
+
+F2 — empty-window deadlock. If 120 callbacks ever yielded zero samples, the old
+completion path set `done = true` and then returned early on `samples.length === 0`
+without publishing — `stats` stayed null forever and the screen read
+`recording frame rate baseline…` permanently. One transient degenerate window was
+enough to wedge the probe for the rest of the session.
+
+## Fix applied (hook-only, WINDOW/math byte-identical)
+
+- `triade/src/render/useFrameRateBaseline.ts`: extracted pure exported
+  `computeFrameRateStats(samples)` (identical sorted/idx/p99/avgMs formulas,
+  null on empty); memoized the frame callback with `useCallback(..., [])`
+  (safe: only refs + `setStats` + the module function are captured);
+  a null result now resets durations/last/count and retries instead of latching
+  `done`. `WINDOW = 120`, the hook signature, and the generation-reset effect are
+  unchanged. `triade/App.tsx` untouched. Release behavior unchanged (no harness
+  shipped, no worklet/frame-math logging added).
+- `triade/__tests__/render/useFrameRateBaseline.math.test.ts` (new): source-shape
+  guards (WINDOW 120, memoized callback, empty-window reset) plus math checks
+  (119 × 16.667ms → fps ≈ 60 / p99 ≈ 16.67 / frames 119; 100-sample single spike
+  → p99 selects the spike; empty → null). No RN imports (repo ATDD style).
+
+## Automated verification (no device run in this bundle)
+
+- `cd triade && npx tsc --noEmit` → clean, exit 0.
+- `cd triade && npm test` → 1478 tests · 131 suites · 1033 pass · 0 fail ·
+  445 skipped (new file 6/6 passing, zero regressions).
+- Working tree at fix time: clean on branch `feat/epic-10-telemetria`
+  (baseline `6b16593`); this bundle's diff is the hook fix + the new test + the
+  spec/evidence docs only.
+
+## Budget verdict vs p99 < 16.7ms / fps >= 59
+
+STILL NO VERDICT — zero new frame samples were recorded in this bundle by design
+(diagnosis instead of a blind re-run). Prior context (unchanged): the only
+frame-rate numbers on record remain the 2026-08-10 simulator informative reading
+(60 fps · p99 16.67ms · 120 frames, Mac GPU).
+
+## Re-measurement protocol for the orchestrator (one screenshot, not a 4-minute watch)
+
+1. Boot the iPhone Simulator dev build with `EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1`
+   (seed 20260808, Debug) and wait ~10s after the board appears.
+2. Take one screenshot: expect `baseline: <fps> fps · p99 <p99>ms · <n> frames`.
+3. If the screen still reads `recording…` after 30s of board play, the transient
+   causes ruled out by this fix (re-registration churn, empty-window latch) are
+   eliminated — the remaining suspect is callback-never-firing at the
+   Reanimated/runtime level, and the follow-up is device-log investigation, not
+   another measurement run as-is.
+
+## Sharing
+
+This evidence file remains shared with DW-32 (same fps/p99 readout need).
