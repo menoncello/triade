@@ -1,6 +1,11 @@
 ---
 baseline_commit: fb6f8dd
-status: ready-for-dev
+baseline_revision: ca05dbcedde4b5ce256972c256aa15e9f3a65cac
+final_revision: 0ffd59a126dbdbc26656d1dee64a54f6a3148a4e
+status: awaiting-operator
+followup_review_recommended: false
+operator_actions:
+  - "On a physical iOS simulator or device, verify the portrait HUD matches UX-DR-7, rotate to landscape, and confirm the thin 22/11pt top edge band, the dominant board below it, and pause reachability in both orientations."
 ---
 
 # Story 1.5: Layout portrait e landscape
@@ -203,6 +208,9 @@ so that I can play one-handed in portrait or on a landscape screen without losin
   - `triade/__tests__/ui/ui.purity.test.ts` (1 test, P1) — `layout.ts`/`orientation.ts` purity guard (ADR-01/05).
 - Verification: `node --test` 127 total — **127 pass / 0 fail / 0 skip**; `npx tsc --noEmit` clean; web PWA 26/26 frozen.
 - Handoff: activate per-task (remove `test.skip(`), confirm RED, implement, GREEN; native/RN composition validated manually on simulator (T5.1).
+- Working-tree regression run (2026-09-07, tea.atdd-1, empty code diff — guards only):
+  - Checklist: `_bmad-output/test-artifacts/atdd-checklist-1-5-layout-portrait-e-landscape-tea.atdd-1.md`
+  - Red spec: `_bmad-output/test-artifacts/atdd-tests/1-5-layout-portrait-e-landscape.red.spec.ts` (16 skipped: U1–U10 unit + S1–S6 static audit; activation 16/16 green, mutation RED-proven).
 
 ## Change Log
 
@@ -211,8 +219,29 @@ so that I can play one-handed in portrait or on a landscape screen without losin
 - 2026-08-17 — Test review fixes (gds-test-review): clamp-path + golden-anchor tests in `layout.test.ts` (now 14 tests); new `ui.thinview.test.ts` (2 tests: thin-view import rule + `HIT_TARGET ≥ 44` AC-3 tripwire); `PauseButton.tsx` exports `HIT_TARGET = 48` (used by button styles + `Hud` pause slot); `stripComments`/`extractSpecifiers` hoisted into `test-utils/helpers.ts`; `ci.yml` coverage now includes `src/ui/**`. Suite: 131/131 triade, 26/26 web PWA, `tsc` clean.
 - 2026-08-16 — Implemented story 1.5 layout portrait e landscape: orientation unlock, safe-area infra, pure layout module, HUD bands + pause button, App integration. 127/127 tests green, `tsc` clean. (bmad-dev-story)
 
+## Review Triage Log
+
+### 2026-09-07 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 0
+- defer: 0
+- reject: 12
+- addressed_findings:
+  - none
+
+Review notes: code diff since `baseline_revision` is empty (HEAD already satisfies all ACs; verified `triade/app.json`, `src/ui/layout.ts`, `orientation.ts`, `Hud.tsx`, `PauseButton.tsx`, `App.tsx`, UI tests, Pinned Version Matrix). Blind Hunter returned 12 doc-process observations under information asymmetry (frontmatter/body status wording, dual baseline keys, Change Log gap narration, test-count prose drift across 127→133 revisions, stale evidence-matrix pointers); none touches player-facing behavior, so all routed to reject. Edge Case Hunter returned zero findings. No code changes made in this pass; no follow-up review warranted.
+
 ## Auto Run Result
 
-Status: done
+Status: awaiting-operator
+
+Story 1.5 (Layout portrait e landscape) verified complete at HEAD `ca05dbc`: orientation unlocked to `default`, `react-native-safe-area-context` integrated with `SafeAreaProvider`, pure layout modules (`layout.ts`/`orientation.ts`) with maximized board and band metrics (96 portrait / 48 landscape), HUD and PauseButton correct in both orientations, App wired via `useWindowDimensions`/`useSafeAreaInsets`. No code changes were needed in this run — verification only.
+
+- Files changed: none (spec doc only; `git diff` shows frontmatter/status + triage log).
+- Review findings breakdown: 0 patches applied, 0 deferred, 12 rejected (doc-process noise under reviewer information asymmetry, zero player impact).
+- Follow-up review recommended: false (empty code diff, no behavior change).
+- Verification performed: `npx tsc --noEmit` clean (exit 0); `npm test` full suite 1034 pass / 0 fail / 457 skipped (skips are other stories' ATDD scaffolds by design); story 1.5 UI scope 26/26 pass. Manual simulator rotation remains human-only (see `operator_actions`).
+- Residual risks: landscape visual pass unvalidated on device in this unattended run (TCC blocks the rotation gesture); landscape contract covered by 18 layout unit tests meanwhile. Prior completion notes and change-log history preserved below.
 
 Story 1.5 (Layout portrait e landscape) completed: orientation unlocked to `default`, `react-native-safe-area-context` integrated with `SafeAreaProvider`, pure layout modules (`layout.ts`/`orientation.ts`) with maximized board and band metrics, HUD and PauseButton implemented for both orientations, App wired via `useWindowDimensions`/`useSafeAreaInsets`. Verification: `tsc --noEmit` clean, 127/127 tests pass (post-review 133/133), web PWA 26/26 frozen, iOS simulator boot confirmed.
