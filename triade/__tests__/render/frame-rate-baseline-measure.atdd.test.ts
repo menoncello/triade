@@ -149,6 +149,14 @@ describe('ATDD dw-frame-rate-baseline-measure — P1 boundaries (RED scaffolds)'
       !appSrc.includes('computeFrameRateStats'),
       'math must live in the hook module, not App.tsx',
     );
+    assert.ok(
+      appSrc.includes('useFrameRateBaseline(baselineGeneration, devAutoDrive)'),
+      'probe must be wired to the explicit opt-in flag (off by default)',
+    );
+    assert.ok(
+      appSrc.includes('devAutoDrive ? ('),
+      'baseline readout must render only when the probe is enabled',
+    );
   });
 
   it.skip('[P1-02] Release hard rule: zero logging in frame math path', () => {

@@ -86,8 +86,26 @@ describe('useFrameRateBaseline — source wiring guards', () => {
     // generation reset while runOnJS was in flight.
     assert.ok(hookSrc.includes('useSharedValue'), 'missing useSharedValue for UI-owned window state');
     assert.ok(hookSrc.includes("'worklet'"), "frame callback must carry the 'worklet' directive");
-    assert.ok(hookSrc.includes('runOnJS(finish)([...w.samples], w.gen)'), 'window close must bridge to JS via runOnJS with the gen tag');
+    assert.ok(hookSrc.includes('runOnJS(finish)([...w.samples], w.gen, w.epoch)'), 'window close must bridge to JS via runOnJS with gen+epoch tags');
     assert.ok(hookSrc.includes('gen !== seenGeneration.current'), 'stale finish must be dropped on generation mismatch');
+    assert.ok(hookSrc.includes('epoch !== epochRef.current'), 'stale finish must be dropped on enable/disable epoch mismatch');
+  });
+
+  it('probe is opt-in: disabled by default, autostart wired to the flag', () => {
+    // The probe must never run unless explicitly enabled: default-off keeps
+    // release and plain dev free of the UI frame callback and the HUD line.
+    assert.ok(
+      hookSrc.includes('generation = 0, enabled = false'),
+      'hook signature must default enabled to false',
+    );
+    assert.ok(
+      hookSrc.includes('useFrameCallback(onFrame, enabled)'),
+      'frame callback autostart must follow the enabled flag',
+    );
+    assert.ok(
+      hookSrc.includes('if (!enabled) return'),
+      'generation reset must no-op while disabled',
+    );
   });
 });
 
