@@ -17,7 +17,7 @@ const PURITY_ROOTS = [
 // pure module is scanned automatically, and any new RN-bound module fails until
 // it is consciously added to the exemption set.
 const RENDER_ROOT = fileURLToPath(new URL('../../src/render/', import.meta.url));
-const RENDER_RUNTIME_BOUND = new Set(['GameBoard.tsx', 'useFrameRateBaseline.ts']);
+const RENDER_RUNTIME_BOUND = new Set(['GameBoard.tsx']);
 
 const FORBIDDEN_PREFIXES = ['react', 'react-native', '@shopify', 'expo', '@react-native', 'reanimated', 'skia'];
 

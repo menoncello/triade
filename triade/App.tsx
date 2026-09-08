@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
-import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
 import { newGame, move, isGameOver, ceilingDetector, tierForCeiling, stateFromResult } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { potForTier } from './src/engine/core/pot.ts';
@@ -113,17 +112,11 @@ type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; se
 function AppContent() {
   const { t } = useTranslation();
   const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
-  // Frame-rate baseline probe is opt-in, never default: enabled only via the
-  // seeded auto-drive harness (dev + EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1).
-  // Release and plain dev never register the frame callback nor show the line.
+  // Seeded auto-drive harness flag (dev + EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1).
   // Enable locally with: EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1 npx expo start
   // (Expo SDK 57 inlines EXPO_PUBLIC_* at bundle time).
   const devAutoDrive =
     typeof __DEV__ !== 'undefined' && __DEV__ && process.env.EXPO_PUBLIC_TRIADE_AUTO_DRIVE === '1';
-  // DW-32 AC-5: restartable 120-frame probe — bumped when the playing screen
-  // mounts so the window covers board frames, not launch-screen frames.
-  const [baselineGeneration, setBaselineGeneration] = useState(0);
-  const stats = useFrameRateBaseline(baselineGeneration, devAutoDrive);
   const rngRef = useRef(mulberry32(20260808));
   const rngSeedRef = useRef(20260808);
   const busyRef = useRef(false);
@@ -1013,27 +1006,10 @@ function AppContent() {
     };
   }, []);
 
-  // DW-32 AC-5: restart the frame-rate baseline when the playing screen mounts
-  // so the 120-frame window covers board frames (not launch-screen frames).
-  // Gated on the opt-in probe flag: no bump, no work when disabled.
-  const playingBaselineArmedRef = useRef(false);
-  useEffect(() => {
-    if (!devAutoDrive) return;
-    if (screen === 'playing' && ready) {
-      if (!playingBaselineArmedRef.current) {
-        playingBaselineArmedRef.current = true;
-        setBaselineGeneration((g) => g + 1);
-      }
-    } else if (screen !== 'playing') {
-      playingBaselineArmedRef.current = false;
-    }
-  }, [screen, ready, devAutoDrive]);
-
   // DW-32 AC-5: strictly __DEV__-gated seeded auto-drive for simulator runs —
   // boots straight to the board and cycles deterministic moves through the
   // existing doMove path so no manual taps are needed. Release is untouched:
   // __DEV__ is false in release bundles and the flag defaults off in dev.
-  // (Flag is defined next to the baseline probe above and shared here.)
   useEffect(() => {
     if (!devAutoDrive || !ready || screen === 'playing') return;
     setScreen('playing');
@@ -1278,13 +1254,6 @@ function AppContent() {
         ) : null}
         {tutorialState && isTutorialActive(tutorialState) ? (
           <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
-        ) : null}
-        {devAutoDrive ? (
-          <Text style={[styles.stats, { color: tokens.chrome.muted }]} allowFontScaling>
-            {stats
-              ? `baseline: ${stats.fps.toFixed(1)} fps · p99 ${stats.p99Ms.toFixed(2)}ms · ${stats.frames} frames`
-              : 'recording frame rate baseline…'}
-          </Text>
         ) : null}
         <Text style={[styles.stats, { color: tokens.chrome.muted }]} allowFontScaling>
           score: {sanitizedScore} · live best: {sanitizedBest} · persisted best: {sanitizedPersisted}

@@ -1055,3 +1055,9 @@ resolution: already resolved: triade/src/game/preview.ts:55,60-62 ambiguousRange
 - source_spec: `_bmad-output/implementation-artifacts/spec-fix-framerate-baseline-worklet.md`
   summary: useFrameRateBaseline trusts info.timeSinceFirstFrame blindly. A time-base reset (re-registration/backgrounding) with a stale w.last injects a large negative delta (clamped avg hits 0.001 floor, fps reports ~1M); repeated zero timestamps undercount frames; a mid-window suspension dominates mean+p99 and latches until the next generation bump. Pre-existing shape (same in the useRef version), pathological-only, needs a deliberate sampling policy (per-sample validation / outlier cap), not a mechanical patch.
   evidence: triade/src/render/useFrameRateBaseline.ts onFrame body (w.last > 0 push with no delta > 0 guard); surfaced by step-04 blind + edge reviewers 2026-09-08, classified defer (pre-existing, not caused by the worklet rewrite).
+
+### DW-120: device fps/p99 measurement left without a producer after probe removal
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-remove-frame-rate-baseline-probe.md`
+  summary: useFrameRateBaseline.ts (the sole on-device 120-frame fps/p99Ms producer) was deleted per explicit human decision, orphaning references in device NFR test-design docs, dw-15-physical-ios-boot ATDD, punch ATDD readout asserts, the automation-summary byte-identical fixture, and older deferred-work entries pinning the hook path. Suites stay green (asserts are skipped/manual), but a future decision is needed: adopt a replacement device measurement strategy or clean the references.
+  evidence: step-04 blind review 2026-09-08 (spec-remove-frame-rate-baseline-probe); refs in _bmad-output/test-artifacts/test-design-epic-8-*/ deferred-work.md and triade/__tests__/device/dw-15-physical-ios-boot.atdd.test.ts.
