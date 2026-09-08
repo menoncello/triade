@@ -86,12 +86,12 @@ describe('ATDD dw-frame-rate-baseline-measure — P0 AC contracts (RED scaffolds
       'completion must call the exported computeFrameRateStats',
     );
     assert.ok(hookSrc.includes('=== null'), 'completion must null-check before publishing');
-    assert.ok(hookSrc.includes('count.current = 0'), 'empty path must reset count.current = 0');
+    assert.ok(hookSrc.includes('count: 0'), 'empty path must reset count to 0');
     assert.ok(
-      hookSrc.includes('durations.current = []'),
-      'empty path must reset durations.current = []',
+      hookSrc.includes('samples: []'),
+      'empty path must reset samples to []',
     );
-    assert.ok(hookSrc.includes('last.current = 0'), 'empty path must reset last.current = 0');
+    assert.ok(hookSrc.includes('last: 0'), 'empty path must reset last to 0');
   });
 
   it.skip('[P0-03] AC3 rerender churn: frame callback identity stable (memoized)', () => {
@@ -163,7 +163,7 @@ describe('ATDD dw-frame-rate-baseline-measure — P1 boundaries (RED scaffolds)'
     // When: the hook source is scanned
     // Then: seenGeneration effect intact.
     assert.ok(hookSrc.includes('seenGeneration'), 'generation effect must remain');
-    assert.ok(hookSrc.includes('done.current = false'), 'reset must clear done');
+    assert.ok(hookSrc.includes('done: false'), 'reset must clear done');
     assert.ok(hookSrc.includes('setStats(null)'), 'reset must clear stats');
   });
 

@@ -1049,3 +1049,9 @@ resolution: already resolved: triade/src/game/preview.ts:55,60-62 ambiguousRange
 - source_spec: `_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md`
   summary: The canonical-bucket interval chain is spelled out in tileFillFor/tileInkFor/tileShapeFor plus theme resolveTile, inviting fill/ink/shape drift on future tier edits.
   evidence: Identical >1536/>768/... chains in triade/src/ui/tileNumerals.ts:121-133,138-151,159-172,176-189,221-233 and triade/src/theme/index.ts:121-134 with slightly different fallbacks (map[3] vs TILE_INK_DARK); unifying them crosses story 9.4 theme ownership, so it belongs to a future focused cleanup, not this story.
+
+### DW-119: frame-rate probe has no time-base pathology guards (negative/zero deltas, suspension outlier)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-fix-framerate-baseline-worklet.md`
+  summary: useFrameRateBaseline trusts info.timeSinceFirstFrame blindly. A time-base reset (re-registration/backgrounding) with a stale w.last injects a large negative delta (clamped avg hits 0.001 floor, fps reports ~1M); repeated zero timestamps undercount frames; a mid-window suspension dominates mean+p99 and latches until the next generation bump. Pre-existing shape (same in the useRef version), pathological-only, needs a deliberate sampling policy (per-sample validation / outlier cap), not a mechanical patch.
+  evidence: triade/src/render/useFrameRateBaseline.ts onFrame body (w.last > 0 push with no delta > 0 guard); surfaced by step-04 blind + edge reviewers 2026-09-08, classified defer (pre-existing, not caused by the worklet rewrite).

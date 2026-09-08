@@ -52,13 +52,42 @@ describe('useFrameRateBaseline — source wiring guards', () => {
       'completion path must null-check the stats result before publishing',
     );
     assert.ok(
-      hookSrc.includes('count.current = 0'),
-      'empty-window path must reset count.current = 0',
+      hookSrc.includes('count: 0'),
+      'empty-window path must reset count to 0',
+    );
+    assert.ok(
+      hookSrc.includes('samples: []'),
+      'empty-window path must reset samples to []',
+    );
+    assert.ok(
+      hookSrc.includes('last: 0'),
+      'empty-window path must reset last to 0',
+    );
+    assert.ok(
+      hookSrc.includes('done: false'),
+      'empty-window path must reset done to false',
+    );
+    assert.ok(
+      hookSrc.includes('win.value = freshWindow('),
+      'empty-window path must reset via win.value = freshWindow( at the call site',
     );
     assert.ok(
       hookSrc.includes('export function computeFrameRateStats'),
       'computeFrameRateStats must be exported',
     );
+  });
+
+  it('frame callback is UI-safe: shared value + worklet + runOnJS bridge', () => {
+    // Regression guard for the Worklets crash ("Tried to synchronously call
+    // a Remote Function"): the frame callback must never capture JS closures
+    // (useRef/useState/helpers). Accumulation lives in a SharedValue, the
+    // callback carries the 'worklet' directive, and JS is reached only
+    // through runOnJS. The gen tag drops a stale finish superseded by a
+    // generation reset while runOnJS was in flight.
+    assert.ok(hookSrc.includes('useSharedValue'), 'missing useSharedValue for UI-owned window state');
+    assert.ok(hookSrc.includes("'worklet'"), "frame callback must carry the 'worklet' directive");
+    assert.ok(hookSrc.includes('runOnJS(finish)([...w.samples], w.gen)'), 'window close must bridge to JS via runOnJS with the gen tag');
+    assert.ok(hookSrc.includes('gen !== seenGeneration.current'), 'stale finish must be dropped on generation mismatch');
   });
 });
 
