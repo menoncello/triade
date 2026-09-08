@@ -1037,3 +1037,15 @@ source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-4
 reason: explicit-null availablePotValues bypasses the default and throws on indexOf — triade/src/game/preview.ts:59,98 availablePotValues.indexOf(value); the default parameter only applies to undefined, not null, so an explicit null caller crashes instead of falling back to the ladder default.
 status: done 2026-09-06
 resolution: already resolved: triade/src/game/preview.ts:55,60-62 ambiguousRange accepts null|undefined and normalizes via Array.isArray to FULL_POT_LADDER — explicit null no longer throws on indexOf
+
+### DW-117: rest-state incandescent tiles share grain/bevel with tier 1 (glow is punch-gated)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md`
+  summary: Resting 1536/3072 render the same facet treatment as tier 1 because glow only mounts when isPunch.
+  evidence: triade/src/ui/tileNumerals.ts:213-214 defines 1536/3072 as { grain: 0, glow: true, bevel: 1 }, identical grain/bevel to tier 1 (tileNumerals.ts:202), while triade/src/render/GameBoard.tsx:126 gates the glow rect on isPunch && value >= 1536 — so at rest the incandescent band is distinguished by fill lightness + numeral text only; rendering glow at rest would contradict the transient-bloom cap, so this needs a visual/design decision with a device spot-check, not a mechanical patch.
+
+### DW-118: consolidate tile fallback chains between tileNumerals.ts and theme/index.ts resolveTile
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md`
+  summary: The canonical-bucket interval chain is spelled out in tileFillFor/tileInkFor/tileShapeFor plus theme resolveTile, inviting fill/ink/shape drift on future tier edits.
+  evidence: Identical >1536/>768/... chains in triade/src/ui/tileNumerals.ts:121-133,138-151,159-172,176-189,221-233 and triade/src/theme/index.ts:121-134 with slightly different fallbacks (map[3] vs TILE_INK_DARK); unifying them crosses story 9.4 theme ownership, so it belongs to a future focused cleanup, not this story.
