@@ -2,33 +2,31 @@
 status: done
 story: 8-2-punch-visual
 workflow: bmad-testarch-atdd
+run: tea.atdd-1
 generated:
-  - triade/__tests__/feel/punch.atdd.test.ts
-  - _bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md
+  - triade/__tests__/feel/punch.atdd.working-tree.test.ts
+  - _bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual-tea.atdd-1.md
 red_phase:
-  total: 19
-  pass: 17
-  fail: 2
+  total: 9
+  pass: 7
+  skipped_expected_red: 2
   expected_red:
-    - "[P1-05] R-002 early-input orphan safeguard — burst timer cleanup on unmount"
-    - "[P2-01] burst accumulation — unmount guard missing"
+    - "[WT-P1-04] R-002/R-007 burst timer unmount guard (carry-over, verified: no burstTimer ref in GameBoard.tsx)"
+    - "[WT-P2-01] composite p99 punch+shake+bullet baseline (open Epic nightly lane)"
 full_suite:
-  total: 749
-  pass: 745
-  fail: 4
-  expected_red_includes:
-    - "8-1 [P1-03] R-001 tutorial dedup (carry-over)"
-    - "8-1 [P2-06] R-006 expo-haptics dep (carry-over)"
-    - "8-2 [P1-05] R-002"
-    - "8-2 [P2-01] R-007"
+  total: 1500
+  pass: 1041
+  fail: 0
+  skipped: 459
 ---
 
-ATDD workflow for 8-2-punch-visual completed.
+ATDD workflow for 8-2-punch-visual (working-tree delta) completed.
 
 Artifacts written under TEA's configured `test_artifacts` (`_bmad-output/test-artifacts`):
-- `triade/__tests__/feel/punch.atdd.test.ts` — 19 red-phase scaffolds (17 GREEN, 2 EXPECTED RED for R-002/R-007 burst timer cleanup)
-- `_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual.md` — implementation checklist mapping RED scaffolds to `spec-8-2-punch-visual.md` tasks 8.2 + residual fix for burst `setTimeout(500)` unmount guard
 
-Working-tree delta pinned: `ef72635` (`feel.ts:overshootScale` + `punch.ts` + `GameBoard isMerge/overshoot/flash/glow/burst` + `App reducedMotion` wiring); engine byte-identical.
+- `triade/__tests__/feel/punch.atdd.working-tree.test.ts` — 9 red-phase scaffolds (7 GREEN, 2 EXPECTED RED as `it.skip` for R-002/R-007 burst-timer cleanup + composite p99 baseline)
+- `_bmad-output/test-artifacts/atdd-checklist-8-2-punch-visual-tea.atdd-1.md` — implementation checklist mapping scaffolds to spec tasks + residual fixes
 
-Run `cd triade && npm test -- __tests__/feel/punch.atdd.test.ts` to verify (expect 17/19 pass, 2 RED until burst timer ref + clearTimeout on unmount is added).
+Working-tree delta covered: test-design refresh (P0-09 chrome-guard helper contract, 8-3/8-4 forward-compat, 1034-pass verification) is metadata-only; production code unchanged since `e4629cd`, engine untouched. Existing `punch.atdd.test.ts` (19 tests: 17 pass / 2 skipped) left untouched and green.
+
+Verify: `cd triade && TSX_TSCONFIG_PATH=tsconfig.test.json node --import tsx --test __tests__/feel/punch.atdd.working-tree.test.ts` (expect 7/9 pass, 2 skipped RED). Full `npm test`: 1041 pass / 0 fail / 459 skipped. sprint-status.yaml untouched (orchestrator-owned).

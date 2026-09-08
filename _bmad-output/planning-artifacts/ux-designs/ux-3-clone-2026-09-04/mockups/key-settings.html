@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Settings</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (raised rows, accent on-state, border off-state) · Typography (body rows 17/500, caption muted valores) · Components (settings-row menu-item contract + toggle accent/border/thumb; mudança imediata persistida) · Layout & Spacing (rows 48pt, safe-margin 16)
+   EXPERIENCE.md: Information Architecture (Settings: theme, reduced motion, language, lane default — D-012; só no menu) · Component Patterns (tap → aplica+persist; pressed+focus ring) · State Patterns (Settings change mid-match impossível por construção; tema vale na próxima partida) · Accessibility Floor (Reduced Motion preset; temas light/dark/color-blind; Dynamic Type) · Voice and Tone (rótulos i18n secos) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:64px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px}
+h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700;text-align:center}
+.sub{font-size:13px;color:#A39C8F;text-align:center;margin-top:4px}
+.group{margin-top:12px;font-size:13px;color:#A39C8F}
+.rows{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.row{background:#2B2F38;border-radius:12px;min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.row.stacked{flex-direction:column;align-items:stretch;gap:10px;padding:14px 16px}
+.row.stacked .seg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.row.stacked .seg.two{grid-template-columns:1fr 1fr}
+.row .t{font-size:17px;font-weight:500}
+.row .v{font-size:13px;color:#A39C8F}
+.seg{display:flex;gap:6px}
+.seg span{font-size:13px;padding:8px 12px;border-radius:8px;border:1px solid #3A3F49;color:#A39C8F;min-height:44px;display:flex;align-items:center}
+.seg span.on{background:#E8A33D;border-color:#E8A33D;color:#1C1206;font-weight:700}
+.toggle{width:52px;height:32px;border-radius:9999px;background:#E8A33D;position:relative;flex-shrink:0}
+.toggle.off{background:#3A3F49}
+.toggle::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:9999px;background:#F2EEE3}
+.toggle.off::after{right:auto;left:3px}
+.note{margin-top:12px;font-size:13px;color:#A39C8F;line-height:1.5;background:#2B2F38;border-left:2px solid #E8A33D;border-radius:12px;padding:12px 16px}
+.back{margin-top:auto;min-height:48px;background:#2B2F38;border:1px solid #3A3F49;color:#F2EEE3;border-radius:12px;font-size:17px}
+.caption{font-size:13px;color:#A39C8F;max-width:360px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <h2>Ajustes · Settings</h2>
+  <div class="sub">Aplicam na próxima partida · Apply next match</div>
+  <div class="group">Aparência · Appearance</div>
+  <div class="rows"><div class="row stacked"><div><div class="t">Tema · Theme</div><div class="v">Escuro, Claro, Daltônico</div></div><div class="seg"><span class="on">Escuro</span><span>Claro</span><span>Dal.</span></div></div></div>
+  <div class="group">Movimento e idioma · Motion & language</div>
+  <div class="rows">
+    <div class="row"><div><div class="t">Movimento reduzido</div><div class="v">Reduced motion · sem shake/flash</div></div><div class="toggle"></div></div>
+    <div class="row stacked"><div><div class="t">Idioma · Language</div><div class="v">Português / English</div></div><div class="seg two"><span class="on">PT</span><span>EN</span></div></div>
+  </div>
+  <div class="group">Pista padrão · Default lane</div>
+  <div class="rows"><div class="row"><div><div class="t">Iniciante · Beginner</div><div class="v">Com ajuda · Jogar abre nela</div></div><div class="toggle"></div></div></div>
+  <div class="note">Ajustes vivem só no menu — nunca no pause. Theme changes apply next match; no mid-run breaks.</div>
+  <button class="back">Voltar · Back</button>
+</div></div>
+<div class="caption"><b>key-settings</b> — theme, reduced motion, language, lane default; imediato, persistido, só no menu.</div>
+</body>
+</html>

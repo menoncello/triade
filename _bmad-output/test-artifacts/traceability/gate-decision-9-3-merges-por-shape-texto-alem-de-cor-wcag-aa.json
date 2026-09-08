@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "evaluated_at": "2026-09-03T23:45:00+00:00",
+  "evaluated_at": "2026-09-08T12:00:00+00:00",
   "repo": "3-clone",
   "target": {
     "type": "story",
@@ -10,7 +10,7 @@
   "collection_status": "COLLECTED",
   "gate_basis": "priority_thresholds",
   "gate_status": "PASS",
-  "rationale": "P0 coverage is 100% (4/4 FULL: 13-tier hex exact + per-tier ink + cap 6144/12288→3072, shape beyond color grain/glow 192 vs 1536 + GameBoard delegation, WCAG AA tile ink every tier ≥4.5 weakest 384 4.65≥4.5 + chrome ≥4.5), P1 coverage is 100% (2/2 FULL: announcements value-text + purity/never-throw), overall 100% (minimum 80%). Active tests 9/9 triade contract (tileShape 6 + contrast 3) + 3/3 active probes gateway/umbrella/unit (43 dormant RED-phase intentional, 0 fail), full fleet 973 pass / 0 fail, tsc 0 errors, engine purity hold (triade/src/engine byte-identical). High risks R-001/R-002 both gated via exhaustive audits + Skia prop contract. Validated dark canonical only; light/color-blind deferred to 9.4 per spec Never.",
+  "rationale": "tea.trace-0 refresh 2026-09-08 @5ea23e0: P0 100% (4/4 FULL: 13-tier hex exact + per-tier ink + cap 6144/12288→3072; shape beyond color grain/glow 192 vs 1536 + GameBoard delegation + theme-delegation mirrors; WCAG AA tile ink every tier ≥4.5 weakest 384 + chrome ≥4.5), P1 100% (2/2 FULL: announcements value-text + purity/never-throw), overall 100% (minimum 80%). Triade contract green first-hand (tileShape 6 + tileContrast.audit 3 + tileNumerals + tileTheme 4 + allThemes audit 3); tea.automate-1 DACTIVE gateway+umbrella delta smokes active; full fleet 1051 pass / 0 fail / 460 skipped; tsc 0 errors; triade/ working tree clean (production delta committed). Residual: R-001 device spot-check (grain visible @44pt) carried as monitoring; DW-117/DW-118 deferred low; light/color-blind palettes scoped to 9.4 per spec Never.",
   "p0_status": "MET",
   "p1_status": "MET",
   "overall_status": "MET",

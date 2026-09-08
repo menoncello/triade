@@ -30,19 +30,21 @@ test('[P0] App.tsx showCeilingBanner/showStuckBanner gating exactly matches spec
   assert.ok(/emptyCount\s*=\s*game\.board\.flat\(\)\.filter/.test(src), 'emptyCount must be game.board.flat().filter((v)=>v===null).length');
   assert.ok(/ceiling\s*=\s*ceilingDetector\s*\(\s*game\.board\s*\)/.test(src), 'ceiling must be ceilingDetector(game.board)');
 
-  // Banners rendered conditionally outside GestureDetector
+  // Full-screen swipe: GestureDetector wraps the playing container so slides
+  // can start anywhere. Sheets inside it (banners, pause, game-over) are
+  // guarded by pausedRef/gameOverGuardRef in panGesture.onEnd.
   const gestureIdx = src.indexOf('GestureDetector');
   const ceilingIdx = src.indexOf('<CeilingBanner');
   const stuckIdx = src.indexOf('<StuckBanner');
   assert.ok(gestureIdx !== -1 && ceilingIdx !== -1 && stuckIdx !== -1, 'must have GestureDetector and both banners');
-  // Banners after boardWrap close — not inside GestureDetector
-  // Find the GestureDetector close and ensure banners follow after
-  const detectorBlock = src.slice(gestureIdx, gestureIdx + 800);
-  assert.ok(detectorBlock.includes('GameBoard'), 'GestureDetector must wrap GameBoard');
-  // Banners must be siblings after the boardWrap View, not nested in GestureDetector
-  // simple pin: there is a closing </View> for boardWrap before banner
-  assert.ok(ceilingIdx > gestureIdx, 'CeilingBanner must appear after GestureDetector (non-blocking)');
-  assert.ok(stuckIdx > gestureIdx, 'StuckBanner must appear after GestureDetector');
+  // Detector opens before the container and GameBoard lives inside its subtree
+  assert.ok(src.indexOf('GameBoard') > gestureIdx, 'GameBoard must render inside the GestureDetector subtree');
+  // Banners render after the detector opens (non-blocking Views, no gesture of their own)
+  assert.ok(ceilingIdx > gestureIdx, 'CeilingBanner must appear after GestureDetector opens (non-blocking)');
+  assert.ok(stuckIdx > gestureIdx, 'StuckBanner must appear after GestureDetector opens');
+  // Sheets must not dispatch moves: onEnd guards paused / game-over refs
+  assert.ok(/pausedRef\.current/.test(src), 'panGesture.onEnd must guard pausedRef (pause sheet)');
+  assert.ok(/gameOverGuardRef\.current/.test(src), 'panGesture.onEnd must guard gameOverGuardRef (game-over sheet)');
 
   // No banner when gameOver — guarded
   assert.ok(/!gameOver/.test(src), 'must gate on !gameOver');

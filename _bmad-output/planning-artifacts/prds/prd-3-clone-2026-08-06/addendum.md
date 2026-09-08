@@ -58,3 +58,7 @@ Launch-offer discounts and additional bundles remain a later tuning lever, not M
 ## 10. Persona Grounding
 
 No market research was run. Personas in §2.1 of `prd.md` are marked `[ILLUSTRATIVE]` and are grounded in player-psychology archetypes from the brainstorm (achiever, beginner, genre-experienced), not field data. Run lightweight external playtest to validate archetypes before heavy investment in v2 features tied to them.
+
+## 11. Auto-balance 1/2 (supersede 2026-09-06 — GDD D-018 governs)
+
+§8 e `prd.md` FR-7 diziam "1s/2s fixed, never change". **Superseded:** RN app usa auto-balance `w1 = 40 − 4·(count1−count2)`, clamp [8,72] (GDD D-018 é a autoridade de design; Epics FR6/S2.2 implementam). Web PWA segue fixa.

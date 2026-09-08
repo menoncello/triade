@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Lane Select / Menu</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (surface/raised/border/accent) · Typography (title 22/700, body 17/500, caption 13/500) · Layout & Spacing (coluna única max 420pt, safe-margin 16, touch 44) · Elevation & Depth (raised-rest; selected = accent bar + selected border) · Components (button primary Jogar; lane-card menu-item+border+tone line; menu-item)
+   EXPERIENCE.md: Information Architecture (Lane Select É o menu, D-011; exploração a 1 tap) · Component Patterns (Jogar shortcut pré-armado; lane card Clean/Iniciante; new-game warning D-008) · Voice and Tone (PT/EN seco, sem hype) · State Patterns (Pressed compress fill+shadow; Focused anel accent) · Key Flows (Lia §2, Théo §1) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:64px 16px 24px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px}
+.brand{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:34px;font-weight:700;text-align:center}
+.tagline{font-size:13px;color:#A39C8F;text-align:center;margin-top:4px}
+.jogar{margin-top:20px;min-height:48px;border:none;border-radius:12px;background:#E8A33D;color:#1C1206;font-size:17px;font-weight:700;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30);cursor:pointer}
+.hint{font-size:13px;color:#A39C8F;text-align:center;margin-top:8px}
+.lanes{display:flex;gap:8px;margin-top:16px}
+.lane{flex:1;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:16px;min-height:48px;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.lane.selected{border:1px solid #E8A33D;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.lane .bar{width:24px;height:2px;background:#E8A33D;border-radius:2px;margin-bottom:8px}
+.lane.plain .bar{background:#A39C8F}
+.lane h3{font-size:17px;font-weight:700}
+.lane p{font-size:13px;color:#A39C8F;margin-top:4px;line-height:1.4}
+.lane .best{font-size:13px;color:#A39C8F;margin-top:8px}
+.explore{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.row{background:#2B2F38;border-radius:12px;min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:17px;font-weight:500;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.row span:last-child{color:#A39C8F;font-size:15px}
+.warn{margin-top:auto;background:#2B2F38;border-left:2px solid #E8A33D;border-radius:12px;padding:12px 16px;font-size:13px;color:#A39C8F;line-height:1.5}
+.caption{font-size:13px;color:#A39C8F;max-width:360px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <div class="brand">Tríade</div>
+  <div class="tagline">controle sobre o caos · control over chaos</div>
+  <button class="jogar">Jogar · Play — Iniciante</button>
+  <div class="hint">1 toque, pista atual · 1 tap, current lane</div>
+  <div class="lanes">
+    <div class="lane plain"><div class="bar"></div><h3>Pura</h3><p>Clean · tabuleiro silencioso, sem ajudas.</p><div class="best">Best · 1.536</div></div>
+    <div class="lane selected"><div class="bar"></div><h3>Iniciante</h3><p>Beginner · Com ajuda, no momento certo.</p><div class="best">Best · 2.880 · default</div></div>
+  </div>
+  <div class="explore">
+    <div class="row"><span>Placar · Leaderboard</span><span>›</span></div>
+    <div class="row"><span>Ajustes · Settings</span><span>›</span></div>
+    <div class="row"><span>Como jogar · Tutorial</span><span>›</span></div>
+  </div>
+  <div class="warn">Trocar de pista começa uma nova partida · Changing lane starts a new game</div>
+</div></div>
+<div class="caption"><b>key-menu</b> — Lane Select vivo: Jogar pré-armado + 2 cards + exploração a um toque.</div>
+</body>
+</html>

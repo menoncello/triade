@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Game over</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (scrim ~70%; accent só no número recorde) · Typography (title stats; caption muted labels) · Components (button primary Jogar de novo; game-over-stat-row label muted/valor text/recorde accent; reward-prompt secundária discreta) · Elevation & Depth (scrim + overlay; soft fade D-010, última jogada visível) · Do's (recorde = número, sem confete D-013)
+   EXPERIENCE.md: Information Architecture (game-over overlay, 1-tap restart mesmo lane; continue Iniciante discreto D-010) · State Patterns (Game over; New record número; Death-continue consumido some) · Game Feel & Juice (morte elegante "fall") · Voice and Tone ("Novo recorde" número; "Continuar" secundário seco) · Key Flows (Théo §5-6, Ana §3-6, Lia §5) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:60px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px;z-index:3}
+.board{margin-top:40px;background:#1A1D23;border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;opacity:.6}
+.tile{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-weight:800;font-size:26px}
+.t768{background:#0E3B2E;color:#F6F0E1}.t384{background:#157A5C;color:#F6F0E1}.t192{background:#28A074;color:#1C1206}.t96{background:#4E5560;color:#F6F0E1}.t48{background:#6E5A45;color:#F6F0E1}.t24{background:#A2521F;color:#F6F0E1}
+.scrim{position:absolute;inset:0;background:rgba(12,14,17,.70);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px 16px 32px}
+.card{width:100%;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:20px 16px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+.card h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700;text-align:center}
+.portrait{background:#1A1D23;border:1px solid #3A3F49;border-radius:12px;padding:10px;margin:12px 0 6px;display:flex;gap:10px;align-items:center}
+.portrait .mini{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;opacity:1}
+.portrait .mini div{border-radius:5px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif}
+.portrait .hero{width:84px;text-align:center;flex-shrink:0}
+.portrait .hero .max{font-size:22px;font-weight:800;background:#0E3B2E;color:#F6F0E1;border-radius:10px;padding:14px 0}
+.portrait .hero .cap{font-size:11px;color:#A39C8F;margin-top:6px;line-height:1.4}
+.stat{display:flex;justify-content:space-between;padding:8px 0;font-size:17px}
+.stat span:first-child{color:#A39C8F;font-size:13px;align-self:center}
+.stat .rec{color:#E8A33D;font-weight:700}
+.btn{min-height:48px;border-radius:12px;font-size:17px;font-weight:700;border:none;width:100%;margin-top:10px;cursor:pointer}
+.primary{background:#E8A33D;color:#1C1206;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.second{background:#2B2F38;color:#F2EEE3;border:1px solid #3A3F49;font-weight:500;font-size:15px}
+.discreet{margin-top:10px;border-top:1px solid #3A3F49;padding-top:10px;font-size:13px;color:#A39C8F;text-align:center;line-height:1.5}
+.caption{font-size:13px;color:#A39C8F;max-width:380px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <div class="board">
+    <div class="tile t768">768</div><div class="tile t384">384</div><div class="tile t192">192</div><div class="tile t96">96</div>
+    <div class="tile t384">384</div><div class="tile t192">192</div><div class="tile t96">96</div><div class="tile t48">48</div>
+    <div class="tile t192">192</div><div class="tile t96">96</div><div class="tile t48">48</div><div class="tile t24">24</div>
+    <div class="tile t96">96</div><div class="tile t48">48</div><div class="tile t24">24</div><div class="tile t24">24</div>
+  </div>
+  <div class="scrim"><div class="card">
+    <h2>Fim de jogo · Game over</h2>
+    <div class="portrait"><div class="mini"><div class="t768" style="background:#0E3B2E;color:#F6F0E1">768</div><div style="background:#157A5C;color:#F6F0E1">384</div><div style="background:#28A074;color:#1C1206">192</div><div style="background:#4E5560;color:#F6F0E1">96</div><div style="background:#157A5C;color:#F6F0E1">384</div><div style="background:#28A074;color:#1C1206">192</div><div style="background:#4E5560;color:#F6F0E1">96</div><div style="background:#6E5A45;color:#F6F0E1">48</div><div style="background:#28A074;color:#1C1206">192</div><div style="background:#4E5560;color:#F6F0E1">96</div><div style="background:#6E5A45;color:#F6F0E1">48</div><div style="background:#A2521F;color:#F6F0E1">24</div><div style="background:#4E5560;color:#F6F0E1">96</div><div style="background:#6E5A45;color:#F6F0E1">48</div><div style="background:#A2521F;color:#F6F0E1">24</div><div style="background:#A2521F;color:#F6F0E1">24</div></div><div class="hero"><div class="max">768</div><div class="cap">Maior peça<br>Max tile</div></div></div>
+    <div class="stat"><span>Pontuação · Score</span><span class="rec">3.042 · Novo recorde</span></div>
+    <div class="stat"><span>Recorde · Best (Iniciante)</span><span>3.042</span></div>
+    <div class="stat"><span>Maior peça · Max tile</span><span>768</span></div>
+    <div class="stat"><span>Fusões · Merges</span><span>121</span></div>
+    <div class="stat"><span>Sequência · Longest streak</span><span>7</span></div>
+    <button class="btn primary">Jogar de novo · Play again</button>
+    <div class="discreet">Iniciante · <u>Continuar</u> — 1 anúncio, 1 vez por partida<br>Beginner · <u>Continue</u> — 1 ad, once per run · <u>Cancelar</u></div>
+  </div></div>
+</div></div>
+<div class="caption"><b>key-gameover</b> — soft-fade, stats imediatos, recorde como número; Continue Iniciante discreto como 2ª seção.</div>
+</body>
+</html>

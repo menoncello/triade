@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { GameBoard } from './src/render/GameBoard';
-import { useFrameRateBaseline } from './src/render/useFrameRateBaseline';
 import { newGame, move, isGameOver, ceilingDetector, tierForCeiling, stateFromResult } from './src/engine/core/index.ts';
 import type { Direction, GameState, MoveResult } from './src/engine/core/index.ts';
 import { potForTier } from './src/engine/core/pot.ts';
@@ -14,6 +13,7 @@ import { initialStats, applyMoveStats } from './src/game/matchStats.ts';
 import type { MatchStats } from './src/game/matchStats.ts';
 import { previewFor } from './src/game/preview.ts';
 import { GameOverOverlay } from './src/ui/GameOverOverlay.tsx';
+import { PauseOverlay } from './src/ui/PauseOverlay.tsx';
 import { LaneSelectScreen } from './src/ui/LaneSelectScreen.tsx';
 import { HIT_TARGET } from './src/ui/PauseButton';
 import {
@@ -88,6 +88,8 @@ import {
   announceScoreThrottled,
   announceGameOver,
   announceNewRecord,
+  announcePreview,
+  announceBanner,
 } from './src/a11y/announcements.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
@@ -110,7 +112,11 @@ type Snapshot = { game: GameState; match: MatchScore; matchStats: MatchStats; se
 function AppContent() {
   const { t } = useTranslation();
   const { width, height, insets, boardSize, bandHeight, isLandscape, bandTop } = useSyncedLayout();
-  const stats = useFrameRateBaseline();
+  // Seeded auto-drive harness flag (dev + EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1).
+  // Enable locally with: EXPO_PUBLIC_TRIADE_AUTO_DRIVE=1 npx expo start
+  // (Expo SDK 57 inlines EXPO_PUBLIC_* at bundle time).
+  const devAutoDrive =
+    typeof __DEV__ !== 'undefined' && __DEV__ && process.env.EXPO_PUBLIC_TRIADE_AUTO_DRIVE === '1';
   const rngRef = useRef(mulberry32(20260808));
   const rngSeedRef = useRef(20260808);
   const busyRef = useRef(false);
@@ -144,6 +150,7 @@ function AppContent() {
   const [hintHighlight, setHintHighlight] = useState<[[number, number], [number, number]] | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState({ ceiling: false, stuck: false });
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [entitlements, setEntitlements] = useState<Entitlements>({});
   const [restoreBusy, setRestoreBusy] = useState(false);
   const [tutorialState, setTutorialState] = useState<TutorialState | null>(null);
@@ -392,6 +399,16 @@ function AppContent() {
       if (!isThemeId(id)) return;
       if (id === settings.theme) return;
       const nextSettings: Settings = { ...settings, theme: id as ThemeId };
+      setSettings(nextSettings);
+      void saveSettings(nextSettings);
+    },
+    [settings],
+  );
+
+  const handleReducedMotionChange = useCallback(
+    (value: boolean) => {
+      if (value === settings.reducedMotion) return;
+      const nextSettings: Settings = { ...settings, reducedMotion: value };
       setSettings(nextSettings);
       void saveSettings(nextSettings);
     },
@@ -964,6 +981,13 @@ function AppContent() {
   // stale board closure if the gate timer fires before the effect would flush.
   const doMoveRef = useRef(doMove);
   doMoveRef.current = doMove;
+  // Full-screen swipe: the pan detector wraps the whole playing screen, so
+  // overlays (pause / game-over) sit inside its subtree. Guard via refs
+  // (same render-assignment pattern as doMoveRef) so swipes over a sheet
+  // never dispatch a move. Tutorial/banners stay swipeable like the board.
+  const pausedRef = useRef(false);
+  pausedRef.current = paused;
+  const gameOverGuardRef = useRef(false);
 
   const onMoveSettled = useCallback(() => {
     if (fallbackBusyTimerRef.current) {
@@ -982,6 +1006,31 @@ function AppContent() {
     };
   }, []);
 
+  // DW-32 AC-5: strictly __DEV__-gated seeded auto-drive for simulator runs —
+  // boots straight to the board and cycles deterministic moves through the
+  // existing doMove path so no manual taps are needed. Release is untouched:
+  // __DEV__ is false in release bundles and the flag defaults off in dev.
+  useEffect(() => {
+    if (!devAutoDrive || !ready || screen === 'playing') return;
+    setScreen('playing');
+  }, [devAutoDrive, ready, screen]);
+  useEffect(() => {
+    if (!devAutoDrive || !ready || screen !== 'playing') return;
+    const dirs: Direction[] = ['left', 'up', 'right', 'down'];
+    let i = 0;
+    const id = setInterval(() => {
+      try {
+        if (pausedRef.current) return;
+        if (gameOverGuardRef.current) {
+          void handleRestart();
+          return;
+        }
+        doMoveRef.current(dirs[i++ % dirs.length]);
+      } catch {}
+    }, 500);
+    return () => clearInterval(id);
+  }, [devAutoDrive, ready, screen, handleRestart]);
+
   const panGesture = useMemo(
     () =>
       Gesture.Pan()
@@ -992,6 +1041,8 @@ function AppContent() {
           gestureStartSeqRef.current = restartSeqRef.current;
         })
         .onEnd((event: any, success: boolean) => {
+          // Full-screen detector: ignore swipes over pause / game-over sheets
+          if (pausedRef.current || gameOverGuardRef.current) return;
           // DW-96: drop dispatch if restart occurred mid-gesture (seq changed)
           if (gestureStartSeqRef.current !== restartSeqRef.current) return;
           if (screenReaderEnabledRef.current) {
@@ -1016,6 +1067,7 @@ function AppContent() {
   // Hooks must be unconditional — keep all hooks before any early return (Rules of Hooks).
   // gameOver/profile/banners/gates + DW-86 effect must be before early returns to keep hook count stable (96 hooks always).
   const gameOver = isGameOver(game.board);
+  gameOverGuardRef.current = gameOver;
   const activeLaneId = laneFromIndex(selectedLaneIndex).id;
   const profile = profileForLaneId(activeLaneId);
   const ceiling = ceilingDetector(game.board);
@@ -1042,6 +1094,55 @@ function AppContent() {
   }, [gameOver, canContinueDerived, forfeitedContinue]);
   const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
   const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+  // 9-2 preview/banner announcements on value change (engine-derived display,
+  // i18n-wrapped inside announce fns; skip initial mount so first render is silent).
+  const a11yPreviewDisplay = useMemo(() => {
+    try {
+      const pot = potForTier(tierForCeiling(ceilingDetector(game.board)));
+      const p = previewFor(game.pendingSpawn, pot);
+      if (p.kind === 'exact') return Number.isFinite(p.value) ? String(p.value) : '';
+      const vals = Array.isArray(p.values) ? p.values.filter((v) => Number.isFinite(v)) : [];
+      return vals.length > 0 ? (vals as number[]).join('/') : '';
+    } catch {
+      return '';
+    }
+  }, [game.pendingSpawn, game.board]);
+  const prevPreviewRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (prevPreviewRef.current === null) {
+      prevPreviewRef.current = a11yPreviewDisplay;
+      return;
+    }
+    if (prevPreviewRef.current !== a11yPreviewDisplay && a11yPreviewDisplay) {
+      try {
+        announcePreview(a11yPreviewDisplay);
+      } catch {}
+    }
+    prevPreviewRef.current = a11yPreviewDisplay;
+  }, [a11yPreviewDisplay]);
+  const prevBannerRef = useRef<{ ceiling: boolean; stuck: boolean } | null>(null);
+  useEffect(() => {
+    if (prevBannerRef.current === null) {
+      prevBannerRef.current = { ceiling: showCeilingBanner, stuck: showStuckBanner };
+      return;
+    }
+    const prev = prevBannerRef.current;
+    try {
+      if (showCeilingBanner && !prev.ceiling) {
+        try {
+          const msg = i18n.t('accelerated.ceilingHint');
+          if (msg && msg !== 'accelerated.ceilingHint') announceBanner(msg);
+        } catch {}
+      }
+      if (showStuckBanner && !prev.stuck) {
+        try {
+          const msg = i18n.t('accelerated.stuckHint');
+          if (msg && msg !== 'accelerated.stuckHint') announceBanner(msg);
+        } catch {}
+      }
+    } catch {}
+    prevBannerRef.current = { ceiling: showCeilingBanner, stuck: showStuckBanner };
+  }, [showCeilingBanner, showStuckBanner]);
   const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
   const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
 
@@ -1089,7 +1190,11 @@ function AppContent() {
   const availablePot = potForTier(tierForCeiling(ceilingDetector(game.board)));
 
   return (
-    <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
+    // Full-screen swipe: the pan detector wraps the whole playing screen so
+    // slides can start anywhere (not just on the board). Pause / game-over
+    // sheets sit inside but are guarded by pausedRef/gameOverGuardRef in onEnd.
+    <GestureDetector gesture={panGesture}>
+      <View style={[styles.container, { backgroundColor: tokens.chrome.surface }]}>
       <Hud
         score={sanitizedScore}
         best={sanitizedBest}
@@ -1097,6 +1202,12 @@ function AppContent() {
         insets={insets}
         bandHeight={bandHeight}
         activeLaneId={activeLaneId}
+        chrome={{
+          text: tokens.chrome.text,
+          muted: tokens.chrome.muted,
+          assistBg: tokens.chrome.surfaceRaised,
+          assistBorder: tokens.chrome.border,
+        }}
         previews={{
           clean: previewFor(game.pendingSpawn, availablePot),
           accelerated: previewFor(game.pendingSpawn, availablePot),
@@ -1106,12 +1217,12 @@ function AppContent() {
         onUndo={handleUndoRequest}
         onHint={handleHint}
         hintHighlight={hintHighlight}
+        onPause={() => setPaused(true)}
       />
       <View style={[styles.content, { paddingTop: bandTop, paddingBottom: 24 + insets.bottom, backgroundColor: tokens.chrome.surface }]}>
         <View style={[styles.boardWrap, { width: boardSize, height: boardSize }, isBoardShaking ? { overflow: 'visible' } : null]}>
-          <GestureDetector gesture={panGesture}>
-            <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
-              <GameBoard
+          <View collapsable={false} style={{ width: boardSize, height: boardSize }}>
+            <GameBoard
                 board={game.board}
                 moveResult={moveResult}
                 width={boardSize}
@@ -1125,8 +1236,7 @@ function AppContent() {
               />
               <BoardA11yOverlay board={game.board} width={boardSize} />
             </View>
-          </GestureDetector>
-        </View>
+          </View>
         {/* 3.3 Accelerated learning aids — contextual dismissible prompt-banners, never in Clean */}
         {showCeilingBanner ? <CeilingBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, ceiling: true }))} /> : null}
         {showStuckBanner ? <StuckBanner onDismiss={() => setBannerDismissed((p) => ({ ...p, stuck: true }))} /> : null}
@@ -1145,18 +1255,38 @@ function AppContent() {
         {tutorialState && isTutorialActive(tutorialState) ? (
           <TutorialOverlay phase={tutorialState.phase} insets={insets} onSkip={handleSkipTutorial} />
         ) : null}
-        <Pressable onPress={handleBackToLaneSelect} style={styles.menuBtn} accessibilityRole="button" accessibilityLabel={t('laneSelect.pistas')}>
-          <Text style={styles.menuLabel} allowFontScaling>{t('laneSelect.pistas')}</Text>
-        </Pressable>
-        <Text style={styles.stats} allowFontScaling>
-          {stats
-            ? `baseline: ${stats.fps.toFixed(1)} fps · p99 ${stats.p99Ms.toFixed(2)}ms · ${stats.frames} frames`
-            : 'recording frame rate baseline…'}
-        </Text>
-        <Text style={styles.stats} allowFontScaling>
+        <Text style={[styles.stats, { color: tokens.chrome.muted }]} allowFontScaling>
           score: {sanitizedScore} · live best: {sanitizedBest} · persisted best: {sanitizedPersisted}
         </Text>
       </View>
+      {paused && !gameOver ? (
+        <PauseOverlay
+          insets={insets}
+          reducedMotion={settings.reducedMotion}
+          chrome={{
+            surfaceRaised: tokens.chrome.surfaceRaised,
+            text: tokens.chrome.text,
+            muted: tokens.chrome.muted,
+            border: tokens.chrome.border,
+            accent: tokens.chrome.accent,
+            accentInk: tokens.chrome.accentInk,
+          }}
+          theme={themeId}
+          onThemeChange={handleThemeChange}
+          language={(typeof settings.language === 'string' && settings.language.startsWith('pt') ? 'pt' : 'en') as 'pt' | 'en'}
+          motionReduced={settings.reducedMotion}
+          onReducedMotionChange={handleReducedMotionChange}
+          onResume={() => setPaused(false)}
+          onRestart={() => {
+            setPaused(false);
+            void handleRestart();
+          }}
+          onLanes={() => {
+            setPaused(false);
+            handleBackToLaneSelect();
+          }}
+        />
+      ) : null}
       {gameOver ? (
         <GameOverOverlay
           stats={{
@@ -1178,7 +1308,8 @@ function AppContent() {
         />
       ) : null}
       <StatusBar style={statusBarStyle(isLandscape)} />
-    </View>
+      </View>
+    </GestureDetector>
   );
 }
 
@@ -1200,23 +1331,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-  },
-  menuBtn: {
-    marginTop: 8,
-    minHeight: HIT_TARGET,
-    minWidth: HIT_TARGET,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: '#e7e4de',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  menuLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#1a1d23',
-    flexWrap: 'wrap',
   },
   stats: {
     marginTop: 12,

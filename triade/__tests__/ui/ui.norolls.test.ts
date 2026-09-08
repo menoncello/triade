@@ -19,7 +19,7 @@ import { extractNamedImports, stripCommentsAndStrings } from '../../test-utils/h
 //      literals cannot trip the guard;
 //   3. Math.random anywhere in view/service source (randomness flows through
 //      the injectable rng param only).
-// Runtime-bound files (GameBoard.tsx, useFrameRateBaseline.ts) are exempt from
+// Runtime-bound files (GameBoard.tsx) are exempt from
 // other layers' RN-import rules but must still never import roll symbols.
 
 const SCAN_ROOTS = ['../../App.tsx', '../../src/ui', '../../src/render', '../../src/services'];

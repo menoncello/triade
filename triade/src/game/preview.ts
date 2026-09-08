@@ -50,17 +50,26 @@ function nearestLadderIndex(value: number): number {
  // that always contains `value`. `availablePotValues` is the live pot tier (computed
  // by the orchestrator from the board ceiling); the default keeps existing single-arg
  // callers and 7.2 tests green by falling back to the full ladder.
-function ambiguousRange(value: number, availablePotValues: readonly number[]): readonly number[] {
+function ambiguousRange(
+  value: number,
+  availablePotValues: readonly number[] | null | undefined = FULL_POT_LADDER,
+): readonly number[] {
+  // D-008: explicit-null (or non-array) bypasses the default parameter (which
+  // only applies to undefined) — normalize to the full ladder so null behaves
+  // like undefined instead of throwing on indexOf below.
+  const avail: readonly number[] = Array.isArray(availablePotValues)
+    ? availablePotValues
+    : FULL_POT_LADDER;
   // AC2 — fixed [1,2] prefix rendered "1/2" regardless of availability.
   if (value === 1 || value === 2) return RANGE_1_2 as number[];
 
   // Pot value: slice the available sequence from `value`'s index, capped at
   // WINDOW_MAX (AC3/AC4 — starting-at-value contiguous slice, contains the truth).
-  const idx = availablePotValues.indexOf(value);
+  const idx = avail.indexOf(value);
   if (idx !== -1) {
-    const len = Math.min(WINDOW_MAX, availablePotValues.length - idx);
+    const len = Math.min(WINDOW_MAX, avail.length - idx);
     // DW-80: freeze mutable slice for React memo safety (every non-constant path)
-    return Object.freeze(availablePotValues.slice(idx, idx + len));
+    return Object.freeze(avail.slice(idx, idx + len));
   }
 
   // DW-79: beyond-ladder truth containment — `FULL_POT_LADDER` freezes at the
@@ -94,9 +103,15 @@ function ambiguousRange(value: number, availablePotValues: readonly number[]): r
 // decision uses the SEPARATE `displayRoll`, never re-rolls. Pure function — no
 // rng, no Math.random, no engine roll imports (host-testable like matchScore.ts).
 export function previewFor(
-  pending: PendingSpawn,
-  availablePotValues: readonly number[] = FULL_POT_LADDER,
+  pending: PendingSpawn | null | undefined,
+  availablePotValues: readonly number[] | null | undefined = FULL_POT_LADDER,
 ): Preview {
+  // D-008: App.tsx passes game.pendingSpawn unguarded — a null/undefined
+  // pending used to throw on property access below. Degrade to a safe exact-0
+  // instead of crashing the HUD. Pure: no rng, no Math.random, no roll imports.
+  if (pending === null || pending === undefined) {
+    return { kind: 'exact', value: 0 };
+  }
   // Defensive: the engine guarantees a well-formed PendingSpawn ([0,1) displayRoll,
   // ladder value), but guard against malformed input so a bad snapshot can never
   // crash the HUD or silently flip the 60/40 decision (review P1).

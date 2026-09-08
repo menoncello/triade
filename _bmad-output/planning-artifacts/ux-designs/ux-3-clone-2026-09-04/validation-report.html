@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tríade (3-clone) — UX Design Validation Report</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .counts {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+    font-size: 13px; color: var(--muted);
+  }
+  .counts .count-chip {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 4px 12px;
+  }
+  .counts .count-chip strong { color: var(--text); }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+  .resolved-tag { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--verdict-strong); }
+  .deferred-tag { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--verdict-thin); }
+
+  .reviewer-source {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="report-header">
+      <div class="title">
+        <h1>Tríade (3-clone) — UX Design Validation Report</h1>
+        <div class="subtitle">_bmad-output/planning-artifacts/ux-designs/ux-3-clone-2026-09-04/</div>
+      </div>
+    </header>
+
+    <div class="synthesis">
+      <p>Contract-ready with repairs — all of them applied in the current spines. All token references resolve (strict-YAML parse now passes), component/state/shape coverage is complete for source-extraction, and all five key flows carry named protagonists with numbered steps and climax beats.</p>
+      <p>The three extra lenses each found one critical — VoiceOver with no movement fallback, preview competing with score in landscape, three-finger swipe as the sole VoiceOver path — and all three close out in the current spines (D-008): Custom Actions + accessible D-pad, 16pt landscape preview with PRÓX chip label, frozen band geometry. What remains is validation that can only happen on device or in E9/E1/E8: the tier→facet map beyond color, outdoor best legibility, 6-digit clip, 384 re-check at 24pt, and the playtest/E8 checklists.</p>
+    </div>
+
+    <div class="counts">
+      <span class="count-chip"><strong>3</strong> critical — 3 resolved</span>
+      <span class="count-chip"><strong>10</strong> high — 8 resolved, 2 deferred</span>
+      <span class="count-chip"><strong>13</strong> medium — 9 resolved, 4 validation-deferred</span>
+      <span class="count-chip"><strong>20</strong> low — 1 resolved, 3 accepted, 16 deferred by design</span>
+    </div>
+
+    <div class="dimension-summary">
+      <div class="dim-card"><div class="dim-name">Flow coverage</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">Token completeness</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">Component coverage</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">State coverage</div><div class="dim-verdict" style="color: var(--verdict-strong)">strong</div></div>
+      <div class="dim-card"><div class="dim-name">Visual reference coverage</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">Bloat &amp; overspecification</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">Inheritance discipline</div><div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div></div>
+      <div class="dim-card"><div class="dim-name">Shape fit</div><div class="dim-verdict" style="color: var(--verdict-strong)">strong</div></div>
+    </div>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>1. Flow coverage</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>5 Key Flows (Lia, Théo, Dora, Ana, Beatriz) checked against named-protagonist + numbered-steps + climax + failure-path criteria. All have protagonists and steps; Dora lacked an explicit climax beat — now marked (D-008).</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Dora flow has no explicit climax beat</h3><span class="finding-location">EXPERIENCE.md Key Flows § Dora</span></header><div class="finding-note">4/5 flows carry a <strong>Climax:</strong> marker; Dora had none. <span class="resolved-tag">Resolved D-008</span> — the 384 deep-emerald landing is now the marked climax.</div><div class="finding-fix"><strong>Fix:</strong> mark one beat — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">Théo substitutes an "Integrity beat" for a failure path; Dora has none</h3><span class="finding-location">EXPERIENCE.md §§ Théo, Dora</span></header><div class="finding-note">One line each (record-miss handling; landscape quit mid-animation) or mark N/A. <span class="deferred-tag">Deferred</span> — playtest polish, not load-bearing.</div><div class="finding-fix"><strong>Fix:</strong> one line each or N/A — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>2. Token completeness</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>Every frontmatter token + every <code>{path.to.token}</code> reference extracted (65 distinct refs, 0 unresolved). Contrast targets stated for load-bearing pairs. One high blocked machine consumers entirely.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Frontmatter description with unquoted colon breaks strict YAML parsers</h3><span class="finding-location">DESIGN.md frontmatter</span></header><div class="finding-note">PyYAML SafeLoader throws <code>ScannerError: mapping values are not allowed here</code> — machine consumers cannot parse tokens at all. <span class="resolved-tag">Resolved D-008</span> — value single-quoted; strict parse verified passing.</div><div class="finding-fix"><strong>Fix:</strong> quote the value — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">Non-spec top-level elevation token group has no spec entry</h3><span class="finding-location">references/design-md-spec.md</span></header><div class="finding-note">Harmless extension, consistently referenced. No action required.</div><div class="finding-fix"><strong>Fix:</strong> none required.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>3. Component coverage</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>DESIGN.md Components (14) × EXPERIENCE.md Component Patterns (11). Every behavioral row maps to a visual spec; every visual spec except the generic container is exercised behaviorally.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">Panel has no dedicated Component Patterns row</h3><span class="finding-location">DESIGN.md Components § Panel / Card</span></header><div class="finding-note">Covered transitively via lane-card/reward-prompt. <span class="deferred-tag">Deferred</span> — one row ("static container, no pressed behavior") or record as intentionally visual-only.</div><div class="finding-fix"><strong>Fix:</strong> one row or record as visual-only — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">Display-name drift across spines (tokens match, names don't)</h3><span class="finding-location">DESIGN.md Components; EXPERIENCE.md Component Patterns</span></header><div class="finding-note">"Jogar button" vs "Button", "Prompt/banner" vs "Prompt / banner", "Settings row" vs "Settings row + toggle". <span class="deferred-tag">Deferred</span> — normalize display names; tokens already match.</div><div class="finding-fix"><strong>Fix:</strong> normalize names — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>4. State coverage</h2><span class="verdict-pill verdict-strong">strong</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>Every IA surface walked against empty/loading/focus/error/offline. Pressed/focused/disabled as global contracts; noop, pause-freeze, lane-switch warning, death-continue consumed, ad fail/cancel covered. Offline correctly omitted (fully-offline app). No misses.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">Empty-leaderboard treatment stated twice</h3><span class="finding-location">EXPERIENCE.md State Patterns</span></header><div class="finding-note">"Empty (new)" row and "Empty leaderboard" row — redundant, not contradictory. <span class="deferred-tag">Deferred</span> — merge into one row.</div><div class="finding-fix"><strong>Fix:</strong> merge into one row — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>5. Visual reference coverage</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>10 key-screen mocks promoted to <code>mockups/</code> and linked inline at the relevant sections; spines-win-on-conflict declared once in each spine. No orphans.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">D-004 deferred mocks to Finalize with no firing pointer</h3><span class="finding-location">.decision-log.md D-004</span></header><div class="finding-note">No pointer recorded whether the trigger fired. <span class="resolved-tag">Resolved D-009</span> — trigger recorded as fired; mocks promoted, linked inline.</div><div class="finding-fix"><strong>Fix:</strong> one log line at Finalize — done.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>6. Bloat &amp; overspecification</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>DESIGN.md 352 lines, EXPERIENCE.md 262. DESIGN prose carries editorial voice (acceptable); EXPERIENCE stays contractual. No FR/persona dumps; open items consolidated in one closing line.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">HUD rank argued in three places</h3><span class="finding-location">DESIGN.md Typography; EXPERIENCE.md Accessibility Floor + HUD &amp; Diegetic UI</span></header><div class="finding-note">Load-bearing, but could be stated once and cited. <span class="deferred-tag">Deferred</span> — keep the DESIGN.md canonical paragraph; shorten repeats to cross-refs.</div><div class="finding-fix"><strong>Fix:</strong> shorten repeats to cross-refs — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>7. Inheritance discipline</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>Sources frontmatter resolves; token refs resolve by name; glossary (Clean/Pura, Iniciante, Maestro, Mineral Quente) identical across spines. The decision-log gap is now closed by carry-over.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">D-006–D-018 cited in-spine but absent from this run's log</h3><span class="finding-location">both spines + .decision-log.md</span></header><div class="finding-note">Prior-run log is a listed source so the chain is traceable, but extractors couldn't tell re-ratified vs inherited. <span class="resolved-tag">Resolved D-006</span> — carry-over entry: D-006–D-018 + Dora climax inherited verbatim, no deltas.</div><div class="finding-fix"><strong>Fix:</strong> carry-over log entry — done.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details>
+        <summary><h2>8. Shape fit</h2><span class="verdict-pill verdict-strong">strong</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>DESIGN.md section order matches canonical exactly (order-locked). EXPERIENCE.md required defaults all present; invented sections (HUD &amp; Diegetic UI, Input Schemes, Game Feel &amp; Juice, Inspiration &amp; Anti-patterns, Responsive &amp; Platform) all earn their place for a game spine. No misses, no findings.</p></div></div>
+      </details>
+    </section>
+
+    <section class="reviewer-section">
+      <details>
+        <summary><h2>Accessibility review — APROVADO COM CONDICIONANTES</h2><span class="reviewer-source">review-accessibility.md</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>"O floor está bem arquitetado — hierarquia espelhada em anúncio, Reduced Motion como preset que mantém haptics+som, tone que cede ao screen-reader. Contrastes load-bearing recomputados conferem com o declarado. Os bloqueadores reais são: (1) VoiceOver sem caminho alternativo de movimento, (2) anel de foco invisível sobre fill accent, (3) leitura além-de-cor diferida sem validação dos pares críticos, (4) par 384 com margem fina. Nenhum é estrutural — todos têm fix pontual." Verdict stands post-fix except the two E9-deferred items.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-critical">critical</span><h3 class="finding-title">C-01 — VoiceOver sem caminho de movimento quando o gesto de três dedos é interceptado</h3><span class="finding-location">Screen Reader Contract + Beatriz failure branch</span></header><div class="finding-note">O failure branch equalizava "sistema engoliu o gesto" com "noop silencioso" — o jogo travava para a usuária cega sem diagnóstico. WCAG 2.1.1 / 2.5.1. <span class="resolved-tag">Resolved D-008</span> — Custom Actions + D-pad + dica throttled 1×/sessão.</div><div class="finding-fix"><strong>Fix:</strong> caminho alternativo obrigatório — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H-01 — Anel de foco 2px accent invisível sobre fill accent</h3><span class="finding-location">DESIGN.md Shapes + Components</span></header><div class="finding-note">Contraste anel/fill ~1:1 exatamente no CTA primário. WCAG 2.4.7 / 1.4.11. <span class="resolved-tag">Resolved D-008</span> — anel duplo com outline escuro; regra "anel nunca da mesma cor do fill".</div><div class="finding-fix"><strong>Fix:</strong> anel duplo — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H-02 — Leitura além-de-cor diferida, pares 48×96 e 192×1536 sem mapeamento</h3><span class="finding-location">DESIGN.md Colors + Shapes</span></header><div class="finding-note">"Ship sem isso é aposta." WCAG 1.4.1. <span class="deferred-tag">Deferred E9</span> — tabela tier→faceta/grão + validação lado a lado com simulação de deuteranopia/protanopia + grayscale.</div><div class="finding-fix"><strong>Fix:</strong> entregar tabela + validar — pending E9.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H-03 — Toggle off-state 1.27:1, falha 1.4.11</h3><span class="finding-location">DESIGN.md settings-toggle</span></header><div class="finding-note">Track off vs fundo falha o 3:1 de componentes UI. <span class="resolved-tag">Resolved D-008</span> — borda muted no track + glifo I/O; re-medir ≥3:1.</div><div class="finding-fix"><strong>Fix:</strong> escurecer track ou glifo I/O — done (ambos).</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H-04 — Par 384 com margem fina + nota de UX factualmente invertida</h3><span class="finding-location">DESIGN.md Colors 384 NOTE</span></header><div class="finding-note">"A nota diz que 24pt move para a barra de body-text — invertido: 24pt/800 É large text (barra 3:1). O teste conservador em 4.5 continua válido, mas a justificativa errada pode levar E1 a testar contra a barra errada." <span class="resolved-tag">Note fixed D-008</span>; device re-check pending E1.</div><div class="finding-fix"><strong>Fix:</strong> corrigir nota + re-rodar em device — note done, device pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M-01 — Noop silencioso × gesto interceptado indistinguíveis</h3><span class="finding-location">Announcement contract + Beatriz</span></header><div class="finding-note">Resolvido junto com C-01. <span class="resolved-tag">Resolved D-008</span>.</div><div class="finding-fix"><strong>Fix:</strong> feedback throttled só p/ falha de entrega — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M-02 — Best muted em sol forte (4.92:1, 11pt landscape)</h3><span class="finding-location">DESIGN.md Typography</span></header><div class="finding-note">"É o primeiro texto a sumir — e é justamente score-contexto." <span class="resolved-tag">Resolved D-008</span> via HUD H2 (12pt/600 + teste outdoor).</div><div class="finding-fix"><strong>Fix:</strong> piso 12pt ou peso 600 — done (ambos).</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M-03 — Reduced Motion: latência de aplicação não especificada</h3><span class="finding-location">Accessibility Floor + Game Feel</span></header><div class="finding-note">"Para sensibilidade a movimento, o toggle deve valer imediatamente (inclusive mid-run)." <span class="deferred-tag">Deferred</span> — precisa confirmação da arquitetura + teste E1.</div><div class="finding-fix"><strong>Fix:</strong> especificar aplicação imediata — pending arch/E1.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M-04 — Tile mínimo ~44pt = piso exato do target em landscape</h3><span class="finding-location">Layout + Responsive</span></header><div class="finding-note">Tap-to-read VO opera exatamente no piso com 8pt de separação. <span class="deferred-tag">Deferred E1/E8</span> — protocolo: taxa de acerto ≥95% com fonte máxima + tile mínimo.</div><div class="finding-fix"><strong>Fix:</strong> teste tap-to-read — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L-01 — Hairlines border 1.27–1.43:1</h3><span class="finding-location">painéis, divisórias, leaderboard-row</span></header><div class="finding-note">Decorativas — seleção sempre com accent bar + fill + sombra. <span class="deferred-tag">Deferred</span> — regra de lint: nenhuma informação só por hairline.</div><div class="finding-fix"><strong>Fix:</strong> lint rule, sem mudança de hex — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L-02 — accent-pressed como texto (4.42:1) ficaria abaixo do piso</h3><span class="finding-location">token accent-pressed</span></header><div class="finding-note">Hoje só fill (label dark ink 6.09:1, pass) — risco futuro. <span class="deferred-tag">Deferred</span> — documentar "fill, nunca tinta sobre raised".</div><div class="finding-fix"><strong>Fix:</strong> documentar no token — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L-03 — Skeleton shimmer sem parâmetro de movimento seguro</h3><span class="finding-location">leaderboard-row + Loading</span></header><div class="finding-note">Shimmer é movimento — respeitar Reduced Motion + evitar flash (2.3.1). <span class="deferred-tag">Deferred</span> — shimmer ≤1 ciclo/2s + versão estática.</div><div class="finding-fix"><strong>Fix:</strong> shimmer lento + estático sob RM — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L-04 — Idioma das labels de board e ordem de anúncio em i18n</h3><span class="finding-location">Screen Reader Contract</span></header><div class="finding-note">Falta explicitar ordem score→preview→best nas duas línguas + formas faladas de ranges ("um ou dois"). <span class="deferred-tag">Deferred</span> — catálogo i18n + teste VO PT/EN.</div><div class="finding-fix"><strong>Fix:</strong> formas faladas no i18n — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="reviewer-section">
+      <details>
+        <summary><h2>HUD review — Aprovar com ressalvas (portrait sustenta, landscape não)</h2><span class="reviewer-source">review-hud.md</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>"Portrait: hierarquia se sustenta em tamanho + cor + posição + ordem de anúncio. Landscape: a hierarquia colapsa parcialmente — razão 22:20 abaixo de qualquer limiar de dominância tipográfica (~1,3–1,5×). É o único ponto que quebra a regra de ouro 'preview nunca lê como segundo score'." Nada muda regra de gameplay — tudo é token, layout ou critério de aceite. Ordem de correção sugerida foi seguida: C1 → H1 → H2+M4 → H3+M3 → M1+M2 → L1–L4 como checklist.</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-critical">critical</span><h3 class="finding-title">C1 — Preview compete com score em landscape (22 vs 20pt)</h3><span class="finding-location">Typography + Layout landscape</span></header><div class="finding-note">Razão 1,1×; chip-frame sozinho não segura a 20pt contra 22pt. <span class="resolved-tag">Resolved D-008</span> — 16pt + label PRÓX; razão 1,375× ≥ 1,35×; preview-landscape nunca ≥ 18pt.</div><div class="finding-fix"><strong>Fix:</strong> valueSizeLandscape + chip label (ambos) — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H1 — Pause × preview: colisão de spec no top-right em landscape</h3><span class="finding-location">Components vs Landscape vs Responsive</span></header><div class="finding-note">Ambiguidade vira sobreposição ou toque adjacente em telefones pequenos. <span class="resolved-tag">Resolved D-008</span> — geometria congelada + zona de exclusão + teste de toque.</div><div class="finding-fix"><strong>Fix:</strong> congelar geometria — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H2 — Best muted falha sob sol, pior em landscape 11pt</h3><span class="finding-location">Colors + Typography caption-landscape</span></header><div class="finding-note">"Sempre legível ≠ quase invisível outdoor." <span class="resolved-tag">Resolved D-008</span> — 12pt/600 + critério outdoor (sol direto, brilho 80%, 30cm, 5/5 devices).</div><div class="finding-fix"><strong>Fix:</strong> 12/600 + teste outdoor — spec done, field pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H3 — Bronze 48 vs ferro 96: distinguibilidade mid-game não garantida</h3><span class="finding-location">Colors 48/96 + Shapes E9</span></header><div class="finding-note">Fallback sem gatilho mensurável; plano B sem mapeamento concreto. <span class="deferred-tag">Deferred E9</span> — critério jogável 10/10 a 40cm sob 2700K + grayscale; fallback <code>#3E444E</code> armado.</div><div class="finding-fix"><strong>Fix:</strong> critério + fallback + facet map — criterion done, validation pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M1 — 6 dígitos a 13pt em tile 44pt: risco de clip no chamfer</h3><span class="finding-location">Typography [ASSUMPTION]</span></header><div class="finding-note">36pt úteis vs ~42–48pt de numerais. <span class="resolved-tag">Spec done D-008</span> — floor 11pt + tracking −2% só no 6-digit; validação on-device pending E1.</div><div class="finding-fix"><strong>Fix:</strong> validar todos os 13 tiers on-device — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M2 — Glow 1536+ sem teto pode ofuscar vizinhos</h3><span class="finding-location">Components tile + Elevation</span></header><div class="finding-note">"O pico mais desejado vira o momento mais ilegível." <span class="resolved-tag">Resolved D-008</span> — teto 12%/35% + transiente + nunca sobre chrome + RM off + critério foto 1/60s.</div><div class="finding-fix"><strong>Fix:</strong> especificar teto — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M3 — 384 a 24pt mudou de barra: re-check pendente</h3><span class="finding-location">Colors NOTE 384</span></header><div class="finding-note">Margem 0,2 — calibração de painel come a margem. <span class="resolved-tag">Spec done D-008</span> — re-rodar on-device em 3 brilhos; fallback <code>#1B8A66</code>; par medido vai ao log.</div><div class="finding-fix"><strong>Fix:</strong> re-check on-device — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M4 — Thin top band sem altura mínima nem regra de overflow</h3><span class="finding-location">landscape "no second row"</span></header><div class="finding-note">"No second row" sem altura vira compressão infinita com Dynamic Type grande. <span class="resolved-tag">Resolved D-008</span> — banda 56pt, best ellipsis 1 linha, best congela em 12pt sob XL+; teste SE + Type máximo.</div><div class="finding-fix"><strong>Fix:</strong> fixar banda — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L1 — Preview 20pt portrait: monitorar, não corrigir</h3><span class="finding-location">portrait 34:20 + chip + ordem de anúncio</span></header><div class="finding-note"><span class="deferred-tag">Deferred playtest</span> — pergunta "o que é o número dourado?"; se &gt;1/10 responder "score", adicionar PRÓX também no portrait.</div><div class="finding-fix"><strong>Fix:</strong> pergunta de playtest — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L2 — Safe-margin 16pt correta, falta matriz de devices</h3><span class="finding-location">safe-margin sobre insets</span></header><div class="finding-note"><span class="deferred-tag">Deferred E8</span> — checklist 6 combinações notch/Dynamic Island/home-indicator × portrait/landscape.</div><div class="finding-fix"><strong>Fix:</strong> matriz de devices — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L3 — Pause fora do swipe rect: placement certo, geometria não provada</h3><span class="finding-location">swipe-rect declarado, não cotado</span></header><div class="finding-note"><span class="resolved-tag">Spec done D-008</span> — swipe-rect = board + 8pt; pause fora por ≥12pt; teste H1 cobre. Prova em device pending.</div><div class="finding-fix"><strong>Fix:</strong> cotar + teste — spec done, proof pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L4 — Aids só Iniciante: contrato íntegro, vigiar vazamento por anúncio</h3><span class="finding-location">Do/Don't + Component + State Patterns</span></header><div class="finding-note"><span class="deferred-tag">Deferred</span> — regressão por lane (Clean nunca monta prompt/reward, nem anuncia) + undo sem re-disparar bullet-time.</div><div class="finding-fix"><strong>Fix:</strong> teste de regressão — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <section class="reviewer-section">
+      <details>
+        <summary><h2>Input review — APROVADO COM RESSALVAS (não bloqueia E1)</h2><span class="reviewer-source">review-input.md</span></summary>
+        <div class="dim-body"><div class="dim-judgment"><p>"O contrato base está bem especificado (threshold, cancel=sem move, release off-board, first-wins, nunca mutação mid-animation, targets ≥44, 1-tap restart, noop silencioso). Três pontos devem ser fechados antes de E9/playtest em device" — os três foram fechados em D-008 (C1 fallback, H1 dominant-axis, H2 reject). "Não bloqueia E1."</p></div></div>
+        <div class="findings-list">
+          <article class="finding"><header><span class="badge badge-sev-critical">critical</span><h3 class="finding-title">C1 — Three-finger swipe como único path VoiceOver é frágil</h3><span class="finding-location">Screen Reader Contract + Beatriz</span></header><div class="finding-note">Entrega depende de modo/passthrough e falha silenciosamente. <span class="resolved-tag">Resolved D-008</span> — custom actions i18n + three-finger como atalho; aceitação: 3 moves só por actions.</div><div class="finding-fix"><strong>Fix:</strong> custom actions no board — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H1 — Resolução direcional de diagonais indefinida</h3><span class="finding-location">Interaction Primitives</span></header><div class="finding-note">Principal causa de "mis-swipe" percebido em 4×4. <span class="resolved-tag">Resolved D-008</span> — eixo dominante na ativação, travado até onEnd; matriz 8+4 diagonais.</div><div class="finding-fix"><strong>Fix:</strong> dominant-axis lock — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">H2 — "queued/rejected" deixa o comportamento em animação indefinido</h3><span class="finding-location">edge-contract in-flight</span></header><div class="finding-note">Delegar ao engine transfere a decisão p/ E1 e diverge touch vs VO. <span class="resolved-tag">Resolved D-008</span> — reject; single-slot/300ms só se playtest pedir.</div><div class="finding-fix"><strong>Fix:</strong> escolher reject — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M1 — Threshold "~20px": unidade ambígua</h3><span class="finding-location">Interaction Primitives + Input Schemes</span></header><div class="finding-note"><span class="resolved-tag">Resolved D-008</span> — ~20pt density-independent; 20pt ≈ meio tile no mínimo landscape.</div><div class="finding-fix"><strong>Fix:</strong> normatizar pt — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M2 — "Tap-to-read" com VO: tap = foco, não ativação</h3><span class="finding-location">Screen Reader Contract</span></header><div class="finding-note">Redação sugeria gesto indisponível com VO ligado. <span class="resolved-tag">Resolved D-008</span> — "tocar/focar anuncia valor + posição"; bridge Skia→UIAccessibility por tile.</div><div class="finding-fix"><strong>Fix:</strong> reword — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">M3 — Preview "perto do dedo" + pause precisam de exclusão explícita</h3><span class="finding-location">DESIGN.md Layout</span></header><div class="finding-note">Toque iniciado no card podia iniciar o Pan. <span class="resolved-tag">Resolved D-008</span> — Pan restrito aos bounds do board; fora do hit-rect nunca inicia move.</div><div class="finding-fix"><strong>Fix:</strong> Pan no board + fora do hit-rect — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L1 — Noop silencioso × interceptado: cobrir em teste</h3><span class="finding-location">State Patterns + Beatriz</span></header><div class="finding-note">Regra correta (sem punição). <span class="deferred-tag">Deferred teste</span> — validar (a) noop real e (b) interceptação separadamente.</div><div class="finding-fix"><strong>Fix:</strong> plano de teste — pending.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L2 — Sem remap em v1: aceitável, documentar o porquê</h3><span class="finding-location">Input Schemes</span></header><div class="finding-note">Turn-based sem timing — remap não é barreira. Aceito, justificativa registrada.</div><div class="finding-fix"><strong>Fix:</strong> aceitar + registrar — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L3 — Arrow-keys só no PWA, nota de iPad</h3><span class="finding-location">Input Schemes</span></header><div class="finding-note">BT + VO usa custom actions, não arrow-keys. Mantido, nota adicionada.</div><div class="finding-fix"><strong>Fix:</strong> manter + nota — done.</div></article>
+          <article class="finding"><header><span class="badge badge-sev-low">low</span><h3 class="finding-title">L4 — Release off-board resolve: notar edge do sistema</h3><span class="finding-location">edge-contract</span></header><div class="finding-note">Correto; único conflito é o home-indicator. <span class="deferred-tag">Deferred teste</span> — cobrir em device Face-ID.</div><div class="finding-fix"><strong>Fix:</strong> teste home edge — pending.</div></article>
+        </div>
+      </details>
+    </section>
+
+    <div class="mechanical">
+      <h3>Mechanical notes</h3>
+      <ul>
+        <li>DESIGN.md frontmatter now parses under strict YAML (PyYAML SafeLoader verified); status final, updated 2026-09-04.</li>
+        <li>65 distinct <code>{path.to.token}</code> refs across both spines, 0 unresolved (new tokens: <code>preview-card.valueSizeLandscape</code>, <code>preview-card.chipLabel</code>, <code>preview-card.chipLabelSize</code>, <code>settings-toggle.offBorder</code>, <code>settings-toggle.glyph</code>).</li>
+        <li>Frontmatter top keys DESIGN.md: name, description, colors, typography, rounded, spacing, elevation, components, status, updated, sources. EXPERIENCE.md: title, status, updated, sources. Both complete.</li>
+        <li>10 files in <code>mockups/</code> (promoted from <code>.working/</code>, names kept), linked inline in DESIGN.md Layout &amp; Spacing / Components and EXPERIENCE.md IA / HUD sections; spines-win-on-conflict declared once per spine.</li>
+        <li>No Mermaid in either spine; 27 quoted hex values, all well-formed.</li>
+      </ul>
+    </div>
+
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: review-rubric.md (+ review-accessibility.md, review-hud.md, review-input.md)</span>
+        <span>Generated: 2026-09-04</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

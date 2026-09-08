@@ -107,26 +107,26 @@ test('[P0] AC4 newGame consumes exactly 20 draws in order (18 alternating cell/v
   assert.deepStrictEqual(state.pendingSpawn, { value: 3, displayRoll: 0.25 });
 });
 
-test('[P0] tier wiring pin: post-merge ceiling 96 -> tier 2 combined bands (0.9->3, 0.93->6, 0.99->12)', () => {
+test('[P0] tier wiring pin: post-merge ceiling 384 -> tier 4 combined bands (0.9->3, 0.93->6, 0.99->12)', () => {
   const cases: Array<[number[], number]> = [
     [[0, 0.9, 0.5], 3],
     [[0, 0.93, 0.5], 6],
     [[0, 0.99, 0.5], 12],
   ];
   for (const [draws, expected] of cases) {
-    const board = boardWith([[48, 48, null, null], [], [], []]);
+    const board = boardWith([[192, 192, null, null], [], [], []]);
     const res = game.move(gameState(board, { value: 1, displayRoll: 0 }), 'left', rngOf(...draws));
     assert.strictEqual(res.moved, true);
-    assert.strictEqual(res.board[0][0], 96);
+    assert.strictEqual(res.board[0][0], 384);
     assert.deepStrictEqual(res.pendingSpawn, { value: expected, displayRoll: 0.5 });
   }
 });
 
-test('[P0] tier ladder variants: pending pot membership for ceilings 96 / 192 / 384', () => {
+test('[P0] tier ladder variants: pending pot membership for ceilings 384 / 768 / 1536', () => {
   const ladders: Array<[Array<number | null>, number[]]> = [
-    [[48, 48], [3, 6, 12]],
-    [[96, 96], [3, 6, 12, 24]],
-    [[192, 192], [3, 6, 12, 24, 48]],
+    [[192, 192], [3, 6, 12]],
+    [[384, 384], [3, 6, 12, 24]],
+    [[768, 768], [3, 6, 12, 24, 48]],
   ];
   for (const [row, pot] of ladders) {
     const matrix: Array<Array<number | null>> = [];
@@ -301,6 +301,11 @@ test('[P1] AC7 pot-by-ceiling composition: every tier\'s conditional pot frequen
     );
     for (let i = 0; i < pot.length; i++) {
       const observed = counts[i] / pots;
+      if (pot.length === 1) {
+        // Single-value pot (delay-2 tiers 0–2 → [3]): conditional is trivially 1.
+        assert.strictEqual(observed, 1, `ceiling ${ceiling} (tier ${tier}): single-pot must always be ${pot[i]}`);
+        continue;
+      }
       assert.ok(
         Math.abs(observed - cond[i]) < Math.max(0.01, sigmaBound(cond[i], pots)),
         `ceiling ${ceiling} (tier ${tier}): P(${pot[i]}|pot)=${observed.toFixed(4)} vs expected ${cond[i].toFixed(4)}`

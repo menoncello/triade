@@ -1,6 +1,9 @@
 ---
 baseline_commit: e0f5786
+baseline_revision: 29314e92df1a6d6a51ab0ad156a5b5feb71b378b
+final_revision: d7ee6437f3944211536643849e24f18079de4975
 status: done
+followup_review_recommended: false
 ---
 
 # Story 1.6: Input por swipe RNGH + edge-cases contract
@@ -217,3 +220,23 @@ so that my swipes always resolve predictably, even under interruptions.
 - [x] [Review][Patch] P8 — **AC-4 contract text contradicted shipped behavior:** (a) "first finger wins" is not enforced in code (D1 kept the native multi-pointer default; it's a manual device-validation item), and (b) "no second move() while animation in flight" contradicted the early-input release (AC-5 was amended, AC-4 was not). **APPLIED (2026-08-18): AC-4 amended to scope the no-second-move guarantee to the in-flight gate and mark first-finger-wins as manual validation.** [story AC-4]
 - [x] [Review][Defer] Df4 — `tilesRef` remains a second source of truth for tile state; a future `setTilesState` writer that forgets to sync the ref would desync rendering from the plan. Re-confirmed safe today (both writers sync the ref). Deferred, latent maintenance risk (matches Df2). [triade/src/render/GameBoard.tsx:205, 257-258, 285-287]
 - [x] [Review][Defer] Df5 — **GameBoard unmount clears the settle timer without releasing the App input gate**: if the board ever unmounts mid-animation (orientation/conditional render/remount), `busyRef` stays `true` and all swipe input freezes permanently (no fallback timeout). Not reachable today — the board never unmounts. Deferred, latent. [triade/src/render/GameBoard.tsx:215-219, triade/App.tsx:105-107]
+
+## Review Triage Log
+
+### 2026-09-06 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 0
+- defer: 0
+- reject: 0
+- addressed_findings:
+  - none
+
+## Auto Run Result
+
+- Summary: D-008 verification pass — zero code drift. RNGH ~2.32.0 v2 wiring, pure `swipe.ts` (threshold 10), gesture + `busyRef` early-input gate (~84ms), and pause reachability all confirmed present. No code changes required.
+- Files changed: spec frontmatter bookkeeping only; `epic-1-context.md` compiled as workflow artifact (untracked, not part of the product diff).
+- Review: Blind Hunter 0 findings; Edge Case Hunter 0 findings; no patches, no defers, no rejects.
+- Follow-up review recommended: false (bookkeeping-only diff, verification green).
+- Verification: `npx tsc --noEmit` clean (exit 0); `node --test __tests__/ui/swipe.test.ts __tests__/ui/ui.gesture.test.ts __tests__/ui/ui.purity.test.ts` 12/12 pass; full `npm test` 1012 pass / 0 fail / 426 skipped (skips are future-story ATDD scaffolds by design); web PWA and `src/engine/core` untouched.
+- Residual risks: manual simulator gesture behavior (T4.2) was human-only — operator confirmed OK on 2026-09-07, closing awaiting-operator.

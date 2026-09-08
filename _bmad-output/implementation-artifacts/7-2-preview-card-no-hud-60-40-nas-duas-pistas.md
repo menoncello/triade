@@ -1,10 +1,15 @@
 ---
 baseline_commit: 870c9ab147d34dad91343486b17a0fc30dcb837e
+baseline_revision: e741e8491c89d30b2499a3911131bf10f7819b84
+final_revision: ee3ce91ba7df07c40bedb69907ac36c5b2daaec3
+status: done
+review_loop_iteration: 0
+followup_review_recommended: false
 ---
 
 # Story 7.2: Preview card no HUD (60/40) nas duas pistas
 
-Status: done
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -162,5 +167,26 @@ OpenCode (intermediate game-dev framing), gds-dev-story workflow.
 - 2026-08-25: Story created by create-story (ultimate context engine) — comprehensive developer guide ready for dev-story.
 - 2026-08-25: Validated against the create-story checklist (fresh-context quality pass) — corrections applied: `hud.test.ts` edit is now mandatory (`renderHud` pending fixture), color-token note pinning the shipped light-theme hexes against DESIGN.md's dark canonical, PreviewCard props shape fixed to `{ preview: Preview }`, opaque-card wording clarified.
 - 2026-08-24: Implemented by dev-story (gds-dev-story). All tasks T1–T5 complete; 302 tests green; tsc CI gate clean; engine byte-identical. Boundary deviation from literal spec: `Hud` receives the resolved `Preview` (computed by `App` via `previewFor`) rather than `pending: PendingSpawn`, to keep the thin-view guard (`ui.thinview.test.ts`) green without modification.
+- 2026-09-07: D-008 verification pass (bmad-dev-auto): hardened `previewFor` against null/undefined `pending` (degrades to safe exact-0 instead of throwing) and explicit-null/non-array `availablePotValues` (falls back to full ladder); added 3 `[P0] AC2` pins. Gates: npm test 1472 (1027 pass / 0 fail / 445 skipped), `npx tsc --noEmit` clean, engine byte-identical.
+
+## Review Triage Log
+
+### 2026-09-07 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 0
+- defer: 0
+- reject: 17 (low 17: 14 blind-hunter incl. 1 overlap + 4 edge-case; all rejected as pre-existing degrade posture, impossible-input, or test-style preference — no change required)
+- addressed_findings:
+  - none
+
+## Auto Run Result
+
+- Summary: D-008 verification hardening of the 7.2 Ambiguous Preview display module. `previewFor` no longer throws on null/undefined `pending` (returns safe `{ kind: 'exact', value: 0 }`, consistent with the pre-existing NaN degrade posture) and treats explicit-null/non-array `availablePotValues` as the full ladder (default parameters only cover `undefined`). All 7.2 ACs preserved; 60/40 ULP boundary, ladder derivation, chip styling, thin-view boundary, and NOOP stability untouched.
+- Files changed: `triade/src/game/preview.ts` (2 null guards); `triade/__tests__/game/preview.test.ts` (3 new `[P0] AC2` pins); `epic-7-context.md` (compiled cache, new); spec frontmatter (status flow + this log).
+- Review: blind + edge-case hunters returned 18 raw findings (17 unique), all rejected — null-sentinel display, signature widening, non-array coercion, empty-array/unsorted/non-finite ladders, NaN-vs-null collision, memo identity, and test-shape critiques were each either pre-existing behavior, impossible production input, or intentional degrade-not-throw posture. No patches applied, nothing deferred.
+- Follow-up review recommended: false (final pass made zero code changes; all findings rejected).
+- Verification: `npm test` in `triade/` → 1472 tests, 1027 pass / 0 fail / 445 skipped (pre-existing skips); `preview.test.ts` 26/26; `npx tsc --noEmit` → clean exit 0; `git diff --stat -- triade/src/engine` → empty.
+- Residual risks: exact-0 fallback renders `"0"` in PreviewCard (finite, by design — same as the pre-existing NaN path); `tsconfig.test.json` gate shows pre-existing errors in untouched files (`App.tsx __DEV__`, `ThemeContext.tsx`) and is nondeterministic across runs; the two `deferred-work.md` D-008 ledger entries describing these exact bugs remain open for a follow-up close-out (not reverted, not closed here).
 - 2026-08-25: Story created by create-story (ultimate context engine) — comprehensive developer guide ready for dev-story.
 - 2026-08-25: Validated against the create-story checklist (fresh-context quality pass) — corrections applied: `hud.test.ts` edit is now mandatory (`renderHud` pending fixture), color-token note pinning the shipped light-theme hexes against DESIGN.md's dark canonical, PreviewCard props shape fixed to `{ preview: Preview }`, opaque-card wording clarified.

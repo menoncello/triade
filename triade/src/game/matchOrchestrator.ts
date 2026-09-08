@@ -100,11 +100,7 @@ export function confirmUndoIap(
   state: OrchestratorState,
   profile: LaneProfile
 ): ConfirmUndoResult {
-  let budgetForCheck = state.undoBudget;
-  if (budgetForCheck.freeUsed && !budgetForCheck.unlimited && budgetForCheck.iapRemaining === 0) {
-    budgetForCheck = { ...budgetForCheck, iapRemaining: 1 };
-  }
-  const res = consumeUndo(budgetForCheck, state.undoHistory.length, profile);
+  const res = consumeUndo(state.undoBudget, state.undoHistory.length, profile);
   if (!res.ok) return { ok: false, state: { ...state, showUndoPrompt: false } };
   const snap = state.undoHistory[state.undoHistory.length - 1];
   if (!snap) return { ok: false, state: { ...state, showUndoPrompt: false } };

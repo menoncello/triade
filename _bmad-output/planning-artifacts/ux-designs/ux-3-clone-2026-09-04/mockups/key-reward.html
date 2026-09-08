@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríade — Reward prompt (Iniciante)</title>
+<style>
+/* SPINE GOVERNANTE — Tríade Mineral Quente
+   DESIGN.md: Colors (raised card, border, accent CTA) · Typography (body copy; caption muted alternativa IAP) · Components (reward-prompt panel+overlay shadow; secondary Button; consumed CTA disabled 40% sem sombra; Cancel sempre) · Elevation & Depth (overlay sobre board congelado; feel nunca no chrome)
+   EXPERIENCE.md: Information Architecture (Reward prompt Iniciante-only: undo 1/jogo, continue 1/morte — E4, FR-19; ads só entre partidas) · Component Patterns (momento da dor; rewarded ad primeiro, IAP alternativa) · State Patterns (Disabled consumido; Ad fail/cancel reverte sem perda) · Interaction Primitives (Banned: intersticial forçado, ad mid-game) · Voice and Tone ("Continuar" discreto; sem urgência "$0.99!") · Key Flows (Ana §1, §4-5 + failure branch) */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0C0E11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:#F2EEE3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.device{width:390px;height:844px;background:#23262D;border-radius:54px;border:1px solid #3A3F49;padding:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.screen{position:relative;width:100%;height:100%;background:#23262D;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:60px 16px 16px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#0C0E11;border-radius:9999px;z-index:3}
+.topbar{text-align:center}
+.topbar .s{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-size:22px;font-weight:700}
+.topbar .b{font-size:13px;color:#A39C8F;margin-top:4px}
+.board{margin-top:12px;background:#1A1D23;border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;opacity:.6}
+.tile{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;font-weight:800;font-size:26px}
+.t384{background:#157A5C;color:#F6F0E1}.t96{background:#4E5560;color:#F6F0E1}.t24{background:#A2521F;color:#F6F0E1}.t6{background:#E08532;color:#1C1206}.t3{background:#E4A53B;color:#1C1206}.t1{background:#EFE3C2;color:#1C1206}
+.scrim{position:absolute;inset:0;background:rgba(12,14,17,.70);display:flex;align-items:flex-end;padding:16px 16px 32px}
+.card{width:100%;background:#2B2F38;border:1px solid #3A3F49;border-radius:12px;padding:20px 16px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+.card .k{font-size:13px;color:#E8A33D;font-weight:700}
+.card h3{font-size:17px;font-weight:700;margin-top:4px}
+.card p{font-size:15px;color:#A39C8F;margin-top:6px;line-height:1.5}
+.btn{min-height:48px;border-radius:12px;font-size:17px;font-weight:700;border:none;width:100%;margin-top:10px;cursor:pointer}
+.ad{background:#E8A33D;color:#1C1206;box-shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.30)}
+.cancel{background:#2B2F38;color:#F2EEE3;border:1px solid #3A3F49;font-weight:500}
+.fine{font-size:13px;color:#A39C8F;text-align:center;margin-top:8px;line-height:1.5}
+.caption{font-size:13px;color:#A39C8F;max-width:380px;text-align:center;line-height:1.5}
+.caption b{color:#F2EEE3}
+</style>
+</head>
+<body>
+<div class="device"><div class="screen">
+  <div class="notch"></div>
+  <div class="topbar"><div class="s">2.140</div><div class="b">Best · Iniciante · 2.880</div></div>
+  <div class="board">
+    <div class="tile t384">384</div><div class="tile t96">96</div><div class="tile t24">24</div><div class="tile t6">6</div>
+    <div class="tile t96">96</div><div class="tile t24">24</div><div class="tile t6">6</div><div class="tile t3">3</div>
+    <div class="tile t24">24</div><div class="tile t6">6</div><div class="tile t3">3</div><div class="tile t1">1</div>
+    <div class="tile t6">6</div><div class="tile t3">3</div><div class="tile t1">1</div><div class="tile t3">3</div>
+  </div>
+  <div class="scrim"><div class="card">
+    <div class="k">Iniciante · 1 vez por partida</div>
+    <h3>Desfazer a última jogada? · Undo last move?</h3>
+    <p>Assista a 1 anúncio e o tabuleiro volta exatamente como estava. Se o anúncio falhar, nada se perde.</p>
+    <button class="btn ad">Assistir e desfazer · Watch & undo</button>
+    <button class="btn cancel">Cancelar · Cancel</button>
+    <div class="fine">Sem anúncio no meio do jogo · No mid-game ads<br>Alternativa: compra única remove ajudas pagas</div>
+  </div></div>
+</div></div>
+<div class="caption"><b>key-reward</b> — prompt Iniciante no momento da dor: ad primeiro, IAP alternativa, Cancel sempre, falha sem perda.</div>
+</body>
+</html>

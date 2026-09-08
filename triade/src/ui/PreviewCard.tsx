@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import type { Preview } from '../game/preview.ts';
+import { i18n } from '../i18n/index.ts';
 
 export type { Preview } from '../game/preview.ts';
 
@@ -23,8 +24,13 @@ function displayOf(preview: Preview): string {
 
 export function PreviewCard({ preview, label }: { preview: Preview; label?: string }) {
   const display = displayOf(preview);
-  const laneNote = label ? ` (${label})` : '';
-  const announcement = `Próxima${laneNote}: ${display}`;
+  // i18n-authored label (never hard-code PT/EN here): a11y.preview wraps display.
+  let announcement: string;
+  try {
+    announcement = i18n.t('a11y.preview', { display: label ? `${display} (${label})` : display });
+  } catch {
+    announcement = `Next${label ? ` (${label})` : ''}: ${display}`;
+  }
   return (
     <View style={styles.card} accessibilityLabel={announcement} pointerEvents="none" accessible accessibilityRole="text">
       {label ? <Text style={styles.label} allowFontScaling>{label}</Text> : null}

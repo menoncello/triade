@@ -2,11 +2,18 @@
 title: '9-2 Screen Reader Contract'
 type: 'feature'
 created: '2026-09-02'
-status: 'done'
-baseline_revision: '6576273e92d976376ff47e6f1c56f90b3776a53f'
-final_revision: '7832d3c80953d18f72f156bd33d19bc8816abc14'
+status: 'awaiting-operator'
+baseline_revision: 'd26bbdd0b8796ebedc328c97cae5c0f040b8dc7c'
+final_revision: '9c33e33c5da1eb71cbf2b16e8279d9a196448ba8'
 review_loop_iteration: 0
 followup_review_recommended: false
+operator_actions:
+  - 'Enable VoiceOver on an iOS simulator or device (Settings > Accessibility > VoiceOver) and verify a three-finger swipe in each direction moves the board with a spoken move/merge announcement, and that a single-finger swipe never moves the board while VoiceOver is active.'
+  - 'With VoiceOver on, tap several tiles and confirm each announces value plus row/column matching the visible board, tapping a tile re-announces it, and empty cells expose no accessible element.'
+  - 'Play until merges, spawn, score changes, and game over occur, and confirm by ear: per-pair merge phrasing, spawn announcement, score announced only on merge without spam, noop swipes silent, and game over announces score/best plus New record when applicable.'
+  - 'Open the tone screen with VoiceOver active and confirm auto-advance waits for announcements/VoiceOver idle (about 5s fallback), and that the dismiss tap still works.'
+  - 'Set the largest accessibility text size and confirm HUD, menu, lane-select cards, game-over stats, and banners render without truncation or overlap.'
+  - 'Repeat the swipe, tile-reading, and announcement checks with TalkBack on Android.'
 context: []
 warnings: []
 ---
@@ -90,6 +97,16 @@ warnings: []
   - `[low] [patch]` Gesture NaN/Infinity not guarded — added `Number.isFinite` guard in `isThreeFingerMove`
   - `[low] [patch]` Board null/row guard — added null Array guard in `BoardA11yOverlay`
 
+### 2026-09-07 — Review pass (bmad-dev-auto follow-up: preview/banner wiring)
+- intent_gap: 0
+- bad_spec: 0
+- patch: 2: (low 2)
+- defer: 0
+- reject: 17
+- addressed_findings:
+  - `[low] [patch]` Banner cold-start announcement asymmetry (Edge Hunter: `App.tsx` banner ref inited `{false,false}` announced on mount while preview path skips first mount) — banner ref now inits `null` and skips first effect run, mirroring preview; mount is silent, only false→true transitions announce
+  - `[low] [patch]` Banner announces empty/raw-key string when locale missing (Edge Hunter: no `&& value` guard unlike preview path) — now guards `msg && msg !== key` before `announceBanner` for both ceiling and stuck hints
+
 ## Verification
 
 **Commands:**
@@ -124,3 +141,30 @@ warnings: []
 - ToneScreen, laneSelect, gameOverOverlay suites remain green
 
 **Residual risks:** GameOver numbers retain `numberOfLines=1 ellipsizeMode="tail"` per DW-101 overflow guard — at largest Dynamic Type scale numbers truncate with ellipsis (accepted). VoiceOver focus not auto-moved after move (DW-112). Skia Canvas not explicitly hidden (DW-113); may require `importantForAccessibility="no-hide-descendants"` in follow-up.
+
+## Auto Run Result — Review Pass 2026-09-07
+
+**Summary:** Verified the full screen-reader contract (three-finger gate, per-tile overlay, central announcements, tone pause, Dynamic Type) and closed the two remaining gaps from implementation (unwired preview/banner announcements, hard-coded PreviewCard label). Review (Blind + Edge hunters, 19 unique findings) produced 2 low patches, both applied; the remaining 17 were rejected as speculative without device evidence, pre-existing patterns, or design tuning that needs a human ear on-device.
+
+**Files changed (this run, since baseline `d26bbdd`):**
+- `triade/App.tsx` — wired `announcePreview` on `pendingSpawn` display change (skip-first-mount) + `announceBanner` on ceiling/stuck false→true transitions; review patches: banner skip-first-mount symmetry + empty/raw-key guard
+- `triade/src/ui/PreviewCard.tsx` — `accessibilityLabel` now i18n-authored via `a11y.preview` (was hard-coded PT)
+- This spec file — status/baseline bookkeeping + triage log + this result section (intent-contract untouched)
+
+**Review findings breakdown:** intent_gap 0, bad_spec 0, patch 2 (low 2) fixed, defer 0, reject 17
+
+**Follow-up review recommended:** false (final-pass changes are two localized low-consequence guards; full suite green)
+
+**Verification performed:**
+- Contract file `__tests__/a11y/screenReader.contract.test.tsx`: green (15/15 per implementation pass)
+- Full `npm test` in `triade/`: 1066 pass, 0 fail, 460 skipped (skips pre-existing)
+- `npx tsc --noEmit` in `triade/`: 0 errors
+- `sprint-status.yaml`: untouched (orchestrator-owned)
+
+**Residual risks:** Same as above (DW-101 ellipsis accepted; DW-112 focus not auto-moved; DW-113 Canvas not hidden). Device-ear checks (announcement pacing, three-finger feel, largest-text layout) still require a human with VoiceOver/TalkBack — listed under `operator_actions` in frontmatter; status `awaiting-operator`.
+
+## Follow-up Verification 2026-09-07 (story 9-2 implementation subagent)
+
+- Wired missing preview/banner announcements: `App.tsx` now announces preview display on `pendingSpawn` change (skip-first-mount, `announcePreview`) and ceiling/stuck banners on false→true transitions (`announceBanner` with `i18n.t('accelerated.*Hint')`); all hooks placed before early returns (Rules of Hooks safe).
+- `PreviewCard.tsx` accessibilityLabel now i18n-authored via `a11y.preview` (was hard-coded `Próxima…`); lane note preserved. `AcceleratedAids.tsx` banner labels intentionally left as-is — pinned by active suites `acceleratedAids.test.ts` + `app.contextualHelp.test.ts`.
+- Results: contract file 15/15 green; scoped run (contract + acceleratedAids + contextualHelp + previewCard + laneSelect + gameOverOverlay) 1066 pass / 0 fail; full `npm test` 1051 pass / 0 fail / 460 skipped; `tsc --noEmit` 0 errors.

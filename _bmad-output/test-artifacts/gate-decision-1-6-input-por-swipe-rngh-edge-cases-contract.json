@@ -1,0 +1,21 @@
+{
+ "allow_gate": true,
+ "conditions": [],
+ "quality_gates": {
+  "deterministic": true,
+  "framework": "node:test + tsx (repo standard; no Playwright - no browser surface in scope)",
+  "green_first_run": "10/10",
+  "no_duplicate_coverage": true,
+  "no_production_code_modified": true,
+  "priority_tags": true,
+  "sprint_status_untouched": true,
+  "test_levels": "Unit host only (pure gesture/engine/render-plan seams); E2E/API/Component excluded with justification"
+ },
+ "residual_risks": [
+  "R-001 operator manual checks #1-#7 still pending (awaiting-operator) - device-only, not automatable",
+  "R-002 second-finger (D1) device-only",
+  "1.6-PROP-001 pure swipeGate.ts extraction still proposed, not implemented"
+ ],
+ "story": "1-6-input-por-swipe-rngh-edge-cases-contract",
+ "workflow": "bmad-testarch-automate"
+}

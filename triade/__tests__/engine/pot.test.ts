@@ -49,13 +49,13 @@ function resolveWithFallback(primaryPath: string, targetFileName: string): strin
 
 const FR7_LADDER: number[][] = [
   [3],
+  [3],
+  [3],
   [3, 6],
   [3, 6, 12],
   [3, 6, 12, 24],
   [3, 6, 12, 24, 48],
   [3, 6, 12, 24, 48, 96],
-  [3, 6, 12, 24, 48, 96, 192],
-  [3, 6, 12, 24, 48, 96, 192, 384],
 ];
 
 async function coreWithPot(): Promise<typeof import('../../src/engine/core/index.ts')> {
@@ -69,11 +69,11 @@ test('[P0] FR-7 ladder matrix pinned literally for tiers 0..7', async () => {
   }
 });
 
-test('[P1] structural invariants hold for tiers 0..12 (>=3, doubling, length = tier + 1)', async () => {
+test('[P1] structural invariants hold for tiers 0..12 (delay-2 ladder: length = max(1, tier-1))', async () => {
   const { potForTier } = await coreWithPot();
   for (let t = 0; t <= 12; t++) {
     const pot = potForTier(t);
-    assert.strictEqual(pot.length, t + 1, `tier ${t}: expected length ${t + 1}`);
+    assert.strictEqual(pot.length, Math.max(1, t - 1), `tier ${t}: expected length ${Math.max(1, t - 1)}`);
     for (const v of pot) {
       assert.ok(v >= 3, `tier ${t}: value ${v} must be >= 3`);
     }
@@ -89,16 +89,16 @@ test('[P0] weightedValue wiring resolves pot values by tier (combined single-rol
   // potWeights(pot))], recomputed from the same formula as the implementation —
   // never hardcoded mid-values.
   //
-  // Tier 1: pot [3,6] → weights [1, 0.5] normalized to 0.2 → [0.13333, 0.06667];
+  // Tier 3: pot [3,6] → weights [1, 0.5] normalized to 0.2 → [0.13333, 0.06667];
   // cumulative over [1,2,3,6] = 0.4, 0.8, 0.9333, 1.0.
-  assert.strictEqual(weightedValue(rngOf(0.9), 1), 3); // 0.9 ∈ [0.8, 0.9333)
-  assert.strictEqual(weightedValue(rngOf(0.98), 1), 6); // 0.98 ∈ [0.9333, 1.0)
-  // Tier 5: pot [3..96] weights halving normalized to 0.2; cumulative over
-  // [1,2,3,6,12,24,48,96] = 0.4, 0.8, 0.9016, 0.9524, 0.9778, 0.9905, 0.9968, 1.0.
-  assert.strictEqual(weightedValue(rngOf(0.85), 5), 3); // 0.85 ∈ [0.8, 0.9016)
-  assert.strictEqual(weightedValue(rngOf(0.93), 5), 6); // 0.93 ∈ [0.9016, 0.9524)
-  assert.strictEqual(weightedValue(rngOf(0.99), 5), 24); // 0.99 ∈ [0.9778, 0.9905)
-  assert.strictEqual(weightedValue(rngOf(0.999), 5), 96); // 0.999 ∈ [0.9968, 1.0]
+  assert.strictEqual(weightedValue(rngOf(0.9), 3), 3); // 0.9 ∈ [0.8, 0.9333)
+  assert.strictEqual(weightedValue(rngOf(0.98), 3), 6); // 0.98 ∈ [0.9333, 1.0)
+  // Tier 5: pot [3,6,12,24] weights halving normalized to 0.2; cumulative over
+  // [1,2,3,6,12,24] = 0.4, 0.8, 0.9067, 0.96, 0.9867, 1.0.
+  assert.strictEqual(weightedValue(rngOf(0.85), 5), 3); // 0.85 ∈ [0.8, 0.9067)
+  assert.strictEqual(weightedValue(rngOf(0.93), 5), 6); // 0.93 ∈ [0.9067, 0.96)
+  assert.strictEqual(weightedValue(rngOf(0.99), 5), 24); // 0.99 ∈ [0.9867, 1.0)
+  assert.strictEqual(weightedValue(rngOf(0.999), 5), 24); // 0.999 ∈ [0.9867, 1.0]
 });
 
 test('[P0] draw-count pin: every weightedValue call consumes exactly one roll (single-roll contract, story 2.6)', async () => {
@@ -117,7 +117,8 @@ test('[P1] defensive guard: negative tiers clamp to tier 0, fractional tiers flo
   const { potForTier } = await coreWithPot();
   assert.deepStrictEqual(potForTier(-1), [3]);
   assert.deepStrictEqual(potForTier(-0.5), [3]);
-  assert.deepStrictEqual(potForTier(2.9), [3, 6, 12]);
+  assert.deepStrictEqual(potForTier(2.9), [3]);
+  assert.deepStrictEqual(potForTier(3.9), [3, 6]);
   assert.deepStrictEqual(potForTier(NaN), [3]);
   assert.deepStrictEqual(potForTier(Infinity), [3]);
   assert.deepStrictEqual(potForTier(-Infinity), [3]);
@@ -126,9 +127,9 @@ test('[P1] defensive guard: negative tiers clamp to tier 0, fractional tiers flo
 test('[P1] resolver purity and spawnConfig keying (no scattered literals, re-exported, no UI imports)', async () => {
   const { potForTier } = await coreWithPot();
   assert.strictEqual(typeof potForTier, 'function');
-  assert.deepStrictEqual(potForTier(2), potForTier(2));
-  const first = potForTier(2);
-  assert.notStrictEqual(potForTier(2), first, 'each call must return a fresh array');
+  assert.deepStrictEqual(potForTier(4), potForTier(4));
+  const first = potForTier(4);
+  assert.notStrictEqual(potForTier(4), first, 'each call must return a fresh array');
   assert.deepStrictEqual(first, [3, 6, 12]);
 
   const primaryPotPath = join(dirname(fileURLToPath(import.meta.url)), '../../src/engine/core/pot.ts');

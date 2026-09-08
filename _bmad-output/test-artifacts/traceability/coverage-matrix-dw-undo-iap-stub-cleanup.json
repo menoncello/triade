@@ -1,0 +1,327 @@
+{
+  "phase": "PHASE_1_COMPLETE",
+  "generated_at": "2026-09-04T02:11:13.294466Z",
+  "trace_target": {
+    "type": "hotfix",
+    "id": "dw-undo-iap-stub-cleanup",
+    "label": "dw-undo-iap-stub-cleanup (DW-105)"
+  },
+  "collection_mode": "contract_static",
+  "allow_gate": true,
+  "collection_status": "COLLECTED",
+  "coverage_basis": "acceptance_criteria",
+  "summary_confidence": "high",
+  "oracle": {
+    "resolution_mode": "formal_requirements",
+    "confidence": "high",
+    "sources": [
+      "_bmad-output/test-artifacts/atdd-checklist-dw-undo-iap-stub-cleanup.md",
+      "_bmad-output/test-artifacts/test-design/test-design-dw-undo-iap-stub-cleanup.md",
+      "_bmad-output/implementation-artifacts/bmad-dev-auto-result-dw-undo-iap-stub-cleanup.md",
+      "_bmad-output/implementation-artifacts/deferred-work.md (DW-105)"
+    ],
+    "external_pointer_status": "not_used",
+    "synthetic": false
+  },
+  "requirements": [
+    {
+      "id": "AC-1",
+      "title": "Deny without budget - no phantom grant",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "[P0] deny without budget",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 35,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P0] no phantom persistence",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 48,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "repo:confirmUndoIap respects budget",
+          "file": "triade/__tests__/game/matchOrchestrator.test.ts",
+          "line": 120,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P0-UMB-01] journey second-undo-blocked",
+          "file": "_bmad-output/test-artifacts/tests/e2e/undo-iap-stub-cleanup.umbrella.spec.ts",
+          "line": 28,
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "Purchase path survives - grant to consume chain",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "[P0] purchase-consume chain",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 59,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P0-API-01] purchaseUndoPack writer",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 29,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "repo:undoPack consume chain",
+          "file": "triade/__tests__/game/matchOrchestrator.undoPack.test.ts",
+          "line": 90,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P0-UMB-02] journey purchase-then-reset",
+          "file": "_bmad-output/test-artifacts/tests/e2e/undo-iap-stub-cleanup.umbrella.spec.ts",
+          "line": 41,
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "title": "Gate parity - canUndo agrees with confirm",
+      "priority": "P0",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "[P0] canUndo gate parity",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 78,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "repo:undoPack gate rows",
+          "file": "triade/__tests__/game/matchOrchestrator.undoPack.test.ts",
+          "line": 32,
+          "level": "unit",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "title": "Ad/Iap symmetry + entitlement paths + fail-closed App",
+      "priority": "P1",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "[P1] Ad/Iap symmetry",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 95,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P1] unlimited path",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 115,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P1] clean lane no-op",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 128,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P1-API-01] applyNoAds writer",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 43,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "[P1-API-02] reset writer",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 55,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "[P1-API-03] SCAN stub absent",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 66,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "[P1-API-04] SCAN symmetry",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 76,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "[P1-API-05] SCAN fail-closed",
+          "file": "_bmad-output/test-artifacts/tests/api/undo-iap-stub-cleanup.gateway.spec.ts",
+          "line": 84,
+          "level": "api",
+          "status": "active"
+        },
+        {
+          "id": "[P1-UMB-01] journey unlimited",
+          "file": "_bmad-output/test-artifacts/tests/e2e/undo-iap-stub-cleanup.umbrella.spec.ts",
+          "line": 57,
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "title": "Stub absent + ledger + hygiene",
+      "priority": "P2",
+      "coverage": "FULL",
+      "tests": [
+        {
+          "id": "[P2] empty-history guard",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 139,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P2] cap999+reset baseline",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 149,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P2] applyNoAds enables Iap",
+          "file": "_bmad-output/test-artifacts/tests/unit/undo-iap-stub-cleanup.atdd.test.ts",
+          "line": 162,
+          "level": "unit",
+          "status": "active"
+        },
+        {
+          "id": "[P2-UMB-01] ledger DW-105",
+          "file": "_bmad-output/test-artifacts/tests/e2e/undo-iap-stub-cleanup.umbrella.spec.ts",
+          "line": 69,
+          "level": "e2e",
+          "status": "active"
+        },
+        {
+          "id": "[P2-UMB-02] pin+sprint hygiene",
+          "file": "_bmad-output/test-artifacts/tests/e2e/undo-iap-stub-cleanup.umbrella.spec.ts",
+          "line": 80,
+          "level": "e2e",
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "coverage_statistics": {
+    "total_requirements": 5,
+    "fully_covered": 5,
+    "partially_covered": 0,
+    "uncovered": 0,
+    "overall_coverage_percentage": 100,
+    "priority_breakdown": {
+      "P0": {
+        "total": 3,
+        "covered": 3,
+        "percentage": 100
+      },
+      "P1": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P2": {
+        "total": 1,
+        "covered": 1,
+        "percentage": 100
+      },
+      "P3": {
+        "total": 0,
+        "covered": 0,
+        "percentage": 100
+      }
+    }
+  },
+  "gap_analysis": {
+    "critical_gaps": [],
+    "high_gaps": [],
+    "medium_gaps": [],
+    "low_gaps": [],
+    "partial_coverage_items": [],
+    "unit_only_items": []
+  },
+  "coverage_heuristics": {
+    "endpoint_gaps": [],
+    "auth_negative_path_gaps": [],
+    "happy_path_only_gaps": [],
+    "ui_journey_gaps": [],
+    "ui_state_gaps": [],
+    "counts": {
+      "endpoints_without_tests": 0,
+      "auth_missing_negative_paths": 0,
+      "happy_path_only_criteria": 0,
+      "ui_journeys_without_e2e": 0,
+      "ui_states_missing_coverage": 0
+    }
+  },
+  "test_inventory": {
+    "summary": {
+      "files": 6,
+      "cases": 63,
+      "skipped_cases": 0,
+      "fixme_cases": 0,
+      "pending_cases": 0,
+      "by_level": {
+        "e2e": {
+          "tests": 5,
+          "criteria_covered": 5
+        },
+        "api": {
+          "tests": 6,
+          "criteria_covered": 4
+        },
+        "component": {
+          "tests": 0,
+          "criteria_covered": 0
+        },
+        "unit": {
+          "tests": 52,
+          "criteria_covered": 5
+        },
+        "other": {
+          "tests": 0,
+          "criteria_covered": 0
+        }
+      }
+    },
+    "blockers": []
+  },
+  "blockers": [],
+  "recommendations": [
+    {
+      "priority": "LOW",
+      "action": "Merge-ready; PM follow-up for explicit no-undos affordance (optional)",
+      "requirements": []
+    }
+  ]
+}

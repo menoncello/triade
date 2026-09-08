@@ -12,6 +12,22 @@ function fmt(n: number): string {
   return Number.isFinite(n) ? n.toLocaleString('pt-BR') : '0';
 }
 
+export interface HudChrome {
+  text: string;
+  muted: string;
+  assistBg: string;
+  assistBorder: string;
+}
+
+// Light fallback keeps bare-render (tests, previews) identical to the
+// pre-theme rendering. App.tsx always passes the active theme's chrome.
+const FALLBACK_CHROME: HudChrome = {
+  text: '#1a1d23',
+  muted: '#8a8578',
+  assistBg: '#fff',
+  assistBorder: '#e7e4de',
+};
+
 export interface HudProps {
   score: number;
   best: number;
@@ -28,6 +44,13 @@ export interface HudProps {
   // 3.2 Clean lane purity: only the active lane preview is DISPLAYED; the fan-out shape is kept
   // so 7.2 previewWiring tests migrate via `activeLaneId` gate rather than a breaking prop change.
   activeLaneId?: LaneId;
+  // Opens the pause sheet. Optional so bare renders (tests) stay unchanged;
+  // App.tsx always passes its setPaused(true).
+  onPause?: () => void;
+  // Theme chrome resolved by the caller (App.tsx owns THEMES; Hud stays a
+  // thin view and never imports theme tokens — ui.thinview.test.ts).
+  // Dark/colorBlind themes pass light text; without it, light fallback.
+  chrome?: HudChrome;
   // 3.3 Accelerated assistance affordances (Accelerated only, gated by parent)
   canUndo?: boolean;
   canHint?: boolean;
@@ -59,7 +82,10 @@ export function Hud({
   canHint,
   onUndo,
   onHint,
+  chrome,
+  onPause,
 }: HudProps) {
+  const c = chrome ?? FALLBACK_CHROME;
   const topPad = insets.top + SAFE_MARGIN;
   const leftPad = insets.left + SAFE_MARGIN;
   const rightPad = insets.right + SAFE_MARGIN;
@@ -77,10 +103,10 @@ export function Hud({
       <View pointerEvents="box-none" style={styles.overlay}>
         <View style={[styles.landscapeBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
           <View style={styles.landscapeLeft}>
-            <Text style={styles.scoreLandscape} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
+            <Text style={[styles.scoreLandscape, { color: c.text }]} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
               {fmt(score)}
             </Text>
-            <Text style={styles.bestLandscape} allowFontScaling adjustsFontSizeToFit={false}>
+            <Text style={[styles.bestLandscape, { color: c.muted }]} allowFontScaling adjustsFontSizeToFit={false}>
               Recorde {fmt(best)}
             </Text>
           </View>
@@ -92,27 +118,27 @@ export function Hud({
               <Pressable
                 onPress={onUndo}
                 disabled={!canUndo}
-                style={[styles.assistBtn, !canUndo ? styles.assistBtnDisabled : null]}
+                style={[styles.assistBtn, { backgroundColor: c.assistBg, borderColor: c.assistBorder }, !canUndo ? styles.assistBtnDisabled : null]}
                 accessibilityRole="button"
                 accessibilityLabel="Desfazer"
                 accessibilityState={{ disabled: !canUndo }}
               >
-                <Text style={styles.assistLabel} allowFontScaling>↩</Text>
+                <Text style={[styles.assistLabel, { color: c.text }]} allowFontScaling>↩</Text>
               </Pressable>
             ) : null}
             {showAssistance && onHint ? (
               <Pressable
                 onPress={onHint}
                 disabled={!canHint}
-                style={[styles.assistBtn, !canHint ? styles.assistBtnDisabled : null]}
+                style={[styles.assistBtn, { backgroundColor: c.assistBg, borderColor: c.assistBorder }, !canHint ? styles.assistBtnDisabled : null]}
                 accessibilityRole="button"
                 accessibilityLabel="Dica"
                 accessibilityState={{ disabled: !canHint }}
               >
-                <Text style={styles.assistLabel} allowFontScaling>?</Text>
+                <Text style={[styles.assistLabel, { color: c.text }]} allowFontScaling>?</Text>
               </Pressable>
             ) : null}
-            <PauseButton />
+            <PauseButton onPress={onPause} />
           </View>
         </View>
       </View>
@@ -124,15 +150,15 @@ export function Hud({
       <View style={[styles.portraitBand, { height: getBandTop(insets, bandHeight), paddingTop: topPad, paddingLeft: leftPad, paddingRight: rightPad }]}>
         <View style={styles.pauseSlot} />
         <View style={styles.scoreWrap}>
-          <Text style={styles.scorePortrait} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
+          <Text style={[styles.scorePortrait, { color: c.text }]} allowFontScaling numberOfLines={2} adjustsFontSizeToFit={false}>
             {fmt(score)}
           </Text>
-          <Text style={styles.bestPortrait} allowFontScaling adjustsFontSizeToFit={false}>
+          <Text style={[styles.bestPortrait, { color: c.muted }]} allowFontScaling adjustsFontSizeToFit={false}>
             Recorde {fmt(best)}
           </Text>
         </View>
         <View style={styles.pauseSlot}>
-          <PauseButton />
+          <PauseButton onPress={onPause} />
         </View>
       </View>
       <View pointerEvents="box-none" accessible={false} style={[styles.previewPortrait, { right: rightPad, bottom: bottomPad }]}>
@@ -144,24 +170,24 @@ export function Hud({
             <Pressable
               onPress={onUndo}
               disabled={!canUndo}
-              style={[styles.assistBtn, !canUndo ? styles.assistBtnDisabled : null]}
+              style={[styles.assistBtn, { backgroundColor: c.assistBg, borderColor: c.assistBorder }, !canUndo ? styles.assistBtnDisabled : null]}
               accessibilityRole="button"
               accessibilityLabel="Desfazer"
               accessibilityState={{ disabled: !canUndo }}
             >
-              <Text style={styles.assistLabel} allowFontScaling>↩</Text>
+              <Text style={[styles.assistLabel, { color: c.text }]} allowFontScaling>↩</Text>
             </Pressable>
           ) : null}
           {onHint ? (
             <Pressable
               onPress={onHint}
               disabled={!canHint}
-              style={[styles.assistBtn, !canHint ? styles.assistBtnDisabled : null]}
+              style={[styles.assistBtn, { backgroundColor: c.assistBg, borderColor: c.assistBorder }, !canHint ? styles.assistBtnDisabled : null]}
               accessibilityRole="button"
               accessibilityLabel="Dica"
               accessibilityState={{ disabled: !canHint }}
             >
-              <Text style={styles.assistLabel} allowFontScaling>?</Text>
+              <Text style={[styles.assistLabel, { color: c.text }]} allowFontScaling>?</Text>
             </Pressable>
           ) : null}
         </View>

@@ -2,10 +2,11 @@
 status: done
 ---
 
-TEA Test Review complete for `9-3-merges-por-shape-texto-alem-de-cor-wcag-aa`.
+TEA Test Review complete for `9-3-merges-por-shape-texto-alem-de-cor-wcag-aa` (tea.review-0, 2026-09-08).
 
 Artifacts:
-- Review: _bmad-output/test-artifacts/test-reviews/test-review-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md (95/100 A, Approve with Comments, 0C 0H 1M 5L)
-- Reviewed files (working-tree delta): 4 test files (unit 234 lines 18 probes, gateway 275 lines 17, umbrella 199 lines 11, red 282 lines 15) + fixture helper 404 lines (context, not scored) — 61 probes total (3 active GREEN ~0.44s, 58 skip dormant RED-phase with documented header, not C1)
-- Context basis: pr_diff (spec-9-3 final 7e314ab + test-design-9-3 10 risks R-001/R-002 high + triade/src/ui/tileNumerals.ts 13-tier + triade/src/render/GameBoard.tsx grain/glow + triade/__tests__/ui/tileShape 6 pass + tileContrast 3 pass)
-- Execution: NODE_PATH=triade/node_modules triade/node_modules/.bin/tsx --test verified 3 active P0 smoke journeys pass (unit P0-U-ACTIVE 1.7ms, gateway P0-API-ACTIVE 1.1ms, umbrella P0-UMB-ACTIVE 0.9ms)
+- Review: _bmad-output/test-artifacts/test-reviews/test-review-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa-tea-review-0.md (100/100 A, Approve with Comments, 0C 0H 2M 3L)
+- Reviewed files (working-tree delta): atdd red scaffold (168 lines, 10 skip dormant) + gateway delta spec (142 lines, 8 skip + 1 active smoke) + umbrella delta spec (102 lines, 5 skip + 1 active journey) — 25 probes total; delta fixture (71 lines) as context, not scored
+- Context basis: pr_diff (test-design td-20260908: 8 risks, 1 high R-001 + DW-117/DW-118 pins + triade/src/ui/tileNumerals.ts + triade/src/render/GameBoard.tsx + committed tileShape 6 pass + tileContrast.audit 3 pass)
+- Execution: red 10 skipped/0 fail; gateway+umbrella 2 pass/13 skipped/0 fail; full triade suite 1051 pass/0 fail/460 skipped; tsc --noEmit 0 errors
+- Supplements (not overwritten): test-reviews/test-review-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md (2026-09-03 run over earlier filenames)

@@ -1,12 +1,12 @@
 {
   "schema_version": "0.1.0",
-  "snapshot_at": "2026-09-03T23:45:00+00:00",
+  "snapshot_at": "2026-09-08T12:00:00+00:00",
   "repo": "3-clone",
   "collection_mode": "contract_static",
   "collection_status": "COLLECTED",
   "inventory_basis": "acceptance_criteria",
   "gate_basis": "priority_thresholds",
-  "source_sha": "009fc5e15dd9cd78360714084323368d9f31290d",
+  "source_sha": "5ea23e0b7bd6b633bb641ae006bd7a761bc1d49e",
   "target": {
     "type": "story",
     "id": "9-3-merges-por-shape-texto-alem-de-cor-wcag-aa",

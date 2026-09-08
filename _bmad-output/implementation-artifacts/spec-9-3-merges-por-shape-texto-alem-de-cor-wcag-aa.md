@@ -3,8 +3,8 @@ title: '9-3 Merges por shape/texto além de cor + WCAG AA'
 type: 'feature'
 created: '2026-09-03'
 status: 'done'
-baseline_revision: '9448b3f2c4427c34d374d89161a10387fe252ea4'
-final_revision: '7e314ab405967412348b81519ad582fc592ced60'
+baseline_revision: 'ea5c668a55255d92b9070c6a136eec8fec3b0895'
+final_revision: '4ca24ad70ea3a7cdfb5afb5df78628cebc1b1fea'
 review_loop_iteration: 0
 followup_review_recommended: false
 context: []
@@ -80,6 +80,17 @@ warnings: []
   - `[low] [reject]` False positive: "missing light/color-blind hexes" — deferred per spec boundary (9.4 owns those themes; this story validates dark canonical only)
   - `[low] [reject]` False positive: "announcements should encode hue" — rejected, announcements carry value text `Merged: A plus B equals C` not hue per FR-31
 
+### 2026-09-08 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 0
+- defer: 2: (high 0, medium 0, low 2)
+- reject: 13
+- addressed_findings:
+  - none
+- deferred_as: [DW-117, DW-118]
+- reject_rationale: metadata-only diff note is a re-run artifact (code landed pre-baseline, prior pass 2026-09-03 reviewed it); grain-readability/black-on-dark/@ts-ignore/fontWeight accusations lack rendered-output evidence and palette fixes need human approval per spec Block If (9.4 owns palettes); NaN/garbage-input paths are unreachable from the engine and never crash per spec fallback rule; light/color-blind coverage is explicitly out of scope (9.4); Canvas-Text a11y is false positive (board is no-hide-descendants by design, 9.2 bridge owns tiles); test-oracle duplication is inverted (hardcoded DESIGN values are the correct independent oracle); threshold deltas are ~ approximations while AA 4.5 is enforced; process-hygiene notes are not defects
+
 ## Verification
 
 **Commands:**
@@ -110,3 +121,5 @@ warnings: []
 - `/Users/eduardomenoncello/Documents/projects/jogos/3-clone/triade/node_modules/.bin/tsc --project triade/tsconfig.json --noEmit` — 0 errors
 
 **Residual risks:** Light and color-blind theme hexes and their WCAG audits are intentionally deferred to Story 9.4; grain bevels use stroke on `RoundedRect` with `@ts-ignore` — Skia render requires device visual spot-check that grain remains additive and never obscures numeral center at MIN_TILE_WIDTH~44pt.
+
+**Follow-up review 2026-09-08 (bmad-dev-auto re-run):** No code changes — implementation had landed pre-baseline and was verified as-is (1051 pass, 0 fail; tsc 0 errors, first-hand). Review: Blind Hunter 15 findings → 2 deferred low (DW-117 rest-state incandescent shape parity, DW-118 fallback-chain consolidation), 13 rejected with rationale in triage log; Edge Case Hunter clean. Follow-up review recommended: false.

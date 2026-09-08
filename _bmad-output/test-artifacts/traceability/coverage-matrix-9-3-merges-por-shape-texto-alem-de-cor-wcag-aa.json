@@ -1,6 +1,8 @@
 {
   "phase": "PHASE_1_COMPLETE",
-  "generated_at": "2026-09-03T23:45:00+00:00",
+  "generated_at": "2026-09-08T12:00:00+00:00",
+  "run": "tea.trace-0 (refresh of 2026-09-03 baseline; working tree triade/ clean, production delta committed)",
+  "source_sha": "5ea23e0b7bd6b633bb641ae006bd7a761bc1d49e",
   "trace_target": {
     "type": "story",
     "id": "9-3-merges-por-shape-texto-alem-de-cor-wcag-aa",
@@ -24,7 +26,12 @@
       "triade/__tests__/ui/tileShape.test.ts",
       "triade/__tests__/ui/tileContrast.audit.test.ts",
       "triade/__tests__/ui/tileNumerals.test.ts",
-      "triade/src/a11y/announcements.ts"
+      "triade/__tests__/ui/tileTheme.test.ts",
+      "triade/__tests__/ui/tileContrast.allThemes.audit.test.ts",
+      "triade/src/a11y/announcements.ts",
+      "_bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa-tea.automate-1.gateway.spec.ts",
+      "_bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa-tea.automate-1.umbrella.spec.ts",
+      "_bmad-output/test-artifacts/automation-summary-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa-tea.automate-1.md"
     ],
     "external_pointer_status": "not_used",
     "synthetic": false
@@ -392,12 +399,14 @@
     "gate": "PASS"
   },
   "execution_evidence": {
+    "trace_run": "tea.trace-0 2026-09-08: npm --prefix triade test triade/__tests__/ui/tileShape.test.ts triade/__tests__/ui/tileContrast.audit.test.ts triade/__tests__/ui/tileNumerals.test.ts => targeted contract tests green (tile ink every tier >=4.5 weakest 384, chrome >=4.5, theme delegation); full fleet 1051 pass / 0 fail / 460 skipped; tsc --noEmit 0 errors; triade/ working tree clean (git diff HEAD --stat -- triade/ empty)",
+    "delta_automate": "tea.automate-1 2026-09-08: DACTIVE gateway smoke (13-tier identity + dark-default delegation + weakest 384 + DW-117/DW-118 pins) + DACTIVE umbrella journey (theme delegation + weakest contrast + glow wiring + grain contract); triade oracles extended with tileTheme.test.ts (4) + tileContrast.allThemes.audit.test.ts (3)",
     "gateway": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/api/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.gateway.spec.ts => 16 skipped + 1 pass (17 pass when de-skipped ~210ms)",
     "umbrella": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/e2e/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.umbrella.spec.ts => 10 skipped + 1 pass (11 pass when de-skipped ~150ms)",
     "unit": "NODE_PATH=triade/node_modules TSX_TSCONFIG_PATH=triade/tsconfig.test.json triade/node_modules/.bin/tsx --test _bmad-output/test-artifacts/tests/unit/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.atdd.test.ts => 17 skipped + 1 pass (18 pass when de-skipped ~170ms)",
     "atdd_red": "_bmad-output/test-artifacts/atdd-tests/9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.red.spec.ts => 14 skipped (14 pass when de-skipped)",
     "triade_oracle": "triade/__tests__/ui/tileShape.test.ts 6 pass + triade/__tests__/ui/tileContrast.audit.test.ts 3 pass + triade/__tests__/ui/tileNumerals.test.ts 3 pass (fleet 12) + full fleet 973 pass / 0 fail / 366 skipped",
-    "full_suite": "npm --prefix triade test triade/__tests__/ui/tileShape.test.ts triade/__tests__/ui/tileContrast.audit.test.ts -- --no-coverage => 9/9 pass; npm --prefix triade test => 973 pass 0 fail 366 skipped",
-    "tsc": "triade/node_modules/.bin/tsc --project triade/tsconfig.json --noEmit => 0 errors"
+    "full_suite": "npm --prefix triade test => 1051 pass / 0 fail / 460 skipped (2026-09-08 tea.trace-0; prior 2026-09-03: 973 pass / 0 fail / 366 skipped — suite grew, zero regressions)",
+    "tsc": "triade/node_modules/.bin/tsc --project triade/tsconfig.json --noEmit => 0 errors (2026-09-08 tea.trace-0)"
   }
 }

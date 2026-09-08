@@ -125,14 +125,20 @@ resolution: already resolved: grep role=.grid across triade/src returns 0 hits �
 origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (2026-08-10)"), 2026-09-01
 location: n/a
 reason: dev-build boot on a physical iOS device (Expo prebuild + Xcode; requires connected iPhone + CocoaPods). Simulator boot validated instead (2026-08-10): dev build boots and the Skia board renders on the iOS runtime.
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-decision-dw-15
+resolution-undo: 923d8da75ac945a8a1351bd8d57a0ee3b2acca61362b1b8fd4292f4335a4769c 2026-09-06 7374617475733a206f70656e
+decision: 2026-09-06 Run physical boot now — Run Expo prebuild plus dev-build boot on a connected iPhone and record boot plus Skia board render evidence against DW-15.
 
 ### DW-16: on-device frame-rate baseline
 
 origin: migrated from legacy ledger ("Deferred from: Story 1-1 device gates (2026-08-10)"), 2026-09-01
 location: n/a
 reason: on-device frame-rate baseline
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-frame-rate-baseline-measure
+resolution-undo: 3ec020b045a05cb4c53423ee07820404cb50ff251970557b092acc25e973c363 2026-09-06 7374617475733a206f70656e
+decision: 2026-09-06 Measure baseline now — Drive a seeded session on simulator or device through useFrameRateBaseline and record fps and p99 against DW-16 (shared with DW-32).
 
 ### DW-17: Trigger to resume:
 
@@ -265,7 +271,10 @@ resolution: already resolved: triade/__tests__/engine/engine.purity.test.ts:7-27
 origin: migrated from legacy ledger ("Deferred from: code review of story 1-3-board-skia-declarativo-dirigido-pelo-trace (2026-08-13, re-review)"), 2026-09-01
 location: App.tsx
 reason: AC-5 (60 FPS / 10-min session) has no completed rendering-side evidence — only the planner micro-benchmark exists; the simulator/device frame-rate reading stays open as "Manual validation remaining" (project rule: Skia animation is manual validation; informative only). Trigger to close: run the temporary move harness in App.tsx on the iOS simulator/device and record fps·p99.
-status: open
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-frame-rate-baseline-measure
+resolution-undo: 3ec020b045a05cb4c53423ee07820404cb50ff251970557b092acc25e973c363 2026-09-06 7374617475733a206f70656e
+decision: 2026-09-06 Re-target and measure — Re-target the AC-5 reading to useFrameRateBaseline plus the seeded session harness, run it on simulator or device, and record fps and p99 for the 10-minute session.
 
 ### DW-33: `matchScore.isNewRecord`/`best` conflate persisted best with live session max; the persisted value is unrecoverable once the session passes it. Contract documented + tested; revisit when app-storage lands in story 1.4 (orchestrator must call `isNewRecord` with the session-start best, never `current.best`).
 
@@ -714,7 +723,8 @@ resolution: already resolved: triade/test-utils/rn-stub.ts:80-114 exports useWin
 origin: migrated from legacy ledger ("Deferred from: code review of story 6-1-overlay-de-game-over-com-stats-imediatos (2026-08-26 — gds-code-review, 3 camadas)"), 2026-09-01
 location: pending-spawn-contract.test.ts
 reason: Testes 7.4 acoplados no mesmo branch: 4 pins de isolamento/snapshot/noop/direction-agnostic em `pending-spawn-contract.test.ts` + inclusão de `GameOverOverlay.tsx` no guard `ui.thinview.test.ts` — engine byte-identical, preview byte-identical; correto mas escopo cruzado com Epic 7, já deferido em `## Deferred from: code review of story 7-4...`.
-status: open
+status: done 2026-09-06
+resolution: already resolved: triade/__tests__/ui/ui.thinview.test.ts:18 GameOverOverlay already in VIEW_FILES since 6.1; triade/__tests__/engine/pending-spawn-contract.test.ts has 7 tests with 0 direction-agnostic hits — described 4-pin coupling gone
 
 ### DW-84: Ledger pré-existente ainda aberto (ULP 0.6 no boundary 0.6, fallback além do ladder 192>96, mutable pot slices `slice()` sem freeze, board shallow ref `gameState` por referência) — `triade/src/game/preview.ts:53,62,80` + `triade/src/engine/core/game.ts:88` permanecem latentes, não causados por 6.1 (`git diff --stat -- triade/src/game/preview.ts` vazio, `triade/src/engine` vazio). Já deferido em 7-4, não reabrir aqui.
 
@@ -912,14 +922,17 @@ resolution-undo: 043844070ab942ae892d8eac278e23d11dd08f2c37cc2f1b45223e9bba129c9
 origin: migrated from legacy ledger ("Deferred from: code review of story 3-1-selecao-de-pista-no-menu-lane-select (2026-08-28 — dev-auto review)"), 2026-09-01
 location: n/a
 reason: Per-lane best tracking still global — `match.best`/`persistedBest` not yet scoped per lane (belongs to 3.4 leaderboards)
-status: open
+status: done 2026-09-03
+resolution: already resolved: triade/App.tsx:123-128 sessionStartBestByLaneRef/persistedBestByLaneRef + triade/src/services/storage/settingsStore.ts:87-121 bestKeyForLane per-lane storage — Epic 3.4 (3-4-leaderboards-por-pista: done) implemented; per-lane best is now lane-scoped, verified in current tree
 
 ### DW-105: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
 
 origin: migrated from legacy ledger ("Deferred from: code review of story 3-3-accelerated-lane-com-assistencia (2026-08-28 — dev-auto review)"), 2026-09-01
 location: n/a
 reason: handleUndoIap stub injects iapRemaining:1 to simulate IAP before Epic 4 entitlements
-status: open
+status: done 2026-09-03
+resolution: resolved by sweep bundle dw-undo-iap-stub-cleanup
+resolution-undo: 596e493bc62a5b5f2f7f357b5d0fd8a87ba834bc7e3cadd2b1f9f292b1491c30 2026-09-03 7374617475733a206f70656e
 
 ### DW-106: Rapid second swipe before first shake 130ms completes overwrites withSequence without cancelAnimation — truncated overlap/jank
 
@@ -996,3 +1009,55 @@ status: done 2026-09-03
 resolution: resolved by sweep bundle dw-board-a11y-screen-reader-bridge
 resolution-undo: e282524d3c6d58f87f367a2b14dce9775d2e7428bb8a292b7bd2ab3092fedd75 2026-09-03 7374617475733a206f70656e
 source_spec: `_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md`
+
+### DW-114: preview-availability integration expects [3,6], gets [3] — pre-existing failure unrelated to 10-6
+
+origin: surfaced incidentally during verification of spec-10-6-gate-de-calibracao-da-curva-dono-eduardo (2026-09-06)
+location: triade/__tests__/integration/preview-availability.integration.test.ts:54
+reason: Full `npm test` run fails at preview-availability.integration.test.ts (`actual: [3]`, `expected: [3, 6]`); the test does not import calibrationGate.ts and no tracked file was modified by 10-6 (only new untracked files), so the failure predates this story.
+status: done 2026-09-06
+resolution: resolved by sweep bundle dw-preview-availability-sync
+resolution-undo: d8b884cad67ef72339f150e65c0e8bbaef3474f8a067d6af73642a880c1bdcad 2026-09-06 7374617475733a206f70656e
+source_spec: `_bmad-output/implementation-artifacts/spec-10-6-gate-de-calibracao-da-curva-dono-eduardo.md`
+
+### DW-115: previewFor dereferences pending before validating it, so a null/undefined pendingSpawn crashes the HUD instead of degrading
+
+origin: migrated from legacy ledger ("7-2-preview-card-no-hud-60-40-nas-duas-pistas"), 2026-09-07
+location: triade/src/game/preview.ts:103-104
+source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
+reason: previewFor dereferences pending before validating it, so a null/undefined pendingSpawn crashes the HUD instead of degrading — triade/src/game/preview.ts:103-104 Number.isFinite(pending.displayRoll) throws on null/undefined; call site triade/App.tsx:1179-1180 passes game.pendingSpawn unguarded, while Hud FALLBACK_PREVIEW only covers a missing previews prop.
+status: done 2026-09-06
+resolution: already resolved: triade/src/game/preview.ts:112-114 previewFor returns {kind:'exact',value:0} for null/undefined pending plus 118-119 Number.isFinite guards — null pending no longer throws on displayRoll
+
+### DW-116: explicit-null availablePotValues bypasses the default and throws on indexOf
+
+origin: migrated from legacy ledger ("7-2-preview-card-no-hud-60-40-nas-duas-pistas"), 2026-09-07
+location: triade/src/game/preview.ts:59
+source_spec: `_bmad-output/implementation-artifacts/7-2-preview-card-no-hud-60-40-nas-duas-pistas.md`
+reason: explicit-null availablePotValues bypasses the default and throws on indexOf — triade/src/game/preview.ts:59,98 availablePotValues.indexOf(value); the default parameter only applies to undefined, not null, so an explicit null caller crashes instead of falling back to the ladder default.
+status: done 2026-09-06
+resolution: already resolved: triade/src/game/preview.ts:55,60-62 ambiguousRange accepts null|undefined and normalizes via Array.isArray to FULL_POT_LADDER — explicit null no longer throws on indexOf
+
+### DW-117: rest-state incandescent tiles share grain/bevel with tier 1 (glow is punch-gated)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md`
+  summary: Resting 1536/3072 render the same facet treatment as tier 1 because glow only mounts when isPunch.
+  evidence: triade/src/ui/tileNumerals.ts:213-214 defines 1536/3072 as { grain: 0, glow: true, bevel: 1 }, identical grain/bevel to tier 1 (tileNumerals.ts:202), while triade/src/render/GameBoard.tsx:126 gates the glow rect on isPunch && value >= 1536 — so at rest the incandescent band is distinguished by fill lightness + numeral text only; rendering glow at rest would contradict the transient-bloom cap, so this needs a visual/design decision with a device spot-check, not a mechanical patch.
+
+### DW-118: consolidate tile fallback chains between tileNumerals.ts and theme/index.ts resolveTile
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-9-3-merges-por-shape-texto-alem-de-cor-wcag-aa.md`
+  summary: The canonical-bucket interval chain is spelled out in tileFillFor/tileInkFor/tileShapeFor plus theme resolveTile, inviting fill/ink/shape drift on future tier edits.
+  evidence: Identical >1536/>768/... chains in triade/src/ui/tileNumerals.ts:121-133,138-151,159-172,176-189,221-233 and triade/src/theme/index.ts:121-134 with slightly different fallbacks (map[3] vs TILE_INK_DARK); unifying them crosses story 9.4 theme ownership, so it belongs to a future focused cleanup, not this story.
+
+### DW-119: frame-rate probe has no time-base pathology guards (negative/zero deltas, suspension outlier)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-fix-framerate-baseline-worklet.md`
+  summary: useFrameRateBaseline trusts info.timeSinceFirstFrame blindly. A time-base reset (re-registration/backgrounding) with a stale w.last injects a large negative delta (clamped avg hits 0.001 floor, fps reports ~1M); repeated zero timestamps undercount frames; a mid-window suspension dominates mean+p99 and latches until the next generation bump. Pre-existing shape (same in the useRef version), pathological-only, needs a deliberate sampling policy (per-sample validation / outlier cap), not a mechanical patch.
+  evidence: triade/src/render/useFrameRateBaseline.ts onFrame body (w.last > 0 push with no delta > 0 guard); surfaced by step-04 blind + edge reviewers 2026-09-08, classified defer (pre-existing, not caused by the worklet rewrite).
+
+### DW-120: device fps/p99 measurement left without a producer after probe removal
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-remove-frame-rate-baseline-probe.md`
+  summary: useFrameRateBaseline.ts (the sole on-device 120-frame fps/p99Ms producer) was deleted per explicit human decision, orphaning references in device NFR test-design docs, dw-15-physical-ios-boot ATDD, punch ATDD readout asserts, the automation-summary byte-identical fixture, and older deferred-work entries pinning the hook path. Suites stay green (asserts are skipped/manual), but a future decision is needed: adopt a replacement device measurement strategy or clean the references.
+  evidence: step-04 blind review 2026-09-08 (spec-remove-frame-rate-baseline-probe); refs in _bmad-output/test-artifacts/test-design-epic-8-*/ deferred-work.md and triade/__tests__/device/dw-15-physical-ios-boot.atdd.test.ts.

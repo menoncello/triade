@@ -80,7 +80,16 @@ test('[P0] 9-1 every Pressable style enforces >=44 floor (minHeight/minWidth or 
     },
     {
       rel: '../../App.tsx',
-      mustContain: ['menuBtn', 'minHeight: HIT_TARGET', 'minWidth: HIT_TARGET'],
+      mustContain: ['boardWrap', 'GestureDetector'],
+    },
+    {
+      rel: '../../src/ui/PauseOverlay.tsx',
+      mustContain: [
+        'cta', 'minWidth: HIT_TARGET', 'minHeight: HIT_TARGET', 'paddingHorizontal',
+        'secondaryBtn', 'minWidth: HIT_TARGET', 'minHeight: HIT_TARGET',
+        'themeBtn', 'minWidth: HIT_TARGET', 'minHeight: HIT_TARGET',
+        'motionRow', 'minHeight: HIT_TARGET',
+      ],
     },
   ];
 
@@ -119,11 +128,13 @@ test('[P1] 9-1 no chrome overlaps board swipe rect: pause outside boardWrap', as
   // Hud: pause rendered in landscapeBand / pauseSlot, never inside boardWrap
   assert.ok(hud.includes('PauseButton'), 'Hud must render PauseButton');
   assert.ok(hud.includes('landscapeBand') || hud.includes('portraitBand'), 'Hud must have band chrome');
-  // App: boardWrap is separate View containing GestureDetector/GameBoard; menuBtn is outside it
+  // App: boardWrap is separate View containing GestureDetector/GameBoard; PauseOverlay is outside it
   assert.ok(app.includes('boardWrap'), 'App must have boardWrap');
   assert.ok(app.includes('GestureDetector'), 'App must have GestureDetector around GameBoard');
-  // Ensure menuBtn is not inside boardWrap's JSX block by simple ordering check
+  // Pause entry lives in Hud (pause button) and the sheet renders outside boardWrap
+  assert.ok(app.includes('<PauseOverlay'), 'App must render PauseOverlay');
+  assert.ok(hud.includes('onPause'), 'Hud must thread onPause to PauseButton');
   const boardIdx = app.indexOf('boardWrap');
-  const menuIdx = app.indexOf('menuBtn');
-  assert.ok(boardIdx !== -1 && menuIdx !== -1, 'both boardWrap and menuBtn must exist');
+  const pauseIdx = app.indexOf('<PauseOverlay');
+  assert.ok(boardIdx !== -1 && pauseIdx !== -1 && pauseIdx > boardIdx, 'PauseOverlay must render after (outside) boardWrap');
 });

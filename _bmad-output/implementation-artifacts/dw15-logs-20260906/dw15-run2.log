@@ -1,0 +1,59 @@
+  --non-interactive is not supported, use $CI=1 instead
+› Using --device 00008120-00023C440263C01E
+› Auto signing app using team(s): "J9ZC6MPSYV"
+› Planning build
+› Executing react-native Pods/hermes-engine » [CP-User] [Hermes] Replace Hermes for the right configuration, if needed
+› Executing react-native Pods/ReactNativeDependencies » [CP-User] [RNDeps] Replace React Native Dependencies for the right configuration, if needed
+› Executing react-native Pods/React-Core-prebuilt » [CP-User] [RNCore] Replace React Native Core for the right configuration, if needed
+› Executing react-native Pods/React-RCTFBReactNativeSpec » [CP-User] [RN]Check FBReactNativeSpec
+› Executing expo-modules-jsi Pods/ExpoModulesJSI » [CP-User] Build ExpoModulesJSI xcframework
+› Executing expo-modules-core Pods/ExpoModulesCore » [CP-User] [Expo] Switch ExpoModulesCore XCFramework for build configuration
+› Executing expo-modules-core Pods/ExpoModulesCore » [CP] Copy XCFrameworks
+› Executing expo-modules-core Pods/ExpoModulesWorklets » [CP-User] [Expo] Switch ExpoModulesWorklets XCFramework for build configuration
+› Executing expo-font Pods/ExpoFont » [CP-User] [Expo] Switch ExpoFont XCFramework for build configuration
+› Executing expo-file-system Pods/ExpoFileSystem » [CP-User] [Expo] Switch ExpoFileSystem XCFramework for build configuration
+› Executing expo-constants Pods/EXConstants » [CP-User] Generate app.config for prebuilt Constants.manifest
+› Executing expo-file-system Pods/ExpoFileSystem » [CP] Copy XCFrameworks
+› Executing expo-font Pods/ExpoFont » [CP] Copy XCFrameworks
+› Executing expo-modules-core Pods/ExpoModulesWorklets » [CP] Copy XCFrameworks
+⚠️  Script has ambiguous dependencies causing it to run on every build.
+   To fix, go to: Xcode » triade/triade » Build Phases » '[CP-User] [RNGoogleMobileAds] Configuration'
+   Either: Uncheck "Based on dependency analysis", or select output files to trigger the script
+
+› Executing triade » [Expo] Configure project
+› Executing triade » Bundle React Native code and images
+› Executing triade » [CP] Copy Pods Resources
+› Executing triade » [CP-User] [RNGoogleMobileAds] Configuration
+     ios_app_id key not found in react-native-google-mobile-ads key in app.json. App will crash without it. You may safely ignore this warning if you are using our Expo config plugin.
+› Signing   triade » triade.debug.dylib
+› Signing   triade » __preview.dylib
+› Signing   triade » triade.app
+› Build Succeeded
+
+› 0 error(s), and 2 warning(s)
+
+Starting Metro Bundler
+
+Waiting on http://localhost:8081
+› Installing /Users/eduardomenoncello/Library/Developer/Xcode/DerivedData/triade-cngecqzjzclowkeqbgjzqjbzbmav/Build/Products/Debug-iphoneos/triade.app
+- Connecting to: Eduardo’s iPhone (2)
+
+› Logs for your project will appear below.
+- Connecting to: Eduardo’s iPhone (2)
+iOS Bundled 504ms index.ts (1407 modules)
+iOS Bundled 230ms node_modules/expo-asset/build/index.js (1 module)
+iOS Bundled 249ms node_modules/react-native-mmkv/src/index.ts (643 modules)
+iOS Bundled 7ms src/services/storage/settingsStore.ts (1 module)
+iOS Bundled 113ms node_modules/expo-secure-store/build/SecureStore.js (578 modules)
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.
+ WARN  [Worklets] Tried to modify key `current` of an object which has been already passed to a worklet. See
+        https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#tried-to-modify-key-of-an-object-which-has-been-converted-to-a-serializable
+        for more details.

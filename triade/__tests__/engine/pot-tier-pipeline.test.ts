@@ -34,11 +34,11 @@ function boardWithMax(max: number): Board {
 test('[P0] pipeline: board ceiling flows through tierForCeiling into the pot branch', () => {
   const cases: Array<{ max: number; expectedPot: number[] }> = [
     { max: 24, expectedPot: [3] },
-    { max: 48, expectedPot: [3, 6] },
-    { max: 96, expectedPot: [3, 6, 12] },
-    { max: 192, expectedPot: [3, 6, 12, 24] },
-    { max: 384, expectedPot: [3, 6, 12, 24, 48] },
-    { max: 768, expectedPot: [3, 6, 12, 24, 48, 96] },
+    { max: 48, expectedPot: [3] },
+    { max: 96, expectedPot: [3] },
+    { max: 192, expectedPot: [3, 6] },
+    { max: 384, expectedPot: [3, 6, 12] },
+    { max: 768, expectedPot: [3, 6, 12, 24] },
   ];
   for (const { max, expectedPot } of cases) {
     const tier = tierForCeiling(ceilingDetector(boardWithMax(max)));
@@ -67,13 +67,14 @@ test('[P1] empty and low boards resolve to tier 0 pot (backward-compatible singl
 });
 
 test('[P1] defensive inputs: fractional tiers floor, negative tiers clamp to base pot', () => {
-  assert.deepStrictEqual(potForTier(1.9), [3, 6]);
+  assert.deepStrictEqual(potForTier(1.9), [3]);
+  assert.deepStrictEqual(potForTier(3.9), [3, 6]);
   assert.deepStrictEqual(potForTier(-5), [3]);
   assert.deepStrictEqual(potForTier(-0.5), [3]);
 });
 
 test('[P1] every intra-pot slot is reachable at its tier (combined single-roll midpoints, story 2.6)', () => {
-  for (const tier of [2, 5]) {
+  for (const tier of [4, 5]) {
     const pot = potForTier(tier);
     // Combined bands: fixed [1,2] at 0.4 each, then the pot normalized to
     // POT_WEIGHT — the exact distribution weightedValue picks with ONE roll.

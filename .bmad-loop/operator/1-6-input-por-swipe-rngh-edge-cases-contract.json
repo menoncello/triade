@@ -1,0 +1,15 @@
+{
+  "actions": [
+    "Boot the RNGH-linked dev build on the iOS simulator and swipe in all four directions to confirm each resolves a move.",
+    "Touch below the 10px threshold and confirm no move, no spawn, and no turn is consumed.",
+    "Trigger a system-interruption cancel mid-gesture and confirm the board stays unchanged.",
+    "Release a swipe off the board mid-gesture and confirm the move still resolves as captured.",
+    "Place a concurrent second finger during a swipe and confirm first-finger-wins with a single move (manual device validation per D1).",
+    "Swipe rapidly during the move animation and confirm swipes in the early-input window are rejected silently without board mutation while the gate is closed.",
+    "Tap the top-right pause button mid-match and confirm it remains reachable and tappable without being swallowed by the gesture."
+  ],
+  "parked_at": "2026-09-06",
+  "run_id": "20260906-183212-d679",
+  "spec_file": "_bmad-output/implementation-artifacts/1-6-input-por-swipe-rngh-edge-cases-contract.md",
+  "story_key": "1-6-input-por-swipe-rngh-edge-cases-contract"
+}

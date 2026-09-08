@@ -117,12 +117,14 @@ describe('matchOrchestrator — Lane Wall contract (N2)', () => {
     assert.deepEqual(state.undoBudget, copy.undoBudget);
   });
 
-  it('confirmUndoIap injects one when freeUsed and no remaining', () => {
+  it('confirmUndoIap respects budget — fails when freeUsed and no remaining without purchase', () => {
     const state = { ...initialOrchestratorState(), undoHistory: [snap()], undoBudget: { freeUsed: true, iapRemaining: 0, unlimited: false } };
     const r = confirmUndoIap(state, acc);
-    assert.equal(r.ok, true);
+    assert.equal(r.ok, false);
     assert.equal(r.state.undoBudget.freeUsed, true);
     assert.equal(r.state.undoBudget.iapRemaining, 0);
+    assert.equal(r.state.undoHistory.length, 1);
+    assert.equal(r.state.showUndoPrompt, false);
   });
 
   it('cancelUndo clears prompt', () => {
