@@ -53,3 +53,12 @@ lastSaved: '2026-09-07'
 - Coverage: P0 9 groups (host unit, green), P1 6 (fixtures + wiring + device smoke), P2 5, P3 3 exploratory; ~5.5–12.5 h host + device → ~12–22 h elapsed; PR host gate <15 min; one 15-min iPhone pass pre-merge.
 - Verified this run: full `triade/` suite `1034 pass / 0 fail / 457 skipped` (134 suites). No production code modified.
 - Output: `_bmad-output/test-artifacts/test-design/test-design-epic-8-2-punch-visual.md` (canonical) + mirror `_bmad-output/test-artifacts/test-design-epic-8-2-punch-visual.md`.
+
+## 2026-09-07 — Targeted follow-up: Story 9-2 screen-reader-contract preview/banner delta (epic-level)
+
+- **Mode: Epic-Level (targeted).** Spec `spec-9-2-screen-reader-contract.md` (`awaiting-operator`, baseline `d26bbdd` → final `9c33e33`); sprint-status.yaml exists (orchestrator-owned, read-only, not modified).
+- Production delta `d26bbdd..HEAD` (3 files, +106/-5): `App.tsx` preview/banner announcement effects (skip-first-mount symmetry + empty/raw-key guards) + `PreviewCard.tsx` i18n `a11y.preview` label. Foundation (`src/a11y/*`, gate, tone, Dynamic Type) covered by 2026-09-02 full TD — not re-assessed.
+- 6 delta risks (P×I), 0 high ≥6; highest: R-D1 preview chattiness (2×2), R-D2 banner flicker/order (2×2), R-D3 `a11y.preview` key gap (2×2), R-D4 App-gate missing new-wiring pins (2×2).
+- Coverage: P0 3 groups (existing pins, green) / P1 4 (static extensions, no new harness) / P2 2 / P3 2 (operator ear-check) — ~4–7.5h (~1 day).
+- Verified this run: full `triade/` suite 1051 pass / 0 fail / 460 skipped; `a11y.preview` keys present en+pt (`Next {{display}}` / `Próxima {{display}}`); engine untouched. No production code modified.
+- Output: `_bmad-output/test-artifacts/test-design/test-design-9-2-screen-reader-contract-td-20260907.md`.

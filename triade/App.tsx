@@ -89,6 +89,8 @@ import {
   announceScoreThrottled,
   announceGameOver,
   announceNewRecord,
+  announcePreview,
+  announceBanner,
 } from './src/a11y/announcements.ts';
 import './src/i18n/index.ts';
 import { i18n, getDeviceLanguage } from './src/i18n/index.ts';
@@ -1110,6 +1112,55 @@ function AppContent() {
   }, [gameOver, canContinueDerived, forfeitedContinue]);
   const sanitizedScore = Number.isFinite(match.score) && match.score >= 0 ? match.score : 0;
   const sanitizedBest = Number.isFinite(match.best) && match.best >= 0 ? match.best : 0;
+  // 9-2 preview/banner announcements on value change (engine-derived display,
+  // i18n-wrapped inside announce fns; skip initial mount so first render is silent).
+  const a11yPreviewDisplay = useMemo(() => {
+    try {
+      const pot = potForTier(tierForCeiling(ceilingDetector(game.board)));
+      const p = previewFor(game.pendingSpawn, pot);
+      if (p.kind === 'exact') return Number.isFinite(p.value) ? String(p.value) : '';
+      const vals = Array.isArray(p.values) ? p.values.filter((v) => Number.isFinite(v)) : [];
+      return vals.length > 0 ? (vals as number[]).join('/') : '';
+    } catch {
+      return '';
+    }
+  }, [game.pendingSpawn, game.board]);
+  const prevPreviewRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (prevPreviewRef.current === null) {
+      prevPreviewRef.current = a11yPreviewDisplay;
+      return;
+    }
+    if (prevPreviewRef.current !== a11yPreviewDisplay && a11yPreviewDisplay) {
+      try {
+        announcePreview(a11yPreviewDisplay);
+      } catch {}
+    }
+    prevPreviewRef.current = a11yPreviewDisplay;
+  }, [a11yPreviewDisplay]);
+  const prevBannerRef = useRef<{ ceiling: boolean; stuck: boolean } | null>(null);
+  useEffect(() => {
+    if (prevBannerRef.current === null) {
+      prevBannerRef.current = { ceiling: showCeilingBanner, stuck: showStuckBanner };
+      return;
+    }
+    const prev = prevBannerRef.current;
+    try {
+      if (showCeilingBanner && !prev.ceiling) {
+        try {
+          const msg = i18n.t('accelerated.ceilingHint');
+          if (msg && msg !== 'accelerated.ceilingHint') announceBanner(msg);
+        } catch {}
+      }
+      if (showStuckBanner && !prev.stuck) {
+        try {
+          const msg = i18n.t('accelerated.stuckHint');
+          if (msg && msg !== 'accelerated.stuckHint') announceBanner(msg);
+        } catch {}
+      }
+    } catch {}
+    prevBannerRef.current = { ceiling: showCeilingBanner, stuck: showStuckBanner };
+  }, [showCeilingBanner, showStuckBanner]);
   const rawPersistedForRender = persistedBestByLane[activeLaneId as LaneId];
   const sanitizedPersisted = Number.isFinite(rawPersistedForRender) && rawPersistedForRender >= 0 ? rawPersistedForRender : 0;
 

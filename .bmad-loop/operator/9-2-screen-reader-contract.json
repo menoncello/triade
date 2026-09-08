@@ -1,0 +1,14 @@
+{
+  "actions": [
+    "Enable VoiceOver on an iOS simulator or device (Settings > Accessibility > VoiceOver) and verify a three-finger swipe in each direction moves the board with a spoken move/merge announcement, and that a single-finger swipe never moves the board while VoiceOver is active.",
+    "With VoiceOver on, tap several tiles and confirm each announces value plus row/column matching the visible board, tapping a tile re-announces it, and empty cells expose no accessible element.",
+    "Play until merges, spawn, score changes, and game over occur, and confirm by ear: per-pair merge phrasing, spawn announcement, score announced only on merge without spam, noop swipes silent, and game over announces score/best plus New record when applicable.",
+    "Open the tone screen with VoiceOver active and confirm auto-advance waits for announcements/VoiceOver idle (about 5s fallback), and that the dismiss tap still works.",
+    "Set the largest accessibility text size and confirm HUD, menu, lane-select cards, game-over stats, and banners render without truncation or overlap.",
+    "Repeat the swipe, tile-reading, and announcement checks with TalkBack on Android."
+  ],
+  "parked_at": "2026-09-07",
+  "run_id": "20260907-194924-34ed",
+  "spec_file": "_bmad-output/implementation-artifacts/spec-9-2-screen-reader-contract.md",
+  "story_key": "9-2-screen-reader-contract"
+}
